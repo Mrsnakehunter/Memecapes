@@ -68,15 +68,16 @@ rep("for(const h of L.hs){if(h.i%2==0&&!h.kind&&!inGT(h.cx,h.cz,0))fence(",
 
 # ---- 4. draw them with the castle kit (lazy loaded, see-through when they block the camera)
 rep("return L})();\nconst DYNXO=",
-    "HS.concat(SB).forEach(o=>{if(o.mk)L.push([o.mk,o.cx,o.cz,o.ry,o.msc])});if(BLDK.b_well)PR.wells.forEach(a=>L.push(['b_well',a[0],a[1],0,.8]));if(BLDK.b_stall)PR.stalls.forEach(a=>L.push(['b_stall',a[0],a[1],0,1.35]));if(BLDK.b_fountain)PR.fount.forEach(a=>L.push(['b_fountain',a[0],a[1],0,1.75]));if(BLDK.b_lamp)PR.lamps.forEach(a=>L.push(['b_lamp',a[0],a[1],((a[0]*7+a[1]*3)|0)%4*1.5708,.65]));if(BLDK.b_crates)SB.forEach(o=>{if(o.k!='shop'||!o.mk)return;const c=Math.cos(o.ry),sn=Math.sin(o.ry);L.push(['b_crates',o.nx+c*1.7,o.nz-sn*1.7,o.ry,.7])});DECO.forEach(d=>L.push(d));return L})();\nconst DYNXO=")
+    "HS.concat(SB).forEach(o=>{if(o.mk)L.push([o.mk,o.cx,o.cz,o.ry,o.msc])});if(BLDK.b_well)PR.wells.forEach(a=>L.push(['b_well',a[0],a[1],0,.8]));if(BLDK.b_stall)PR.stalls.forEach(a=>L.push(['b_stall',a[0],a[1],0,1.35]));if(BLDK.b_fountain)PR.fount.forEach(a=>L.push(['b_fountain',a[0],a[1],0,1.75]));if(BLDK.b_lamp)PR.lamps.forEach(a=>L.push(['b_lamp',a[0],a[1],((a[0]*7+a[1]*3)|0)%4*1.5708,.65]));if(BLDK.b_crates)SB.forEach(o=>{if(o.k!='shop'||!o.mk)return;const c=Math.cos(o.ry),sn=Math.sin(o.ry);L.push(['b_crates',o.nx+c*1.7,o.nz-sn*1.7,o.ry,.7])});DECO.forEach(d=>L.push(d));rocks.forEach(o=>{const k=o.tin?'b_tin':'b_copper';if(BLDK[k])L.push([k,o.x+.5,o.y+.5,((o.x*3+o.y)%6)*1.05,.75,30,o])});return L})();\nconst DYNXO=")
 rep("{const HX={cwall:[.95,.2],ctower:[.41,.41],cgate:[.95,.25],castle:[.95,.84]},",
     "{const HX=Object.assign({cwall:[.95,.2],ctower:[.41,.41],cgate:[.95,.25],castle:[.95,.84]},BLDK),")
 rep("for(const c of CKIT){let m=MDL[c[0]],sm=null;",
-    "for(const c of CKIT){if(!MDL[c[0]]&&BLDK[c[0]]){if(!vis(c[1],c[2],60))continue;needMdl(c[0])}let m=MDL[c[0]],sm=null;")
+    "for(const c of CKIT){if(c[6]&&c[6].dep)continue;if(!MDL[c[0]]&&BLDK[c[0]]){if(!vis(c[1],c[2],c[5]||60))continue;needMdl(c[0])}let m=MDL[c[0]],sm=null;")
+rep("for(const o of L.r){const dep=o.dep,", "for(const o of L.r){if(!o.dep&&BLDK[o.tin?'b_tin':'b_copper'])continue;const dep=o.dep,")
 
 # flat models (the Meme Ring) never go see-through
 rep("if(m&&m.ok&&vis(c[1],c[2],55)){let gh=false;if(started&&st.xr!==0){",
-    "if(m&&m.ok&&vis(c[1],c[2],55)){let gh=false;if(started&&st.xr!==0&&!(HX[c[0]][2]!=null&&HX[c[0]][2]*c[4]<1)){")
+    "if(m&&m.ok&&vis(c[1],c[2],c[5]||55)){let gh=false;if(started&&st.xr!==0&&!(HX[c[0]][2]!=null&&HX[c[0]][2]*c[4]<1.3)){")
 
 open(PATH, 'w', encoding='utf-8').write(h)
 print('Building-model patch applied.')
