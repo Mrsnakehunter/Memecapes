@@ -27,7 +27,7 @@ print('building models:', ', '.join(BLDK) or '(none)')
 TABLE = 'const BLDK=' + json.dumps(BLDK, separators=(',', ':')) + ';'
 
 if 'const BLDK=' in h:  # re-run: just refresh the table
-    h = re.sub(r'const BLDK=\{[^;]*\};', TABLE, h, count=1)
+    h = re.sub(r'const BLDK=(window\.BLDK=)?\{[^;]*\};', lambda m: TABLE.replace('const BLDK=', 'const BLDK=' + (m.group(1) or '')), h, count=1)
     open(PATH, 'w', encoding='utf-8').write(h)
     print('BLDK table refreshed.')
     raise SystemExit
