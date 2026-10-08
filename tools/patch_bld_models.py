@@ -43,13 +43,13 @@ def rep(old, new, count=1):
 # ---- 2. assign model keys after the town layouts are final (just before mountains are placed)
 ASSIGN = TABLE + r"""
 {const GTK={tavern:'b_tavern',barracks:'b_barracks',smith:'b_smith',kitchen:'b_kitchen',chapel:'b_chapel'},GTH=['b_houseA','b_houseB','b_houseC','b_houseD'].filter(k=>!!BLDK[k]),
-TOWNH={0:['b_cottageB','b_cottageC','b_cottageA'],1:['b_stiltA','b_stiltB','b_fishshack']},TOWNL={0:'b_church'},TOWNS={0:'b_wlstore'},has=k=>!!BLDK[k];let gi=0;const ti={};
-const BH={b_tavern:5.4,b_bank:4.4,b_store:4.8,b_barracks:4.0,b_kitchen:4.2,b_chapel:6.5,b_smith:4.2,b_houseA:5,b_houseB:4.0,b_houseC:5,b_houseD:4.6,b_church:6.5,b_windmill:7.5,b_wlstore:4.8,b_cottageA:4.6,b_cottageB:4.6,b_cottageC:4.6,b_stiltA:5,b_stiltB:5,b_fishshack:4.4},
+TOWNH={0:['b_cottageB','b_cottageC','b_cottageA'],1:['b_stiltA','b_stiltB','b_fishshack'],2:['b_rowA','b_rowB']},TOWNL={0:['b_church'],1:['b_shrine'],2:['b_exchange','b_clock']},TOWNS={0:'b_wlstore'},has=k=>!!BLDK[k];let gi=0;const ti={};
+const BH={b_tavern:5.4,b_bank:4.4,b_store:4.8,b_barracks:4.0,b_kitchen:4.2,b_chapel:6.5,b_smith:4.2,b_houseA:5,b_houseB:4.0,b_houseC:5,b_houseD:4.6,b_church:6.5,b_windmill:7.5,b_shrine:3.6,b_rowA:6,b_rowB:6.5,b_exchange:7,b_clock:11,b_wlstore:4.8,b_cottageA:4.6,b_cottageB:4.6,b_cottageC:4.6,b_stiltA:5,b_stiltB:5,b_fishshack:4.4},
 fit=(o,k)=>{const e=BLDK[k];o.mk=k;const byH=(BH[k]||4.4)/Math.max(.2,e[2]),byF=Math.max(o.w/(2*e[0]),o.d/(2*e[1]));o.msc=Math.min(Math.max(byH,byF*1.05),byF*1.9)};
 SB.forEach(o=>{if(inGT(o.cx,o.cz,1)){const k=o.k=='bank'?'b_bank':'b_store';if(has(k))fit(o,k)}});
 HS.forEach(o=>{if(inGT(o.cx,o.cz,1)){const k=o.kind?GTK[o.kind]:GTH[gi++%Math.max(1,GTH.length)];if(k&&has(k))fit(o,k);return}
 let bt=-1,bd=1e9;TW.forEach((t,i)=>{const dd=Math.hypot(o.cx-t.cx,o.cz-t.cy);if(dd<bd){bd=dd;bt=i}});const set=(TOWNH[bt]||[]).filter(has);if(set.length&&bd<40){ti[bt]=(ti[bt]||0)+1;fit(o,set[ti[bt]%set.length])}});
-const near=(o,i)=>Math.hypot(o.cx-TW[i].cx,o.cz-TW[i].cy);Object.entries(TOWNL).forEach(([i,k])=>{if(!has(k))return;let b=null,bs=-1;HS.forEach(o=>{if(inGT(o.cx,o.cz,1)||near(o,i)>20)return;const sc=o.w*o.d-near(o,i)*.05;if(sc>bs){bs=sc;b=o}});if(b)fit(b,k)});if(has('b_windmill')){let b=null,bd=-1;HS.forEach(o=>{const d=near(o,0);if(o.mk=='b_church'||inGT(o.cx,o.cz,1)||d>30)return;if(d>bd){bd=d;b=o}});if(b)fit(b,'b_windmill')}Object.entries(TOWNS).forEach(([i,k])=>{if(!has(k))return;SB.forEach(o=>{if(o.k=='shop'&&!inGT(o.cx,o.cz,1)&&near(o,i)<40)fit(o,k)})})}
+const near=(o,i)=>Math.hypot(o.cx-TW[i].cx,o.cz-TW[i].cy);Object.entries(TOWNL).forEach(([i,ks])=>ks.forEach(k=>{if(!has(k))return;let b=null,bs=-1;HS.forEach(o=>{if(o.lm||inGT(o.cx,o.cz,1)||near(o,i)>20)return;const sc=o.w*o.d-near(o,i)*.05;if(sc>bs){bs=sc;b=o}});if(b){fit(b,k);b.lm=1}}));if(has('b_windmill')){let b=null,bd=-1;HS.forEach(o=>{const d=near(o,0);if(o.mk=='b_church'||inGT(o.cx,o.cz,1)||d>30)return;if(d>bd){bd=d;b=o}});if(b)fit(b,'b_windmill')}Object.entries(TOWNS).forEach(([i,k])=>{if(!has(k))return;SB.forEach(o=>{if(o.k=='shop'&&!inGT(o.cx,o.cz,1)&&near(o,i)<40)fit(o,k)})})}
 """
 rep("for(let y=4;y<H-4;y++)for(let x=4;x<W-4;x++){if(MTD(x,y)>1&&tile[y][x]==0",
     ASSIGN.strip('\n') + "\nfor(let y=4;y<H-4;y++)for(let x=4;x<W-4;x++){if(MTD(x,y)>1&&tile[y][x]==0")
