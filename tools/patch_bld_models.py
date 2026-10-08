@@ -44,7 +44,7 @@ def rep(old, new, count=1):
 ASSIGN = TABLE + r"""
 {const GTK={tavern:'b_tavern',barracks:'b_barracks',smith:'b_smith',kitchen:'b_kitchen',chapel:'b_chapel'},GTH=['b_houseA','b_houseB','b_houseC','b_houseD'].filter(k=>!!BLDK[k]),
 TOWNH={0:['b_cottageB','b_cottageC','b_cottageA'],1:['b_stiltA','b_stiltB','b_fishshack'],2:['b_rowA','b_rowB'],3:['b_dhhouse'],4:['b_boarded'],5:['b_hhcottage'],6:['b_mlhab'],7:['b_villa']},TOWNL={0:['b_church'],1:['b_shrine'],2:['b_exchange','b_clock'],3:['b_dhhall','b_dhspire','b_dhyard'],4:['b_manor','b_crypt'],5:['b_monastery','b_belltower'],6:['b_dome','b_antenna','b_gantry'],7:['b_colosseum','b_bath']},TOWNS={0:'b_wlstore'},has=k=>!!BLDK[k];let gi=0;const ti={};
-const BH={b_tavern:5.4,b_bank:4.4,b_store:4.8,b_barracks:4.0,b_kitchen:4.2,b_chapel:6.5,b_smith:4.2,b_houseA:5,b_houseB:4.0,b_houseC:5,b_houseD:4.6,b_church:6.5,b_windmill:7.5,b_shrine:3.6,b_rowA:6,b_rowB:6.5,b_exchange:7,b_clock:11,b_dhhall:5,b_dhspire:12,b_dhyard:2.6,b_dhhouse:5.5,b_monastery:5.5,b_belltower:10,b_hhcottage:4.4,b_boarded:4.4,b_manor:7.5,b_crypt:4,b_dome:5.5,b_antenna:12,b_gantry:12,b_mlhab:2.4,b_villa:5,b_colosseum:8,b_bath:5.5,b_wlstore:4.8,b_cottageA:4.6,b_cottageB:4.6,b_cottageC:4.6,b_stiltA:5,b_stiltB:5,b_fishshack:4.4},
+const BH={b_tavern:5.4,b_bank:4.4,b_store:4.8,b_barracks:4.0,b_kitchen:4.2,b_chapel:6.5,b_smith:4.2,b_houseA:5,b_houseB:4.0,b_houseC:5,b_houseD:4.6,b_church:6.5,b_windmill:7.5,b_shrine:3.6,b_rowA:6,b_rowB:6.5,b_exchange:7,b_clock:11,b_dhhall:5,b_dhspire:12,b_dhyard:2.6,b_dhhouse:5.5,b_monastery:5.5,b_belltower:10,b_hhcottage:4.4,b_boarded:4.4,b_manor:7.5,b_crypt:4,b_dome:5.5,b_antenna:12,b_gantry:12,b_mlhab:2.4,b_villa:3.8,b_colosseum:8,b_bath:5.5,b_wlstore:4.8,b_cottageA:4.6,b_cottageB:4.6,b_cottageC:4.6,b_stiltA:5,b_stiltB:5,b_fishshack:4.4},
 TIGHT={b_mlhab:1},fit=(o,k)=>{const e=BLDK[k];o.mk=k;const byH=(BH[k]||4.4)/Math.max(.2,e[2]),byF=(TIGHT[k]?Math.min:Math.max)(o.w/(2*e[0]),o.d/(2*e[1]));o.msc=Math.min(Math.max(byH,byF*1.05),byF*1.9)};
 SB.forEach(o=>{if(inGT(o.cx,o.cz,1)){const k=o.k=='bank'?'b_bank':'b_store';if(has(k))fit(o,k)}});
 HS.forEach(o=>{if(inGT(o.cx,o.cz,1)){const k=o.kind?GTK[o.kind]:GTH[gi++%Math.max(1,GTH.length)];if(k&&has(k))fit(o,k);return}
@@ -59,12 +59,14 @@ rep("YO=0;for(const o of L.sb){const s=o.k=='shop';house(",
     "YO=0;for(const o of L.sb){if(o.mk)continue;const s=o.k=='shop';house(")
 rep("L.w.forEach(([x,z])=>well(x,z));", "if(!BLDK.b_well)L.w.forEach(([x,z])=>well(x,z));")
 rep("L.st.forEach(([x,z])=>stall(x,z));", "if(!BLDK.b_stall)L.st.forEach(([x,z])=>stall(x,z));")
+rep("L.lp.forEach(([x,z])=>lamp(x,z));", "if(!BLDK.b_lamp)L.lp.forEach(([x,z])=>lamp(x,z));")
+rep("PR.fount.forEach(([x,z])=>vis(x,z,40)&&fountain(x,z,now));", "if(!BLDK.b_fountain)PR.fount.forEach(([x,z])=>vis(x,z,40)&&fountain(x,z,now));")
 rep("for(const h of L.hs){if(h.i%2==0&&!h.kind&&!inGT(h.cx,h.cz,0))fence(",
     "for(const h of L.hs){if(h.mk){if(h.i%2==0&&!h.kind&&!inGT(h.cx,h.cz,0))fence(h.cx,h.cz,h.ry,h.w,h.d);continue}if(h.i%2==0&&!h.kind&&!inGT(h.cx,h.cz,0))fence(")
 
 # ---- 4. draw them with the castle kit (lazy loaded, see-through when they block the camera)
 rep("return L})();\nconst DYNXO=",
-    "HS.concat(SB).forEach(o=>{if(o.mk)L.push([o.mk,o.cx,o.cz,o.ry,o.msc])});if(BLDK.b_well)PR.wells.forEach(a=>L.push(['b_well',a[0],a[1],0,.8]));if(BLDK.b_stall)PR.stalls.forEach(a=>L.push(['b_stall',a[0],a[1],0,1.35]));return L})();\nconst DYNXO=")
+    "HS.concat(SB).forEach(o=>{if(o.mk)L.push([o.mk,o.cx,o.cz,o.ry,o.msc])});if(BLDK.b_well)PR.wells.forEach(a=>L.push(['b_well',a[0],a[1],0,.8]));if(BLDK.b_stall)PR.stalls.forEach(a=>L.push(['b_stall',a[0],a[1],0,1.35]));if(BLDK.b_fountain)PR.fount.forEach(a=>L.push(['b_fountain',a[0],a[1],0,1.75]));if(BLDK.b_lamp)PR.lamps.forEach(a=>L.push(['b_lamp',a[0],a[1],((a[0]*7+a[1]*3)|0)%4*1.5708,.65]));if(BLDK.b_crates)SB.forEach(o=>{if(o.k!='shop'||!o.mk)return;const c=Math.cos(o.ry),sn=Math.sin(o.ry);L.push(['b_crates',o.nx+c*1.7,o.nz-sn*1.7,o.ry,.7])});return L})();\nconst DYNXO=")
 rep("{const HX={cwall:[.95,.2],ctower:[.41,.41],cgate:[.95,.25],castle:[.95,.84]},",
     "{const HX=Object.assign({cwall:[.95,.2],ctower:[.41,.41],cgate:[.95,.25],castle:[.95,.84]},BLDK),")
 rep("for(const c of CKIT){let m=MDL[c[0]],sm=null;",
