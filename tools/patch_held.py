@@ -45,7 +45,7 @@ test = os.environ.get('HELD_TEST')  # e.g. HELD_TEST=w_test maps every weapon to
 # per model: [total length in world units (the player is 1.7 tall), grip height as a fraction of model height,
 #             carry, tilt degrees, outward swing degrees]
 #   carry 'f': gripped across the palm, blade forward; tilt > 0 points it down
-#   carry 'a': like 'f' but the head's edge faces away from the body (axes, picks); tilt < 0 points the head up
+#   carry 'a': like 'f' but the head's edge faces the ground (axes, picks); tilt < 0 points the head up
 #   carry 'v': upright like a walking staff; tilt > 0 leans the top forward
 WCFG = {'w_sword': [1.1, .16, 'f', 25, 20], 'w_isword': [1.1, .16, 'f', 25, 20], 'w_rsword': [1.15, .16, 'f', 25, 20],
         'w_club': [.85, .1, 'f', 35, 20], 'w_bbat': [.95, .1, 'f', 35, 20],
@@ -65,7 +65,7 @@ HELD_JS = ("const WAV=new Set(" + json.dumps(avail) + "),WHT=" + json.dumps(WHT)
     # goes along local z, its flat (model z) against the palm (local x); then it tips down `d` degrees and swings out `o`.
     "window.FOFF=(ty,d,o)=>{const a=-d*Math.PI/180,c=Math.cos(a),s=Math.sin(a),b=(o||0)*Math.PI/180,cb=Math.cos(b),sb=Math.sin(b);"
     "const mul=(P,Q)=>{const M=[];for(let i=0;i<3;i++)for(let j=0;j<3;j++){let v=0;for(let k=0;k<3;k++)v+=P[i*3+k]*Q[k*3+j];M.push(v)}return M};"
-    "const A=ty=='a'?[-1,0,0, 0,0,1, 0,1,0]:ty=='v'?[1,0,0, 0,-1,0, 0,0,-1]:[0,0,1, 1,0,0, 0,1,0];"
+    "const A=ty=='a'?[0,0,-1, -1,0,0, 0,1,0]:ty=='v'?[1,0,0, 0,-1,0, 0,0,-1]:[0,0,1, 1,0,0, 0,1,0];"
     "return mul([cb,0,sb, 0,1,0, -sb,0,cb],mul([1,0,0, 0,c,-s, 0,s,c],A))};"
     "function heldKey(){let k=st.eq&&st.eq.weapon;if(act&&act.k=='tree')k=has('iaxe')?'iaxe':has('axe')?'axe':k;else if(act&&act.k=='rock')k=has('ipick')?'ipick':has('pick')?'pick':k;"
     "if(!k)return null;if(HTEST)return HTEST;const w='w_'+k;return WAV.has(w)?w:null}"
