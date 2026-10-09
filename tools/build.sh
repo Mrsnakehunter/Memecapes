@@ -11,6 +11,7 @@ python3 tools/patch_names.py >/dev/null
 python3 tools/patch_bld_models.py >/dev/null
 python3 tools/patch_ring_coins.py >/dev/null
 python3 tools/patch_bld_models.py >/dev/null
+python3 tools/patch_lights.py >/dev/null
 python3 tools/patch_held.py >/dev/null
 python3 tools/patch_icons.py >/dev/null
 python3 - <<'P'
