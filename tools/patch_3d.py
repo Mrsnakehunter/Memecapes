@@ -31,5 +31,9 @@ rep("const ps=st.orig?null:SPR[['','stick','shiba','wif','bonk','ghound'][st.pet
     "const ps=null,P3=st.orig?null:{1:['doge',.45],2:['fox',.45],3:['doge',.42],4:['bonkb',.34],5:['doge',.5]}[st.pet];"
     "if(P3){needMdl(P3[0]);const M3=MDL[P3[0]];if(M3&&M3.ok){qMdl(M3,PT.px+.5,0,PT.py+.5,PT.ry||0,P3[1],fp.v>.2?'Walking':null,(PT.ph||0)/4)}else dog(PT.px+.5,PT.py+.5,PT.ry,.5,st.pet==2?'#d9782e':'#e0a84a',st.pet==2?'#f6ead2':'#f3dfb0',fp.v>.2?Math.sin(PT.ph)*1.6:0,st.pet==2,0)}\nelse if(ps){")
 
+# a model whose download failed (slow phone, dropped connection) is retried after 8 seconds instead of staying a stand-in
+rep("fetch('models/'+k+'.json').then(r=>r.ok?r.json():null).then(d=>{if(d)regMdl(k,d)}).catch(()=>{})",
+    "fetch('models/'+k+'.json').then(r=>r.ok?r.json():null).then(d=>{if(d)regMdl(k,d);else setTimeout(()=>{delete MLOAD[k]},8000)}).catch(()=>{setTimeout(()=>{delete MLOAD[k]},8000)})")
+
 open(PATH, 'w', encoding='utf-8').write(h)
 print('3d-only patch applied')
