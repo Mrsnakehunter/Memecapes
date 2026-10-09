@@ -21,11 +21,11 @@ _Last updated: October 8, 2026 (evening)_
 - **Themed banks and general stores in every town** (15 new buildings).
 - **A 3D blacksmith forge and cooking range** in every town.
 - **New painted inventory pictures for all 99 items:** weapons, tools, food, gems, potions, masks, helmets, armour and capes.
-- **Weapons and tools in the character's hand:** bronze sword, bronze axe, bronze pickaxe, bonk club and swamp staff so far. They follow the hand through the walk and run animations.
+- **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
 
 ## In progress
 
-- **More held weapons:** iron sword, blue-steel sword, nail bat and the cyber staff are being modelled now; iron axe, iron pickaxe, the endless scroll and the kite shield are next.
+- Nothing right now. The preview is waiting for approval to go live.
 
 ## Built and waiting for a spot in the world
 
