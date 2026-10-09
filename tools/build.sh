@@ -1,9 +1,11 @@
 #!/bin/sh
 # rebuild preview.html + test.html from the live base; leaves play.html = live
 set -e
+# BASE = the game before the art and name patches (= play.html at commit e1df6ab)
+BASE=${BASE:-/home/claude/scratch/play_gt.html}
 cd /home/claude/memecapes
-[ -f /home/claude/scratch/play_gt.html ] || git show e1df6ab:play.html > /home/claude/scratch/play_gt.html
-cp /home/claude/scratch/play_gt.html play.html
+[ -f "$BASE" ] || git show e1df6ab:play.html > "$BASE"
+cp "$BASE" play.html
 python3 tools/patch_xp.py >/dev/null
 python3 tools/patch_names.py >/dev/null
 python3 tools/patch_bld_models.py >/dev/null
