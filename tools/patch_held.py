@@ -44,7 +44,7 @@ avail = sorted(os.path.basename(p)[:-5] for p in glob.glob('models/w_*.json'))
 test = os.environ.get('HELD_TEST')  # e.g. HELD_TEST=w_test maps every weapon to that model
 # per model: [total length in world units (the player is 1.7 tall), grip height as a fraction of model height]
 WCFG = {'w_sword': [1.1, .16], 'w_isword': [1.1, .16], 'w_rsword': [1.15, .16], 'w_club': [.85, .1],
-        'w_bbat': [.95, .1], 'w_bstaff': [1.6, .4], 'w_astaff': [1.6, .4], 'w_iscroll': [.5, .3],
+        'w_bbat': [.95, .1], 'w_bstaff': [1.6, .4], 'w_astaff': [1.6, .4], 'w_iscroll': [1.2, .35],
         'w_axe': [.9, .12], 'w_iaxe': [.9, .12], 'w_pick': [.9, .12], 'w_ipick': [.9, .12],
         'w_rshield': [.95, .5]}  # the shield sits on the left forearm, held at its middle
 import base64
