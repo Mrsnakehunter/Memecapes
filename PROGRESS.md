@@ -1,11 +1,12 @@
 # MemeCapes progress
 
-_Last updated: October 8, 2026 (night)_
+_Last updated: October 9, 2026 (early morning)_
 
 ## Where to look
 
-- **Live game:** [play.html](https://mrsnakehunter.github.io/Memecapes/play.html), the current public version with the full 3D world.
-- **Preview:** [preview.html](https://mrsnakehunter.github.io/Memecapes/preview.html), where new things land first. Right now it's the same as the live game.
+- **Website:** [memecapes.com](https://memecapes.com/), the game's own address (the old github.io link now sends you here).
+- **Live game:** [memecapes.com/play.html](https://memecapes.com/play.html), the current public version with the full 3D world.
+- **Preview:** [memecapes.com/preview.html](https://memecapes.com/preview.html), where new things land first. It is ahead of the live game right now (see "In progress" below).
 
 ## Live now
 
