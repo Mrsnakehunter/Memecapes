@@ -21,7 +21,7 @@ _Last updated: October 8, 2026 (night)_
 - **Every town re-spaced:** each building sits on a lot the size of its 3D model with two tiles of clear ground around it, roads lead to the doors, no overlaps anywhere. Gigachad Town got a fresh layout with the bank and store either side of the castle gate.
 - **Level 99 is now 20,000,000 XP** (same curve shape, our own numbers).
 - **Our own pet names:** Lumber Chonk, Pet Rock and Gull of Wall Street for the skilling pets, plus the five dog pups.
-- **Lamp posts** turn to face each other across the roads.
+- **Lamp posts** turn to face each other across the roads, and at night every lantern is a real light: it lights the ground, walls, props and players around it with a warm glow that fades with distance (no more flat circle on the ground).
 - **Themed banks and general stores in every town** (15 new buildings).
 - **A 3D blacksmith forge and cooking range** in every town.
 - **New painted inventory pictures for all 99 items:** weapons, tools, food, gems, potions, masks, helmets, armour and capes.
