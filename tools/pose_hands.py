@@ -50,5 +50,24 @@ for c in d['an']:
         hand.append([round(float(x), 4) for x in (S[RH] @ BR)[:3].reshape(-1)])
         handL.append([round(float(x), 4) for x in (S[LH] @ BL)[:3].reshape(-1)])
     c['f'], c['hand'], c['handL'] = nf, hand, handL
+# ---- curl the fingers into a loose fist (the hands are mittens; the fingers run along x in the bind pose)
+import base64
+CURL = float(sys.argv[3]) if len(sys.argv) > 3 else 95.0
+v = np.frombuffer(base64.b64decode(d['vb']), np.int16).reshape(-1, 3).astype(float) / 1000
+n = np.frombuffer(base64.b64decode(d['nb']), np.int8).reshape(-1, 3).astype(float) / 127
+jb = np.frombuffer(base64.b64decode(d['jb']), np.uint8).reshape(-1, 4)
+XK, LEN, YC = 0.735, 0.065, 1.283  # knuckle line, finger length, palm height in the bind pose
+for side, hj, fj in ((-1, RH, RF), (1, LH, LF)):
+    hand = ((jb == hj) | (jb == fj)).any(1)
+    xk = side * XK
+    frac = np.clip((v[:, 0] - xk) * side / LEN, 0, 1) * hand  # 0 at the knuckles, 1 at the tips
+    phi = -side * np.radians(CURL) * frac  # fingers fold toward the palm (-y)
+    c, s_ = np.cos(phi), np.sin(phi)
+    dx, dy = v[:, 0] - xk, v[:, 1] - YC
+    v[:, 0], v[:, 1] = xk + dx * c - dy * s_, YC + dx * s_ + dy * c
+    nx, ny = n[:, 0].copy(), n[:, 1].copy()
+    n[:, 0], n[:, 1] = nx * c - ny * s_, nx * s_ + ny * c
+d['vb'] = base64.b64encode(np.round(v * 1000).astype(np.int16).tobytes()).decode()
+d['nb'] = base64.b64encode(np.clip(np.round(n * 127), -127, 127).astype(np.int8).tobytes()).decode()
 json.dump(d, open(path, 'w'), separators=(',', ':'))
-print(path, 'hands turned', deg, 'degrees; clips:', [c['n'] for c in d['an']])
+print(path, 'hands turned', deg, 'degrees, fingers curled', CURL, 'degrees; clips:', [c['n'] for c in d['an']])
