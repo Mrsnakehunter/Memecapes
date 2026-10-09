@@ -91,7 +91,7 @@ rep("const SP={x:CA.gx+1,y:CA.y+CA.h+3};", "const SP={x:CA.gx+1,y:CA.y+CA.h+2};"
 
 # night glow and light pool sit at the lantern, not at the post's tile
 rep("PR.lamps.forEach(([x,z])=>{if(Math.abs(x-P.px)<32&&Math.abs(z-P.py)<32){YO=hgt(x,z);ball(x,2.05,z,.21,.26,.21,0,[2.4,2.1,1.2],6);ball(x,.02,z,1.3,.01,1.3,0,[.95,.85,.5],8)}});",
-    "PR.lamps.forEach(([x,z,yw,lk])=>{if(Math.abs(x-P.px)<32&&Math.abs(z-P.py)<32){const LO={b_lamp:[-.54,1.6,0],b_swamplamp:[-.61,1.9,.03],b_spacelamp:[0,2.41,.04]},o=LO[lk]||[0,2.05,0],c=Math.cos(yw||0),sn=Math.sin(yw||0),lx=x+o[0]*c+o[2]*sn,lz=z-o[0]*sn+o[2]*c;YO=hgt(lx,lz);ball(lx,o[1],lz,.15,.19,.15,0,[2.4,2.1,1.2],6);ball(lx,.02,lz,1.3,.01,1.3,0,[.95,.85,.5],8)}});")
+    "PR.lamps.forEach(([x,z,yw,lk])=>{if(Math.abs(x-P.px)<32&&Math.abs(z-P.py)<32){const LO={b_lamp:[-.44,1.48,0],b_swamplamp:[-.5,1.5,.03],b_spacelamp:[0,2.2,.02]},o=LO[lk]||[0,2.05,0],c=Math.cos(yw||0),sn=Math.sin(yw||0),lx=x+o[0]*c+o[2]*sn,lz=z-o[0]*sn+o[2]*c;YO=hgt(lx,lz);ball(lx,o[1],lz,.12,.16,.12,0,[2.4,2.1,1.2],6);ball(lx,.02,lz,1.3,.01,1.3,0,[.95,.85,.5],8)}});")
 
 # plaza props keep a tile of clear road around them (range, forge, stalls, well)
 rep("if(free(x,y,1,1)){put(x,y,'range');", "if(free(x-1,y-1,3,3)){put(x,y,'range');")
