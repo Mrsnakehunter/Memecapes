@@ -1,11 +1,11 @@
 # MemeCapes progress
 
-_Last updated: October 8, 2026 (evening)_
+_Last updated: October 8, 2026 (night)_
 
 ## Where to look
 
 - **Live game:** [play.html](https://mrsnakehunter.github.io/Memecapes/play.html), the current public version with the full 3D world.
-- **Preview:** [preview.html](https://mrsnakehunter.github.io/Memecapes/preview.html), where new things land first. It goes live once it's approved.
+- **Preview:** [preview.html](https://mrsnakehunter.github.io/Memecapes/preview.html), where new things land first. Right now it's the same as the live game.
 
 ## Live now
 
@@ -16,7 +16,11 @@ _Last updated: October 8, 2026 (evening)_
 - **Copper and tin rocks** use real 3D models, and the Meme Caves have a rocky mine entrance.
 - **The Meme Ring** and the **Meme Coin icons** for stacks of 1 up to 10M+.
 
-## In the preview (ready for approval)
+## Live now (shipped tonight)
+
+- **Every town re-spaced:** each building sits on a lot the size of its 3D model with two tiles of clear ground around it, roads lead to the doors, no overlaps anywhere. Gigachad Town got a fresh layout with the bank and store either side of the castle gate.
+- **Level 99 is now 20,000,000 XP** (same curve shape, our own numbers).
+- **Our own pet names:** Lumber Chonk, Pet Rock and Gull of Wall Street for the skilling pets, plus the five dog pups.
 
 - **Themed banks and general stores in every town** (15 new buildings).
 - **A 3D blacksmith forge and cooking range** in every town.
