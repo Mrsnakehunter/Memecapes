@@ -42,7 +42,9 @@ _Last updated: October 8, 2026 (night)_
 - **The Meme Telly:** the ring network only takes you to towns you have walked into once (Castle Gigachad is always home). Teleport tablets follow the same rule.
 - **New quest, The Grand Tour:** walk to all eight meme towns in order, easiest first. 2 quest points.
 - **Shops show pictures** of everything they sell (shop, forge, cape merchant).
-- **The Meme Exchange is now the Stock Market.** A Wall St. town around it is being designed.
+- **The Stock Market works like an exchange now:** six offer slots, buy and sell offers at your own price, offers that fill over time, a collect box, a price guide and a history tab. Until the game servers exist, the market itself takes the other side of every offer near the guide price; the same screens switch to player offers when the server arrives.
+- **Player-to-player trade screen:** both players add items and coins, both accept, both confirm, then the swap happens. A practice partner at the Stock Market broker lets you try it today.
+- A Wall St. town around the Stock Market is on the new land.
 - **No more flat pictures:** Pepe, Bonk Hounds, NPC Guards and Dogwifhat now use 3D models, and the dog pups are small 3D models too.
 
 ## Built and waiting for a spot in the world
