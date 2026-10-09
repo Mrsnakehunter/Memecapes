@@ -24,7 +24,7 @@ rep("#chat{position:fixed;left:0;bottom:env(safe-area-inset-bottom,0px);width:mi
     "#clog{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#4a3d2b #0000;padding-right:4px;display:flex;flex-direction:column}#cl{margin-top:auto;flex:none}"
     "#cin{display:flex;align-items:center;gap:4px;border-top:1px solid #4a3d2b66;padding-top:3px;margin-top:3px;flex:none}#cin b{color:#1a4fb0;white-space:nowrap}"
     "#cin input{flex:1;min-width:0;background:#fff6;border:1px solid #4a3d2b44;border-radius:3px;outline:0;font:13px Georgia,serif;color:#000;padding:2px 5px;user-select:text;-webkit-user-select:text}#cin input:focus{background:#fffa;border-color:#4a3d2b}"
-    ".pbub{position:fixed;display:flex;align-items:center;gap:5px;font:bold 15px \"Comic Sans MS\",\"Comic Neue\",cursive;pointer-events:none;transform:translate(-50%,-100%);z-index:4;text-shadow:1px 1px 2px #000,-1px -1px 2px #000;color:#ffe14d;max-width:300px;white-space:normal;text-align:left}"
+    ".pbub{position:fixed;display:flex;align-items:center;gap:5px;font:bold 15px \"Comic Sans MS\",\"Comic Neue\",cursive;pointer-events:none;transform:translate(-50%,-100%);z-index:4;text-shadow:1px 1px 2px #000,-1px -1px 2px #000;color:#ffe14d;max-width:300px;white-space:normal;text-align:center}"
     ".pcape{width:28px;height:28px;flex:none;border-radius:50%;filter:drop-shadow(0 2px 3px #000a);animation:pcf 1.6s ease-in-out infinite}@keyframes pcf{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}")
 rep("@media (max-width:640px){#chat{width:calc(100vw - 6px);bottom:calc(env(safe-area-inset-bottom,0px) + 276px);height:86px}",
     "@media (max-width:640px){#chat{width:calc(100vw - 6px);bottom:calc(env(safe-area-inset-bottom,0px) + 276px);height:104px}")
@@ -38,10 +38,12 @@ rep("const chat=[];function say(t,c){chat.push('<div style=\"color:'+(c||'#000')
     "const CTI=$('cti'),esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');function chatName(){return st.acct&&st.acct.name?st.acct.name:'Guest'}"
     "function sendChat(t){t=(t||'').replace(/\\s+/g,' ').trim().slice(0,80);if(!t)return;say('<b>'+esc(chatName())+':</b> '+esc(t),'#1a1aa0');pBubble(t);if(window.NET&&NET.chat)NET.chat(t)}"
     # the speech bubble over the player: the MemeCapes cape medallion floating beside the words, above the hat
-    "function pBubble(tx){for(let i=bubbles.length-1;i>=0;i--)if(bubbles[i].gb===P){bubbles[i].d.remove();bubbles.splice(i,1)}const d=document.createElement('div');d.className='pbub';const im=new Image();im.src=BRAND.logo;im.className='pcape';const sp=document.createElement('span');sp.textContent=tx;d.appendChild(im);d.appendChild(sp);document.body.appendChild(d);bubbles.push({gb:P,d,h:2.62,t:performance.now()+2500+40*tx.length})}"
+    "function pBubble(tx){for(let i=bubbles.length-1;i>=0;i--)if(bubbles[i].gb===P){bubbles[i].d.remove();bubbles.splice(i,1)}const d=document.createElement('div');d.className='pbub';d.style.display='none';const im=new Image();im.src=BRAND.logo;im.className='pcape';const sp=document.createElement('span');sp.textContent=tx;d.appendChild(im);d.appendChild(sp);document.body.appendChild(d);bubbles.push({gb:P,d,h:2.38,t:performance.now()+2500+40*tx.length})}"
     "CTI.addEventListener('keydown',e=>{e.stopPropagation();if(e.key=='Enter'){sendChat(CTI.value);CTI.value='';CTI.blur()}else if(e.key=='Escape'){CTI.value='';CTI.blur()}});"
     "CTI.addEventListener('focus',()=>{$('cnm').textContent=chatName()+':'});"
     "addEventListener('keydown',e=>{if(e.key=='Enter'&&started&&document.activeElement!==CTI&&!(e.target&&e.target.closest&&e.target.closest('input,textarea,select'))){e.preventDefault();CTI.focus()}});")
+# the name tag drops to just above the hat, and the chat bubble sits right on top of it
+rep("const q=proj(P.px+.5,2.35+hgt(P.px+.5,P.py+.5),P.py+.5);if(q){pnm.style.display='block';", "const q=proj(P.px+.5,2.12+hgt(P.px+.5,P.py+.5),P.py+.5);if(q){pnm.style.display='block';")
 # the bubble over the player sits above the name tag
 rep("const p=[g.px+.5-E[0],1.75+hgt(g.px+.5,g.py+.5)-E[1],g.py+.5-E[2]],zz=d3(p,Fw);if(zz<=0){b.d.style.display='none';continue}",
     "const p=[g.px+.5-E[0],(b.h||1.75)+hgt(g.px+.5,g.py+.5)-E[1],g.py+.5-E[2]],zz=d3(p,Fw);if(zz<=0){b.d.style.display='none';continue}")
