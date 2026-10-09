@@ -20,8 +20,7 @@ def rep(old, new, count=1):
 
 
 # ---- Meme Ring: draw the textured platform model instead of mushrooms
-# move it to the open middle of the square's east half (clear of the market stalls)
-rep("xo(...fN(CA.gx+9,CA.y+CA.h+15),'ring'", "xo(...fN(CA.gx+8,CA.y+CA.h+11),'ring'")
+# (its spot on the square is chosen in patch_bld_models.py)
 rep("ring:o=>{const x=o.x+.5,z=o.y+.5;for(let i=0;i<8;i++)",
     "ring:o=>{if(window.BLDK&&BLDK.b_memering)return;const x=o.x+.5,z=o.y+.5;for(let i=0;i<8;i++)")
 rep("HS.concat(SB).forEach(o=>{if(o.mk)L.push([o.mk,o.cx,o.cz,o.ry,o.msc])});",
