@@ -26,8 +26,8 @@ for f in sorted(glob.glob('models/b_*.json')):
 print('building models:', ', '.join(BLDK) or '(none)')
 BH = {'b_tavern': 5.4, 'b_bank': 4.4, 'b_store': 4.8, 'b_barracks': 4.0, 'b_kitchen': 4.2, 'b_chapel': 6.5, 'b_smith': 4.2, 'b_houseA': 5, 'b_houseB': 4.0, 'b_houseC': 5, 'b_houseD': 4.6, 'b_church': 6.5, 'b_windmill': 7.5, 'b_shrine': 3.6, 'b_rowA': 6, 'b_rowB': 6.5, 'b_exchange': 7, 'b_clock': 11, 'b_dhhall': 5, 'b_dhspire': 12, 'b_dhyard': 2.6, 'b_dhhouse': 5.5, 'b_monastery': 5.5, 'b_belltower': 10, 'b_hhcottage': 4.4, 'b_boarded': 4.4, 'b_manor': 7.5, 'b_crypt': 4, 'b_dome': 5.5, 'b_antenna': 12, 'b_gantry': 12, 'b_mlhab': 2.4, 'b_villa': 3.8, 'b_colosseum': 8, 'b_bath': 5.5, 'b_wlstore': 4.8, 'b_cottageA': 4.6, 'b_cottageB': 4.6, 'b_cottageC': 4.6, 'b_stiltA': 5, 'b_stiltB': 5, 'b_fishshack': 4.4, 'b_logcabin': 4.0, 'b_lodge': 4.6}
 for i in range(8):
-    BH['b_bk_t%d' % i] = 4.8
-    if i: BH['b_sh_t%d' % i] = 4.6
+    BH['b_bk_t%d' % i] = 5.2
+    if i: BH['b_sh_t%d' % i] = 4.8
 # town building sets (houses cycle; landmarks, bank and shop get one lot each)
 TOWNH = {0: ['b_cottageB', 'b_cottageC', 'b_cottageA'], 1: ['b_stiltA', 'b_stiltB', 'b_fishshack'], 2: ['b_rowA', 'b_rowB'], 3: ['b_dhhouse'], 4: ['b_boarded'], 5: ['b_hhcottage', 'b_logcabin', 'b_lodge'], 6: ['b_mlhab'], 7: ['b_villa']}
 TOWNL = {0: ['b_church', 'b_windmill'], 1: ['b_shrine'], 2: ['b_exchange', 'b_clock'], 3: ['b_dhhall', 'b_dhspire', 'b_dhyard'], 4: ['b_manor', 'b_crypt'], 5: ['b_monastery', 'b_belltower'], 6: ['b_dome', 'b_antenna', 'b_gantry'], 7: ['b_colosseum', 'b_bath']}
@@ -59,11 +59,13 @@ def rep(old, new, count=1):
 
 
 # ---- 1b. town generator: one lot per building, sized from its model (so the model fits its footprint)
-rep("TW.forEach(t=>{const cx=t.cx,cy=t.cy;", TABLE + "\nTW.forEach(t=>{const cx=t.cx,cy=t.cy;const TI=TW.indexOf(t),LT=LOTS[TI]||null,M=LT?2:1;")
+# each town rolls its own dice, so a tweak to one town never reshuffles the others (or the countryside)
+rep("TW.forEach(t=>{const cx=t.cx,cy=t.cy;", TABLE + "\nTW.forEach(t=>{const cx=t.cx,cy=t.cy;const TI=TW.indexOf(t),LT=LOTS[TI]||null,M=LT?2:1;sd=1013+TI*7919;")
+rep("if(free(x,y,1,1)){put(x,y,'chest');PR.chest=[x+.5,y+.5]}}});\nconst CA={x:CASTLE.x", "if(free(x,y,1,1)){put(x,y,'chest');PR.chest=[x+.5,y+.5]}}});sd=424242;\nconst CA={x:CASTLE.x")
 # roads never run through a building footprint (the door paths wander toward the town centre)
 rep("const mark=(x,y)=>{if(ok(x,y)){if(tile[y][x]==1)BR.push([x,y]);tile[y][x]=2}};", "const mark=(x,y)=>{if(ok(x,y)&&!ob[y][x]){if(tile[y][x]==1)BR.push([x,y]);tile[y][x]=2}};")
 rep("for(let j=y-1;j<y+fh+1&&g;j++)for(let i=x-1;i<x+fw+1;i++){if(!ok(i,j)||tile[j][i]==1||ob[j][i]){g=false;break}",
-    "for(let j=y-M;j<y+fh+M&&g;j++)for(let i=x-M;i<x+fw+M;i++){if(!ok(i,j)||(tile[j][i]==1&&!(LT&&LT.water))||ob[j][i]){g=false;break}")
+    "for(let j=y-M;j<y+fh+M&&g;j++)for(let i=x-M;i<x+fw+M;i++){if(!ok(i,j)||(tile[j][i]==1&&!(LT&&LT.water))||ob[j][i]||(LT&&i>=CASTLE.x-10&&i<=CASTLE.x+CASTLE.w+13&&j>=CASTLE.y+CASTLE.h-8&&j<=CASTLE.y+CASTLE.h+32)){g=false;break}")
 rep("fx=ccx+dvx*(dist+.5),fz=ccz+dvz*(dist+.5);\nsolidRect(x,y,fw,fh);", "fx=ccx+dvx*(dist+.5),fz=ccz+dvz*(dist+.5);if(tile[Math.floor(fz)][Math.floor(fx)]==1)continue;\nsolidRect(x,y,fw,fh);")
 OLD_HOUSES = ("[['shop'],['bank']].forEach(([k])=>{const s=spot(3,2,10,16,true);if(s){s.k=k;put(s.nt[0],s.nt[1],k);SB.push(s);wind(s.nt[0],s.nt[1]+ (Math.cos(s.ry)>.5?1:0),cx,cy,0,true)}});\n"
     "const SZ=[[3,2],[3,2],[4,2],[3,3],[4,3],[3,2]];\n"
@@ -71,7 +73,7 @@ OLD_HOUSES = ("[['shop'],['bank']].forEach(([k])=>{const s=spot(3,2,10,16,true);
     "wind(h.nt[0],h.nt[1],cx,cy,0,true)}")
 NEW_HOUSES = ("const mkLot=(k,Ht,minD,maxD,allowPath)=>{const e=BLDK[k];if(!e)return null;const s=Math.min(Ht/Math.max(.2,e[2]),11.6/(2*Math.max(e[0],e[1]))),w=Math.max(3,Math.ceil(2*e[0]*s+.3)),d=Math.max(2,Math.ceil(2*e[1]*s+.3)),o=spot(w,d,minD,maxD,allowPath);if(o){o.mk=k;o.msc=s}return o};"
     "const addH=(h)=>{h.rc=ROOFS[Math.floor(R()*ROOFS.length)];h.wc=WALLS[Math.floor(R()*WALLS.length)];h.door=(R()<.5?-1:1)*.9;h.chim=R()<.7;h.i=HS.length;HS.push(h);wind(h.nt[0],h.nt[1],cx,cy,0,true)};"
-    "if(LT){[['bank',LT.bank],['shop',LT.shop]].forEach(([k,mk])=>{const H=k=='bank'?4.8:4.6,s=mk?(mkLot(mk,H,9,18,false)||mkLot(mk,H,8,24,true)):spot(3,2,10,16,true);if(s){s.k=k;put(s.nt[0],s.nt[1],k);SB.push(s);wind(s.nt[0],s.nt[1]+(Math.cos(s.ry)>.5?1:0),cx,cy,0,true)}});"
+    "if(LT){[['bank',LT.bank],['shop',LT.shop]].forEach(([k,mk])=>{const H=k=='bank'?5.2:4.8,s=mk?(mkLot(mk,H,9,18,false)||mkLot(mk,H,8,24,true)):spot(3,2,10,16,true);if(s){s.k=k;put(s.nt[0],s.nt[1],k);SB.push(s);wind(s.nt[0],s.nt[1]+(Math.cos(s.ry)>.5?1:0),cx,cy,0,true)}});"
     "LT.lm.forEach(([k,Ht])=>{const h=mkLot(k,Ht,12,24,false)||mkLot(k,Ht,10,30,false);if(h){h.lm=1;addH(h);h.chim=false}});"
     "let hn=0;for(let i=0;i<120;i++){const [k,Ht]=LT.hs[hn%LT.hs.length],h=mkLot(k,Ht,10+R()*4,34,false);if(!h)continue;hn++;addH(h)}}"
     "else{" + OLD_HOUSES + "}")
