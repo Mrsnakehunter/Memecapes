@@ -77,6 +77,17 @@ NEW_HOUSES = ("const mkLot=(k,Ht,minD,maxD,allowPath)=>{const e=BLDK[k];if(!e)re
     "else{" + OLD_HOUSES + "}")
 rep(OLD_HOUSES, NEW_HOUSES)
 
+# plaza props keep a tile of clear road around them (range, forge, stalls, well)
+rep("if(free(x,y,1,1)){put(x,y,'range');", "if(free(x-1,y-1,3,3)){put(x,y,'range');")
+rep("if(free(x,y,2,1)){put(x,y,'forge');", "if(free(x-1,y-1,4,3)){put(x,y,'forge');")
+rep("if(free(x,y,1,1)){solidRect(x,y,1,1);PR.wells.push([x+.5,y+.5]);wc++}", "if(free(x-1,y-1,3,3)){solidRect(x,y,1,1);PR.wells.push([x+.5,y+.5]);wc++}")
+rep("if(free(x,y,2,1)&&free(x-1,y-1,4,3)===false||!free(x,y,2,1))continue;solidRect(x,y,2,1);PR.stalls.push([x+1,y+.5]);sc++}", "if(!free(x-2,y-2,6,5))continue;solidRect(x,y,2,1);PR.stalls.push([x+1,y+.5]);sc++}")
+
+# the Meme Ring is 3 tiles wide: give it a clear 3x3 spot
+rep("TW.forEach((t,i)=>xo(...fN(t.cx+4,t.cy+5),'ring',{nm:t.n,code:rc[i]}))",
+    "const fN3=(x,y)=>{for(let q=0;q<=12;q++)for(let dy=-q;dy<=q;dy++)for(let dx=-q;dx<=q;dx++){if(Math.max(Math.abs(dx),Math.abs(dy))!=q)continue;const a=x+dx,b=y+dy;let g=true;for(let j=-2;j<=2&&g;j++)for(let i=-2;i<=2;i++)if(!ok(a+i,b+j)||solid(a+i,b+j)||tile[b+j][a+i]==1){g=false;break}if(g)return[a,b]}return fN(x,y)};"
+    "TW.forEach((t,i)=>xo(...fN3(t.cx+4,t.cy+5),'ring',{nm:t.n,code:rc[i]}))")
+
 # ---- 2. assign model keys after the town layouts are final (just before mountains are placed)
 ASSIGN = r"""
 const DECO=window.DECO=[];
