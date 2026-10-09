@@ -25,6 +25,8 @@ _Last updated: October 8, 2026 (night)_
 - **Themed banks and general stores in every town** (15 new buildings).
 - **A 3D blacksmith forge and cooking range** in every town.
 - **New painted inventory pictures for all 99 items:** weapons, tools, food, gems, potions, masks, helmets, armour and capes.
+- **Chat box:** the message log scrolls back through the last 150 lines, and there's a chat line at the bottom (press Enter, type, Enter to send). What you say shows in the log and as a speech bubble over your head. Ready to hook up to the multiplayer server.
+- **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
 
 ## In progress
