@@ -87,8 +87,8 @@ rep("if(free(x,y,2,1)&&free(x-1,y-1,4,3)===false||!free(x,y,2,1))continue;solidR
 
 # the Meme Ring is 3 tiles wide: give it a clear 3x3 spot
 rep("TW.forEach((t,i)=>xo(...fN(t.cx+4,t.cy+5),'ring',{nm:t.n,code:rc[i]}))",
-    "const fN3=(x,y)=>{for(let q=0;q<=12;q++)for(let dy=-q;dy<=q;dy++)for(let dx=-q;dx<=q;dx++){if(Math.max(Math.abs(dx),Math.abs(dy))!=q)continue;const a=x+dx,b=y+dy;let g=true;for(let j=-2;j<=2&&g;j++)for(let i=-2;i<=2;i++)if(!ok(a+i,b+j)||solid(a+i,b+j)||tile[b+j][a+i]==1){g=false;break}if(g)return[a,b]}return fN(x,y)};"
-    "TW.forEach((t,i)=>xo(...fN3(t.cx+4,t.cy+5),'ring',{nm:t.n,code:rc[i]}))")
+    "const fN3=(x,y,cx,cy)=>{for(let q=0;q<=12;q++)for(let dy=-q;dy<=q;dy++)for(let dx=-q;dx<=q;dx++){if(Math.max(Math.abs(dx),Math.abs(dy))!=q)continue;const a=x+dx,b=y+dy;let g=true;for(let j=-2;j<=2&&g;j++)for(let i=-2;i<=2;i++)if(!ok(a+i,b+j)||solid(a+i,b+j)||tile[b+j][a+i]==1||(Math.abs(a+i-cx)<=2&&Math.abs(b+j-cy)<=2)){g=false;break}if(g)return[a,b]}return fN(x,y)};"
+    "TW.forEach((t,i)=>xo(...fN3(t.cx+5,t.cy+6,t.cx,t.cy),'ring',{nm:t.n,code:rc[i]}))")
 
 # ---- 2. assign model keys after the town layouts are final (just before mountains are placed)
 ASSIGN = r"""
