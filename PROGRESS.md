@@ -19,13 +19,13 @@ _Last updated: October 8, 2026 (night)_
 ## Live now (shipped tonight)
 
 - **Every town re-spaced:** each building sits on a lot the size of its 3D model with two tiles of clear ground around it, roads lead to the doors, no overlaps anywhere. Gigachad Town got a fresh layout with the bank and store either side of the castle gate.
-- **Level 99 is now 20,000,000 XP** (same curve shape, our own numbers).
+- **Skills go to level 100**, and level 100 is 20,000,000 XP (our own curve). Hitpoints starts at level 12. Capes of Accomplishment are for level 100 and cost 100,000 Meme Coins.
 - **Our own pet names:** Lumber Chonk, Pet Rock and Gull of Wall Street for the skilling pets, plus the five dog pups.
 - **Lamp posts** turn to face each other across the roads, and at night every lantern is a real light: it lights the ground, walls, props and players around it with a warm glow that fades with distance (no more flat circle on the ground).
 - **Themed banks and general stores in every town** (15 new buildings).
 - **A 3D blacksmith forge and cooking range** in every town.
 - **New painted inventory pictures for all 99 items:** weapons, tools, food, gems, potions, masks, helmets, armour and capes.
-- **Chat box:** the message log scrolls back through the last 150 lines, and there's a chat line at the bottom (press Enter, type, Enter to send). What you say shows in the log and as a speech bubble over your head. Ready to hook up to the multiplayer server.
+- **Chat box:** the message log scrolls back through the last 150 lines, and there's a chat line at the bottom (press Enter, type, Enter to send). What you say shows in the log and floats over your head next to a little MemeCapes cape medallion, so other players will see who's talking. Ready to hook up to the multiplayer server.
 - **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
 
