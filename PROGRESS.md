@@ -29,9 +29,14 @@ _Last updated: October 8, 2026 (night)_
 - **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
 
-## In progress
+## In progress (on preview.html, not live yet)
 
-- Nothing right now. Everything above is live.
+- **The MemeCape:** the real cape from the site, worn in 3D with the hood and crown over your head. 100,000,000 Meme Coins at the cape merchant.
+- **Quest cape:** the same cape without hood and crown, for finishing every quest. 100,000 Meme Coins.
+- **Capes of Accomplishment** now cost 1,000,000 Meme Coins.
+- "Welcome to MemeCapes" appears ten seconds after you enter.
+- The mouse wheel over the side panel scrolls the panel instead of zooming the camera.
+- New, unique skill cape pictures are coming.
 
 ## Built and waiting for a spot in the world
 
