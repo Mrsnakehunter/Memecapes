@@ -42,11 +42,13 @@ rep("for(const fr of wc.f){let mn=1e9,mx=-1e9;const P=fr.P;for(let i=2;i<P.lengt
 # ---- which model to hold
 avail = sorted(os.path.basename(p)[:-5] for p in glob.glob('models/w_*.json'))
 test = os.environ.get('HELD_TEST')  # e.g. HELD_TEST=w_test maps every weapon to that model
-# per model: [total length in world units (the player is 1.7 tall), grip height as a fraction of model height]
-WCFG = {'w_sword': [1.1, .16], 'w_isword': [1.1, .16], 'w_rsword': [1.15, .16], 'w_club': [.85, .1],
-        'w_bbat': [.95, .1], 'w_bstaff': [1.6, .4], 'w_astaff': [1.6, .4], 'w_iscroll': [1.2, .35],
-        'w_axe': [.9, .12], 'w_iaxe': [.9, .12], 'w_pick': [.9, .12], 'w_ipick': [.9, .12],
-        'w_rshield': [.95, .5]}  # the shield sits on the left forearm, held at its middle
+# per model: [total length in world units (the player is 1.7 tall), grip height as a fraction of model height,
+#             carry: 'f' = gripped in the fist with the blade forward (hammer carry), tilted down by the 4th value in degrees;
+#                    'v' = held upright like a walking staff]
+WCFG = {'w_sword': [1.1, .16, 'f', 25, 20], 'w_isword': [1.1, .16, 'f', 25, 20], 'w_rsword': [1.15, .16, 'f', 25, 20], 'w_club': [.85, .1, 'f', 30, 20],
+        'w_bbat': [.95, .1, 'f', 30, 20], 'w_bstaff': [1.6, .4, 'v'], 'w_astaff': [1.6, .4, 'v'], 'w_iscroll': [1.2, .35, 'v'],
+        'w_axe': [.9, .12, 'f', 30, 20], 'w_iaxe': [.9, .12, 'f', 30, 20], 'w_pick': [.9, .12, 'f', 30, 20], 'w_ipick': [.9, .12, 'f', 30, 20],
+        'w_rshield': [.95, .5, 's']}  # the shield sits on the left forearm, held at its middle
 import base64
 WHT = {}
 for k in avail:
@@ -54,17 +56,23 @@ for k in avail:
     d = json.load(open(f'models/{k}.json')); v = np.frombuffer(base64.b64decode(d['vb']), np.int16).reshape(-1, 3) / 1000
     WHT[k] = round(float(v[:, 1].max()), 3)
 HELD_JS = ("const WAV=new Set(" + json.dumps(avail) + "),WHT=" + json.dumps(WHT) + ",WCFG=" + json.dumps(WCFG) + ",HTEST=" + json.dumps(test) + ";"
-    "window.HOFF=window.HOFF||[1,0,0,0,-1,0,0,0,-1];window.SOFF=window.SOFF||[0,0,1,0,-1,0,1,0,0];"
+    "window.HOFF=window.HOFF||[1,0,0,0,-1,0,0,0,-1];window.SOFF=window.SOFF||[0,0,1,0,-1,0,1,0,0];window.PALM=window.PALM==null?.13:window.PALM;"
+    # fist carry. After tools/pose_hands.py the hands hang thumbs forward: local x = back of the hand (outward),
+    # local y = fingers (down), local z = thumb (forward). The handle lies across the palm, so the blade (model y)
+    # goes along local z, its flat (model z) against the palm (local x); then it tips down `d` degrees and swings out `o`.
+    "window.FOFF=(d,o)=>{const a=-d*Math.PI/180,c=Math.cos(a),s=Math.sin(a),b=(o||0)*Math.PI/180,cb=Math.cos(b),sb=Math.sin(b);"
+    "const mul=(P,Q)=>{const M=[];for(let i=0;i<3;i++)for(let j=0;j<3;j++){let v=0;for(let k=0;k<3;k++)v+=P[i*3+k]*Q[k*3+j];M.push(v)}return M};"
+    "return mul([cb,0,sb, 0,1,0, -sb,0,cb],mul([1,0,0, 0,c,-s, 0,s,c],[0,0,1, 1,0,0, 0,1,0]))};"
     "function heldKey(){let k=st.eq&&st.eq.weapon;if(act&&act.k=='tree')k=has('iaxe')?'iaxe':has('axe')?'axe':k;else if(act&&act.k=='rock')k=has('ipick')?'ipick':has('pick')?'pick':k;"
     "if(!k)return null;if(HTEST)return HTEST;const w='w_'+k;return WAV.has(w)?w:null}"
     "function shieldKey(){const k=st.eq&&st.eq.shield;if(!k)return null;const w='w_'+k;return WAV.has(w)?w:null}"
     "function qHold(PM,x,z,yaw,clip,t,wk,left){needMdl(wk);const WM=MDL[wk];if(!WM||!WM.ok)return;"
     "const c=PM.clips[clip]||PM.clips[clip=='Running'?'Walking':null],tr=left?'handL':'hand';let H=left?PM.idleHandL:PM.idleHand;"
     "if(c&&c[tr]){const nf=c[tr].length,ft=(t*c.fps)%nf,f0=Math.floor(ft),mx=ft-f0,A=c[tr][f0],B=c[tr][(f0+1)%nf];H=A.map((v,i)=>v+(B[i]-v)*mx)}if(!H)return;"
-    "const sP=MDLSC.player,O=left?SOFF:HOFF,R=[H[0],H[1],H[2],H[4],H[5],H[6],H[8],H[9],H[10]],T=[H[3]*sP,H[7]*sP,H[11]*sP];"
+    "const cf=WCFG[wk]||[1,.2,'f',25],O=left?SOFF:(cf[2]=='v'?HOFF:FOFF(cf[3]||0,cf[4]||0)),sP=MDLSC.player,R=[H[0],H[1],H[2],H[4],H[5],H[6],H[8],H[9],H[10]],T=[H[3]*sP,H[7]*sP,H[11]*sP];"
     "const M=[0,0,0,0,0,0,0,0,0];for(let i=0;i<3;i++)for(let j=0;j<3;j++){let s=0;for(let k=0;k<3;k++)s+=R[i*3+k]*O[k*3+j];M[i*3+j]=s*sP}"
-    "const cf=WCFG[wk]||[1,.2],ws=cf[0]/(WHT[wk]||2),gy=cf[1]*cf[0];"
-    "const ht=[T[0]-M[1]*gy,T[1]-M[4]*gy,T[2]-M[7]*gy];"
+    "const ws=cf[0]/(WHT[wk]||2),gy=cf[1]*cf[0];"
+    "const pm=(left?0:(PALM||0))*sP,ht=[T[0]-M[1]*gy+R[1]*pm,T[1]-M[4]*gy+R[4]*pm,T[2]-M[7]*gy+R[7]*pm];"
     "MQ.push({m:WM,x,y:YO,z,yaw,s:ws,a:WM.idle,b:WM.idle,mx:0,hr:new Float32Array([M[0],M[3],M[6],M[1],M[4],M[7],M[2],M[5],M[8]]),ht:new Float32Array(ht)})}"
     "function qHeld(PM,x,z,yaw,clip,t){const wk=heldKey();if(wk)qHold(PM,x,z,yaw,clip,t,wk,false);const sk=shieldKey();if(sk)qHold(PM,x,z,yaw,clip,t,sk,true)}\n")
 rep("function qMdl(m,x,y,z,yaw,s,clip,t,cut,sm,gh,pl){", HELD_JS + "function qMdl(m,x,y,z,yaw,s,clip,t,cut,sm,gh,pl){")
