@@ -37,6 +37,7 @@ _Last updated: October 8, 2026 (night)_
 - "Welcome to MemeCapes" appears ten seconds after you enter.
 - The mouse wheel over the side panel scrolls the panel instead of zooming the camera.
 - New, unique skill cape pictures are coming.
+- **No more flat pictures:** Pepe, Bonk Hounds, NPC Guards and Dogwifhat now use 3D models, and the dog pups are small 3D models too.
 
 ## Built and waiting for a spot in the world
 
