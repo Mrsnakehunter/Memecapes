@@ -1,6 +1,6 @@
 # MemeCapes progress
 
-_Last updated: October 9, 2026 (early morning)_
+_Last updated: October 9, 2026 (afternoon)_
 
 ## Where to look
 
@@ -43,8 +43,9 @@ _Last updated: October 9, 2026 (early morning)_
 - **The Meme Telly:** the ring network only takes you to towns you have walked into once (Castle Gigachad is always home). Teleport tablets follow the same rule.
 - **New quest, The Grand Tour:** walk to all eight meme towns in order, easiest first. 2 quest points.
 - **Shops show pictures** of everything they sell (shop, forge, cape merchant).
-- **The Stock Market works like an exchange now:** six offer slots, buy and sell offers at your own price, offers that fill over time, a collect box, a price guide and a history tab. Until the game servers exist, the market itself takes the other side of every offer near the guide price; the same screens switch to player offers when the server arrives.
-- **Player-to-player trade screen:** both players add items and coins, both accept, both confirm, then the swap happens. A practice partner at the Stock Market broker lets you try it today.
+- **The Stock Market works like an exchange now:** six offer tickets, buy and sell offers at your own price, offers that fill over time, a collect box, a price guide and a history tab. Until the game servers exist, the market itself takes the other side of every offer near the guide price; the same screens switch to player offers when the server arrives.
+- **Player-to-player trade screen:** both players add items and coins, both accept, both seal it, then the swap happens. If either side changes anything, both accepts reset and the changed side flashes. A practice partner at the Stock Market broker lets you try it today.
+- **The MemeCapes look for every screen:** crimson velvet and gold leaf, the website's Cinzel titles, the medallion in the header. The Stock Market has a live ticker tape of guide prices, tickets with inked BUY / SELL / FILLED stamps, and a price line for every item (its last 24 moves). The trade screen has two vaults, a fairness bar (what you give against what you get), a warning when you are giving far more than you get, and a red wax seal you press to finish. Shops, the bank, quests and the cape merchant all wear the same look.
 - A Wall St. town around the Stock Market is on the new land.
 - **No more flat pictures:** Pepe, Bonk Hounds, NPC Guards and Dogwifhat now use 3D models, and the dog pups are small 3D models too.
 
