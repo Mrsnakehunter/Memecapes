@@ -20,6 +20,7 @@ python3 tools/patch_capes.py >/dev/null
 python3 tools/patch_3d.py >/dev/null
 python3 tools/patch_travel.py >/dev/null
 python3 tools/patch_world.py >/dev/null
+python3 tools/patch_market.py >/dev/null
 python3 - <<'P'
 import re;h=open('play.html').read();s=re.findall(r'<script>([\s\S]*?)</script>',h);open('/tmp/x.js','w').write(max(s,key=len))
 P
