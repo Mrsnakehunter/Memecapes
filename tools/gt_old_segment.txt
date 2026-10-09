@@ -1,0 +1,23 @@
+// north row, along the castle wall: barracks, bank, general store, tavern (2-4 tile gaps)
+shopB('bank',g-8,Y+2,N);shopB('shop',g+6,Y+2,N);
+hs(g-17,Y+1,5,3,N,'#cfc8b0','#5a5a6a','barracks','#c23a3a',0);
+hs(g+12,Y+1,5,3,N,'#e0c9a0','#8a4a2a','tavern','#e8b800',1);
+// west: blacksmith (forge in its yard), cottage, cook's kitchen across the west street
+hs(g-14,Y+5,4,3,E,'#c8c0b0','#4a4a4a','smith','#8a8a92',1);put(g-13,Y+9,'forge');put(g-12,Y+9,'forge');PR.forges.push([g-12,Y+9.5]);
+hs(GT.x0+1,Y+5,4,3,N,'#e6d5a4','#b5452f');pave(GT.x0+3,Y+8,GT.x0+3,Y+9);
+hs(g-14,Y+13,4,3,S,'#f0e6d0','#a83a5a','kitchen','#ffffff',1);put(g-10,Y+14,'range');PR.ranges.push([g-9.5,Y+14.5]);
+hs(GT.x0+1,Y+13,4,3,S,'#d9d2c0','#3a6f8f');
+// east: chapel facing the square, cottages along the east street
+hs(g+13,Y+5,5,4,Wd,'#ece8dc','#3a4a7a','chapel','#ffd23f',0);
+hs(g+20,Y+5,4,3,N,'#e0c9a0','#5a4a9a');pave(g+22,Y+8,g+22,Y+9);hs(g+14,Y+13,4,3,S,'#e6d5a4','#3f8f5a');hs(g+20,Y+13,4,3,S,'#d8c8a0','#b5452f');
+// south: houses on the south lane, then two pairs along the main road
+hs(GT.x0+1,Y+18,4,3,S,'#e6d5a4','#a0602a');hs(GT.x0+8,Y+18,4,3,S,'#d8c8a0','#3f8f5a');hs(g+12,Y+18,4,3,S,'#e6d5a4','#a83a5a');hs(g+19,Y+18,4,3,S,'#cfc8b0','#8a4a2a');
+hs(g-4,Y+21,4,3,E,'#e6d5a4','#8a4a2a');hs(g-4,Y+27,4,3,E,'#cfc8b0','#3a6f8f');hs(g+4,Y+21,4,3,Wd,'#e0c9a0','#b5452f');hs(g+4,Y+27,4,3,Wd,'#d9d2c0','#5a4a9a');
+// farm plots (walkable crops) in the south-west and south-east corners
+for(let y=Y+23;y<=GT.y1-1;y++)for(let x=GT.x0+1;x<=GT.x0+12;x++)if(!ob[y][x]&&tile[y][x]==0&&(x-GT.x0)%5!=0)PR.crops.push([x,y,(y-Y)%2]);
+for(let y=Y+23;y<=GT.y1-1;y++)for(let x=GT.x1-12;x<=GT.x1-1;x++)if(!ob[y][x]&&tile[y][x]==0&&(x-GT.x1)%5!=0)PR.crops.push([x,y,(x+y)%2]);
+// market square: a well, four stalls, lamps; town sign by the gate
+solidRect(g+1,Y+10,1,1);PR.wells.push([g+1.5,Y+10.5]);
+[[g-7,Y+7],[g-7,Y+14],[g+7,Y+7],[g+7,Y+14]].forEach(([x,y])=>{solidRect(x,y,2,1);PR.stalls.push([x+1,y+.5])});
+[[g-11,Y+5],[g+12,Y+5],[g-11,Y+16],[g+12,Y+16],[g-1,Y+20],[g+3,Y+20],[g-1,Y+26],[g+3,Y+26],[g-1,Y+31],[g+3,Y+31],[GT.x0+2,Y+11],[GT.x1-2,Y+11]].forEach(([x,y])=>{if(ok(x,y)&&!ob[y][x])PR.lamps.push([x+.5,y+.5])});
+solidRect(g-3,Y+3,1,1);PR.signs.push([g-2.5,Y+3.5,'Gigachad Town'])}
