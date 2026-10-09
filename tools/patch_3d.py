@@ -35,5 +35,10 @@ rep("const ps=st.orig?null:SPR[['','stick','shiba','wif','bonk','ghound'][st.pet
 rep("fetch('models/'+k+'.json').then(r=>r.ok?r.json():null).then(d=>{if(d)regMdl(k,d)}).catch(()=>{})",
     "fetch('models/'+k+'.json').then(r=>r.ok?r.json():null).then(d=>{if(d)regMdl(k,d);else setTimeout(()=>{delete MLOAD[k]},8000)}).catch(()=>{setTimeout(()=>{delete MLOAD[k]},8000)})")
 
+# the six original meme monsters never had a kind on their record, so no 3D model was ever picked for them
+rep("const SZ=[{k:'doge',h:1.9,d:1},", "['doge','shiba','chill','pepe','wif','giga'].forEach((k,i)=>{if(MT[i]&&!MT[i].k)MT[i].k=k});const SZ=[{k:'doge',h:1.9,d:1},")
+rep("'k:pepe':'frogw','k:bonk':'bonkb','k:guard':'knight','k:wif':'doge'},MSK={bonk:.62,wif:.9},",
+    "'k:pepe':'frogw','k:bonk':'bonkb','k:guard':'knight','k:wif':'doge','k:chill':'doge'},MSK={bonk:.62,wif:.9,chill:.95},")
+
 open(PATH, 'w', encoding='utf-8').write(h)
 print('3d-only patch applied')
