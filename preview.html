@@ -65,7 +65,7 @@ let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
 if(!st.qs||st.qs.length<4)st.qs=[st.q||0,0,0,0];if(!st.qc||st.qc.length<4)st.qc=[st.qk||0,0,0,0];['str','def','pr','ag','sl','fm','fa','cn'].forEach(k=>{if(st.xp[k]==null)st.xp[k]=0});if(st.pp==null)st.pp=1;if(st.spec==null)st.spec=100;if(!st.pron)st.pron=[];st.cave=null;st.specOn=0;if(st.cs==null)st.cs=0;if(st.scape==null)st.scape=0;if(!st.eq)st.eq={};if(!st.hp10){if((st.xp.hp||0)<1154)st.xp.hp=(st.xp.hp||0)+1154;st.hp10=1}if(st.exToday==null)st.exToday=0;
 const save=()=>{try{localStorage.setItem('ms4',JSON.stringify(st))}catch(e){}};
-const XT=[0];{let p=0;for(let l=1;l<99;l++){p+=Math.floor(l+300*Math.pow(2,l/7));XT.push(Math.floor(p/4))}}
+const XT=[0];{let p=0;for(let l=1;l<99;l++){p+=Math.floor(l+300*Math.pow(2,l/7));XT.push(Math.floor(p/2.6068862))}}
 const lvl=x=>{let l=1;while(l<99&&x>=XT[l])l++;return l};
 const NM={at:'Attack',str:'Strength',def:'Defence',hp:'Hitpoints',pr:'Prayer',wc:'Woodcutting',mi:'Mining',fi:'Fishing',ck:'Cooking',sm:'Smithing',fm:'Firemaking',ag:'Agility',sl:'Slayer',fa:'Farming',cn:'Construction'},hpMax=()=>lvl(st.xp.hp),combatLvl=()=>Math.floor(.25*(lvl(st.xp.def)+lvl(st.xp.hp)+Math.floor(lvl(st.xp.pr||0)/2))+.325*(lvl(st.xp.at)+lvl(st.xp.str)));
 const flow=t=>{st.flow.unshift(t);st.flow.length=Math.min(st.flow.length,8)};
@@ -694,8 +694,8 @@ function killMob(gb){const mt=MT[gb.t];gb.dead=tickN+(gb.minion?1e9:mt.boss?400:
 const q=pay(mt.d[0]+Math.floor(Math.random()*(mt.d[1]-mt.d[0]+1)),mt.n+' drop');let msg='You defeat '+mt.n+' and get '+q+' Meme Coins';
 if(gb.stolen){const b=pay(gb.stolen,'stolen coins returned');msg+=', plus '+b+' stolen back';gb.stolen=0}say(msg+'.','#a60');let lost=0;
 (mt.lt||[]).forEach(([k,pr])=>{if(Math.random()<pr){if(cap()>0){st.inv.push(k);const r=ITM[k]?ITM[k][4]:0;if(r>=2)clog(k);say((r>=3?'RARE DROP: ':r>=2?'Uncommon drop: ':'Loot: ')+IN[k],r>=3?'#a02bd0':r>=2?'#1a4fb0':'#555')}else lost=1}});if(lost)say('Your bag is full, so some loot was lost.','#c00');
-if(mt.pet&&!st.pet&&Math.random()<mt.pet[1]){st.pet=mt.pet[0];clog('pet'+st.pet);say("You have a funny feeling like you're being followed.",'#e6398f')}
-if((gb.t<2||gb.t==4)&&!st.pet&&Math.random()<(gb.t==4?.06:.04)){st.pet=gb.t==4?3:gb.t+1;clog('pet'+st.pet);say("You have a funny feeling like you're being followed.",'#e6398f')}
+if(mt.pet&&!st.pet&&Math.random()<mt.pet[1]){st.pet=mt.pet[0];clog('pet'+st.pet);say("Something small scurries after you. Looks like you have a pet!",'#e6398f')}
+if((gb.t<2||gb.t==4)&&!st.pet&&Math.random()<(gb.t==4?.06:.04)){st.pet=gb.t==4?3:gb.t+1;clog('pet'+st.pet);say("Something small scurries after you. Looks like you have a pet!",'#e6398f')}
 st.kc=st.kc||{};st.kc[gb.t]=(st.kc[gb.t]||0)+1;st.tk=(st.tk||0)+1;if(gb.specd)evn('speck');if(mt.sp=='stun'&&!gb.stunP)evn('nostun');if(mt.sp=='steal'&&!gb.stoleEver)evn('nosteal');if(mt.sp=='ratio'&&!gb.ratiod)evn('noratio');if(mt.boss&&!gb.ate)evn('loreat');
 if(st.slay&&st.slay.left>0&&gb.t==st.slay.t){st.slay.left--;addXp('sl',mt.hp);if(st.slay.left==0){st.spts=(st.spts||0)+2;st.stasks=(st.stasks||0)+1;evn('slay');say("You've completed your task! Return to a Slayer master for a new one.",'#0a0')}else if(st.slay.left%5==0)say("You're assigned to kill "+MT[st.slay.t].n+"s; only "+st.slay.left+" more to go.")}
 if(mt.lv>=20&&Math.random()<.5&&cap()>0)st.inv.push('bbones');if(mt.lv>=2&&!has('clue')&&!st.clue&&!(st.bk||[]).some(e=>e.k=='clue'&&e.n>0)&&Math.random()<1/50&&cap()>0){st.inv.push('clue');say('A clue scroll! Read it to start a Treasure Trail.','#a60')}if(Math.random()<1/20&&cap()>0)st.inv.push(['spot','sonion','scab','stom'][Math.floor(Math.random()*4)]);caCheck();questKill(gb);ui()}
@@ -763,11 +763,11 @@ const CAT=[['Easy',1],['Medium',2],['Hard',3],['Elite',4]],kcOf=n=>{const i=MT.f
 const CAL=[['Defeat a Wojak Wanderer',0,()=>kcOf('Wojak Wanderer')>0],['Defeat 25 memes',0,()=>(st.tk||0)>=25],['Defeat a meme with a special attack',0,()=>st.ev&&st.ev.speck],['Defeat a Bonk Hound without getting stunned',1,()=>st.ev&&st.ev.nostun],['Defeat a Clout Bandit before it steals from you',1,()=>st.ev&&st.ev.nosteal],['Defeat 10 different kinds of memes',1,()=>Object.keys(st.kc||{}).length>=10],['Defeat a Ratio Knight',2,()=>kcOf('Ratio Knight')>0],["Defeat a Ratio Knight without getting RATIO'd",2,()=>st.ev&&st.ev.noratio],['Defeat the Ratio Lord',2,()=>kcOf('Ratio Lord')>0],['Defeat the Ratio Lord without eating',3,()=>st.ev&&st.ev.loreat],['Beat the Meme Caves',3,()=>st.ev&&st.ev.caves],['Defeat 250 memes',3,()=>(st.tk||0)>=250]];
 function caCheck(){CAL.forEach((c,i)=>{if((st.cad||[]).includes(i))return;if(c[2]()){(st.cad=st.cad||[]).push(i);say("Congratulations, you've completed "+(c[1]==3?'an elite':c[1]==0?'an easy':'a '+CAT[c[1]][0].toLowerCase())+' combat task: '+c[0]+'.','#c77dff')}})}
 const caPts=()=>(st.cad||[]).reduce((a,i)=>a+CAT[CAL[i][1]][1],0);
-const PETN=['','Doge pup','Shiba pup','WIF pup','Bonk Hound pup','Golden Hound pup','Beaver','Rock golem','Heron'];
+const PETN=['','Doge pup','Shiba pup','WIF pup','Bonk Hound pup','Golden Hound pup','Lumber Chonk','Pet Rock','Gull of Wall Street'];
 function CLCATS(){const mon=[...new Set(MT.flatMap(m=>(m.lt||[]).map(x=>x[0])).filter(k=>ITM[k]&&ITM[k][4]>=2))];return[['Monster drops',mon],['Pets',PETN.slice(1).map((n,i)=>'pet'+(i+1))],['Clue scrolls',['casket','clhat','clcape']],['Minigames and bosses',['mcape','crate','sdust']],['Diaries',['lamp5','lamp15']]]}
 const CLALL=()=>CLCATS().flatMap(c=>c[1]),clNm=k=>k.startsWith('pet')?PETN[+k.slice(3)]:IN[k];
 const clog=k=>{if(!st.cl)st.cl={};const n=!st.cl[k];st.cl[k]=(st.cl[k]||0)+1;if(n&&CLALL().includes(k))say('New item added to your collection log: '+clNm(k),'#ff9040')};
-function skillPet(p){if(Math.random()<1/1500){clog('pet'+p);if(!st.pet){st.pet=p;say("You have a funny feeling like you're being followed.",'#e6398f')}else say("You have a funny feeling like you would have been followed...",'#e6398f')}}
+function skillPet(p){if(Math.random()<1/1500){clog('pet'+p);if(!st.pet){st.pet=p;say("Something small scurries after you. Looks like you have a pet!",'#e6398f')}else say("Something small tries to follow you, but your pet shoos it off.",'#e6398f')}}
 // --- Bank
 function bankAdd(k,n){if(!st.bk)st.bk=[];const e=st.bk.find(x=>x.k==k);if(e)e.n+=n;else st.bk.push({k,n,t:bankTab})}
 const bankList=()=>(st.bk||[]).filter(e=>(bankTab==0||e.t==bankTab)&&(!bankQ||(IN[e.k]||'').toLowerCase().includes(bankQ)));
