@@ -24,10 +24,28 @@ for f in sorted(glob.glob('models/b_*.json')):
     v = np.frombuffer(base64.b64decode(d['vb']), np.int16).reshape(-1, 3) / 1000
     BLDK[k] = [round(float(np.abs(v[:, 0]).max()), 3), round(float(np.abs(v[:, 2]).max()), 3), round(float(v[:, 1].max()), 3)]
 print('building models:', ', '.join(BLDK) or '(none)')
-TABLE = 'const BLDK=' + json.dumps(BLDK, separators=(',', ':')) + ';'
+BH = {'b_tavern': 5.4, 'b_bank': 4.4, 'b_store': 4.8, 'b_barracks': 4.0, 'b_kitchen': 4.2, 'b_chapel': 6.5, 'b_smith': 4.2, 'b_houseA': 5, 'b_houseB': 4.0, 'b_houseC': 5, 'b_houseD': 4.6, 'b_church': 6.5, 'b_windmill': 7.5, 'b_shrine': 3.6, 'b_rowA': 6, 'b_rowB': 6.5, 'b_exchange': 7, 'b_clock': 11, 'b_dhhall': 5, 'b_dhspire': 12, 'b_dhyard': 2.6, 'b_dhhouse': 5.5, 'b_monastery': 5.5, 'b_belltower': 10, 'b_hhcottage': 4.4, 'b_boarded': 4.4, 'b_manor': 7.5, 'b_crypt': 4, 'b_dome': 5.5, 'b_antenna': 12, 'b_gantry': 12, 'b_mlhab': 2.4, 'b_villa': 3.8, 'b_colosseum': 8, 'b_bath': 5.5, 'b_wlstore': 4.8, 'b_cottageA': 4.6, 'b_cottageB': 4.6, 'b_cottageC': 4.6, 'b_stiltA': 5, 'b_stiltB': 5, 'b_fishshack': 4.4, 'b_logcabin': 4.0, 'b_lodge': 4.6}
+for i in range(8):
+    BH['b_bk_t%d' % i] = 4.8
+    if i: BH['b_sh_t%d' % i] = 4.6
+# town building sets (houses cycle; landmarks, bank and shop get one lot each)
+TOWNH = {0: ['b_cottageB', 'b_cottageC', 'b_cottageA'], 1: ['b_stiltA', 'b_stiltB', 'b_fishshack'], 2: ['b_rowA', 'b_rowB'], 3: ['b_dhhouse'], 4: ['b_boarded'], 5: ['b_hhcottage', 'b_logcabin', 'b_lodge'], 6: ['b_mlhab'], 7: ['b_villa']}
+TOWNL = {0: ['b_church', 'b_windmill'], 1: ['b_shrine'], 2: ['b_exchange', 'b_clock'], 3: ['b_dhhall', 'b_dhspire', 'b_dhyard'], 4: ['b_manor', 'b_crypt'], 5: ['b_monastery', 'b_belltower'], 6: ['b_dome', 'b_antenna', 'b_gantry'], 7: ['b_colosseum', 'b_bath']}
+TOWNS = {0: 'b_wlstore', **{i: 'b_sh_t%d' % i for i in range(1, 8)}}
+TOWNB = {i: 'b_bk_t%d' % i for i in range(8)}
+# house heights: every house in a town set is the same height so the street reads evenly
+HOUSE_H = {k: 4.5 for ks in TOWNH.values() for k in ks}
+HOUSE_H.update({'b_stiltA': 5, 'b_stiltB': 5, 'b_mlhab': 2.6, 'b_villa': 4.2, 'b_rowA': 5.5, 'b_rowB': 5.5, 'b_dhhouse': 5})
+LOTS = {}
+for i in range(8):
+    hs = [k for k in TOWNH[i] if k in BLDK]
+    if not hs: continue
+    LOTS[i] = {'lm': [[k, BH[k]] for k in TOWNL[i] if k in BLDK], 'bank': TOWNB[i] if TOWNB[i] in BLDK else None,
+               'shop': TOWNS[i] if TOWNS[i] in BLDK else None, 'hs': [[k, HOUSE_H.get(k, 4.5)] for k in hs], 'water': 1 if i == 1 else 0}
+TABLE = 'const BLDK=' + json.dumps(BLDK, separators=(',', ':')) + ';const BH=' + json.dumps(BH, separators=(',', ':')) + ',LOTS=' + json.dumps(LOTS, separators=(',', ':')) + ';' 
 
 if 'const BLDK=' in h:  # re-run: just refresh the table
-    h = re.sub(r'const BLDK=(window\.BLDK=)?\{[^;]*\};', lambda m: TABLE.replace('const BLDK=', 'const BLDK=' + (m.group(1) or '')), h, count=1)
+    h = re.sub(r'const BLDK=(window\.BLDK=)?\{[^;]*\};const BH=\{[^;]*\};', lambda m: TABLE.replace('const BLDK=', 'const BLDK=' + (m.group(1) or '')), h, count=1)
     open(PATH, 'w', encoding='utf-8').write(h)
     print('BLDK table refreshed.')
     raise SystemExit
@@ -40,18 +58,36 @@ def rep(old, new, count=1):
     h = h.replace(old, new)
 
 
+# ---- 1b. town generator: one lot per building, sized from its model (so the model fits its footprint)
+rep("TW.forEach(t=>{const cx=t.cx,cy=t.cy;", TABLE + "\nTW.forEach(t=>{const cx=t.cx,cy=t.cy;const TI=TW.indexOf(t),LT=LOTS[TI]||null,M=LT?2:1;")
+# roads never run through a building footprint (the door paths wander toward the town centre)
+rep("const mark=(x,y)=>{if(ok(x,y)){if(tile[y][x]==1)BR.push([x,y]);tile[y][x]=2}};", "const mark=(x,y)=>{if(ok(x,y)&&!ob[y][x]){if(tile[y][x]==1)BR.push([x,y]);tile[y][x]=2}};")
+rep("for(let j=y-1;j<y+fh+1&&g;j++)for(let i=x-1;i<x+fw+1;i++){if(!ok(i,j)||tile[j][i]==1||ob[j][i]){g=false;break}",
+    "for(let j=y-M;j<y+fh+M&&g;j++)for(let i=x-M;i<x+fw+M;i++){if(!ok(i,j)||(tile[j][i]==1&&!(LT&&LT.water))||ob[j][i]){g=false;break}")
+rep("fx=ccx+dvx*(dist+.5),fz=ccz+dvz*(dist+.5);\nsolidRect(x,y,fw,fh);", "fx=ccx+dvx*(dist+.5),fz=ccz+dvz*(dist+.5);if(tile[Math.floor(fz)][Math.floor(fx)]==1)continue;\nsolidRect(x,y,fw,fh);")
+OLD_HOUSES = ("[['shop'],['bank']].forEach(([k])=>{const s=spot(3,2,10,16,true);if(s){s.k=k;put(s.nt[0],s.nt[1],k);SB.push(s);wind(s.nt[0],s.nt[1]+ (Math.cos(s.ry)>.5?1:0),cx,cy,0,true)}});\n"
+    "const SZ=[[3,2],[3,2],[4,2],[3,3],[4,3],[3,2]];\n"
+    "for(let i=0;i<30;i++){const [w,d]=SZ[Math.floor(R()*SZ.length)],h=spot(w,d,9+R()*4,33,false);if(!h)continue;h.rc=ROOFS[Math.floor(R()*ROOFS.length)];h.wc=WALLS[Math.floor(R()*WALLS.length)];h.door=(R()<.5?-1:1)*(w>3?.9:.6);h.chim=R()<.7;h.i=HS.length;HS.push(h);\n"
+    "wind(h.nt[0],h.nt[1],cx,cy,0,true)}")
+NEW_HOUSES = ("const mkLot=(k,Ht,minD,maxD,allowPath)=>{const e=BLDK[k];if(!e)return null;const s=Math.min(Ht/Math.max(.2,e[2]),11.6/(2*Math.max(e[0],e[1]))),w=Math.max(3,Math.ceil(2*e[0]*s+.3)),d=Math.max(2,Math.ceil(2*e[1]*s+.3)),o=spot(w,d,minD,maxD,allowPath);if(o){o.mk=k;o.msc=s}return o};"
+    "const addH=(h)=>{h.rc=ROOFS[Math.floor(R()*ROOFS.length)];h.wc=WALLS[Math.floor(R()*WALLS.length)];h.door=(R()<.5?-1:1)*.9;h.chim=R()<.7;h.i=HS.length;HS.push(h);wind(h.nt[0],h.nt[1],cx,cy,0,true)};"
+    "if(LT){[['bank',LT.bank],['shop',LT.shop]].forEach(([k,mk])=>{const H=k=='bank'?4.8:4.6,s=mk?(mkLot(mk,H,9,18,false)||mkLot(mk,H,8,24,true)):spot(3,2,10,16,true);if(s){s.k=k;put(s.nt[0],s.nt[1],k);SB.push(s);wind(s.nt[0],s.nt[1]+(Math.cos(s.ry)>.5?1:0),cx,cy,0,true)}});"
+    "LT.lm.forEach(([k,Ht])=>{const h=mkLot(k,Ht,12,24,false)||mkLot(k,Ht,10,30,false);if(h){h.lm=1;addH(h);h.chim=false}});"
+    "let hn=0;for(let i=0;i<120;i++){const [k,Ht]=LT.hs[hn%LT.hs.length],h=mkLot(k,Ht,10+R()*4,34,false);if(!h)continue;hn++;addH(h)}}"
+    "else{" + OLD_HOUSES + "}")
+rep(OLD_HOUSES, NEW_HOUSES)
+
 # ---- 2. assign model keys after the town layouts are final (just before mountains are placed)
-ASSIGN = TABLE + r"""
+ASSIGN = r"""
 const DECO=window.DECO=[];
 {const GTK={tavern:'b_tavern',barracks:'b_barracks',smith:'b_smith',kitchen:'b_kitchen',chapel:'b_chapel'},GTH=['b_houseA','b_houseB','b_houseC','b_houseD'].filter(k=>!!BLDK[k]),
 TOWNH={0:['b_cottageB','b_cottageC','b_cottageA'],1:['b_stiltA','b_stiltB','b_fishshack'],2:['b_rowA','b_rowB'],3:['b_dhhouse'],4:['b_boarded'],5:['b_hhcottage','b_logcabin','b_lodge'],6:['b_mlhab'],7:['b_villa']},TOWNL={0:['b_church'],1:['b_shrine'],2:['b_exchange','b_clock'],3:['b_dhhall','b_dhspire','b_dhyard'],4:['b_manor','b_crypt'],5:['b_monastery','b_belltower'],6:['b_dome','b_antenna','b_gantry'],7:['b_colosseum','b_bath']},TOWNS={0:'b_wlstore',1:'b_sh_t1',2:'b_sh_t2',3:'b_sh_t3',4:'b_sh_t4',5:'b_sh_t5',6:'b_sh_t6',7:'b_sh_t7'},TOWNB={0:'b_bk_t0',1:'b_bk_t1',2:'b_bk_t2',3:'b_bk_t3',4:'b_bk_t4',5:'b_bk_t5',6:'b_bk_t6',7:'b_bk_t7'},has=k=>!!BLDK[k];let gi=0;const ti={};
-const BH={b_tavern:5.4,b_bank:4.4,b_store:4.8,b_barracks:4.0,b_kitchen:4.2,b_chapel:6.5,b_smith:4.2,b_houseA:5,b_houseB:4.0,b_houseC:5,b_houseD:4.6,b_church:6.5,b_windmill:7.5,b_shrine:3.6,b_rowA:6,b_rowB:6.5,b_exchange:7,b_clock:11,b_dhhall:5,b_dhspire:12,b_dhyard:2.6,b_dhhouse:5.5,b_monastery:5.5,b_belltower:10,b_hhcottage:4.4,b_boarded:4.4,b_manor:7.5,b_crypt:4,b_dome:5.5,b_antenna:12,b_gantry:12,b_mlhab:2.4,b_villa:3.8,b_colosseum:8,b_bath:5.5,b_wlstore:4.8,b_cottageA:4.6,b_cottageB:4.6,b_cottageC:4.6,b_stiltA:5,b_stiltB:5,b_fishshack:4.4,b_logcabin:4.0,b_lodge:4.6,b_bk_t0:4.6,b_bk_t1:4.6,b_bk_t2:4.6,b_bk_t3:4.6,b_bk_t4:4.6,b_bk_t5:4.6,b_bk_t6:4.6,b_bk_t7:4.6,b_sh_t1:4.4,b_sh_t2:4.4,b_sh_t3:4.4,b_sh_t4:4.4,b_sh_t5:4.4,b_sh_t6:4.4,b_sh_t7:4.4},
-TIGHT={b_mlhab:1},fit=(o,k)=>{const e=BLDK[k];o.mk=k;const byH=(BH[k]||4.4)/Math.max(.2,e[2]),byF=(TIGHT[k]?Math.min:Math.max)(o.w/(2*e[0]),o.d/(2*e[1]));o.msc=Math.min(Math.max(byH,byF*1.05),byF*1.9)};
+const TIGHT={b_mlhab:1},fit=(o,k)=>{const e=BLDK[k];o.mk=k;const byH=(BH[k]||4.4)/Math.max(.2,e[2]),byF=(TIGHT[k]?Math.min:Math.max)(o.w/(2*e[0]),o.d/(2*e[1]));o.msc=Math.min(Math.max(byH,byF*1.05),byF*1.9)};
 SB.forEach(o=>{if(inGT(o.cx,o.cz,1)){const k=o.k=='bank'?'b_bank':'b_store';if(has(k))fit(o,k)}});
 HS.forEach(o=>{if(inGT(o.cx,o.cz,1)){const k=o.kind?GTK[o.kind]:GTH[gi++%Math.max(1,GTH.length)];if(k&&has(k))fit(o,k);return}
-let bt=-1,bd=1e9;TW.forEach((t,i)=>{const dd=Math.hypot(o.cx-t.cx,o.cz-t.cy);if(dd<bd){bd=dd;bt=i}});const set=(TOWNH[bt]||[]).filter(has);if(set.length&&bd<40){ti[bt]=(ti[bt]||0)+1;fit(o,set[ti[bt]%set.length])}});
+if(o.mk)return;let bt=-1,bd=1e9;TW.forEach((t,i)=>{const dd=Math.hypot(o.cx-t.cx,o.cz-t.cy);if(dd<bd){bd=dd;bt=i}});const set=(TOWNH[bt]||[]).filter(has);if(set.length&&bd<40){ti[bt]=(ti[bt]||0)+1;fit(o,set[ti[bt]%set.length])}});
 let dsd=91573;const drn=()=>(dsd=(dsd*16807)%2147483647)/2147483647;const deco=(k,cx,cy,n,r0,r1,Ht,fp,out,gt)=>{if(!has(k))return;let placed=0;for(let t=0;t<Math.max(600,n*80)&&placed<n;t++){const a=drn()*6.283,rr=r0+drn()*(r1-r0),x=Math.round(cx+Math.cos(a)*rr),y=Math.round(cy+Math.sin(a)*rr);let okk=true;for(let j=y-1;j<=y+fp&&okk;j++)for(let i=x-1;i<=x+fp;i++){if(!ok(i,j)||tile[j][i]!=0||ob[j][i]||(!gt&&inGT(i,j,1))||inCastle(i,j,4)||(out&&inTown(i,j,4))){okk=false;break}}if(!okk)continue;solidRect(x,y,fp,fp);DECO.push([k,x+fp/2,y+fp/2,drn()*6.283,Ht/Math.max(.2,BLDK[k][2])]);placed++}};const T4=TW[4],T1=TW[1],T6=TW[6];deco('b_graves',T4.cx,T4.cy,4,6,22,1.6,2);deco('b_deadtree',T4.cx,T4.cy,6,8,30,4.5,1);deco('b_gallows',T4.cx,T4.cy,1,6,16,3.4,2);deco('b_totem',T1.cx,T1.cy,3,6,20,3.4,1);deco('b_capsule',T6.cx,T6.cy,1,14,26,1.6,2);deco('b_tent',CAMP+70,CAMP+70,8,20,60,2.2,2,1);deco('b_hbridge',TW[5].cx,TW[5].cy,1,8,30,1.6,2);const T7=TW[7];deco('b_forum',T7.cx,T7.cy,2,8,22,2.6,2);deco('b_aqueduct',T7.cx,T7.cy,2,10,30,2.4,2);deco('b_boulderL',192,192,40,25,185,2.2,2,1);deco('b_log',192,192,30,25,185,0.9,2,1);deco('b_stump',192,192,30,25,185,0.8,1,1);deco('b_moonrock',TW[6].cx,TW[6].cy,6,6,34,1.6,1);deco('b_rocksS',192,192,30,25,185,0.9,1,1);deco('b_mushroom',192,192,30,25,185,0.9,1,1);deco('b_reeds',TW[1].cx,TW[1].cy,12,4,36,1.5,1);deco('b_cactus',TW[7].cx,TW[7].cy,5,10,40,2.4,1);deco('b_snowrock',TW[5].cx,TW[5].cy,8,8,40,1.6,1);deco('b_boulderM',192,192,60,25,185,1.2,1,1);deco('b_campfire',CAMP+70,CAMP+70,2,6,40,1.3,2,1);deco('b_roundtent',CAMP+70,CAMP+70,3,12,55,2.8,2,1);deco('b_sacks',CAMP+70,CAMP+70,3,8,50,1.0,1,1);deco('b_sacks',TW[0].cx,TW[0].cy,3,5,16,1.0,1);deco('b_plinth',TW[2].cx,TW[2].cy,2,5,16,1.5,1);deco('b_plinth',T7.cx,T7.cy,2,5,16,1.5,1);deco('b_scarecrow',134,131,1,3,6,2.2,1,0,1);deco('b_lander',T6.cx,T6.cy,1,10,24,3.0,2);deco('b_crater',T6.cx,T6.cy,4,8,36,0.7,2);deco('b_minecart',300,297,1,3,7,1.3,1);deco('b_timber',300,297,1,3,7,2.4,1);deco('b_minecart',104,76,2,3,16,1.3,1);deco('b_timber',104,76,1,3,14,2.4,1);deco('b_vspire',T4.cx,T4.cy,1,8,20,6,2);deco('b_dwgate',120,71,1,0,6,2.8,3);DECO.forEach(d=>{if(d[0]=='b_dwgate')d[3]=0});if(has('b_lily')){let n=0;for(let t=0;t<1500&&n<16;t++){const a=drn()*6.283,rr=2+drn()*34,x=Math.round(T1.cx+Math.cos(a)*rr),y=Math.round(T1.cy+Math.sin(a)*rr);if(!ok(x,y)||tile[y][x]!=1||ob[y][x])continue;if(DECO.some(q=>q[0]=='b_lily'&&Math.hypot(q[1]-x,q[2]-y)<2.5))continue;DECO.push(['b_lily',x+.5,y+.5,drn()*6.283,.7,40,null,-.1]);n++}}deco('b_haystack',134,131,2,4,9,1.7,2,0,1);deco('b_haystack',174,205,3,4,11,1.7,2);deco('b_scarecrow',174,205,1,5,10,2.2,1);deco('b_column',T7.cx,T7.cy,4,8,26,2.6,1);deco('b_brokenwall',T7.cx,T7.cy,2,10,28,1.6,2);deco('b_brokenwall',192,192,8,25,185,1.6,2,1);deco('b_column',192,192,4,25,185,2.4,1,1);
-const near=(o,i)=>Math.hypot(o.cx-TW[i].cx,o.cz-TW[i].cy);Object.entries(TOWNL).forEach(([i,ks])=>ks.forEach(k=>{if(!has(k))return;let b=null,bs=-1;HS.forEach(o=>{if(o.lm||inGT(o.cx,o.cz,1)||near(o,i)>20)return;const sc=o.w*o.d-near(o,i)*.05;if(sc>bs){bs=sc;b=o}});if(b){fit(b,k);b.lm=1}}));if(has('b_windmill')){let b=null,bd=-1;HS.forEach(o=>{const d=near(o,0);if(o.mk=='b_church'||inGT(o.cx,o.cz,1)||d>30)return;if(d>bd){bd=d;b=o}});if(b)fit(b,'b_windmill')}Object.entries(TOWNS).forEach(([i,k])=>{if(!has(k))return;SB.forEach(o=>{if(o.k=='shop'&&!inGT(o.cx,o.cz,1)&&near(o,i)<40)fit(o,k)})});Object.entries(TOWNB).forEach(([i,k])=>{if(!has(k))return;SB.forEach(o=>{if(o.k=='bank'&&!inGT(o.cx,o.cz,1)&&near(o,i)<40)fit(o,k)})})}
+const near=(o,i)=>Math.hypot(o.cx-TW[i].cx,o.cz-TW[i].cy);Object.entries(TOWNL).forEach(([i,ks])=>ks.forEach(k=>{if(!has(k)||LOTS[i])return;let b=null,bs=-1;HS.forEach(o=>{if(o.lm||inGT(o.cx,o.cz,1)||near(o,i)>20)return;const sc=o.w*o.d-near(o,i)*.05;if(sc>bs){bs=sc;b=o}});if(b){fit(b,k);b.lm=1}}));if(has('b_windmill')&&!LOTS[0]){let b=null,bd=-1;HS.forEach(o=>{const d=near(o,0);if(o.mk=='b_church'||inGT(o.cx,o.cz,1)||d>30)return;if(d>bd){bd=d;b=o}});if(b)fit(b,'b_windmill')}Object.entries(TOWNS).forEach(([i,k])=>{if(!has(k))return;SB.forEach(o=>{if(o.k=='shop'&&!o.mk&&!inGT(o.cx,o.cz,1)&&near(o,i)<40)fit(o,k)})});Object.entries(TOWNB).forEach(([i,k])=>{if(!has(k))return;SB.forEach(o=>{if(o.k=='bank'&&!o.mk&&!inGT(o.cx,o.cz,1)&&near(o,i)<40)fit(o,k)})})}
 """
 rep("for(let y=4;y<H-4;y++)for(let x=4;x<W-4;x++){if(MTD(x,y)>1&&tile[y][x]==0",
     ASSIGN.strip('\n') + "\nfor(let y=4;y<H-4;y++)for(let x=4;x<W-4;x++){if(MTD(x,y)>1&&tile[y][x]==0")
