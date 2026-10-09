@@ -60,7 +60,7 @@ button{font:bold 12px Georgia,serif;background:#7a6640;color:#fff;border:2px sol
 <script>
 (()=>{
 const $=i=>document.getElementById(i);
-const W=384,H=384,CX=192,CY=192;
+let W=384,H=384;const CX=192,CY=192,W0=384,H0=384;
 let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:2201,ck:0,sm:0,str:0,def:0},inv:[],hp:12,run:0,en:100,flow:[]};
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
 if(!st.qs||st.qs.length<4)st.qs=[st.q||0,0,0,0];if(!st.qc||st.qc.length<4)st.qc=[st.qk||0,0,0,0];['str','def','pr','ag','sl','fm','fa','cn'].forEach(k=>{if(st.xp[k]==null)st.xp[k]=0});if(st.pp==null)st.pp=1;if(st.spec==null)st.spec=100;if(!st.pron)st.pron=[];st.cave=null;st.specOn=0;if(st.cs==null)st.cs=0;if(st.scape==null)st.scape=0;while(st.qs.length<5){st.qs.push(0);st.qc.push(0)}if(!st.vt)st.vt=[];if(!st.eq)st.eq={};if(!st.hp10){if((st.xp.hp||0)<1154)st.xp.hp=(st.xp.hp||0)+1154;st.hp10=1}if(!st.hp12){if((st.xp.hp||0)<2201)st.xp.hp=2201;if(st.hp<12)st.hp=12;st.hp12=1}if(st.exToday==null)st.exToday=0;
@@ -251,7 +251,7 @@ let dsd=91573;const drn=()=>(dsd=(dsd*16807)%2147483647)/2147483647;const deco=(
 const near=(o,i)=>Math.hypot(o.cx-TW[i].cx,o.cz-TW[i].cy);Object.entries(TOWNL).forEach(([i,ks])=>ks.forEach(k=>{if(!has(k)||LOTS[i])return;let b=null,bs=-1;HS.forEach(o=>{if(o.lm||inGT(o.cx,o.cz,1)||near(o,i)>20)return;const sc=o.w*o.d-near(o,i)*.05;if(sc>bs){bs=sc;b=o}});if(b){fit(b,k);b.lm=1}}));if(has('b_windmill')&&!LOTS[0]){let b=null,bd=-1;HS.forEach(o=>{const d=near(o,0);if(o.mk=='b_church'||inGT(o.cx,o.cz,1)||d>30)return;if(d>bd){bd=d;b=o}});if(b)fit(b,'b_windmill')}Object.entries(TOWNS).forEach(([i,k])=>{if(!has(k))return;SB.forEach(o=>{if(o.k=='shop'&&!o.mk&&!inGT(o.cx,o.cz,1)&&near(o,i)<40)fit(o,k)})});Object.entries(TOWNB).forEach(([i,k])=>{if(!has(k))return;SB.forEach(o=>{if(o.k=='bank'&&!o.mk&&!inGT(o.cx,o.cz,1)&&near(o,i)<40)fit(o,k)})})}
 for(let y=4;y<H-4;y++)for(let x=4;x<W-4;x++){if(MTD(x,y)>1&&tile[y][x]==0&&!ob[y][x]&&!inTown(x,y,2)&&!inCastle(x,y,6)&&!INCAVE(x,y)&&Math.hypot(x-86,y-42)>5)put(x,y,'mtn')}
 // ---- terrain relief: rolling hills, flat towns/castle/shores ----
-const HW=W+1,HG=new Float32Array(HW*(H+1)),DWt=new Int16Array(W*H).fill(999),sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};
+let HW=W+1,HG=new Float32Array(HW*(H+1)),DWt=new Int16Array(W*H).fill(999);const sm=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};
 const hash2=(x,y)=>{let h=x*374761393+y*668265263;h=(h^(h>>13))*1274126177;return((h^(h>>16))>>>0)/4294967295};
 const vnoise=(x,y)=>{const xi=Math.floor(x),yi=Math.floor(y),fx=x-xi,fy=y-yi,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy),a=hash2(xi,yi),b=hash2(xi+1,yi),c=hash2(xi,yi+1),d=hash2(xi+1,yi+1);return a+(b-a)*sx+(c-a)*sy+(a-b-c+d)*sx*sy};
 {const q=[];for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(tile[y][x]==1){DWt[y*W+x]=0;q.push(y*W+x)}
@@ -319,6 +319,54 @@ for(let y=CA.y-24;y<CA.y-2;y++){let x1=-1,x2=-1;for(let x=RVX-16;x<RVX+16;x++){i
 {const hx=CA.x+CA.w+5,hy=CA.y+CA.h-1;clr(hx-2,hy-2,hx+7,hy+5,1);xo(hx,hy,'hot',{hs:'chair',nm:'Chair space'});xo(hx+3,hy,'hot',{hs:'table',nm:'Table space'});xo(hx+6,hy,'hot',{hs:'shelf',nm:'Bookcase space'});xo(hx+3,hy+3,'hot',{hs:'portal',nm:'Portal space'})}
 {const fx=CA.x+16,fy=CA.y-20;clr(fx-8,fy-8,fx+8,fy+8,1);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)xo(fx+dx,fy+dy,'fdoge',{c:dx==0&&dy==0,nm:'Frozen Doge'});xo(fx,fy+4,'brazier');xo(fx-5,fy+2,'broots');xo(fx+5,fy+2,'broots')}
 {const e=fN(300,296,8);xo(e[0],e[1],'cave');clr(CAVE.x0-1,CAVE.y0-1,CAVE.x1+1,CAVE.y1+1,1);for(let x=CAVE.x0;x<=CAVE.x1;x++)for(let y=CAVE.y0;y<=CAVE.y1;y++){if(x==CAVE.x0||x==CAVE.x1||y==CAVE.y0||y==CAVE.y1){if(ob[y][x])ob[y][x]=null;xo(x,y,'cwall')}else if(ob[y][x]){ob[y][x].gone=1;ob[y][x]=null}}xo(CAVE.ex[0],CAVE.ex[1],'cexit');for(let i=gobs.length-1;i>=0;i--){const g=gobs[i];if(g.x>=CAVE.x0&&g.x<=CAVE.x1&&g.y>=CAVE.y0&&g.y<=CAVE.y1)gobs.splice(i,1)}}
+
+// ---- the wider world: new sea and land east and south of the untouched original
+{const NW=512,NH=448;
+for(let y=0;y<H0;y++)for(let x=W0;x<NW;x++){tile[y][x]=1;ob[y][x]=null}
+for(let y=H0;y<NH;y++){tile[y]=[];ob[y]=[];for(let x=0;x<NW;x++){tile[y][x]=1;ob[y][x]=null}}
+W=NW;H=NH;
+const PRN=s=>{let v=(s*2654435761)>>>0;return()=>{v=(v*1664525+1013904223)>>>0;return v/4294967296}};
+// land: only sea becomes land, and never within 3 tiles of the edge; original land, roads and objects are never touched
+const land=(x,y)=>{x|=0;y|=0;if(x<3||y<3||x>=W-3||y>=H-3)return;if(tile[y][x]==1)tile[y][x]=0};
+const disc=(cx,cy,r)=>{for(let y=Math.floor(cy-r);y<=cy+r;y++)for(let x=Math.floor(cx-r);x<=cx+r;x++)if((x-cx)**2+(y-cy)**2<=r*r)land(x,y)};
+const blob=(cx,cy,rx,ry,wob,seed)=>{const r0=PRN(seed),ph=[r0()*6.28,r0()*6.28,r0()*6.28,r0()*6.28];const R=a=>1+wob*(.6*Math.sin(3*a+ph[0])+.45*Math.sin(5*a+ph[1])+.3*Math.sin(8*a+ph[2])+.2*Math.sin(13*a+ph[3]));
+ for(let y=Math.floor(cy-ry*1.5);y<=cy+ry*1.5;y++)for(let x=Math.floor(cx-rx*1.5);x<=cx+rx*1.5;x++){const dx=(x+.5-cx)/rx,dy=(y+.5-cy)/ry,a=Math.atan2(dy,dx);if(Math.hypot(dx,dy)<=R(a))land(x,y)}};
+const band=(p0,p1,width,wob,seed,steps)=>{const r0=PRN(seed),ph=r0()*6.28,ph2=r0()*6.28,dx=p1[0]-p0[0],dy=p1[1]-p0[1],L=Math.hypot(dx,dy),nx=-dy/L,ny=dx/L;
+ for(let i=0;i<=steps;i++){const s=i/steps,off=wob*(Math.sin(s*2.2*Math.PI+ph)+.5*Math.sin(s*5.1*Math.PI+ph2))*Math.sin(s*Math.PI);disc(p0[0]+dx*s+nx*off,p0[1]+dy*s+ny*off,width/2*(1+.25*Math.sin(s*7+ph2)))}};
+// roads: 3 wide, wandering; grass becomes road, water and objects are left alone
+const roadAt=(x,y)=>{x|=0;y|=0;if(x<3||y<3||x>=W-3||y>=H-3)return;if(tile[y][x]==0&&!ob[y][x])tile[y][x]=2};
+const road=(pts,wob,seed)=>{const r0=PRN(seed);for(let k=0;k+1<pts.length;k++){const a=pts[k],b=pts[k+1],dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy),nx=-dy/L,ny=dx/L,n=Math.max(4,Math.ceil(L)),ph=r0()*6.28;
+ for(let i=0;i<=n;i++){const s=i/n,off=wob*Math.sin(s*2.7*Math.PI+ph)*Math.sin(s*Math.PI),x=a[0]+dx*s+nx*off,y=a[1]+dy*s+ny*off;for(let j=-1;j<=1;j++)for(let i2=-1;i2<=1;i2++)roadAt(x+i2,y+j)}}};
+// Ember Coast
+band([340,78],[412,86],22,12,3,60);blob(452,84,50,62,.2,4);blob(468,52,22,18,.3,12);
+// Wall St.
+band([334,236],[372,230],26,10,7,40);blob(416,228,46,56,.22,8);
+// the Trenches
+band([92,376],[96,414],34,8,5,60);blob(96,418,40,24,.2,6);
+// Normie Island
+blob(462,392,18,13,.18,9);
+// roads
+const T=n=>{const t=TW.find(t=>t.n==n);return[t.cx,t.cy]};
+road([T('Chad Falls'),[336,84],[372,80],[452,84],[466,60]],4,1);road([T('HODL Heights'),[290,60],[336,84]],4,2);
+road([T("Pepe's Pond"),[300,200],[334,236],[380,232],[416,228]],4,3);road([T('Moon Landing'),[340,280],[334,236]],4,4);road([T('Chad Falls'),[330,160],[334,236]],4,5);
+road([T('Rugpull Ridge'),[84,340],[92,376],[96,414]],4,6);road([T('Stonks City'),[140,330],[92,376]],4,7);
+for(let y=200;y<=262;y+=9)for(let x=392;x<=440;x++)roadAt(x,y);for(let x=392;x<=442;x+=9)for(let y=194;y<=264;y++)roadAt(x,y);
+// the volcano: a ring of rock around a crater
+{const r0=PRN(77);for(let y=30;y<=76;y++)for(let x=444;x<=494;x++){const d=Math.hypot((x+.5-468)/22,(y+.5-52)/18);if(tile[y][x]==0&&!ob[y][x]&&d>.3&&d<.95&&r0()<.75)put(x,y,'mtn')}}
+// trees on the new land
+{const r0=PRN(99);for(let y=3;y<H-3;y++)for(let x=3;x<W-3;x++){if(x<W0&&y<H0)continue;if(tile[y][x]!=0||ob[y][x])continue;let nr=0;for(let j=-2;j<=2;j++)for(let i=-2;i<=2;i++){const tx=x+i,ty=y+j;if(tx>=0&&ty>=0&&tx<W&&ty<H&&tile[ty][tx]==2)nr++}
+ if(nr)continue;const inWall=Math.hypot((x-416)/46,(y-228)/56)<1.05,inNormie=Math.hypot((x-462)/18,(y-392)/13)<1.1;if(inWall||inNormie)continue;if(r0()<.045){const o=put(x,y,'tree');o.i=trees.length;trees.push(o)}}}
+// distance to water and heights for the whole map; the original heights are copied over unchanged
+{const D2=new Int16Array(W*H).fill(999),q=[];for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(tile[y][x]==1){D2[y*W+x]=0;q.push(y*W+x)}
+ for(let hq=0;hq<q.length;hq++){const c=q[hq],x=c%W,y=(c/W)|0,d=D2[c]+1;if(d>9)continue;for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=W||ny>=H)continue;const k=ny*W+nx;if(D2[k]>d){D2[k]=d;q.push(k)}}}
+ const HW2=W+1,HG2=new Float32Array(HW2*(H+1));
+ for(let y=0;y<=H;y++)for(let x=0;x<=W;x++){if(x<=W0&&y<=H0){HG2[y*HW2+x]=HG[y*HW+x];continue}
+  const n=vnoise(x/38,y/38)*.6+vnoise(x/17+50,y/17+50)*.3+vnoise(x/7+90,y/7+90)*.1;let dw=999;for(let j=-1;j<=0;j++)for(let i=-1;i<=0;i++){const tx=x+i,ty=y+j;if(tx>=0&&ty>=0&&tx<W&&ty<H)dw=Math.min(dw,D2[ty*W+tx])}
+  let hv=Math.max(0,((n-.05)/.39-.38)*7.4+(vnoise(x/2.6+7,y/2.6+7)-.25)*1.3)*sm((dw-1)/6);
+  const vd=Math.hypot((x-468)/22,(y-52)/18);if(vd<1.1&&dw>1){const cone=sm((1.1-vd)/.7)*13,crater=sm((.32-vd)/.2)*8;hv=Math.max(hv,cone-crater)}
+  HG2[y*HW2+x]=hv}
+ HW=HW2;HG=HG2;DWt=D2}
+}
 const SP={x:CA.gx+1,y:CA.y+CA.h+2};const P={x:SP.x,y:SP.y,px:SP.x,py:SP.y,tr:[]},PT={x:SP.x,y:SP.y+1,px:SP.x,py:SP.y+1,tr:[]};
 if(st.pos&&st.pos.length==2&&st.pos[0]>3&&st.pos[1]>3&&st.pos[0]<W-4&&st.pos[1]<H-4&&!solid(st.pos[0],st.pos[1])){P.x=P.px=st.pos[0];P.y=P.py=st.pos[1];PT.x=PT.px=P.x;PT.y=PT.py=P.y}
 const L2=(cx,cz,ry,a,c)=>[cx+a*Math.cos(ry)+c*Math.sin(ry),cz-a*Math.sin(ry)+c*Math.cos(ry)];
@@ -970,7 +1018,7 @@ MB.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{if(b.dataset.d==1){st.
 const off=document.createElement('canvas');off.width=W*2+104;off.height=H*2+104;{const o=off.getContext('2d');o.fillStyle='#000';o.fillRect(0,0,off.width,off.height);for(let y=0;y<H;y++)for(let x=0;x<W;x++){const b=ob[y][x];o.fillStyle=tile[y][x]==1?'#3a78d4':tile[y][x]==2?'#c2a066':b?(b.k=='mtn'?(hgt(x+.5,y+.5)>13?'#e9edf0':hgt(x+.5,y+.5)>8?'#a39a8c':'#8a8173'):b.k=='tree'?'#1c5e2a':b.k=='rock'?'#b8642e':'#d9a520'):gs(x,y);o.fillRect(52+x*2,52+y*2,2,2)}}
 const MS=120,MSC=3;const offM=document.createElement('canvas');offM.width=W*3+120;offM.height=H*3+120;
 const mm=$('mm').getContext('2d');
-const LM=TW.map(t=>({n:t.n,x:t.cx,y:t.cy,a:1})).concat([{n:'Castle Gigachad',x:CA.x+16,y:CA.y+11,a:1,c:'#dfe6ff'},{n:'Gigachad Town',x:CA.gx+1,y:GT.y0+22,a:1},{n:'Rugpull River',x:RIV(222)-14,y:222,c:'#8ac6ff'},{n:'Meme Camp',x:262,y:292,c:'#ff8a8a'},{n:'Bear Market Woods',x:86,y:206,c:'#a8f0a8'},{n:'Copper Hills',x:104,y:76,c:'#f5c08a'},{n:'Wildlands',x:22,y:200,c:'#ff9a8a'},{n:'The Meme Sea',x:362,y:232,c:'#8ac6ff'},{n:'Copium Mountains',x:120,y:30,c:'#e0e0e8'},{n:"Ratio Lord's Lair",x:LAIR[0],y:LAIR[1],c:'#ff8a8a'},{n:'Agility Course',x:CA.x+CA.w+11,y:CA.y+3,c:'#c8e0ff'},{n:'Frozen Doge',x:CA.x+16,y:CA.y-27,c:'#bfe6ff'},{n:'Meme Caves',x:356,y:11,c:'#ff8a8a'},{n:'Farm',x:CA.x-8,y:CA.y+CA.h+10,c:'#9bff9b'}]);
+const LM=TW.map(t=>({n:t.n,x:t.cx,y:t.cy,a:1})).concat([{n:'Castle Gigachad',x:CA.x+16,y:CA.y+11,a:1,c:'#dfe6ff'},{n:'Gigachad Town',x:CA.gx+1,y:GT.y0+22,a:1},{n:'Rugpull River',x:RIV(222)-14,y:222,c:'#8ac6ff'},{n:'Meme Camp',x:262,y:292,c:'#ff8a8a'},{n:'Bear Market Woods',x:86,y:206,c:'#a8f0a8'},{n:'Copper Hills',x:104,y:76,c:'#f5c08a'},{n:'Wildlands',x:22,y:200,c:'#ff9a8a'},{n:'The Meme Sea',x:362,y:232,c:'#8ac6ff'},{n:'Copium Mountains',x:120,y:30,c:'#e0e0e8'},{n:"Ratio Lord's Lair",x:LAIR[0],y:LAIR[1],c:'#ff8a8a'},{n:'Agility Course',x:CA.x+CA.w+11,y:CA.y+3,c:'#c8e0ff'},{n:'Frozen Doge',x:CA.x+16,y:CA.y-27,c:'#bfe6ff'},{n:'Meme Caves',x:356,y:11,c:'#ff8a8a'},{n:'Farm',x:CA.x-8,y:CA.y+CA.h+10,c:'#9bff9b'},{n:'Ember Coast',x:452,y:92,a:1,c:'#ffb28a'},{n:'Wall St.',x:416,y:234,a:1,c:'#ffe68a'},{n:'The Trenches',x:96,y:420,a:1,c:'#d8c8a0'},{n:'Normie Island',x:462,y:394,c:'#fff0c0'}]);
 function drawStruct(c,f,ox,oy,det){const R=(x,y,w,h,fill,stroke)=>{c.fillStyle=fill;c.fillRect(ox+x*f,oy+y*f,Math.max(w*f,1.5),Math.max(h*f,1.5));if(stroke&&f>=5){c.strokeStyle=stroke;c.lineWidth=1;c.strokeRect(ox+x*f+.5,oy+y*f+.5,w*f-1,h*f-1)}},Ci=(x,y,r,fill)=>{c.fillStyle=fill;c.beginPath();c.arc(ox+x*f,oy+y*f,Math.max(r*f,1.5),0,7);c.fill()};
 BR.forEach(([x,y])=>R(x,y,1,1,'#8a5a2b'));
 HS.forEach(h=>R(h.x,h.y,h.fw,h.fh,h.rc,'#000'));

@@ -31,6 +31,8 @@ _Last updated: October 8, 2026 (night)_
 
 ## In progress (on preview.html, not live yet)
 
+- **The world is bigger:** 512 by 448 tiles instead of 384 by 384. The original map is untouched; new land was added east and south: Ember Coast (north-east, with a volcano), Wall St. (east, hugging the shore), the Trenches (south, below Rugpull Ridge) and Normie Island (south-east, sea only). Thick wandering land bridges and new roads join them to the nearest towns. The land is empty for now; buildings come next.
+
 - **The MemeCape:** the real cape from the site, worn in 3D with the hood and crown over your head. 100,000,000 Meme Coins at the cape merchant.
 - **Quest cape:** the same cape without hood and crown, for finishing every quest. 100,000 Meme Coins.
 - **Capes of Accomplishment** now cost 1,000,000 Meme Coins.
