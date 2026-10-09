@@ -14,6 +14,7 @@ python3 tools/patch_bld_models.py >/dev/null
 python3 tools/patch_lights.py >/dev/null
 python3 tools/patch_held.py >/dev/null
 python3 tools/patch_icons.py >/dev/null
+python3 tools/patch_logo.py >/dev/null
 python3 - <<'P'
 import re;h=open('play.html').read();s=re.findall(r'<script>([\s\S]*?)</script>',h);open('/tmp/x.js','w').write(max(s,key=len))
 P
