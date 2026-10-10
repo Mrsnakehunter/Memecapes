@@ -5,7 +5,8 @@ A small card under the zoom buttons says what to do next (walk, meet Froggo, cho
 fish, cook, mine, fight, bank), a gold arrow bobs over the nearest tree / fishing spot / rock /
 meme / bank, and the card says how far away it is when it is off screen. Each step ticks off by
 itself when the player does it. Finishing the guide pays 200 Meme Coins and a small XP lamp.
-Players who already have progress never see it. The x hides it; the small "?" brings it back.
+Players who already have progress skip the starter steps. After the guide the same card shows the
+current story quest step (tools/patch_story.py). The x hides it; the small "?" brings it back.
 Run from the repo root after patch_lazyskin.py:  python3 tools/patch_guide.py
 """
 PATH = 'play.html'
@@ -43,21 +44,24 @@ let gKey='',gTgt=null,gT=0,gFlash=0,gLast=-1;
 const gDir=(dx,dy)=>{const a=Math.atan2(dx,-dy)*180/Math.PI,N=['north','north-east','east','south-east','south','south-west','west','north-west'];return N[Math.round(((a+360)%360)/45)%8]};
 function guideDraw(){
  if(!started||!st||!st.xp){gCard.style.display=gArw.style.display=gPill.style.display='none';return}
- if(st.gDone==null)st.gDone=(st.qp>0||(st.xp.wc||0)+(st.xp.mi||0)+(st.xp.fi||0)+(st.xp.at||0)+(st.xp.str||0)>0)?1:0; // players who already started never see it
- if(st.gDone){gCard.style.display=gArw.style.display=gPill.style.display='none';return}
- let i=0;while(i<GST.length&&GST[i].ok())i++;
- if(i>=GST.length){st.gDone=1;pay(200,'starter guide');if(cap()>0)st.inv.push('lamp5');save();ui();
-  say('Starter guide complete! You got 200 Meme Coins and a small XP lamp. Froggo\'s quest, The Great Rug, is your next goal.','#a60');return}
- if(st.gI!=null&&i>st.gI){say('Guide: '+GST[st.gI].t+' done! Next: '+GST[i].t+'.','#0a7a2a');gFlash=performance.now()}st.gI=i;
+ if(st.gDone==null)st.gDone=(st.qp>0||(st.xp.wc||0)+(st.xp.mi||0)+(st.xp.fi||0)+(st.xp.at||0)+(st.xp.str||0)>0)?1:0; // players who already started never see the starter steps
+ let C=null;
+ if(!st.gDone){let i=0;while(i<GST.length&&GST[i].ok())i++;
+  if(i>=GST.length){st.gDone=1;pay(200,'starter guide');if(cap()>0)st.inv.push('lamp5');save();ui();
+   say('Starter guide complete! You got 200 Meme Coins and a small XP lamp. The quest card now shows your next quest.','#a60');gFlash=performance.now();return}
+  if(st.gI!=null&&i>st.gI){say('Guide: '+GST[st.gI].t+' done! Next: '+GST[i].t+'.','#0a7a2a');gFlash=performance.now()}st.gI=i;
+  const g=GST[i];C={key:'g'+i,hdr:'STARTER GUIDE '+(i+1)+'/'+GST.length,t:g.t,h:g.h,at:g.at,up:g.up,dots:i}}
+ else if(typeof sqCur=='function')C=sqCur(); // after the guide: the current quest step (tools/patch_story.py)
+ if(!C){gCard.style.display=gArw.style.display=gPill.style.display='none';return}
  if(st.gOff){gCard.style.display=gArw.style.display='none';gPill.style.display='block';return}gPill.style.display='none';
- const g=GST[i],tn=performance.now();if(i!=gLast||tn-gT>800){gLast=i;gT=tn;gTgt=g.at?g.at():null}
+ const tn=performance.now();if(C.key!=gLast||tn-gT>800){if(C.key!=gLast&&gLast!==-1&&C.hdr!='STARTER GUIDE '+((C.dots||0)+1)+'/'+GST.length)gFlash=tn;gLast=C.key;gT=tn;gTgt=C.at?C.at():null}
  let far='';if(gTgt){const d=Math.round(Math.hypot(gTgt[0]-P.x,gTgt[1]-P.y));if(d>3)far='<div style="margin-top:4px;color:#ffd23f">➤ '+d+' tiles '+gDir(gTgt[0]-P.x,gTgt[1]-P.y)+'</div>'}
- const k=i+'|'+far;if(k!=gKey){gKey=k;let dots='';for(let j=0;j<GST.length;j++)dots+='<span style="display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;background:'+(j<i?'#ffd23f':j==i?'#fff':'#ffffff33')+'"></span>';
-  gCard.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><b style="font:700 11px Cinzel,Georgia,serif;letter-spacing:1px;color:#c9a24a">STARTER GUIDE '+(i+1)+'/'+GST.length+'</b><span id="gx" style="cursor:pointer;color:#c9a24a;font-size:15px;padding:0 2px" title="Hide the guide">✕</span></div>'
-   +'<div style="font:700 14px Cinzel,Georgia,serif;color:#ffd23f;margin:3px 0 2px">'+g.t+'</div><div>'+g.h+'</div>'+far+'<div style="margin-top:6px">'+dots+'</div>';
+ const k=C.key+'|'+far;if(k!=gKey){gKey=k;let dots='';if(C.dots!=null)for(let j=0;j<GST.length;j++)dots+='<span style="display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;background:'+(j<C.dots?'#ffd23f':j==C.dots?'#fff':'#ffffff33')+'"></span>';
+  gCard.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><b style="font:700 11px Cinzel,Georgia,serif;letter-spacing:1px;color:#c9a24a">'+C.hdr+'</b><span id="gx" style="cursor:pointer;color:#c9a24a;font-size:15px;padding:0 2px" title="Hide">✕</span></div>'
+   +'<div style="font:700 14px Cinzel,Georgia,serif;color:#ffd23f;margin:3px 0 2px">'+C.t+'</div><div>'+C.h+'</div>'+far+(dots?'<div style="margin-top:6px">'+dots+'</div>':'');
   gCard.querySelector('#gx').onclick=()=>{st.gOff=1;save()}}
  gCard.style.display='block';gCard.style.boxShadow=performance.now()-gFlash<900?'0 0 18px #ffd23f':'0 3px 12px #0008';
- if(gTgt){const x=gTgt[0]+.5,z=gTgt[1]+.5,p=[x-E[0],(g.up||2)+hgt(x,z)+Math.sin(performance.now()/260)*.15-E[1],z-E[2]],zz=d3(p,Fw);
+ if(gTgt){const x=gTgt[0]+.5,z=gTgt[1]+.5,p=[x-E[0],(C.up||2)+hgt(x,z)+Math.sin(performance.now()/260)*.15-E[1],z-E[2]],zz=d3(p,Fw);
   if(zz>0){const sx=d3(p,Rt)/(zz*TH*asp),sy=d3(p,Up)/(zz*TH);if(Math.abs(sx)<1.05&&Math.abs(sy)<1.05){gArw.style.display='block';gArw.style.left=((sx+1)/2*CW)+'px';gArw.style.top=((1-sy)/2*CH)+'px';return}}}
  gArw.style.display='none'}
 """
