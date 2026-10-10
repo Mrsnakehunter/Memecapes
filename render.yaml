@@ -25,6 +25,10 @@ services:
         value: "1"
       - key: HOLDER_DAYS
         value: "14"
+      - key: PARTNER_PCT
+        value: "3"
+      - key: PARTNER_DAYS
+        value: "14"
     disk:
       name: memecapes-data
       mountPath: /var/data
