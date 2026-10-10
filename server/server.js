@@ -24,6 +24,12 @@ const CAPES_MINT = process.env.CAPES_MINT || '';                 // empty = hold
 const RPC = process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
 const HOLD_PCT = +process.env.HOLDER_PCT || 1;
 const HOLD_DAYS = +process.env.HOLDER_DAYS || 14;
+// partners: hold at least PARTNER_PCT % for PARTNER_DAYS days = a free billboard and NPC in every town, and their own cape colour,
+// for as long as they keep it. The ad shows only after an admin approves it, and comes down at the first check below PARTNER_PCT %.
+const PARTNER_PCT = +process.env.PARTNER_PCT || 3;
+const PARTNER_DAYS = +process.env.PARTNER_DAYS || 14;
+const PARTNER_CHECK = +process.env.PARTNER_CHECK_MS || 15 * 60e3;   // how often partners' wallets are checked
+const SWEEP = +process.env.SWEEP_MS || 60e3;
 const SKIN_IDS = ['sk_laser', 'sk_upaxe', 'sk_dpick', 'sk_rocket', 'sk_rug', 'sk_moon',
   'cs_green_candles', 'cs_red_candles', 'cs_laser_eyes', 'cs_diamond_hands', 'cs_moon_night', 'cs_coin_gold'];  // same list as tools/patch_skins.py
 
@@ -38,7 +44,10 @@ CREATE TABLE IF NOT EXISTS reports(id INTEGER PRIMARY KEY, uid INT, target TEXT,
 CREATE TABLE IF NOT EXISTS trades(id INTEGER PRIMARY KEY, t INT, a INT, b INT, a_gave TEXT, b_gave TEXT);
 CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY, t INT, uid INT, name TEXT, text TEXT);
 CREATE TABLE IF NOT EXISTS wallets(uid INTEGER PRIMARY KEY, wallet TEXT UNIQUE, linked INT, since INT DEFAULT 0, checked INT DEFAULT 0, due INT DEFAULT 0,
-  ok INT DEFAULT 0, pct REAL DEFAULT 0, claimed INT DEFAULT 0, claims INT DEFAULT 0, err TEXT DEFAULT '');`);
+  ok INT DEFAULT 0, pct REAL DEFAULT 0, claimed INT DEFAULT 0, claims INT DEFAULT 0, err TEXT DEFAULT '');
+CREATE TABLE IF NOT EXISTS partners(uid INTEGER PRIMARY KEY, brand TEXT, line TEXT, link TEXT, color TEXT, g INT DEFAULT 0, img TEXT,
+  status TEXT DEFAULT 'pending', note TEXT DEFAULT '', updated INT, approved INT DEFAULT 0);`);
+try { db.exec('ALTER TABLE wallets ADD COLUMN since3 INT DEFAULT 0'); } catch (e) { }  // when the wallet last reached PARTNER_PCT %
 const Q = {
   byName: db.prepare('SELECT * FROM users WHERE name=?'),
   byId: db.prepare('SELECT * FROM users WHERE id=?'),
@@ -70,7 +79,13 @@ const Q = {
   walBy: db.prepare('SELECT * FROM wallets WHERE wallet=?'),
   walSet: db.prepare('INSERT OR REPLACE INTO wallets(uid,wallet,linked,since,checked,due,ok,pct,claimed,claims,err) VALUES(?,?,?,0,0,0,0,0,?,?,\'\')'),
   walDel: db.prepare('DELETE FROM wallets WHERE uid=?'),
-  walCheck: db.prepare('UPDATE wallets SET since=?, checked=?, due=?, ok=?, pct=?, err=? WHERE uid=?'),
+  walCheck: db.prepare('UPDATE wallets SET since=?, since3=?, checked=?, due=?, ok=?, pct=?, err=? WHERE uid=?'),
+  ptGet: db.prepare('SELECT * FROM partners WHERE uid=?'),
+  ptSet: db.prepare(`INSERT INTO partners(uid,brand,line,link,color,g,img,status,note,updated) VALUES(?,?,?,?,?,?,?,'pending','',?)
+    ON CONFLICT(uid) DO UPDATE SET brand=excluded.brand,line=excluded.line,link=excluded.link,color=excluded.color,g=excluded.g,img=excluded.img,status='pending',note='',updated=excluded.updated`),
+  ptStatus: db.prepare('UPDATE partners SET status=?, note=?, approved=? WHERE uid=?'),
+  ptDel: db.prepare('DELETE FROM partners WHERE uid=?'),
+  ptAll: db.prepare('SELECT p.uid,p.brand,p.line,p.link,p.color,p.g,p.status,p.note,p.updated,u.name,w.pct,w.since3 FROM partners p JOIN users u ON u.id=p.uid LEFT JOIN wallets w ON w.uid=p.uid ORDER BY p.uid'),
   walErr: db.prepare('UPDATE wallets SET due=?, err=? WHERE uid=?'),
   walClaim: db.prepare('UPDATE wallets SET claimed=?, claims=claims+1 WHERE uid=?'),
   walDue: db.prepare('SELECT * FROM wallets WHERE due<? ORDER BY due LIMIT 20'),
@@ -188,7 +203,8 @@ function signIn(c, u, tok) {
   c.send({ t: 'chatlog', lines: Q.recentChat.all().reverse() });
   for (const o of online.values()) if (o !== c && o.pos) c.send({ t: 'pi', ...pub(o) });
   const w = CAPES_MINT && Q.wal.get(u.id);  // holder perks: a fresh balance check at every login
-  if (w) holderCheck(w).then(() => c.send(holderInfo(u.id))); else c.send(holderInfo(u.id));
+  if (w) holderCheck(w).then(() => { c.send(holderInfo(u.id)); c.send(partnerInfo(u.id)); }); else { c.send(holderInfo(u.id)); c.send(partnerInfo(u.id)); }
+  c.send({ t: 'partners', list: partnersLive() });
 }
 
 const H = {
@@ -223,7 +239,7 @@ const H = {
   deleteAccount(c, m) {
     const u = c.uid && Q.byId.get(c.uid); if (!u) return;
     if (hashPass(String(m.pass || ''), u.salt) !== u.hash) return c.send({ t: 'err', text: 'Wrong password.' });
-    Q.sesDelUser.run(u.id); Q.walDel.run(u.id); Q.del.run(u.id); c.send({ t: 'deleted' }); c.close();
+    Q.sesDelUser.run(u.id); Q.walDel.run(u.id); Q.ptDel.run(u.id); Q.del.run(u.id); partnersMaybeChanged(); c.send({ t: 'deleted' }); c.close();
   },
   save(c, m) {
     if (!c.uid || c.trade && c.trade.stage === 3) return;
@@ -387,8 +403,13 @@ async function holderCheck(row) {
     const pct = s > 0n ? Number(b * 1000000n / s) / 10000 : 0, ok = pct >= HOLD_PCT;
     const cur = Q.wal.get(row.uid); if (!cur || cur.wallet !== row.wallet) return null;  // unlinked meanwhile
     // a gap of more than 3 days without a check (server down) also restarts the count: we can't vouch for it
-    const since = ok ? (cur.ok && cur.since && now() - cur.checked < 3 * 864e5 ? cur.since : now()) : 0;
-    Q.walCheck.run(since, now(), nextDue(), ok ? 1 : 0, pct, '', row.uid);
+    const fresh = now() - cur.checked < 3 * 864e5, p3 = pct >= PARTNER_PCT;
+    const since = ok ? (cur.ok && cur.since && fresh ? cur.since : now()) : 0;
+    const since3 = p3 ? (cur.since3 && fresh ? cur.since3 : now()) : 0;
+    // partners (and anyone close to the line) are checked every 15 minutes, so an ad comes down soon after the balance drops
+    const due = pct >= PARTNER_PCT * 0.8 || Q.ptGet.get(row.uid) ? now() + PARTNER_CHECK : nextDue();
+    Q.walCheck.run(since, since3, now(), due, ok ? 1 : 0, pct, '', row.uid);
+    setTimeout(partnersMaybeChanged, 0);
   } catch (e) { Q.walErr.run(now() + 3600e3, String(e.message || e).slice(0, 120), row.uid); }
   return Q.wal.get(row.uid);
 }
@@ -419,9 +440,9 @@ Object.assign(H, {
     const old = Q.wal.get(c.uid);
     if (!(old && old.wallet === w)) Q.walSet.run(c.uid, w, now(), old ? old.claimed : 0, old ? old.claims : 0);  // the skin timer belongs to the account
     say(c, 'Wallet linked. Checking your $CAPES...', '#0a0');
-    await holderCheck(Q.wal.get(c.uid)); c.send(holderInfo(c.uid));
+    await holderCheck(Q.wal.get(c.uid)); c.send(holderInfo(c.uid)); c.send(partnerInfo(c.uid));
   },
-  walletUnlink(c) { if (!c.uid) return; Q.walDel.run(c.uid); say(c, 'Wallet unlinked.', '#a60'); c.send(holderInfo(c.uid)); },
+  walletUnlink(c) { if (!c.uid) return; Q.walDel.run(c.uid); say(c, 'Wallet unlinked.', '#a60'); c.send(holderInfo(c.uid)); c.send(partnerInfo(c.uid)); partnersMaybeChanged(); },
   async holderClaim(c, m) {
     if (!c.uid || c.claiming) return;
     const skin = String(m.skin || ''); if (!SKIN_IDS.includes(skin)) return;
@@ -440,12 +461,76 @@ Object.assign(H, {
     } finally { c.claiming = 0; }
   },
 });
-// once a day at a random hour, every linked wallet is checked again (up to 20 a minute)
+
+// ---------- partners (3% holders) ----------
+const PD = () => PARTNER_DAYS * 864e5;
+function partnerState(uid) {
+  const w = Q.wal.get(uid), p = Q.ptGet.get(uid);
+  const over = !!(w && w.pct >= PARTNER_PCT && w.since3), held = over ? now() - w.since3 : 0;
+  return { w, p, over, held, eligible: over && held >= PD(), live: !!(p && p.status === 'approved' && over && held >= PD()), at: over ? w.since3 + PD() : 0 };
+}
+function partnerInfo(uid) {
+  const S = partnerState(uid), p = S.p;
+  return { t: 'partner', on: !!CAPES_MINT, need: PARTNER_PCT, days: PARTNER_DAYS, over: S.over, eligible: S.eligible, live: S.live, liveAt: S.at, id: uid,
+    ad: p ? { brand: p.brand, line: p.line, link: p.link, color: p.color, g: p.g, status: p.status, note: p.note, v: p.updated } : null };
+}
+function partnersLive() {
+  return Q.ptAll.all().filter(r => r.status === 'approved' && partnerState(r.uid).live)
+    .map(r => ({ id: r.uid, brand: r.brand, line: r.line, link: r.link, color: r.color, g: r.g, v: r.updated }));
+}
+let ptLast = '[]';
+function partnersMaybeChanged() {
+  const L = partnersLive(), j = JSON.stringify(L); if (j === ptLast) return;
+  const before = new Set(JSON.parse(ptLast).map(x => x.id)); ptLast = j;
+  for (const x of L) if (!before.has(x.id)) console.log('partner live', x.id, x.brand);
+  for (const id of before) if (!L.some(x => x.id === id)) console.log('partner removed', id);
+  broadcast({ t: 'partners', list: L });
+  for (const o of online.values()) if (Q.ptGet.get(o.uid) || before.has(o.uid)) o.send(partnerInfo(o.uid));
+}
+const clean1 = (t, n) => cleanChat(String(t || '')).slice(0, n);
+function partnerSave(c, m) {
+  if (!c.uid) return;
+  if (!CAPES_MINT) return say(c, 'Partner ads open when $CAPES launches.', '#a60');
+  const S = partnerState(c.uid); if (!S.over) return c.send({ t: 'err', text: 'Partner ads need a linked wallet holding at least ' + PARTNER_PCT + '% of $CAPES.' });
+  const brand = clean1(m.brand, 24), line = clean1(m.line, 80), link = String(m.link || '').trim().slice(0, 100), color = String(m.color || '');
+  if (brand.length < 2) return c.send({ t: 'err', text: 'Give your project a name (2 to 24 letters).' });
+  if (link && !/^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(\/[^\s<>"']*)?$/i.test(link)) return c.send({ t: 'err', text: 'The link must start with https:// and be a normal web address.' });
+  if (!/^#[0-9a-f]{6}$/i.test(color)) return c.send({ t: 'err', text: 'Pick a cape colour.' });
+  const im = String(m.img || ''), mm = /^data:image\/jpeg;base64,([A-Za-z0-9+/=]+)$/.exec(im);
+  if (!mm) return c.send({ t: 'err', text: 'Add a picture for the billboard.' });
+  const raw = Buffer.from(mm[1], 'base64'); if (raw.length > 300 * 1024 || raw[0] !== 0xff || raw[1] !== 0xd8) return c.send({ t: 'err', text: 'That picture could not be used. Try a smaller JPEG or PNG.' });
+  Q.ptSet.run(c.uid, brand, line, link, color, m.g ? 1 : 0, raw.toString('base64'), now());
+  c.send(partnerInfo(c.uid)); say(c, 'Thanks! Your ad is waiting for approval. It goes live once it is approved and you have held ' + PARTNER_PCT + '% for ' + PARTNER_DAYS + ' days.', '#0a0');
+  for (const o of online.values()) if (o.role === 'admin') say(o, 'New partner ad from ' + c.name + ' (' + brand + '). Look at it with /partner view ' + c.name, '#c80');
+  partnersMaybeChanged();
+}
+function partnerCmd(c, name, arg, rest) {
+  if (!name || name === 'list') {
+    const L = Q.ptAll.all(); if (!L.length) return say(c, 'No partner ads yet.', '#a60');
+    return say(c, 'Partner ads: ' + L.map(r => r.name + ' (' + r.brand + ', ' + r.status + (partnerState(r.uid).live ? ', LIVE' : '') + ', ' + (r.pct || 0) + '%)').join('; '), '#a60');
+  }
+  const u = Q.byName.get(arg ? arg : ''), p = u && Q.ptGet.get(u.id);
+  if (!p) return say(c, 'Usage: /partner list, /partner view Name, /partner approve Name, /partner reject Name reason, /partner remove Name', '#a60');
+  const S = partnerState(u.id), note = rest.split(' ').slice(2).join(' ').slice(0, 120);
+  if (name === 'view') return c.send({ t: 'partnerReview', name: u.name, brand: p.brand, line: p.line, link: p.link, color: p.color, g: p.g, status: p.status, pct: S.w ? S.w.pct : 0, heldDays: Math.floor(S.held / 864e5), img: 'data:image/jpeg;base64,' + p.img });
+  if (name === 'approve') Q.ptStatus.run('approved', '', now(), u.id);
+  else if (name === 'reject') Q.ptStatus.run('rejected', note || 'Please change the ad and send it again.', 0, u.id);
+  else if (name === 'remove') Q.ptDel.run(u.id);
+  else return say(c, 'Usage: /partner list, /partner view Name, /partner approve Name, /partner reject Name reason, /partner remove Name', '#a60');
+  say(c, u.name + "'s ad: " + name + (name === 'approve' && !S.eligible ? 'd. It goes live when they have held ' + PARTNER_PCT + '% for ' + PARTNER_DAYS + ' days.' : name === 'approve' ? 'd and live.' : 'ed.'), '#0a0');
+  const o = online.get(u.id); if (o) { o.send(partnerInfo(u.id)); if (name === 'reject') say(o, 'Your partner ad was not approved: ' + (note || 'please change it and send it again.'), '#c00'); }
+  partnersMaybeChanged();
+}
+Object.assign(H, {
+  partnerInfo(c) { if (c.uid) c.send(partnerInfo(c.uid)); },
+  partnerSave,
+});
+// once a day at a random hour, every linked wallet is checked again (up to 20 a minute); partners every 15 minutes
 let walBusy = false;
 setInterval(async () => {
   if (!CAPES_MINT || walBusy) return; walBusy = true;
-  try { for (const row of Q.walDue.all(now())) { await holderCheck(row); const o = online.get(row.uid); if (o) o.send(holderInfo(row.uid)); } } finally { walBusy = false; }
-}, 60e3);
+  try { for (const row of Q.walDue.all(now())) { await holderCheck(row); const o = online.get(row.uid); if (o) o.send(holderInfo(row.uid)); } partnersMaybeChanged(); } finally { walBusy = false; }
+}, SWEEP);
 
 function adminCmd(c, raw) {
   const [cmd, name, arg] = raw.slice(1).split(' '); const rest = raw.split(' ').slice(1).join(' ');
@@ -459,9 +544,10 @@ function adminCmd(c, raw) {
     case 'unban': if (!u) break; Q.ban.run(0, u.id); return say(c, name + ' unbanned.');
     case 'kick': if (!o) break; o.send({ t: 'kicked', text: 'A moderator removed you from the game.' }); o.close(); return say(c, name + ' kicked.');
     case 'rollback': if (!u) break; Q.rollback.run(u.id); if (o) { o.send({ t: 'kicked', text: 'Your progress was restored by a moderator. Log in again.' }); o.close(); } return say(c, name + ' rolled back one save.');
+    case 'partner': return partnerCmd(c, name, arg, rest);
     case 'mod': if (!u) break; Q.setRole.run(arg === 'off' ? '' : 'mod', u.id); return say(c, name + (arg === 'off' ? ' is no longer a mod.' : ' is now a mod.'));
   }
-  say(c, 'Commands: /announce text, /mute name minutes, /unmute name, /ban name, /unban name, /kick name, /rollback name', '#a60');
+  say(c, 'Commands: /announce text, /mute name minutes, /unmute name, /ban name, /unban name, /kick name, /rollback name, /partner list', '#a60');
 }
 
 function onMessage(c, msg) {
@@ -501,12 +587,20 @@ const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://x');
   const json = (o, s) => { res.writeHead(s || 200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }); res.end(JSON.stringify(o, null, 1)); };
   if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, online: online.size });
+  if (url.pathname === '/partners') return json(partnersLive());
+  const pm = /^\/partners\/(\d+)\.jpg$/.exec(url.pathname);
+  if (pm) {
+    const id = +pm[1], p = Q.ptGet.get(id);
+    if (!p || p.status !== 'approved' || !partnerState(id).live) return json({ error: 'not found' }, 404);
+    res.writeHead(200, { 'Content-Type': 'image/jpeg', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=300' }); return res.end(Buffer.from(p.img, 'base64'));
+  }
   if (url.pathname.startsWith('/admin/')) {
     if (!ADMIN_KEY || req.headers.authorization !== 'Bearer ' + ADMIN_KEY) return json({ error: 'no' }, 403);
     if (url.pathname === '/admin/stats') return json({ online: online.size, accounts: Q.count.get().n, names: [...online.values()].map(o => o.name) });
     if (url.pathname === '/admin/flags') return json(Q.listFlags.all());
     if (url.pathname === '/admin/reports') return json(Q.listReports.all());
     if (url.pathname === '/admin/holders') return json(Q.walList.all());
+    if (url.pathname === '/admin/partners') return json(Q.ptAll.all().map(r => ({ ...r, live: partnerState(r.uid).live })));
     if (url.pathname === '/admin/backup') { const f = path.join(DATA, 'backups', 'download.db'); try { fs.rmSync(f, { force: true }); db.exec(`VACUUM INTO '${f.replace(/'/g, "''")}'`); } catch (e) { return json({ error: String(e) }, 500); } res.writeHead(200, { 'Content-Type': 'application/octet-stream', 'Content-Disposition': 'attachment; filename=memecapes.db' }); return fs.createReadStream(f).pipe(res); }
   }
   json({ error: 'not found' }, 404);

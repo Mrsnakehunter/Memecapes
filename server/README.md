@@ -12,6 +12,7 @@ Plain Node.js 22 with no packages to install (built-in SQLite, crypto and a smal
 - **Cheat watch**: big jumps in coins or XP between saves are written to a flags list for a moderator to look at.
 - **Moderators**: `/announce text`, `/mute name minutes`, `/unmute name`, `/kick name`, `/ban name`, `/unban name`, `/rollback name` (undo that player's last save), `/mod name` (make a mod).
 - **Holder perks**: a player links their wallet by signing a short free message in their wallet app (not a transaction). The server reads that wallet's $CAPES balance from the blockchain at link time, at every login and once a day at a random hour. Holding at least `HOLDER_PCT` % of all $CAPES = free Cape Club membership while it lasts, and one free skin from the skin store after `HOLDER_DAYS` days of holding without dropping below, then every `HOLDER_DAYS` days. One wallet per account. Passing tokens to another wallet restarts the count, so the same tokens can't collect extra skins. `node test_holder.js` checks all of it against a fake blockchain.
+- **Partners**: a wallet that has held at least `PARTNER_PCT` % of all $CAPES for `PARTNER_DAYS` days can run a free partner ad: a billboard with their picture and an NPC (their name, line, link and cape colour) in each of the 8 meme towns, plus that cape colour for themselves. They make the ad at any bank; an admin reviews it with `/partner view Name` and `/partner approve Name` or `/partner reject Name reason` (`/partner list`, `/partner remove Name`). Partner wallets are checked every 15 minutes, and the ad comes down at the first check below `PARTNER_PCT` %. Going back above restarts the `PARTNER_DAYS` count. `GET /partners` is the live list and `GET /partners/<id>.jpg` their billboard pictures.
 - **Backups**: a copy of the database every day, the last 14 kept, in `DATA_DIR/backups`.
 
 ## Settings (environment variables)
@@ -25,6 +26,8 @@ Plain Node.js 22 with no packages to install (built-in SQLite, crypto and a smal
 | `SOLANA_RPC` | Solana RPC address for the balance checks. Default: the free public one; a paid one (Helius, QuickNode) is more reliable |
 | `HOLDER_PCT` | how much of all $CAPES a wallet must hold for the perks, in %. Default 1 |
 | `HOLDER_DAYS` | days between free skins (and the first wait). Default 14 |
+| `PARTNER_PCT` | share of all $CAPES for a partner ad, in %. Default 3 |
+| `PARTNER_DAYS` | days at that share before the ad goes live. Default 14 |
 | `ALLOWED_ORIGINS` | websites allowed to connect. Default: memecapes.com and localhost |
 
 ## Admin pages
@@ -32,6 +35,7 @@ Send the header `Authorization: Bearer <ADMIN_KEY>`:
 - `/admin/stats`: who is online, how many accounts
 - `/admin/flags`: suspicious saves
 - `/admin/holders`: linked wallets, their share of $CAPES, whether they pass, free skins claimed
+- `/admin/partners`: every partner ad, its status and whether it is live
 - `/admin/reports`: player reports with the chat around them
 - `/admin/backup`: download the whole database
 
