@@ -30,6 +30,14 @@ _Last updated: October 9, 2026 (night)_
 - **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
 
+## Launch pieces (live October 10, 2026)
+
+- **18+ and policy gate** before the website or the game opens (asked again whenever the Terms change).
+- **Terms of Service and Privacy Policy** on the site (Ohio law), linked from the gate and the footer.
+- **Shop** on the site: town billboards, sponsored monsters, custom capes, custom items, paid in SOL, USDC or (later) $CAPES from the buyer's own wallet. The page checks the payment on the blockchain and writes the order. It stays switched off until the official shop wallet address is in `config.js`.
+- **At any bank in the game:** deposit $CAPES for Meme Coins (switched off until the token exists), redeem codes from the shop. Withdrawing $CAPES opens with the game servers.
+- **config.js** holds every address, price and switch. `tools/mkcode.py` makes redeem codes.
+
 ## Shipped to the live game on October 10, 2026
 
 Everything below is now on play.html (it used to be preview only).
