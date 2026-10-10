@@ -5,7 +5,7 @@
   models/c_qcape.json     the Quest cape: the same cape without the hood and crown
 
 Units are world units (the player is 1.7 tall, faces +z, back is -z), drawn at scale 1 at the player's feet.
-Run from the repo root:  python3 tools/mkcape.py
+Run from the repo root:  python3 tools/mkcape.py        (python3 tools/mkcape.py plain  makes only models/c_plain.json)
 """
 import json, base64, io, math
 import numpy as np
@@ -85,9 +85,10 @@ Y_TOP, Y_BOT = 1.42, 0.22
 def cape_pt(u, v, inset=0.0):
     # v: 0 at the shoulders, 1 at the hem
     ease = v * v * (3 - 2 * v)
-    r = 0.21 + (0.47 - 0.21) * ease - inset
-    cz = -0.02 - 0.05 * ease
-    phi_max = math.radians(95 + 25 * ease)
+    # slim at the shoulders, hanging behind the body rather than wrapping round the legs
+    r = 0.19 + (0.30 - 0.19) * ease - inset
+    cz = -0.045 - 0.11 * ease
+    phi_max = math.radians(82 + 10 * ease)
     phi = (u * 2 - 1) * phi_max
     y = Y_TOP + (Y_BOT - Y_TOP) * v + 0.04 * math.sin(math.pi * v) * math.cos(phi * 2)  # a gentle ripple
     x = r * math.sin(phi); z = cz - r * math.cos(phi)
@@ -97,8 +98,9 @@ def cape_pt(u, v, inset=0.0):
     return [x, y, z], n
 
 
-def cape(flip_inner=True):
-    grid(lambda u, v: cape_pt(u, v), 28, 16, lambda u, v: art_uv(u, v))
+def cape(flip_inner=True, plain=False):
+    # plain: the outside maps straight onto the left 3/4 of the atlas (u across, v shoulders to hem), so the game can paint any design
+    grid(lambda u, v: cape_pt(u, v), 28, 16, (lambda u, v: (0.74 * u + 0.005, 0.74 * v + 0.005)) if plain else (lambda u, v: art_uv(u, v)))
     # inner lining, a touch inside, normals flipped
     grid(lambda u, v: cape_pt(u, v, .012), 28, 16, lambda u, v: (0.76 + 0.24 * u, 0.02 + 0.2 * v), flip=True)
 
@@ -170,6 +172,13 @@ def write(path):
     P, N, U, I = [], [], [], []
 
 
-cape(); hood(); crown(); write('models/c_memecape.json')
-cape(); write('models/c_qcape.json')
-atlas.save('/home/claude/scratch/shots/cape_atlas.jpg', quality=80)
+import sys
+if 'plain' in sys.argv:
+    # every other cape: the same shape, painted by the game (skill capes, Chad cape, custom capes from the shop)
+    small = Image.new('RGB', (64, 64), (120, 20, 30)); bio2 = io.BytesIO(); small.save(bio2, 'JPEG', quality=70)
+    TEX = 'data:image/jpeg;base64,' + base64.b64encode(bio2.getvalue()).decode()
+    cape(plain=True); write('models/c_plain.json')
+else:
+    cape(); hood(); crown(); write('models/c_memecape.json')
+    cape(); write('models/c_qcape.json')
+    atlas.save('/home/claude/scratch/shots/cape_atlas.jpg', quality=80)
