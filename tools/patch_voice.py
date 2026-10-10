@@ -166,5 +166,9 @@ left = [w for w in ['Pepe', 'Chill Guy', "'Doge'", 'Moo Deng', 'Peanut', 'SafeMo
         if any(w in SEG[i] for i in TXT)]
 if DRY: print('left:', left, file=__import__('sys').stderr)
 else: assert not left, f'still in the text: {left}'
+# the old flat pictures of Pepe and of the Doge photo are never drawn any more; they leave the file entirely
+for k in ('pepe', 'stick'):
+    h, n = re.subn(r'"%s": "data:image/[a-z]+;base64,[A-Za-z0-9+/=]+", ' % k, '', h)
+    assert n == 1, ('flat picture not found', k)
 open(PATH, 'w', encoding='utf-8').write(h)
 print('voice patch applied')
