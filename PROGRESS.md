@@ -6,7 +6,7 @@ _Last updated: October 9, 2026 (night)_
 
 - **Website:** [memecapes.com](https://memecapes.com/), the game's own address (the old github.io link now sends you here).
 - **Live game:** [memecapes.com/play.html](https://memecapes.com/play.html), the current public version with the full 3D world.
-- **Preview:** [memecapes.com/preview.html](https://memecapes.com/preview.html), where new things land first. It is ahead of the live game right now (see "In progress" below).
+- **Preview:** [memecapes.com/preview.html](https://memecapes.com/preview.html), where new things land first. Right now it's the same as the live game.
 
 ## Live now
 
@@ -30,7 +30,9 @@ _Last updated: October 9, 2026 (night)_
 - **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
 
-## In progress (on preview.html, not live yet)
+## Shipped to the live game on October 10, 2026
+
+Everything below is now on play.html (it used to be preview only).
 
 - **The world is bigger:** 512 by 448 tiles instead of 384 by 384. The original map is untouched; new land was added east and south: Ember Coast (north-east, with a volcano), Wall St. (east, hugging the shore), the Trenches (south, below Rugpull Ridge) and Normie Island (south-east, sea only). Thick wandering land bridges and new roads join them to the nearest towns. The land is empty for now; buildings come next.
 
