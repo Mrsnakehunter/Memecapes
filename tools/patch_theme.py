@@ -26,20 +26,20 @@ CSS = r"""
 /* ---- the MemeCapes ledger: crimson velvet, gold leaf */
 #modal{background:#0d0407d0}
 #mb{max-width:400px;background:radial-gradient(120% 70% at 50% 0%,#5a1220 0%,#3b0b14 48%,#24060c 100%);border:3px solid #15030a;outline:2px solid #d9a520;box-shadow:0 0 0 5px #24060c,0 0 0 6px #6b4a06,0 24px 60px #000d;color:#f6eedc;font:13px/1.45 Alegreya,Georgia,serif;padding:14px;border-radius:3px;scrollbar-width:thin;scrollbar-color:#d9a520 #24060c}
-#mb h2{font:900 19px/1.15 Cinzel,Georgia,serif;letter-spacing:.4px;margin:0 0 10px;padding-bottom:7px;position:relative;border-bottom:1px solid #d9a52044;background:linear-gradient(#fff2a8,#f2b400 55%,#c98a10);-webkit-background-clip:text;background-clip:text;color:transparent}
-#mb h2::after{content:"";position:absolute;left:0;bottom:-1px;width:58px;height:2px;background:#ffd23f}
+#mb h2,#sbox h2{font:900 19px/1.15 Cinzel,Georgia,serif;letter-spacing:.4px;margin:0 0 10px;padding-bottom:7px;position:relative;border-bottom:1px solid #d9a52044;background:linear-gradient(#fff2a8,#f2b400 55%,#c98a10);-webkit-background-clip:text;background-clip:text;color:transparent}
+#mb h2::after,#sbox h2::after{content:"";position:absolute;left:0;bottom:-1px;width:58px;height:2px;background:#ffd23f}
 #mb h3{font:700 14px Cinzel,Georgia,serif;color:#ffd23f;margin:8px 0 6px}
 #mb .row{border-bottom:1px solid #ffd23f22;padding:5px 0}
 #mb small{color:#d9b98a}
 #mb p{margin:4px 0 8px}
-#mb button{font:700 12px/1 Cinzel,Georgia,serif;letter-spacing:.3px;color:#ffe9b0;background:linear-gradient(#7a1420,#4a0a12);border:1px solid #d9a520aa;box-shadow:inset 0 1px 0 #ffffff1f,0 2px 0 #15030a;padding:7px 11px;border-radius:3px;cursor:pointer;text-shadow:0 1px 0 #000;transition:filter .12s,transform .08s}
-#mb button:hover{filter:brightness(1.18)}#mb button:active{transform:translateY(1px);box-shadow:inset 0 1px 0 #ffffff1f,0 1px 0 #15030a}
-#mb button:focus-visible{outline:2px solid #ffd23f;outline-offset:2px}
-#mb button:disabled{opacity:.45;cursor:default;filter:none}
+#mb button,#panel button,#sbox button:not(.big),#wm button{font:700 12px/1 Cinzel,Georgia,serif;letter-spacing:.3px;color:#ffe9b0;background:linear-gradient(#7a1420,#4a0a12);border:1px solid #d9a520aa;box-shadow:inset 0 1px 0 #ffffff1f,0 2px 0 #15030a;padding:7px 11px;border-radius:3px;cursor:pointer;text-shadow:0 1px 0 #000;transition:filter .12s,transform .08s}
+#mb button:hover,#panel button:hover,#sbox button:hover,#wm button:hover{filter:brightness(1.18)}#mb button:active,#panel button:active,#sbox button:not(.big):active,#wm button:active{transform:translateY(1px);box-shadow:inset 0 1px 0 #ffffff1f,0 1px 0 #15030a}
+#mb button:focus-visible,#panel button:focus-visible,#sbox button:focus-visible,#wm button:focus-visible{outline:2px solid #ffd23f;outline-offset:2px}
+#mb button:disabled,#panel button:disabled{opacity:.45;cursor:default;filter:none}
 #mb button.gold,#mb button[data-mkgo],#mb button[data-tacc],#mb button[data-mkc],#mb button[data-buy],#mb button[data-cp],#mb button[data-qc],#mb button[data-mc]{color:#2a1400;background:linear-gradient(#ffe88a,#f2b400 55%,#c98a10);border-color:#6b4a06;text-shadow:0 1px 0 #fff7}
 #mb button.ghost{background:none;border-color:transparent;box-shadow:none;color:#d9b98a;text-decoration:underline;text-underline-offset:3px}
-#mb input{background:#1a0408;border:1px solid #d9a52088;color:#f6eedc;font:13px Alegreya,Georgia,serif;padding:6px 8px;border-radius:3px;outline:0;user-select:text;-webkit-user-select:text}
-#mb input:focus{border-color:#ffd23f;box-shadow:0 0 0 2px #ffd23f33}
+#mb input,#sbox input:not([type=checkbox]):not([type=radio]),#sbox select{background:#1a0408;border:1px solid #d9a52088;color:#f6eedc;font:13px Alegreya,Georgia,serif;padding:6px 8px;border-radius:3px;outline:0;user-select:text;-webkit-user-select:text}
+#mb input:focus,#sbox input:focus{border-color:#ffd23f;box-shadow:0 0 0 2px #ffd23f33}
 #mb .s{background:#1a0408;border:1px solid #d9a52033;border-radius:3px}
 #mb .s svg{filter:drop-shadow(0 1px 1px #000)}
 /* ---- the Stock Market */
@@ -141,6 +141,24 @@ CSS = r"""
 #ctx{background:linear-gradient(#3b0b14,#24060c);border:1px solid #d9a520;box-shadow:0 0 0 2px #15030a,0 8px 20px #000c;border-radius:3px;min-width:150px;font:13px Alegreya,Georgia,serif;overflow:hidden}
 #ctx div{padding:5px 10px;color:#f6eedc}#ctx div:hover{background:#d9a52033;color:#ffe9b0}
 #ctx .h{background:#15030a;color:#ffd23f;font:700 11px Cinzel,Georgia,serif;letter-spacing:.3px;padding:5px 10px}
+
+/* ---- the side panel, the chat scroll, the start screen and the world map */
+:root{--p:#3b0b14;--p2:#15030a;--ink:#ffd23f}
+#panel{background:radial-gradient(140% 70% at 50% 0%,#5a1220 0%,#3b0b14 45%,#24060c 100%);border:3px solid #15030a;box-shadow:inset 0 0 0 1px #d9a52055,0 0 0 1px #6b4a06,0 -8px 30px #0008;color:#f6eedc;font-family:Alegreya,Georgia,serif}
+#tabs{background:#15030a;border-top:1px solid #d9a52066}
+#tabs div{color:#d9b98a;border-top:2px solid transparent;font:700 10px/30px Cinzel,Georgia,serif}
+#tabs div.on{background:linear-gradient(#ffe88a,#f2b400 55%,#c98a10);color:#2a1400;text-shadow:0 1px 0 #fff7;border-top-color:#6b4a06}
+.s{background:#1a0408;border:1px solid #d9a52033;border-radius:3px}.s small{color:#ffd23f}
+.sk{background:#1a040880;border:1px solid #ffd23f14;border-radius:3px;color:#f6eedc}.sk b{color:#ffd23f}
+#pc{scrollbar-width:thin;scrollbar-color:#d9a520 #24060c}
+#chat{background:#f3e6caf0;border:3px solid #15030a;box-shadow:0 0 0 2px #d9a520,0 0 0 3px #6b4a06;border-radius:3px;font-family:Alegreya,Georgia,serif}
+#clog{scrollbar-color:#8a5a12 #0000}#cin{border-top-color:#8a5a1255}#cin b{color:#7a1420}
+#cin input{background:#fff9;border:1px solid #d9a52088;font-family:Alegreya,Georgia,serif}#cin input:focus{border-color:#b8860b;background:#fff}
+#sbox{background:radial-gradient(120% 70% at 50% 0%,#5a1220 0%,#3b0b14 48%,#24060c 100%);border:3px solid #15030a;outline:2px solid #d9a520;box-shadow:0 0 0 5px #24060c,0 0 0 6px #6b4a06,0 24px 60px #000d;border-radius:3px;color:#f6eedc;font-family:Alegreya,Georgia,serif}
+#wm{background:#0d0407}#wmc{border:3px solid #d9a520;box-shadow:0 0 0 2px #15030a,0 0 0 4px #6b4a06}
+.big{background:linear-gradient(#7a1420,#4a0a12);border:1px solid #d9a520;box-shadow:0 0 0 2px #15030a,inset 0 1px 0 #ffffff1f;color:#ffe9b0;border-radius:3px}
+#bc,#bn,#nx{color:#2a1400;background:linear-gradient(#ffe88a,#f2b400 55%,#c98a10);border-color:#6b4a06;text-shadow:0 1px 0 #fff7}
+.big:hover{filter:brightness(1.12)}
 
 """
 
