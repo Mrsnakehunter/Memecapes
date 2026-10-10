@@ -237,7 +237,7 @@ body.pre #col{display:none!important}
 <div id="ctx"></div><div id="modal"><div id="mb"></div></div>
 <script>
 (()=>{
-const $=i=>document.getElementById(i);const BUILD='20261010174841';
+const $=i=>document.getElementById(i);const BUILD='20261010204714';
 let W=384,H=384;const CX=192,CY=192,W0=384,H0=384;
 let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:756,ck:0,sm:0,str:0,def:0},inv:[],hp:12,hp10:1,run:0,en:100,flow:[]};
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
@@ -678,7 +678,7 @@ const NETH={
   // a brand-new account: bring this browser's progress, or start fresh
   if(w&&w.bring&&!st.upl){st.acct={name:m.name};st.upl=m.name;st.iron=w.iron?1:0;NETS.on=true;netSaveNow();netStart('begin');return}
   const fresh={acct:{name:m.name},ap:st.ap,iron:w&&w.iron?1:0,upl:m.name};LS.set('ms4',JSON.stringify(fresh));LS.set('mc_rev','0');SS.set('mc_auto','design');location.reload()},
- saved(m){NETS.rev=m.rev;LS.set('mc_rev',String(m.rev))},
+ saved(m){NETS.rev=m.rev;LS.set('mc_rev',String(m.rev))},holder(m){NETS.holder=m;hpkRefresh()},walletSign(m){hpkSign(m)},skinGift(m){st.skins=m.skins;(st.wear=st.wear||{})[skById(m.skin).g]=m.skin;NETS.rev=m.rev;LS.set('mc_rev',String(m.rev));save();ui();say('Holder gift: '+skById(m.skin).n+' is yours and it is on. Thanks for holding $CAPES.','#0a0');hpkRefresh()},
  stale(m){if(m.rev>NETS.rev)netSend({t:'pull'})},
  resync(m){if(m.save){say('Loading your latest progress from the server...','#a60');netReload(m.save,m.rev,'begin')}},
  chatlog(m){if(m.lines&&m.lines.length)say('<span style="opacity:.7">Recent chat: '+m.lines.slice(-5).map(l=>'<b>'+esc(l.name)+':</b> '+esc(l.text)).join(' | ')+'</span>','#555')},
@@ -805,14 +805,42 @@ function skinW(k){const g=SKG[k],id=g&&st.wear&&st.wear[g];return id&&skOwn(id)?
 function capeSkin(){const id=st.wear&&st.wear.cape;return id&&skOwn(id)?id:null}
 const SKHOLD={"sk_laser": [1.25, 0.3, "f", 25, 20], "sk_upaxe": [1.0, 0.12, "a", -40, 12], "sk_rocket": [0.95, 0.22, "f", 35, 20], "sk_moon": [1.7, 0.4, "v", 22, 8], "sk_rug": [0.95, 0.1, "f", 35, 20], "sk_dpick": [0.95, 0.12, "a", -40, 12]};SKN.forEach(s=>{if(s.g!='cape'&&WCFG[SKB[s.g]])WCFG['w_'+s.id]=SKHOLD[s.id]||WCFG[SKB[s.g]]});
 function skinGive(id){if(!skById(id))return false;(st.skins=st.skins||[]);if(!st.skins.includes(id))st.skins.push(id);(st.wear=st.wear||{})[skById(id).g]=id;save();return true}
-function wardrobeUI(){M.style.display='flex';MB.onclick=null;const W=st.wear||{};let h='<h2>Wardrobe</h2><p style="font-size:12px">Skins change how a weapon type or your cape looks. They never change stats. Cape skins work on every cape except the MemeCape and the Quest cape.</p>';
+function wardrobeUI(){M.style.display='flex';MB.onclick=null;const W=st.wear||{};const HC=HPK()&&HPK().canClaim;let h='<h2 id="wrd">Wardrobe</h2><p style="font-size:12px">Skins change how a weapon type or your cape looks. They never change stats. Cape skins work on every cape except the MemeCape and the Quest cape.</p>';
  const own=SKN.filter(s=>skOwn(s.id));h+=own.length?'':'<p style="font-size:12px;color:#ccc">You do not own any skins yet.</p>';
  own.forEach(s=>{const on=W[s.g]==s.id;h+='<div class="row"><span><b style="color:#ffd23f">'+s.n+'</b> <small>('+SKGN[s.g]+')</small></span><button data-wr="'+s.id+'">'+(on?'Take off':'Wear')+'</button></div>'});
- h+='<h2 style="margin-top:14px">Skin store</h2><p style="font-size:12px">$2.99 each. Card payments open with the game servers; until then skins come as redeem codes from the shop on memecapes.com.</p>';
- SKN.filter(s=>!skOwn(s.id)).forEach(s=>{h+='<div class="row"><span><b>'+s.n+'</b> <small>('+SKGN[s.g]+')</small><br><small style="color:#ccc">'+s.d+'</small></span><span style="color:#ffd23f;white-space:nowrap">$2.99</span></div>'});
+ if(HC)h+='<div style="margin-top:10px;padding:8px;border:1px solid #ffd23f;border-radius:6px;font-size:12px;color:#ffd23f">Holder gift: take any one skin below for free.</div>';h+='<h2 style="margin-top:14px">Skin store</h2><p style="font-size:12px">$2.99 each. Card payments open with the game servers; until then skins come as redeem codes from the shop on memecapes.com.</p>';
+ SKN.filter(s=>!skOwn(s.id)).forEach(s=>{h+='<div class="row"><span><b>'+s.n+'</b> <small>('+SKGN[s.g]+')</small><br><small style="color:#ccc">'+s.d+'</small></span>'+(HC?'<button data-hc="'+s.id+'">Take free</button>':'<span style="color:#ffd23f;white-space:nowrap">$2.99</span>')+'</div>'});
  h+='<br><button id="x">Close</button>';MB.innerHTML=h;$('x').onclick=()=>M.style.display='none';
- MB.querySelectorAll('[data-wr]').forEach(b=>b.onclick=()=>{const s=skById(b.dataset.wr);st.wear=st.wear||{};st.wear[s.g]=st.wear[s.g]==s.id?null:s.id;save();ui();wardrobeUI()})}
+ MB.querySelectorAll('[data-hc]').forEach(b=>b.onclick=()=>{netSaveNow();netSend({t:'holderClaim',skin:b.dataset.hc});b.disabled=true;b.textContent='...'});MB.querySelectorAll('[data-wr]').forEach(b=>b.onclick=()=>{const s=skById(b.dataset.wr);st.wear=st.wear||{};st.wear[s.g]=st.wear[s.g]==s.id?null:s.id;save();ui();wardrobeUI()})}
 window.mcWardrobe=()=>wardrobeUI();
+
+// ---- holder perks (tools/patch_holder.py; the rules live on the server)
+const HPK=()=>NETS.holder||null;
+window.mcMember=()=>!!(HPK()&&HPK().member);
+function hpkWalletApp(){const w=window;return (w.phantom&&w.phantom.solana)||(w.solana&&w.solana.isPhantom&&w.solana)||w.solflare||w.solana||null}
+const hpkDate=t=>new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+function holderHTML(){const H=HPK(),need=H?H.need:1,days=H?H.days:14;
+ let h='<div id="hpk" style="margin-top:12px;padding-top:10px;border-top:1px dashed #fff4"><b style="color:#ffd23f">Holder perks</b><br><span style="font-size:12px">Hold at least '+need+'% of all $CAPES in your own wallet: free Cape Club membership, and one free skin from the skin store every '+days+' days.</span><br>';
+ if(!SRV()||!NETS.on)return h+'<span style="color:#ccc;font-size:12px">Needs online play: log in from the start screen.</span></div>';
+ if(!H||!H.on)return h+'<span style="color:#ccc;font-size:12px">Opens when the $CAPES token launches.</span></div>';
+ if(!H.wallet)return h+'<span style="font-size:12px">Link the wallet that holds your $CAPES. Your wallet app asks you to sign a short message: it is free, it is not a transaction and nothing moves. We never ask for your seed phrase.</span><br><button data-hp="link">Link my wallet</button><div id="hpr" style="font-size:12px;margin-top:4px"></div></div>';
+ h+='<span style="font-size:12px">Wallet <b>'+H.wallet.slice(0,4)+'...'+H.wallet.slice(-4)+'</b> holds <b>'+(+H.pct||0)+'%</b> of all $CAPES'+(H.checked?' (checked '+hpkDate(H.checked)+')':'')+'.</span><br>';
+ if(H.err)h+='<span style="color:#ff7a59;font-size:12px">The last check could not reach the blockchain. It tries again within the hour.</span><br>';
+ if(H.member){h+='<span style="color:#7dff9a;font-size:12px">Cape Club: active while you keep '+need+'% or more.</span><br>';
+  h+=H.canClaim?'<span style="font-size:12px;color:#ffd23f">Your free skin is ready.</span> <button onclick="mcWardrobe()">Pick it in the Wardrobe</button><br>':'<span style="font-size:12px">Next free skin: '+hpkDate(H.claimAt)+(H.claims?'':' (after '+days+' days of holding)')+'.</span><br>'}
+ else h+='<span style="color:#ccc;font-size:12px">Below '+need+'%: no perks right now. Perks start at the next check after you reach '+need+'%; the free skin needs '+days+' days of holding without dropping below.</span><br>';
+ return h+'<button class="ghost" data-hp="unlink">Unlink wallet</button><div id="hpr" style="font-size:12px;margin-top:4px"></div></div>'}
+async function hpkLink(){const r=$('hpr'),p=hpkWalletApp();
+ if(!p){if(r)r.innerHTML='No wallet app found in this browser. Open memecapes.com/play.html inside your wallet app (Phantom or Solflare), or on a computer with the wallet extension, then link here.';return}
+ try{if(r)r.textContent='Asking your wallet app...';const c=await p.connect();const pk=((c&&c.publicKey)||p.publicKey);const w=pk&&pk.toString();if(!w)throw new Error('no address');netSend({t:'walletNonce',wallet:w})}
+ catch(e){if(r)r.textContent='Your wallet app did not connect. Nothing was linked.'}}
+async function hpkSign(m){const p=hpkWalletApp(),r=$('hpr');if(!p)return;
+ try{const pk=p.publicKey&&p.publicKey.toString();if(pk!==m.wallet){if(r)r.textContent='Your wallet app switched address. Try again.';return}
+  const s=await p.signMessage(new TextEncoder().encode(m.msg),'utf8'),sig=(s&&s.signature)||s;let b='';for(const x of new Uint8Array(sig))b+=String.fromCharCode(x);
+  netSend({t:'walletLink',wallet:m.wallet,sig:btoa(b)});if(r)r.textContent='Signed. Checking your $CAPES...'}
+ catch(e){if(r)r.textContent='You did not sign, so nothing was linked.'}}
+function holderWire(){MB.querySelectorAll('[data-hp]').forEach(b=>b.onclick=()=>{if(b.dataset.hp=='link')hpkLink();else netSend({t:'walletUnlink'})})}
+function hpkRefresh(){if(M.style.display=='none')return;if($('wrd'))wardrobeUI();else if($('hpk'))modal('bank')}
 function qMdl(m,x,y,z,yaw,s,clip,t,cut,sm,gh,pl){const c=m.clips[clip]||m.clips[clip=='Running'?'Walking':null];if(c){if(!c.f)skinClip(m,c);c.u=performance.now()}let a=m.idle,b=m.idle,mx=0;if(c){const nf=c.f.length,ft=((t*c.fps)%nf+nf)%nf,f0=Math.floor(ft);a=c.f[f0].g;b=c.f[(f0+1)%nf].g;mx=ft-f0}MQ.push({m,x,y:y+YO,z,yaw,s,a,b,mx,cut,sm,gh,pl})}
 function drawMQ(prog,U,shell){for(const q of (prog==pgSM?MQL:MQ)){if(q.hr&&prog!=pgM)continue;let m=q.m,qa=q.a,qb=q.b;if(prog==pgSM&&q.sm){m=q.sm;qa=qb=m.idle}gl.bindBuffer(gl.ARRAY_BUFFER,qa.p);gl.vertexAttribPointer(0,3,gl.SHORT,false,6,0);gl.bindBuffer(gl.ARRAY_BUFFER,qb.p);gl.vertexAttribPointer(1,3,gl.SHORT,false,6,0);if(prog==pgM){gl.bindBuffer(gl.ARRAY_BUFFER,q.a.n);gl.vertexAttribPointer(2,3,gl.BYTE,true,4,0);gl.bindBuffer(gl.ARRAY_BUFFER,m.uvb);gl.vertexAttribPointer(3,2,gl.FLOAT,false,8,0);gl.uniform1f(U.hasT,m.tex?1:0);gl.uniform3f(U.fc,m.fc[0],m.fc[1],m.fc[2]);if(m.tex){gl.activeTexture(gl.TEXTURE4);gl.bindTexture(gl.TEXTURE_2D,m.tex);gl.activeTexture(gl.TEXTURE0)}}if(prog==pgM){gl.uniform1f(U.cutR,q.cut&&started&&st.xr!==0?2.4:0);gl.uniform1f(U.gh,q.gh?.78:0);if(q.pl&&st.ap){const H=s=>[parseInt(s.slice(1,3),16)/255,parseInt(s.slice(3,5),16)/255,parseInt(s.slice(5,7),16)/255],a=st.ap,u=(n,c)=>{const v=H(c||'#808080');gl.uniform3f(U[n],v[0],v[1],v[2])};gl.uniform1f(U.recol,1);u('cSh',SHIRTS[a.sh|0]);u('cPa',PANTSC[a.pa|0]);u('cHa',HAIRC[a.hc|0]);u('cSk',SKINS[a.sk|0]);u('cBo',BOOTS[a.ft|0])}else gl.uniform1f(U.recol,0)}if(prog==pgM){gl.uniform1f(U.hold,q.hr?1:0);if(q.hr){gl.uniformMatrix3fv(U.HR,false,q.hr);gl.uniform3fv(U.HT,q.ht)}}gl.uniform3f(U.tr,q.x,q.y,q.z);gl.uniform1f(U.yaw,q.yaw);gl.uniform1f(U.sc,q.s);gl.uniform1f(U.mixf,q.mx);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,m.ib);gl.drawElements(gl.TRIANGLES,m.ni,gl.UNSIGNED_SHORT,0)}}
 const MDLFOR={'m:bonk':'bonkb','m:fart':'fart','m:floki':'floki','m:bome':'bome','m:pnut':'pnut','m:popcat':'popcat','m:moodeng':'moodeng','m:mog':'mog','m:slerf':'slerf','m:safemoon':'safemoon','k:bog':'hexfrog','k:wojakw':'wojak','k:rage':'rage','k:chad':'chad','k:giga':'chad','k:clout':'clout','k:doge':'doge','k:ghound':'doge','k:jester':'jester','k:rknight':'knight','k:cult':'cult','k:doom':'doom','k:shiba':'fox','k:pepe':'hexfrog','k:bonk':'bonkb','k:guard':'knight','k:wif':'doge','k:chill':'doge','k:botcap':'cult','k:spambot':'doom'},MSK={bonk:.62,wif:.9,chill:.95,botcap:1.2,spambot:.85},MDLSC={player:1,playerf:1,frogw:1,banker:1,cobbler:1,trader:1,knight:1,bonkwell:1,genie:1,richw:1,chefdoge:1,cult:1,wojak:1,clout:1,doom:1,jester:1,hexfrog:1,frogwe:1,doge:1,fox:1,rage:0.9,chad:1.1,floki:1.1,fart:1.1,mog:0.9,pnut:0.7,popcat:0.8,moodeng:0.75,slerf:0.85,bome:0.8,safemoon:0.9,bonkb:1.35,frostdoge:3};
@@ -1214,14 +1242,14 @@ function skillPet(p){if(Math.random()<1/1500){clog('pet'+p);if(!st.pet){st.pet=p
 
 // ---- $CAPES in (deposits) and redeem codes, at any bank
 const CFG=()=>window.MC_CONFIG||{},PAYOK=()=>!!(window.MCPAY);
-function depHTML(){const C=CFG(),A=window.MCPAY,on=C.depositsOpen&&A&&A.isAddr(C.capesMint)&&A.isAddr(C.capesWallet),w=st.acct&&st.acct.wallet&&A&&A.isAddr(st.acct.wallet)?st.acct.wallet:'';let h='<div style="margin-top:12px;padding-top:10px;border-top:1px dashed #fff4"><b style="color:#ffd23f">Deposit $CAPES for Meme Coins</b><br>';
+function depHTML(){return depHTML1()+holderHTML()}function depHTML1(){const C=CFG(),A=window.MCPAY,on=C.depositsOpen&&A&&A.isAddr(C.capesMint)&&A.isAddr(C.capesWallet),w=st.acct&&st.acct.wallet&&A&&A.isAddr(st.acct.wallet)?st.acct.wallet:'';let h='<div style="margin-top:12px;padding-top:10px;border-top:1px dashed #fff4"><b style="color:#ffd23f">Deposit $CAPES for Meme Coins</b><br>';
  if(!on)h+='<span style="color:#ccc;font-size:12px">Opens when the $CAPES token launches. The address will be posted here and on the official site only.</span>';
  else{h+='<span style="font-size:12px">1 $CAPES = '+(C.capesToMemeCoins||100).toLocaleString()+' Meme Coins, paid into your bank.</span><br>';
   if(!w)h+='<span style="font-size:12px">First save the PUBLIC address of the wallet you will pay from (never your seed phrase):</span><br><input id="dpw" placeholder="Your Solana wallet address" style="width:100%;box-sizing:border-box;margin:4px 0"><button data-dp="w">Save wallet</button>';
   else h+='<span style="font-size:12px">From your wallet <b>'+w.slice(0,4)+'...'+w.slice(-4)+'</b>, send $CAPES to:</span><br><code style="font-size:11px;word-break:break-all;display:block;margin:4px 0;color:#ffe9b0">'+C.capesWallet+'</code><button data-dp="copy">Copy address</button> <a href="'+window.MCPAY.payLink(C.capesWallet,10,C.capesMint,'MemeCapes deposit')+'" style="color:#ffd23f;font-size:12px">Open in my wallet (10 $CAPES)</a><br><span style="font-size:12px">Then paste the transaction signature:</span><br><input id="dps" placeholder="Transaction signature" style="width:100%;box-sizing:border-box;margin:4px 0"><button data-dp="check">Check and credit</button> <button class="ghost" data-dp="forget">Use a different wallet</button><div id="dpr" style="font-size:12px;margin-top:4px"></div>'}
  h+='</div><div style="margin-top:12px;padding-top:10px;border-top:1px dashed #fff4"><b style="color:#ffd23f">Withdraw Meme Coins as $CAPES</b><br><span style="color:#ccc;font-size:12px">'+(C.withdrawalsOpen?'Withdrawals open with the game servers.':'Opens with the game servers, when your Meme Coins are kept safe on our server instead of in this browser.')+'</span></div>';
  h+='<div style="margin-top:12px;padding-top:10px;border-top:1px dashed #fff4"><b style="color:#ffd23f">Redeem a code</b><br><span style="font-size:12px">Bought a skin, a custom cape or an item in the shop? Enter its code.</span><br><input id="rcc" placeholder="MC-XXXX-XXXX" style="width:60%;margin:4px 0;text-transform:uppercase"> <button data-dp="redeem">Redeem</button><div id="rcr" style="font-size:12px;margin-top:4px"></div></div>';return h}
-function depWire(){const C=CFG(),r=$('dpr');MB.querySelectorAll('[data-dp]').forEach(b=>b.onclick=async()=>{const a=b.dataset.dp;
+function depWire(){holderWire();const C=CFG(),r=$('dpr');MB.querySelectorAll('[data-dp]').forEach(b=>b.onclick=async()=>{const a=b.dataset.dp;
  if(a=='w'){const v=($('dpw').value||'').trim();if(!window.MCPAY.isAddr(v))return say('That is not a Solana wallet address.','#c00');st.acct=st.acct||{name:'Guest'};st.acct.wallet=v;save();modal('bank')}
  else if(a=='forget'){st.acct.wallet='';save();modal('bank')}
  else if(a=='copy'){try{navigator.clipboard.writeText(C.capesWallet);b.textContent='Copied'}catch(e){}}

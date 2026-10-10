@@ -19,6 +19,13 @@ const MAX_SAVE = 900 * 1024;          // bytes of save JSON
 const MAX_FRAME = 1024 * 1024;        // biggest WebSocket message accepted
 const VIEW = 48;                      // tiles: you see players this close
 const BAG = 35;                       // bag slots (the coin stack takes one)
+// holder perks: hold at least HOLDER_PCT % of all $CAPES in a wallet you own = free Cape Club, and one free shop skin every HOLDER_DAYS days
+const CAPES_MINT = process.env.CAPES_MINT || '';                 // empty = holder perks switched off
+const RPC = process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
+const HOLD_PCT = +process.env.HOLDER_PCT || 1;
+const HOLD_DAYS = +process.env.HOLDER_DAYS || 14;
+const SKIN_IDS = ['sk_laser', 'sk_upaxe', 'sk_dpick', 'sk_rocket', 'sk_rug', 'sk_moon',
+  'cs_green_candles', 'cs_red_candles', 'cs_laser_eyes', 'cs_diamond_hands', 'cs_moon_night', 'cs_coin_gold'];  // same list as tools/patch_skins.py
 
 fs.mkdirSync(path.join(DATA, 'backups'), { recursive: true });
 const db = new DatabaseSync(path.join(DATA, 'memecapes.db'));
@@ -29,7 +36,9 @@ CREATE TABLE IF NOT EXISTS sessions(token TEXT PRIMARY KEY, uid INT, created INT
 CREATE TABLE IF NOT EXISTS flags(id INTEGER PRIMARY KEY, uid INT, t INT, kind TEXT, detail TEXT);
 CREATE TABLE IF NOT EXISTS reports(id INTEGER PRIMARY KEY, uid INT, target TEXT, t INT, why TEXT, chat TEXT);
 CREATE TABLE IF NOT EXISTS trades(id INTEGER PRIMARY KEY, t INT, a INT, b INT, a_gave TEXT, b_gave TEXT);
-CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY, t INT, uid INT, name TEXT, text TEXT);`);
+CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY, t INT, uid INT, name TEXT, text TEXT);
+CREATE TABLE IF NOT EXISTS wallets(uid INTEGER PRIMARY KEY, wallet TEXT UNIQUE, linked INT, since INT DEFAULT 0, checked INT DEFAULT 0, due INT DEFAULT 0,
+  ok INT DEFAULT 0, pct REAL DEFAULT 0, claimed INT DEFAULT 0, claims INT DEFAULT 0, err TEXT DEFAULT '');`);
 const Q = {
   byName: db.prepare('SELECT * FROM users WHERE name=?'),
   byId: db.prepare('SELECT * FROM users WHERE id=?'),
@@ -57,6 +66,15 @@ const Q = {
   count: db.prepare('SELECT COUNT(*) n FROM users'),
   listFlags: db.prepare('SELECT f.t,u.name,f.kind,f.detail FROM flags f JOIN users u ON u.id=f.uid ORDER BY f.id DESC LIMIT 200'),
   listReports: db.prepare('SELECT r.t,u.name reporter,r.target,r.why,r.chat FROM reports r JOIN users u ON u.id=r.uid ORDER BY r.id DESC LIMIT 200'),
+  wal: db.prepare('SELECT * FROM wallets WHERE uid=?'),
+  walBy: db.prepare('SELECT * FROM wallets WHERE wallet=?'),
+  walSet: db.prepare('INSERT OR REPLACE INTO wallets(uid,wallet,linked,since,checked,due,ok,pct,claimed,claims,err) VALUES(?,?,?,0,0,0,0,0,?,?,\'\')'),
+  walDel: db.prepare('DELETE FROM wallets WHERE uid=?'),
+  walCheck: db.prepare('UPDATE wallets SET since=?, checked=?, due=?, ok=?, pct=?, err=? WHERE uid=?'),
+  walErr: db.prepare('UPDATE wallets SET due=?, err=? WHERE uid=?'),
+  walClaim: db.prepare('UPDATE wallets SET claimed=?, claims=claims+1 WHERE uid=?'),
+  walDue: db.prepare('SELECT * FROM wallets WHERE due<? ORDER BY due LIMIT 20'),
+  walList: db.prepare('SELECT u.name,w.wallet,w.ok,w.pct,w.since,w.checked,w.claims,w.err FROM wallets w JOIN users u ON u.id=w.uid ORDER BY w.pct DESC'),
 };
 const now = () => Date.now();
 
@@ -169,6 +187,8 @@ function signIn(c, u, tok) {
   c.send({ t: 'welcome', name: u.name, token: tok, save, rev: u.rev, role: c.role, iron: c.iron, online: online.size });
   c.send({ t: 'chatlog', lines: Q.recentChat.all().reverse() });
   for (const o of online.values()) if (o !== c && o.pos) c.send({ t: 'pi', ...pub(o) });
+  const w = CAPES_MINT && Q.wal.get(u.id);  // holder perks: a fresh balance check at every login
+  if (w) holderCheck(w).then(() => c.send(holderInfo(u.id))); else c.send(holderInfo(u.id));
 }
 
 const H = {
@@ -203,7 +223,7 @@ const H = {
   deleteAccount(c, m) {
     const u = c.uid && Q.byId.get(c.uid); if (!u) return;
     if (hashPass(String(m.pass || ''), u.salt) !== u.hash) return c.send({ t: 'err', text: 'Wrong password.' });
-    Q.sesDelUser.run(u.id); Q.del.run(u.id); c.send({ t: 'deleted' }); c.close();
+    Q.sesDelUser.run(u.id); Q.walDel.run(u.id); Q.del.run(u.id); c.send({ t: 'deleted' }); c.close();
   },
   save(c, m) {
     if (!c.uid || c.trade && c.trade.stage === 3) return;
@@ -323,6 +343,110 @@ function tradeFinish(T) {
   T.b.send({ t: 'tradeDone', inv: B.st.inv, coins: B.st.coins, rev: B.u.rev + 1, gave: ob, got: oa });
 }
 
+// ---------- holder perks ----------
+// The player proves the wallet is theirs by signing a short message in their wallet app (free: no transaction, nothing moves).
+// The server then reads the wallet's $CAPES balance from the blockchain itself, at link time, at every login and once a day
+// at a random hour. Perks need the balance to stay at HOLDER_PCT % or more at every check:
+//   Cape Club membership: while the last check passed.
+//   One free shop skin: after HOLDER_DAYS days of holding without a failed check, then again every HOLDER_DAYS days.
+// Passing the same tokens between wallets does not multiply the skins: a failed check restarts that wallet's count.
+const B58A = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+function b58(s) {
+  s = String(s || ''); if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(s)) return null;
+  let n = 0n; for (const ch of s) n = n * 58n + BigInt(B58A.indexOf(ch));
+  const out = []; while (n > 0n) { out.unshift(Number(n & 255n)); n >>= 8n; }
+  for (const ch of s) { if (ch !== '1') break; out.unshift(0); }
+  return Buffer.from(out);
+}
+const SPKI_ED = Buffer.from('302a300506032b6570032100', 'hex');
+function sigOk(wallet, msg, sigB64) {
+  const pk = b58(wallet); if (!pk || pk.length !== 32) return false;
+  try {
+    const key = crypto.createPublicKey({ key: Buffer.concat([SPKI_ED, pk]), format: 'der', type: 'spki' });
+    const sig = Buffer.from(String(sigB64 || ''), 'base64'); if (sig.length !== 64) return false;
+    return crypto.verify(null, Buffer.from(msg, 'utf8'), key, sig);
+  } catch (e) { return false; }
+}
+async function rpc(method, params) {
+  const r = await fetch(RPC, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), signal: AbortSignal.timeout(15000) });
+  const j = await r.json(); if (j.error) throw new Error(j.error.message || 'rpc error'); return j.result;
+}
+let supplyC = { t: 0, v: 0n };
+async function capesSupply() {
+  if (supplyC.v && now() - supplyC.t < 3600e3) return supplyC.v;
+  const r = await rpc('getTokenSupply', [CAPES_MINT]); supplyC = { t: now(), v: BigInt(r.value.amount) }; return supplyC.v;
+}
+async function capesBalance(w) {
+  const r = await rpc('getTokenAccountsByOwner', [w, { mint: CAPES_MINT }, { encoding: 'jsonParsed', commitment: 'confirmed' }]);
+  return r.value.reduce((a, x) => a + BigInt(x.account.data.parsed.info.tokenAmount.amount), 0n);
+}
+const nextDue = () => now() + 18 * 3600e3 + Math.floor(Math.random() * 12 * 3600e3);  // 18 to 30 hours, so nobody can time a check
+async function holderCheck(row) {
+  try {
+    const [s, b] = await Promise.all([capesSupply(), capesBalance(row.wallet)]);
+    const pct = s > 0n ? Number(b * 1000000n / s) / 10000 : 0, ok = pct >= HOLD_PCT;
+    const cur = Q.wal.get(row.uid); if (!cur || cur.wallet !== row.wallet) return null;  // unlinked meanwhile
+    // a gap of more than 3 days without a check (server down) also restarts the count: we can't vouch for it
+    const since = ok ? (cur.ok && cur.since && now() - cur.checked < 3 * 864e5 ? cur.since : now()) : 0;
+    Q.walCheck.run(since, now(), nextDue(), ok ? 1 : 0, pct, '', row.uid);
+  } catch (e) { Q.walErr.run(now() + 3600e3, String(e.message || e).slice(0, 120), row.uid); }
+  return Q.wal.get(row.uid);
+}
+function holderInfo(uid) {
+  const w = Q.wal.get(uid), d = HOLD_DAYS * 864e5;
+  const base = { t: 'holder', on: !!CAPES_MINT, need: HOLD_PCT, days: HOLD_DAYS };
+  if (!w) return base;
+  const ready = w.ok && w.since ? Math.max(w.since + d, (w.claimed || 0) + d) : 0;
+  return { ...base, wallet: w.wallet, pct: w.pct, member: !!w.ok, checked: w.checked, held: w.ok && w.since ? now() - w.since : 0,
+    claimAt: ready, canClaim: !!w.ok && ready > 0 && now() >= ready, claims: w.claims, err: w.err || '' };
+}
+Object.assign(H, {
+  holderInfo(c) { if (c.uid) c.send(holderInfo(c.uid)); },
+  walletNonce(c, m) {
+    if (!c.uid) return;
+    if (!CAPES_MINT) return say(c, 'Holder perks open when $CAPES launches.', '#a60');
+    const w = String(m.wallet || ''); const pk = b58(w); if (!pk || pk.length !== 32) return c.send({ t: 'err', text: 'That is not a Solana wallet address.' });
+    c.walletMsg = { w, msg: 'MemeCapes: prove this wallet is yours.\n\nAccount: ' + c.name + '\nWallet: ' + w + '\nCode: ' + crypto.randomBytes(8).toString('hex') +
+      '\n\nSigning this is free. It is not a transaction and it does not move any tokens.' };
+    c.send({ t: 'walletSign', wallet: w, msg: c.walletMsg.msg });
+  },
+  async walletLink(c, m) {
+    if (!c.uid || !c.walletMsg || c.walletMsg.w !== m.wallet) return;
+    const { w, msg } = c.walletMsg; c.walletMsg = null;
+    if (!sigOk(w, msg, m.sig)) return c.send({ t: 'err', text: 'The signature did not match that wallet. Nothing was linked.' });
+    const other = Q.walBy.get(w);
+    if (other && other.uid !== c.uid) return c.send({ t: 'err', text: 'That wallet is linked to another MemeCapes account. Unlink it there first.' });
+    const old = Q.wal.get(c.uid);
+    if (!(old && old.wallet === w)) Q.walSet.run(c.uid, w, now(), old ? old.claimed : 0, old ? old.claims : 0);  // the skin timer belongs to the account
+    say(c, 'Wallet linked. Checking your $CAPES...', '#0a0');
+    await holderCheck(Q.wal.get(c.uid)); c.send(holderInfo(c.uid));
+  },
+  walletUnlink(c) { if (!c.uid) return; Q.walDel.run(c.uid); say(c, 'Wallet unlinked.', '#a60'); c.send(holderInfo(c.uid)); },
+  async holderClaim(c, m) {
+    if (!c.uid || c.claiming) return;
+    const skin = String(m.skin || ''); if (!SKIN_IDS.includes(skin)) return;
+    let info = holderInfo(c.uid); if (!info.canClaim) return say(c, 'Your free skin is not ready yet.', '#c00');
+    c.claiming = 1;
+    try {
+      await holderCheck(Q.wal.get(c.uid)); info = holderInfo(c.uid);  // one fresh look at the balance right now
+      if (!info.canClaim) { c.send(info); return say(c, 'Your wallet is below ' + HOLD_PCT + '% of $CAPES now, so the free skin is on hold.', '#c00'); }
+      const { u, st } = loadSave(c.uid); if (!st) return say(c, 'Your progress has not reached the server yet. Try again in a few seconds.', '#c00');
+      st.skins = Array.isArray(st.skins) ? st.skins : []; if (st.skins.includes(skin)) return say(c, 'You already own that skin. Pick another.', '#c00');
+      st.skins.push(skin);
+      db.exec('BEGIN');
+      try { Q.setSave.run(JSON.stringify(st), u.rev + 1, now(), u.id); Q.walClaim.run(now(), c.uid); db.exec('COMMIT'); }
+      catch (e) { db.exec('ROLLBACK'); return say(c, 'That did not work. Nothing changed.', '#c00'); }
+      c.send({ t: 'skinGift', skin, skins: st.skins, rev: u.rev + 1 }); c.send(holderInfo(c.uid));
+    } finally { c.claiming = 0; }
+  },
+});
+// once a day at a random hour, every linked wallet is checked again (up to 20 a minute)
+let walBusy = false;
+setInterval(async () => {
+  if (!CAPES_MINT || walBusy) return; walBusy = true;
+  try { for (const row of Q.walDue.all(now())) { await holderCheck(row); const o = online.get(row.uid); if (o) o.send(holderInfo(row.uid)); } } finally { walBusy = false; }
+}, 60e3);
+
 function adminCmd(c, raw) {
   const [cmd, name, arg] = raw.slice(1).split(' '); const rest = raw.split(' ').slice(1).join(' ');
   const u = name && Q.byName.get(name);
@@ -345,7 +469,7 @@ function onMessage(c, msg) {
   if (--c.bucket < 0) return c.close();
   let m; try { m = JSON.parse(msg); } catch (e) { return; }
   const f = m && H[m.t]; if (!f) return;
-  try { f(c, m); } catch (e) { console.error('handler', m.t, e); }
+  try { const r = f(c, m); if (r && r.catch) r.catch(e => console.error('handler', m.t, e)); } catch (e) { console.error('handler', m.t, e); }
 }
 
 // ---------- ticks: positions 5 times a second, pings, cleanup, daily backup ----------
@@ -382,6 +506,7 @@ const server = http.createServer((req, res) => {
     if (url.pathname === '/admin/stats') return json({ online: online.size, accounts: Q.count.get().n, names: [...online.values()].map(o => o.name) });
     if (url.pathname === '/admin/flags') return json(Q.listFlags.all());
     if (url.pathname === '/admin/reports') return json(Q.listReports.all());
+    if (url.pathname === '/admin/holders') return json(Q.walList.all());
     if (url.pathname === '/admin/backup') { const f = path.join(DATA, 'backups', 'download.db'); try { fs.rmSync(f, { force: true }); db.exec(`VACUUM INTO '${f.replace(/'/g, "''")}'`); } catch (e) { return json({ error: String(e) }, 500); } res.writeHead(200, { 'Content-Type': 'application/octet-stream', 'Content-Disposition': 'attachment; filename=memecapes.db' }); return fs.createReadStream(f).pipe(res); }
   }
   json({ error: 'not found' }, 404);

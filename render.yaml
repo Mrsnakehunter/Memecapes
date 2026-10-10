@@ -19,6 +19,12 @@ services:
         generateValue: true
       - key: ADMIN_NAMES
         sync: false
+      - key: CAPES_MINT          # the $CAPES mint address once the token exists; empty = holder perks off
+        sync: false
+      - key: HOLDER_PCT
+        value: "1"
+      - key: HOLDER_DAYS
+        value: "14"
     disk:
       name: memecapes-data
       mountPath: /var/data
