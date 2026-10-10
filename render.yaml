@@ -1,0 +1,25 @@
+# Render Blueprint for the MemeCapes game server (server/ folder). See server/README.md.
+services:
+  - type: web
+    name: memecapes-server
+    runtime: node
+    rootDir: server
+    plan: starter
+    region: ohio
+    buildCommand: "echo nothing to build"
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.0
+      - key: DATA_DIR
+        value: /var/data
+      - key: ADMIN_KEY
+        generateValue: true
+      - key: ADMIN_NAMES
+        sync: false
+    disk:
+      name: memecapes-data
+      mountPath: /var/data
+      sizeGB: 1
