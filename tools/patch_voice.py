@@ -159,6 +159,7 @@ rep("needMdl('frogw');if(MDL.frogw&&MDL.frogw.ok)", "needMdl('hexfrog');if(MDL.h
 rep("qMdl(MDL.frogw,f.x,0,f.z,f.yaw,MDLSC.frogw,", "qMdl(MDL.hexfrog,f.x,0,f.z,f.yaw,MDLSC.hexfrog,")
 
 rep("<span>Tasks done</span>", "<span>Bounties done</span>")
+rep("<div class=\"h\">Choose Option</div>", "<div class=\"h\">What now?</div>", 2)
 h = ''.join(SEG)
 # nothing borrowed may remain in the text
 left = [w for w in ['Pepe', 'Chill Guy', "'Doge'", 'Moo Deng', 'Peanut', 'SafeMoon', 'Thick Skin', 'Protect from', 'collection log', 'Slayer', 'Antique', 'Treasure Trail', 'Talk-to', 'Walk here', 'Hitpoints', 'Ironman', 'platebody', 'Tinderbox']
