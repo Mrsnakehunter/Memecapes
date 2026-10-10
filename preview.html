@@ -151,6 +151,18 @@ button{font:bold 12px Georgia,serif;background:#7a6640;color:#fff;border:2px sol
 .wax.sealed{animation:wax-press .5s ease-out}
 @keyframes wax-press{0%{transform:scale(1.5) rotate(-6deg);opacity:0}100%{transform:scale(1) rotate(-6deg);opacity:1}}
 .tr-conf p{color:#d9b98a;font-size:12px;margin:0}
+/* ---- the HUD: minimap ring, status pills, zoom and map buttons, the right-click menu */
+#mm{border:3px solid #d9a520;box-shadow:0 0 0 2px #15030a,0 0 0 4px #6b4a06,0 6px 18px #000a}
+.orb{background:linear-gradient(#2b0810,#15030a);border:1px solid #d9a520;box-shadow:0 0 0 2px #15030a;border-radius:10px;color:#f6eedc;font:700 10px/18px Cinzel,Georgia,serif;letter-spacing:.3px;overflow:hidden}
+.orb i{opacity:.85;border-radius:9px 0 0 9px}
+#cmp{background:#2b0810;border:2px solid #d9a520;box-shadow:0 0 0 2px #15030a;color:#ff7a59}
+#wmb{background:linear-gradient(#7a1420,#4a0a12);border:1px solid #d9a520;box-shadow:0 0 0 2px #15030a;color:#ffe9b0;font:700 11px/20px Cinzel,Georgia,serif}
+#zm button{font:700 14px/1 Cinzel,Georgia,serif;color:#ffe9b0;background:linear-gradient(#7a1420,#4a0a12);border:1px solid #d9a520;box-shadow:0 0 0 2px #15030a;border-radius:3px;width:30px;height:30px;padding:0}
+#hint{font:700 12px Cinzel,Georgia,serif;color:#f6eedc}#hint b{color:#ffd23f}
+#ctx{background:linear-gradient(#3b0b14,#24060c);border:1px solid #d9a520;box-shadow:0 0 0 2px #15030a,0 8px 20px #000c;border-radius:3px;min-width:150px;font:13px Alegreya,Georgia,serif;overflow:hidden}
+#ctx div{padding:5px 10px;color:#f6eedc}#ctx div:hover{background:#d9a52033;color:#ffe9b0}
+#ctx .h{background:#15030a;color:#ffd23f;font:700 11px Cinzel,Georgia,serif;letter-spacing:.3px;padding:5px 10px}
+
 </style></head><body class="pre">
 <canvas id="gl"></canvas><div id="hint">Go here</div>
 <canvas id="mm" width="120" height="120"></canvas><div id="cmp" title="Compass - tap to face north"><b>N</b></div><div id="wmb" title="World map">MAP</div>
@@ -169,7 +181,7 @@ button{font:bold 12px Georgia,serif;background:#7a6640;color:#fff;border:2px sol
 (()=>{
 const $=i=>document.getElementById(i);
 let W=384,H=384;const CX=192,CY=192,W0=384,H0=384;
-let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:756,ck:0,sm:0,str:0,def:0},inv:[],hp:12,run:0,en:100,flow:[]};
+let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:756,ck:0,sm:0,str:0,def:0},inv:[],hp:12,hp10:1,run:0,en:100,flow:[]};
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
 if(!st.qs||st.qs.length<4)st.qs=[st.q||0,0,0,0];if(!st.qc||st.qc.length<4)st.qc=[st.qk||0,0,0,0];['str','def','pr','ag','sl','fm','fa','cn'].forEach(k=>{if(st.xp[k]==null)st.xp[k]=0});if(st.pp==null)st.pp=1;if(st.spec==null)st.spec=100;if(!st.pron)st.pron=[];st.cave=null;st.specOn=0;if(st.cs==null)st.cs=0;if(st.scape==null)st.scape=0;while(st.qs.length<5){st.qs.push(0);st.qc.push(0)}if(!st.vt)st.vt=[];if(!st.eq)st.eq={};if(!st.hp10){if((st.xp.hp||0)<1154)st.xp.hp=(st.xp.hp||0)+1154;st.hp10=1}if(!st.hp12){if((st.xp.hp||0)<756)st.xp.hp=756;if(st.hp<12)st.hp=12;st.hp12=1}if(st.exToday==null)st.exToday=0;
 const save=()=>{try{localStorage.setItem('ms4',JSON.stringify(st))}catch(e){}};
@@ -769,7 +781,7 @@ addEventListener('pointermove',e=>{if(dn&&!lp){const dx=e.clientX-dn.x,dy=e.clie
 else if(e.target===cv&&!dn){const[tx,ty]=pick(e),t=tgt(tx,ty);$('hint').innerHTML=t?t.v+' <b>'+t.n+'</b>':'Go here'}});
 addEventListener('pointerup',e=>{clearTimeout(lpt);if(started&&dn&&!drag&&!lp&&e.target===cv&&e.button!=2){const[tx,ty]=pick(e);go(tgt(tx,ty),tx,ty)}dn=null});
 cv.addEventListener('contextmenu',e=>{e.preventDefault();if(started)menu(e)});
-function menu(e){const[tx,ty]=pick(e),t=tgt(tx,ty),c=$('ctx'),fn=[];let h='<div class="h">Choose Option</div>';
+function menu(e){const[tx,ty]=pick(e),t=tgt(tx,ty),c=$('ctx'),fn=[];let h='<div class="h">What now?</div>';
 if(t){h+='<div data-i="0">'+t.v+' <b style="color:#0ff">'+t.n+'</b></div>';fn.push(()=>go(t,tx,ty))}
 h+='<div data-i="'+fn.length+'">Go here</div>';fn.push(()=>go(null,tx,ty));
 if(t){h+='<div data-i="'+fn.length+'">Look</div>';fn.push(()=>say(t.k=='gob'?MT[t.ref.t].ex:EXM[t.k]))}
@@ -1191,7 +1203,7 @@ else h='<div style="font-size:11px;line-height:1.6"><div style="background:#3a2a
 $('pc').innerHTML=h}
 $('panel').addEventListener('pointerup',e=>{if(e.button==2)return;const q=e.target.closest('[data-eq]');if(q){slotCard(q.dataset.eq);return}const s=e.target.closest('[data-k]');if(!s)return;const k=s.dataset.k,i=+s.dataset.i;
 if(useSel){const u=useSel;useSel=null;renderPanel();if(u.i===i)return;return say('Nothing interesting happens.')}itemCard(k,i)});
-$('panel').addEventListener('contextmenu',e=>{e.preventDefault();const s=e.target.closest('[data-k]');if(!s)return;const k=s.dataset.k,i=+s.dataset.i,fn=[],sl=slotOf(k);let h='<div class="h">Choose Option</div>';const add=(t,f)=>{h+='<div data-i="'+fn.length+'">'+t+' <b style="color:#ff9040">'+IN[k]+'</b></div>';fn.push(f)};if(IACT[k])add(IACT[k][0],()=>IACT[k][1](k,i));
+$('panel').addEventListener('contextmenu',e=>{e.preventDefault();const s=e.target.closest('[data-k]');if(!s)return;const k=s.dataset.k,i=+s.dataset.i,fn=[],sl=slotOf(k);let h='<div class="h">What now?</div>';const add=(t,f)=>{h+='<div data-i="'+fn.length+'">'+t+' <b style="color:#ff9040">'+IN[k]+'</b></div>';fn.push(f)};if(IACT[k])add(IACT[k][0],()=>IACT[k][1](k,i));
 if(sl)add(sl=='weapon'?'Wield':'Wear',()=>equip(i));if(HEAL[k])add('Eat',()=>useItem(k,i));if(k!='coin'){add('Use',()=>{useSel={k,i};say('Use '+IN[k]+' -> tap something','#1a4fb0');renderPanel()});add('Drop',()=>{st.inv.splice(i,1);say('You drop the '+IN[k].toLowerCase()+'.');ui()})}add('Look',()=>say(EX[k]||''));add('Info',()=>itemCard(k,i));showMenu(e,h,fn)});
 function useItem(k,i){if(k=='fish'&&i>=0)return say('I should try cooking this.');if(HEAL[k]&&i>=0){if(tickN<eatT)return;if(st.hp>=hpMax())return say('You are already at full health.');eatT=tickN+3;atkCd=Math.max(atkCd,1)+3;if(act&&act.k=='gob')act.ref.ate=1;pAnim={k:'eat',t0:performance.now(),d:900};st.inv.splice(i,1);st.hp=Math.min(hpMax(),st.hp+HEAL[k]);say('You eat the '+IN[k].toLowerCase()+'.');ui()}}
 const M=$('modal'),MB=$('mb');new MutationObserver(()=>{if(MB.className&&!MB.querySelector('#mkroot,#trroot'))MB.className=''}).observe(MB,{childList:true});

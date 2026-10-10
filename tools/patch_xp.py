@@ -41,7 +41,7 @@ rep("if(st.coins<99000)return say('You need 99,000 Meme Coins for that.','#c00')
 rep("burn(99000,'skill cape');", "burn(100000,'skill cape');")
 # ---- Hitpoints starts at level 12
 rep("xp:{wc:0,mi:0,fi:0,at:0,hp:1154,ck:0,sm:0,str:0,def:0},inv:[],hp:10,run:0,en:100,flow:[]};",
-    "xp:{wc:0,mi:0,fi:0,at:0,hp:%d,ck:0,sm:0,str:0,def:0},inv:[],hp:12,run:0,en:100,flow:[]};" % HP12)
+    "xp:{wc:0,mi:0,fi:0,at:0,hp:%d,ck:0,sm:0,str:0,def:0},inv:[],hp:12,hp10:1,run:0,en:100,flow:[]};" % HP12)
 # old saves: bring Hitpoints up to level 12 once
 rep("if(!st.hp10){if((st.xp.hp||0)<1154)st.xp.hp=(st.xp.hp||0)+1154;st.hp10=1}",
     "if(!st.hp10){if((st.xp.hp||0)<1154)st.xp.hp=(st.xp.hp||0)+1154;st.hp10=1}if(!st.hp12){if((st.xp.hp||0)<%d)st.xp.hp=%d;if(st.hp<12)st.hp=12;st.hp12=1}" % (HP12, HP12))

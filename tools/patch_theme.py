@@ -130,6 +130,18 @@ CSS = r"""
 .wax.sealed{animation:wax-press .5s ease-out}
 @keyframes wax-press{0%{transform:scale(1.5) rotate(-6deg);opacity:0}100%{transform:scale(1) rotate(-6deg);opacity:1}}
 .tr-conf p{color:#d9b98a;font-size:12px;margin:0}
+/* ---- the HUD: minimap ring, status pills, zoom and map buttons, the right-click menu */
+#mm{border:3px solid #d9a520;box-shadow:0 0 0 2px #15030a,0 0 0 4px #6b4a06,0 6px 18px #000a}
+.orb{background:linear-gradient(#2b0810,#15030a);border:1px solid #d9a520;box-shadow:0 0 0 2px #15030a;border-radius:10px;color:#f6eedc;font:700 10px/18px Cinzel,Georgia,serif;letter-spacing:.3px;overflow:hidden}
+.orb i{opacity:.85;border-radius:9px 0 0 9px}
+#cmp{background:#2b0810;border:2px solid #d9a520;box-shadow:0 0 0 2px #15030a;color:#ff7a59}
+#wmb{background:linear-gradient(#7a1420,#4a0a12);border:1px solid #d9a520;box-shadow:0 0 0 2px #15030a;color:#ffe9b0;font:700 11px/20px Cinzel,Georgia,serif}
+#zm button{font:700 14px/1 Cinzel,Georgia,serif;color:#ffe9b0;background:linear-gradient(#7a1420,#4a0a12);border:1px solid #d9a520;box-shadow:0 0 0 2px #15030a;border-radius:3px;width:30px;height:30px;padding:0}
+#hint{font:700 12px Cinzel,Georgia,serif;color:#f6eedc}#hint b{color:#ffd23f}
+#ctx{background:linear-gradient(#3b0b14,#24060c);border:1px solid #d9a520;box-shadow:0 0 0 2px #15030a,0 8px 20px #000c;border-radius:3px;min-width:150px;font:13px Alegreya,Georgia,serif;overflow:hidden}
+#ctx div{padding:5px 10px;color:#f6eedc}#ctx div:hover{background:#d9a52033;color:#ffe9b0}
+#ctx .h{background:#15030a;color:#ffd23f;font:700 11px Cinzel,Georgia,serif;letter-spacing:.3px;padding:5px 10px}
+
 """
 
 # the theme goes after the game's own style block (the second <style> in the file)
