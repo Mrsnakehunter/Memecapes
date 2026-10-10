@@ -237,7 +237,7 @@ body.pre #col{display:none!important}
 <div id="ctx"></div><div id="modal"><div id="mb"></div></div>
 <script>
 (()=>{
-const $=i=>document.getElementById(i);const BUILD='20261010101133';
+const $=i=>document.getElementById(i);const BUILD='20261010132718';
 let W=384,H=384;const CX=192,CY=192,W0=384,H0=384;
 let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:756,ck:0,sm:0,str:0,def:0},inv:[],hp:12,hp10:1,run:0,en:100,flow:[]};
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
@@ -973,7 +973,48 @@ function bubble(gb,tx){const d=document.createElement('div');{const L=MT[gb.t].b
 function bubblesUpdate(){const n=performance.now();for(let i=bubbles.length-1;i>=0;i--){const b=bubbles[i],g=b.gb;if(n>b.t||g.dead){b.d.remove();g.bub=0;bubbles.splice(i,1);continue}const p=[g.px+.5-E[0],(b.h||1.75)+hgt(g.px+.5,g.py+.5)-E[1],g.py+.5-E[2]],zz=d3(p,Fw);if(zz<=0){b.d.style.display='none';continue}const sx=d3(p,Rt)/(zz*TH*asp),sy=d3(p,Up)/(zz*TH);b.d.style.display=(Math.abs(sx)>1.2||Math.abs(sy)>1.2)?'none':'block';b.d.style.left=((sx+1)/2*CW)+'px';b.d.style.top=((1-sy)/2*CH)+'px'}}
 const qmk=document.createElement('div');qmk.style.cssText='position:fixed;font:bold 26px Georgia;color:#ffe000;text-shadow:2px 2px #000,-1px -1px #000;pointer-events:none;transform:translate(-50%,-100%);display:none;z-index:4';document.body.appendChild(qmk);
 const pnm=document.createElement('div');pnm.style.cssText='position:fixed;font:bold 12px Georgia;color:#fff;text-shadow:1px 1px 2px #000,-1px -1px 2px #000;pointer-events:none;transform:translate(-50%,-100%);display:none;z-index:4;white-space:nowrap';document.body.appendChild(pnm);
-function nameplate(){const proj=(x,y,z)=>{const p=[x-E[0],y-E[1],z-E[2]],zz=d3(p,Fw);if(zz<=0)return null;const sx=d3(p,Rt)/(zz*TH*asp),sy=d3(p,Up)/(zz*TH);return Math.abs(sx)>1.2||Math.abs(sy)>1.2?null:[(sx+1)/2*CW,(1-sy)/2*CH]};
+
+// ---- starter guide: the first few minutes, one step at a time
+const gNear=(L,f,xy)=>{let b=null,bd=1e9;for(const o of L){if(f&&!f(o))continue;const p=xy?xy(o):[o.x,o.y];if(!p)continue;const d=Math.hypot(p[0]-P.x,p[1]-P.y);if(d<bd){bd=d;b=p}}return b};
+const GST=[
+ {t:'Walk around',h:'Tap the ground to walk there. Drag to turn the camera, pinch or use + and - to zoom.',ok:()=>Math.hypot(P.x-SP.x,P.y-SP.y)>4},
+ {t:'Meet Froggo',h:'Froggo has a job for you. Tap him and choose HELP HIM.',ok:()=>st.qs[0]>=1,at:()=>PR.quest&&[Math.floor(PR.quest[0]),Math.floor(PR.quest[1])],up:2.9},
+ {t:'Chop a tree',h:'Tap a tree to chop it with your axe. You get logs.',ok:()=>st.ev&&st.ev.chop,at:()=>gNear(trees,o=>!(o.d>tickN)&&!inCastle(o.x,o.y,0)),up:3.4},
+ {t:'Light a fire',h:'Walk out of the castle, tap the logs in your bag, then Light.',ok:()=>st.ev&&st.ev.fire},
+ {t:'Catch shrimps',h:'Tap a fishing spot (the bubbles in the water) to use your net.',ok:()=>st.xp.fi>0,at:()=>gNear(fish,o=>!o.gone),up:1.2},
+ {t:'Cook your catch',h:'Tap your fire, or a cooking range in town, while you carry raw shrimps.',ok:()=>st.ev&&st.ev.cook,at:()=>gNear(fires.concat(PR.ranges.map(r=>({x:Math.floor(r[0]),y:Math.floor(r[1])})))),up:1.6},
+ {t:'Mine some ore',h:'Tap a copper or tin rock with your pickaxe.',ok:()=>st.ev&&st.ev.mine,at:()=>gNear(rocks,o=>!(o.d>tickN)),up:1.8},
+ {t:'Defeat a meme',h:'Tap a weak meme (level 5 or lower) to fight it. Eat bread from your bag if your health gets low.',ok:()=>(st.xp.at||0)+(st.xp.str||0)+(st.xp.def||0)>0,at:()=>gNear(gobs,g=>!g.dead&&MT[g.t].lv<=5&&!MT[g.t].boss),up:2.4},
+ {t:'Visit a bank',h:'Banks keep your items and Meme Coins safe. Tap a bank and deposit your loot.',ok:()=>st.ev&&st.ev.bank,at:()=>gNear(SB,s=>s.k=='bank',s=>s.nt),up:2.6}];
+const gCard=document.createElement('div'),gArw=document.createElement('div'),gPill=document.createElement('div');
+gCard.id='guide';gCard.style.cssText='position:fixed;left:8px;top:74px;width:min(230px,calc(100vw - 160px));z-index:5;display:none;background:linear-gradient(#3a0a12f0,#22060bf0);border:1px solid #c9a24a;border-radius:9px;box-shadow:0 3px 12px #0008;padding:8px 10px 9px;color:#f3e6c8;font:12px/1.4 Georgia,serif';
+gArw.style.cssText='position:fixed;z-index:4;pointer-events:none;display:none;transform:translate(-50%,-100%);font:bold 30px Georgia;color:#ffd23f;text-shadow:0 2px 0 #7a4a00,0 0 10px #000';gArw.textContent='▼';
+gPill.style.cssText='position:fixed;left:8px;top:74px;z-index:5;display:none;width:28px;height:28px;border-radius:50%;background:#3a0a12;border:1px solid #c9a24a;color:#ffd23f;font:bold 16px Georgia;text-align:center;line-height:27px;cursor:pointer';gPill.textContent='?';gPill.title='Starter guide';
+document.body.append(gCard,gArw,gPill);
+gCard.addEventListener('pointerdown',e=>e.stopPropagation());gPill.addEventListener('pointerdown',e=>e.stopPropagation());
+gPill.onclick=()=>{st.gOff=0;gKey='';save()};
+let gKey='',gTgt=null,gT=0,gFlash=0,gLast=-1;
+const gDir=(dx,dy)=>{const a=Math.atan2(dx,-dy)*180/Math.PI,N=['north','north-east','east','south-east','south','south-west','west','north-west'];return N[Math.round(((a+360)%360)/45)%8]};
+function guideDraw(){
+ if(!started||!st||!st.xp){gCard.style.display=gArw.style.display=gPill.style.display='none';return}
+ if(st.gDone==null)st.gDone=(st.qp>0||(st.xp.wc||0)+(st.xp.mi||0)+(st.xp.fi||0)+(st.xp.at||0)+(st.xp.str||0)>0)?1:0; // players who already started never see it
+ if(st.gDone){gCard.style.display=gArw.style.display=gPill.style.display='none';return}
+ let i=0;while(i<GST.length&&GST[i].ok())i++;
+ if(i>=GST.length){st.gDone=1;pay(200,'starter guide');if(cap()>0)st.inv.push('lamp5');save();ui();
+  say('Starter guide complete! You got 200 Meme Coins and a small XP lamp. Froggo\'s quest, The Great Rug, is your next goal.','#a60');return}
+ if(st.gI!=null&&i>st.gI){say('Guide: '+GST[st.gI].t+' done! Next: '+GST[i].t+'.','#0a7a2a');gFlash=performance.now()}st.gI=i;
+ if(st.gOff){gCard.style.display=gArw.style.display='none';gPill.style.display='block';return}gPill.style.display='none';
+ const g=GST[i],tn=performance.now();if(i!=gLast||tn-gT>800){gLast=i;gT=tn;gTgt=g.at?g.at():null}
+ let far='';if(gTgt){const d=Math.round(Math.hypot(gTgt[0]-P.x,gTgt[1]-P.y));if(d>3)far='<div style="margin-top:4px;color:#ffd23f">➤ '+d+' tiles '+gDir(gTgt[0]-P.x,gTgt[1]-P.y)+'</div>'}
+ const k=i+'|'+far;if(k!=gKey){gKey=k;let dots='';for(let j=0;j<GST.length;j++)dots+='<span style="display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;background:'+(j<i?'#ffd23f':j==i?'#fff':'#ffffff33')+'"></span>';
+  gCard.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><b style="font:700 11px Cinzel,Georgia,serif;letter-spacing:1px;color:#c9a24a">STARTER GUIDE '+(i+1)+'/'+GST.length+'</b><span id="gx" style="cursor:pointer;color:#c9a24a;font-size:15px;padding:0 2px" title="Hide the guide">✕</span></div>'
+   +'<div style="font:700 14px Cinzel,Georgia,serif;color:#ffd23f;margin:3px 0 2px">'+g.t+'</div><div>'+g.h+'</div>'+far+'<div style="margin-top:6px">'+dots+'</div>';
+  gCard.querySelector('#gx').onclick=()=>{st.gOff=1;save()}}
+ gCard.style.display='block';gCard.style.boxShadow=performance.now()-gFlash<900?'0 0 18px #ffd23f':'0 3px 12px #0008';
+ if(gTgt){const x=gTgt[0]+.5,z=gTgt[1]+.5,p=[x-E[0],(g.up||2)+hgt(x,z)+Math.sin(performance.now()/260)*.15-E[1],z-E[2]],zz=d3(p,Fw);
+  if(zz>0){const sx=d3(p,Rt)/(zz*TH*asp),sy=d3(p,Up)/(zz*TH);if(Math.abs(sx)<1.05&&Math.abs(sy)<1.05){gArw.style.display='block';gArw.style.left=((sx+1)/2*CW)+'px';gArw.style.top=((1-sy)/2*CH)+'px';return}}}
+ gArw.style.display='none'}
+function nameplate(){guideDraw();const proj=(x,y,z)=>{const p=[x-E[0],y-E[1],z-E[2]],zz=d3(p,Fw);if(zz<=0)return null;const sx=d3(p,Rt)/(zz*TH*asp),sy=d3(p,Up)/(zz*TH);return Math.abs(sx)>1.2||Math.abs(sy)>1.2?null:[(sx+1)/2*CW,(1-sy)/2*CH]};
 if(started&&st.acct){const q=proj(P.px+.5,2.12+hgt(P.px+.5,P.py+.5),P.py+.5);if(q){pnm.style.display='block';pnm.textContent=st.acct.name+(st.iron?' (Iron)':'');pnm.style.left=q[0]+'px';pnm.style.top=q[1]+'px'}else pnm.style.display='none'}else pnm.style.display='none';
 const t=qMark();if(started&&PR.quest&&t){const q=proj(PR.quest[0],(MDL.hexfrog&&MDL.hexfrog.ok?2.3:2.7)+hgt(PR.quest[0],PR.quest[1]),PR.quest[1]);if(q){qmk.style.display='block';qmk.textContent=t;qmk.style.left=q[0]+'px';qmk.style.top=q[1]+'px'}else qmk.style.display='none'}else qmk.style.display='none'}
 function fl(x,y,t,c){const p=[x+.5-E[0],1.8+hgt(x+.5,y+.5)-E[1],y+.5-E[2]],z=d3(p,Fw);if(z<=0)return;const sx=d3(p,Rt)/(z*TH*asp),sy=d3(p,Up)/(z*TH);const d=document.createElement('div');d.className='hit';d.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 1l2.6 4.4 5-1.2-1.4 5 4.5 2.8-4.5 2.8 1.4 5-5-1.2L12 23l-2.6-4.4-5 1.2 1.4-5L1.3 12l4.5-2.8-1.4-5 5 1.2z" fill="'+c+'" stroke="#000" stroke-width="1"/></svg><span>'+t+'</span>';d.style.left=((sx+1)/2*CW-11)+'px';d.style.top=((1-sy)/2*CH-11)+'px';document.body.appendChild(d);requestAnimationFrame(()=>{d.style.transform='translateY(-10px)';d.style.opacity='0'});setTimeout(()=>d.remove(),1200)}
@@ -1068,7 +1109,7 @@ st.kc=st.kc||{};st.kc[gb.t]=(st.kc[gb.t]||0)+1;st.tk=(st.tk||0)+1;if(gb.specd)ev
 if(st.slay&&st.slay.left>0&&gb.t==st.slay.t){st.slay.left--;addXp('sl',mt.hp);if(st.slay.left==0){st.spts=(st.spts||0)+2;st.stasks=(st.stasks||0)+1;evn('slay');say('Bounty done! See Bonkwell for a new one.','#0a0')}else if(st.slay.left%5==0)say("You're assigned to kill "+MT[st.slay.t].n+"s; only "+st.slay.left+" more to go.")}
 if(mt.lv>=20&&Math.random()<.5&&cap()>0)st.inv.push('bbones');if(mt.lv>=2&&!has('clue')&&!st.clue&&!(st.bk||[]).some(e=>e.k=='clue'&&e.n>0)&&Math.random()<1/50&&cap()>0){st.inv.push('clue');say('A meme hunt scroll! Read it to start the hunt.','#a60')}if(Math.random()<1/20&&cap()>0)st.inv.push(['spot','sonion','scab','stom'][Math.floor(Math.random()*4)]);caCheck();questKill(gb);ui()}
 function doAct(){if(dieT||tickN<stunT)return;const k=act.k;if(XA[k]){if(!XA[k](act.o,act))act=null;return}if(k=='bank'&&clueAt('talk',act.x,act.y)){act=null;say('Banker: "Ooh, a clue! Here is your next one."');return clueStep()}
-if(k=='shop'||k=='bank'||k=='forge'||k=='chest'||k=='quest'){act=null;modal(k);return}
+if(k=='shop'||k=='bank'||k=='forge'||k=='chest'||k=='quest'){act=null;if(k=='bank')evn('bank');modal(k);return}
 if(k=='range'||k=='fire'){const i=st.inv.indexOf('fish');if(i<0){act=null;say('You have no raw shrimps to cook.');return}if(act.st==null)act.st=tickN;if(tickN<act.st)return;act.st=tickN+4;if(Math.random()<sk256(128,512,lvl(st.xp.ck))){st.inv[i]='cfish';addXp('ck',30);evn('cook');say('You successfully cook some shrimps.')}else{st.inv[i]='burnt';say('You accidentally burn the shrimps.','#c00')}return}
 if(k=='balloon'){const b=act.ref;if(!b.gone){b.gone=1;st.coins+=b.v;flow('+'+b.v+' Meme Coins: party balloon');say('POP! The balloon drops '+b.v+' Meme Coins!','#0a0')}act=null;return}
 if(k=='tree'){if(act.o.d>tickN){act=null;return}const ax=has('iaxe')?[96,300]:has('axe')?[64,200]:null;if(!ax){act=null;return say('You do not have an axe which you have the Woodcutting level to use.','#c00')}
