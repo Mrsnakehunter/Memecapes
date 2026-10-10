@@ -51,7 +51,8 @@ WCFG = {'w_sword': [1.1, .16, 'f', 25, 20], 'w_isword': [1.1, .16, 'f', 25, 20],
         'w_club': [.85, .1, 'f', 35, 20], 'w_bbat': [.95, .1, 'f', 35, 20],
         'w_axe': [.9, .12, 'a', -40, 12], 'w_iaxe': [.9, .12, 'a', -40, 12], 'w_pick': [.9, .12, 'a', -40, 12], 'w_ipick': [.9, .12, 'a', -40, 12],
         'w_bstaff': [1.6, .4, 'v', 22, 8], 'w_astaff': [1.6, .4, 'v', 22, 8], 'w_iscroll': [1.2, .35, 'v', 22, 8],
-        'w_rshield': [.95, .5, 's']}  # the shield sits on the left forearm, held at its middle
+        'w_rshield': [.95, .5, 's'],
+        'w_net': [1.25, .08, 'a', -35, 10]}  # the shield sits on the left forearm, held at its middle; w_net = the shrimp net (tools/mknet.py), held while fishing
 import base64
 WHT = {}
 for k in avail:
@@ -67,7 +68,7 @@ HELD_JS = ("const WAV=new Set(" + json.dumps(avail) + "),WHT=" + json.dumps(WHT)
     "const mul=(P,Q)=>{const M=[];for(let i=0;i<3;i++)for(let j=0;j<3;j++){let v=0;for(let k=0;k<3;k++)v+=P[i*3+k]*Q[k*3+j];M.push(v)}return M};"
     "const A=ty=='a'?[0,0,-1, -1,0,0, 0,1,0]:ty=='v'?[1,0,0, 0,-1,0, 0,0,-1]:[0,0,1, 1,0,0, 0,1,0];"
     "return mul([cb,0,sb, 0,1,0, -sb,0,cb],mul([1,0,0, 0,c,-s, 0,s,c],A))};"
-    "function heldKey(){let k=st.eq&&st.eq.weapon;if(act&&act.k=='tree')k=has('iaxe')?'iaxe':has('axe')?'axe':k;else if(act&&act.k=='rock')k=has('ipick')?'ipick':has('pick')?'pick':k;"
+    "function heldKey(){let k=st.eq&&st.eq.weapon;if(act&&act.k=='tree')k=has('iaxe')?'iaxe':has('axe')?'axe':k;else if(act&&act.k=='rock')k=has('ipick')?'ipick':has('pick')?'pick':k;else if(act&&act.k=='fish'&&has('net'))k='net';"
     "if(!k)return null;if(HTEST)return HTEST;const w='w_'+k;return WAV.has(w)?w:null}"
     "function shieldKey(){const k=st.eq&&st.eq.shield;if(!k)return null;const w='w_'+k;return WAV.has(w)?w:null}"
     "function qHold(PM,x,z,yaw,clip,t,wk,left){needMdl(wk);const WM=MDL[wk];if(!WM||!WM.ok)return;"

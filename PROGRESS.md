@@ -1,6 +1,6 @@
 # MemeCapes progress
 
-_Last updated: October 10, 2026 (early morning)_
+_Last updated: October 10, 2026 (morning)_
 
 ## Where to look
 
@@ -66,6 +66,14 @@ Everything below is now on play.html (it used to be preview only).
 - **In the game:** "Play Online: Log in / Create Account" on the start screen, "Continue online as …", bring your browser progress into a new account once, chat commands `/who /trade /ignore /report /logout /deleteaccount`, click a name in chat to trade, ignore or report. The game also says when a new update is out.
 - **It stays offline until the server is switched on**: `config.js` → `server: ""`. Setup steps are in `server/README.md` (Render, about $7 a month, updates itself on every push).
 - **Caped characters:** wearing any cape switches the character to a caped body made in Meshy (male and female), and the cape is painted in that cape's colour. The MemeCape and Quest cape keep their hooded models. Tools: `tools/glb2rig.py` (rigged Meshy character → game model, any bone count) and `tools/capemask.py`.
+
+## Built October 10, 2026 (morning): real animations (preview)
+
+- **Every character now moves with real motion-captured style animations** from Meshy: the male and female players and both caped bodies, 38 to 39 animations each.
+- **Combat:** sword slash, sword stab, punch and kick (each cut to the one strike that matters, timed to your weapon speed), a flinch when you get hit, and a proper fall backwards when you die.
+- **Skills:** a real two-handed chop at trees with the axe in hand, an overhead pickaxe swing at rocks, a bend-and-scoop at fishing spots with a new **shrimp net** in your hand, and stirring at the range.
+- **Also:** idle breathing, the Home Telly spell cast, a jump for agility shortcuts, and all 22 meme emotes (Stonks, GG, Ratio, Griddy, Sigma...) play their own dance or gesture.
+- Animations are only prepared the first time they play, so loading stays fast. Tools: `tools/glb2rig.py` + `tools/clipmap.json` (which Meshy motion is which game animation), `tools/mknet.py` (the net).
 
 ## Built and waiting for a spot in the world
 
