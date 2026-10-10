@@ -11,6 +11,7 @@ Plain Node.js 22 with no packages to install (built-in SQLite, crypto and a smal
 - **Trades**: the server checks both offers against each player's saved bag and does the swap itself. Untradeable items (capes, pets, custom shop items, clue, lamps) are refused.
 - **Cheat watch**: big jumps in coins or XP between saves are written to a flags list for a moderator to look at.
 - **Moderators**: `/announce text`, `/mute name minutes`, `/unmute name`, `/kick name`, `/ban name`, `/unban name`, `/rollback name` (undo that player's last save), `/mod name` (make a mod).
+- **Holder perks**: a player links their wallet by signing a short free message in their wallet app (not a transaction). The server reads that wallet's $CAPES balance from the blockchain at link time, at every login and once a day at a random hour. Holding at least `HOLDER_PCT` % of all $CAPES = free Cape Club membership while it lasts, and one free skin from the skin store after `HOLDER_DAYS` days of holding without dropping below, then every `HOLDER_DAYS` days. One wallet per account. Passing tokens to another wallet restarts the count, so the same tokens can't collect extra skins. `node test_holder.js` checks all of it against a fake blockchain.
 - **Backups**: a copy of the database every day, the last 14 kept, in `DATA_DIR/backups`.
 
 ## Settings (environment variables)
@@ -20,12 +21,17 @@ Plain Node.js 22 with no packages to install (built-in SQLite, crypto and a smal
 | `DATA_DIR` | where the database lives. On Render: `/var/data` (the disk) |
 | `ADMIN_KEY` | password for the admin pages below. Render makes one for you |
 | `ADMIN_NAMES` | your in-game name(s), comma separated. Those accounts get moderator commands. **Create that account right after the server starts, before anyone else can take the name.** |
+| `CAPES_MINT` | the $CAPES token mint address. Empty = holder perks stay "coming soon" |
+| `SOLANA_RPC` | Solana RPC address for the balance checks. Default: the free public one; a paid one (Helius, QuickNode) is more reliable |
+| `HOLDER_PCT` | how much of all $CAPES a wallet must hold for the perks, in %. Default 1 |
+| `HOLDER_DAYS` | days between free skins (and the first wait). Default 14 |
 | `ALLOWED_ORIGINS` | websites allowed to connect. Default: memecapes.com and localhost |
 
 ## Admin pages
 Send the header `Authorization: Bearer <ADMIN_KEY>`:
 - `/admin/stats`: who is online, how many accounts
 - `/admin/flags`: suspicious saves
+- `/admin/holders`: linked wallets, their share of $CAPES, whether they pass, free skins claimed
 - `/admin/reports`: player reports with the chat around them
 - `/admin/backup`: download the whole database
 
