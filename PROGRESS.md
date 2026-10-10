@@ -67,7 +67,14 @@ Everything below is now on play.html (it used to be preview only).
 - **It stays offline until the server is switched on**: `config.js` → `server: ""`. Setup steps are in `server/README.md` (Render, about $7 a month, updates itself on every push).
 - **Caped characters:** wearing any cape switches the character to a caped body made in Meshy (male and female), and the cape is painted in that cape's colour. The MemeCape and Quest cape keep their hooded models. Tools: `tools/glb2rig.py` (rigged Meshy character → game model, any bone count) and `tools/capemask.py`.
 
-## Built October 10, 2026 (morning): real animations (preview)
+## Built October 10, 2026 (day): launch content
+
+- **Chapter 1, The Great Rug: five new story quests** with three new quest givers. Chef Bagholder needs cake ingredients from Wow Landing, three forgetful Wojaks hold your seed phrase, Farmer Ted's allotments are full of Doomscrollers, Fisherwoman Nemo's pond is being drained, and the Bot Captain attacks the castle gate. Rewards include the first Cape fragment. Froggo's first quest is now called Proof of Work. The Quest cape needs the chapter too.
+- **Starter Guide** for new players: nine steps (walk, Froggo, chop, fire, fish, cook, mine, fight, bank) with a gold arrow over the next target. After the guide, the same card shows your current quest step and where to go.
+- **Faster loading:** the game file went from 7 MB to 1.4 MB (the castle models now load on their own and stay cached between updates), and phones keep less animation data in memory.
+- **Website:** Quests page lists the new chapter, FAQ and roadmap updated for online play, and later-chapter names changed to our own (Burn Gauntlet, Burnzilla, the Rug Pit, the Liquidator).
+
+## Built October 10, 2026 (morning): real animations (live)
 
 - **Every character now moves with real motion-captured style animations** from Meshy: the male and female players and both caped bodies, 38 to 39 animations each.
 - **Combat:** sword slash, sword stab, punch and kick (each cut to the one strike that matters, timed to your weapon speed), a flinch when you get hit, and a proper fall backwards when you die.
