@@ -25,8 +25,8 @@ assert a > 0 and b > a
 old_block = h[a:b + len(end)]
 new_block = ("if(d.sk&&d.an){m.skin={V,N0,J:d.sk.j,W:d.sk.w,nv};for(const c of d.an){const raw=c.fb?clipUnpack(c):c.f;"
              "m.clips[c.n]={raw,nf:raw.length,fps:c.fps,hand:c.hand,handL:c.handL,f:null};"
-             "if(c.n=='Walking'||c.n=='Running')skinClip(m,m.clips[c.n],1)}"
-             "const w0=m.clips.Walking||m.clips[Object.keys(m.clips)[0]];if(w0&&!w0.f)skinClip(m,w0,1);")
+             "if(c.n=='Walking'||c.n=='Running'||c.n=='Idle'){m.clips[c.n].keep=1;skinClip(m,m.clips[c.n],1)}}"
+             "const w0=m.clips.Walking||m.clips[Object.keys(m.clips)[0]];if(w0){w0.keep=1;if(!w0.f)skinClip(m,w0,1)}")
 h = h[:a] + new_block + h[b + len(end):]
 
 HELP = r"""
@@ -35,12 +35,14 @@ function clipUnpack(c){const b=atob(c.fb),u=new Uint8Array(b.length);for(let i=0
  for(let f=0;f<q.length/n;f++){const a=new Float32Array(n);for(let i=0;i<n;i++){const v=q[f*n+i];a[i]=(i%4==3)?v*st:v*sr}F.push(a)}return F}
 function skinClip(m,c,keepP){const S=m.skin,V=S.V,N0=S.N0,J=S.J,Wt=S.W,nv=S.nv,F=[];
  for(const fm of c.raw){const P=new Float32Array(nv*3),N=new Float32Array(nv*3);for(let v=0;v<nv;v++){const x=V[v*3],y=V[v*3+1],z=V[v*3+2],nx=N0[v*3],ny=N0[v*3+1],nz=N0[v*3+2];let px=0,py=0,pz=0,qx=0,qy=0,qz=0;for(let k=0;k<4;k++){const w=Wt[v*4+k];if(!w)continue;const b=J[v*4+k]*12;px+=w*(fm[b]*x+fm[b+1]*y+fm[b+2]*z+fm[b+3]);py+=w*(fm[b+4]*x+fm[b+5]*y+fm[b+6]*z+fm[b+7]);pz+=w*(fm[b+8]*x+fm[b+9]*y+fm[b+10]*z+fm[b+11]);qx+=w*(fm[b]*nx+fm[b+1]*ny+fm[b+2]*nz);qy+=w*(fm[b+4]*nx+fm[b+5]*ny+fm[b+6]*nz);qz+=w*(fm[b+8]*nx+fm[b+9]*ny+fm[b+10]*nz)}const l=Math.hypot(qx,qy,qz)||1;P[v*3]=px;P[v*3+1]=py;P[v*3+2]=pz;N[v*3]=qx/l;N[v*3+1]=qy/l;N[v*3+2]=qz/l}F.push(keepP?{g:packFrame(m,P,N),P}:{g:packFrame(m,P,N)})}
- c.f=F}
+ c.f=F;c.u=performance.now();
+ // keep graphics memory in check on phones: at most 6 extra animations per model stay prepared; the one unused longest is let go
+ const L=Object.values(m.clips).filter(x=>x.f&&!x.keep&&x!==c);if(L.length>6){L.sort((a,b)=>(a.u||0)-(b.u||0));const o=L[0];if(performance.now()-(o.u||0)>1500){for(const fr of o.f){gl.deleteBuffer(fr.g.p);gl.deleteBuffer(fr.g.n)}o.f=null}}}
 """
 rep("function qMdl(m,x,y,z,yaw,s,clip,t,cut,sm,gh,pl){", HELP + "function qMdl(m,x,y,z,yaw,s,clip,t,cut,sm,gh,pl){")
 # prepare a clip the first time it is drawn
 rep("function qMdl(m,x,y,z,yaw,s,clip,t,cut,sm,gh,pl){const c=m.clips[clip]||m.clips[clip=='Running'?'Walking':null];",
-    "function qMdl(m,x,y,z,yaw,s,clip,t,cut,sm,gh,pl){const c=m.clips[clip]||m.clips[clip=='Running'?'Walking':null];if(c&&!c.f)skinClip(m,c);")
+    "function qMdl(m,x,y,z,yaw,s,clip,t,cut,sm,gh,pl){const c=m.clips[clip]||m.clips[clip=='Running'?'Walking':null];if(c){if(!c.f)skinClip(m,c);c.u=performance.now()}")
 # clip lengths come from the frame count, which is known before skinning
 rep("const c=PM.clips[n],dur=(c.f.length-1)/c.fps,", "const c=PM.clips[n],dur=(c.nf-1)/c.fps,")
 rep("if(cc)pAnim.d=Math.max(1200,cc.f.length/cc.fps*1000)}", "if(cc)pAnim.d=Math.max(1200,cc.nf/cc.fps*1000)}")
@@ -52,6 +54,8 @@ rep("['punch','kick','punch','punch'][cs],t0:performance.now(),d:900}}", "['punc
 rep("pAnim={k:'block',t0:performance.now(),d:500}", "pAnim={k:'block',t0:performance.now(),d:aDur('block',500,1000)}")
 # the weapon drops out of sight once the character hits the ground
 rep("function qHeld(PM,x,z,yaw,clip,t){const wk=heldKey();", "function qHeld(PM,x,z,yaw,clip,t){if(clip=='Death'&&t>1.3)return;const wk=heldKey();")
+# a clip time a hair below zero (an action started between frames) wrapped to a missing frame and stopped the frame with an error
+rep("ft=(t*c.fps)%nf", "ft=((t*c.fps)%nf+nf)%nf", 2)
 # the idle pose search only needs the Walking clip (skinned with positions kept)
 rep("for(const c in m.clips)for(const fr of m.clips[c].f)delete fr.P}}", "for(const c in m.clips)if(m.clips[c].f)for(const fr of m.clips[c].f)delete fr.P}}")
 

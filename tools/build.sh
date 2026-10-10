@@ -31,6 +31,7 @@ python3 tools/patch_net.py >/dev/null
 python3 tools/patch_capebody.py >/dev/null
 python3 tools/patch_lazyskin.py >/dev/null
 python3 tools/patch_guide.py >/dev/null
+python3 tools/patch_split.py
 sed -i "s/__BUILD__/$(date -u +%Y%m%d%H%M%S)/" play.html
 python3 - <<'P'
 import re;h=open('play.html').read();s=re.findall(r'<script>([\s\S]*?)</script>',h);open('/tmp/x.js','w').write(max(s,key=len))
