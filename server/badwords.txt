@@ -1,0 +1,15 @@
+# One word per line. Chat replaces these with stars, and names containing them are refused.
+# Letters like 0/o, 1/i, 3/e, $/s are treated the same, so "sh1t" matches "shit".
+fuck
+shit
+bitch
+cunt
+nigger
+nigga
+faggot
+retard
+whore
+slut
+rape
+nazi
+hitler

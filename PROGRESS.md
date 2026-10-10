@@ -1,6 +1,6 @@
 # MemeCapes progress
 
-_Last updated: October 9, 2026 (night)_
+_Last updated: October 10, 2026 (early morning)_
 
 ## Where to look
 
@@ -59,6 +59,13 @@ Everything below is now on play.html (it used to be preview only).
 - **The MemeCapes look for every screen:** crimson velvet and gold leaf, the website's Cinzel titles, the medallion in the header. The Stock Market has a live ticker tape of guide prices, tickets with inked BUY / SELL / FILLED stamps, and a price line for every item (its last 24 moves). The trade screen has two vaults, a fairness bar (what you give against what you get), a warning when you are giving far more than you get, and a red wax seal you press to finish. Shops, the bank, quests and the cape merchant all wear the same look, and so do the side panel, the chat scroll, the start screen, the world map, the minimap ring, the status pills and the right-click menu.
 - A Wall St. town around the Stock Market is on the new land.
 - **No more flat pictures:** Froggo, Bonk Hounds, NPC Guards and Dogwifhat now use 3D models, and the dog pups are small 3D models too.
+
+## Built October 10, 2026 (early morning): online play and caped characters
+
+- **Game server** (`server/`): accounts with passwords, progress saved on the server, other players walking around with their name and level over their heads, global chat with a word filter, ignore and report, and real player-to-player trades that the server checks and swaps itself. Moderator commands (mute, kick, ban, roll back a save, announce), a list of suspicious saves, daily backups. `node server/test.js` runs 30 checks with fake players. No packages to install.
+- **In the game:** "Play Online: Log in / Create Account" on the start screen, "Continue online as …", bring your browser progress into a new account once, chat commands `/who /trade /ignore /report /logout /deleteaccount`, click a name in chat to trade, ignore or report. The game also says when a new update is out.
+- **It stays offline until the server is switched on**: `config.js` → `server: ""`. Setup steps are in `server/README.md` (Render, about $7 a month, updates itself on every push).
+- **Caped characters:** wearing any cape switches the character to a caped body made in Meshy (male and female), and the cape is painted in that cape's colour. The MemeCape and Quest cape keep their hooded models. Tools: `tools/glb2rig.py` (rigged Meshy character → game model, any bone count) and `tools/capemask.py`.
 
 ## Built and waiting for a spot in the world
 

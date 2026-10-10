@@ -2,6 +2,10 @@
    Put PUBLIC addresses only (the kind you share to get paid). Never a seed phrase or private key.
    Leave a value empty ("") and that feature stays switched off and shows "coming soon". */
 window.MC_CONFIG = {
+  // ---- online play: the game server address. Empty = everyone plays offline in their own browser.
+  // After the server is running on Render it will be "wss://api.memecapes.com/ws"
+  server: "",
+
   // ---- who to contact
   contactEmail: "",              // e.g. "memecapes@gmail.com" once you make it
   xHandle: "Mrsnakebaby",        // shown as the contact until the email is set

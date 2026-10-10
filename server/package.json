@@ -1,0 +1,9 @@
+{
+  "name": "memecapes-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MemeCapes game server: accounts, cloud saves, live players, chat, trades",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "test": "node test.js" },
+  "engines": { "node": ">=22.13" }
+}
