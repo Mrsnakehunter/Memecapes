@@ -26,6 +26,7 @@ python3 tools/patch_voice.py >/dev/null
 python3 tools/patch_layout.py >/dev/null
 python3 tools/patch_launch.py >/dev/null
 python3 tools/patch_wear.py >/dev/null
+python3 tools/patch_anim.py >/dev/null
 python3 - <<'P'
 import re;h=open('play.html').read();s=re.findall(r'<script>([\s\S]*?)</script>',h);open('/tmp/x.js','w').write(max(s,key=len))
 P
