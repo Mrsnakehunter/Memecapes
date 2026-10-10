@@ -21,9 +21,11 @@ def rep(old, new, count=1):
 
 HELP = r"""
 // ---- which animation to play: the clip for what the character is doing, if the model has it
-const ACL={stab:['Attack'],slash:['Attack'],punch:['Punch','Attack'],kick:['Kick','Punch','Attack'],block:['Hit'],die:['Death'],home:['Cast'],agi:['Jump'],chop:['Chop'],mine:['Mine'],net:['Fish','Pickup'],cook:['Cook','Pickup'],guard:['Idle']};
+const ACL={stab:['Stab','Attack'],slash:['Attack'],punch:['Punch','Attack'],kick:['Kick','Punch','Attack'],block:['Hit'],die:['Death'],home:['Cast'],agi:['Jump'],chop:['Chop'],mine:['Mine'],net:['Fish','Pickup'],cook:['Cook','Pickup'],smith:['Mine'],guard:['Idle']};
 function pClip(PM,skA,mvg,now){if(!PM||!PM.clips)return null;const has=n=>PM.clips[n]?n:null;
- if(pAnim){const k=pAnim.k,el=(now-pAnim.t0)/1000;const L=k.startsWith('em:')?[k.slice(3)]:(ACL[k]||[]);for(const n of L)if(has(n)){const c=PM.clips[n],dur=(c.f.length-1)/c.fps;return{n,t:k=='die'?Math.min(el,dur):el,once:k=='die'}}}
+ if(pAnim){const k=pAnim.k,el=(now-pAnim.t0)/1000,em=k.startsWith('em:');const L=em?[k.slice(3)]:(ACL[k]||[]);for(const n of L)if(has(n)){const c=PM.clips[n],dur=(c.f.length-1)/c.fps,pd=(pAnim.d||1000)/1000;
+  // one-off actions (a swing, a kick, a flinch) are played once, sped up or slowed to fit how long the action lasts; emotes and the long home teleport play at their own speed
+  const t=k=='die'?Math.min(el,dur):(em||k=='home')?el:Math.min(dur-.001,el*dur/pd);return{n,t,once:!em&&k!='home'}}}
  if(skA&&!mvg)for(const n of(ACL[skA]||[]))if(has(n))return{n,t:now/1000};
  if(mvg)return null;return has('Idle')?{n:'Idle',t:now/1000}:null}
 """

@@ -1,0 +1,154 @@
+{
+ "_about": "Game clip name -> Meshy motion name(s), first one found wins. Used by tools/glb2rig.py --map. Motions made with Meshy Text to Motion come out named by an id; those ids are listed too.",
+ "Walking": [
+  "Walking"
+ ],
+ "Running": [
+  "Running"
+ ],
+ "Idle": [
+  "Idle",
+  "Idle 02",
+  "Idle 1"
+ ],
+ "Attack": [
+  "Right-hand Sword Slash",
+  "Attack"
+ ],
+ "Stab": [
+  "Thrust Slash"
+ ],
+ "Punch": [
+  "Right Jab from Guard"
+ ],
+ "Kick": [
+  "Simple Kick"
+ ],
+ "Hit": [
+  "Hit Reaction"
+ ],
+ "Death": [
+  "Dying Backwards",
+  "Dead"
+ ],
+ "Chop": [
+  "MC Chop",
+  "01a124f1-a7f3-75b2-8ef5-0001478022c8",
+  "Reaping Swing"
+ ],
+ "Mine": [
+  "MC Mine",
+  "Heavy Hammer Swing"
+ ],
+ "Fish": [
+  "MC Fish 2",
+  "01a124f9-fdbf-716a-9587-4521ecb1087e",
+  "MC Fish",
+  "01a124ec-f8a9-757b-a69f-3eb527b68f45"
+ ],
+ "Cook": [
+  "MC Cook",
+  "01a124f2-7e01-772b-bd2f-e161ec23226b",
+  "Collect Object"
+ ],
+ "Cast": [
+  "Charged Spell Cast"
+ ],
+ "Jump": [
+  "Regular Jump"
+ ],
+ "Pickup": [
+  "Male Bend Over Pick Up",
+  "Female Bend Over Pick Up Inspect"
+ ],
+ "Stonks": [
+  "Victory Fist Pump"
+ ],
+ "GG": [
+  "Gentlemans Bow"
+ ],
+ "Ratio": [
+  "Chest Pound Taunt"
+ ],
+ "Moon": [
+  "Cheer with Both Hands Up"
+ ],
+ "Panic Sell": [
+  "Wave for Help"
+ ],
+ "Cope": [
+  "Head Hold in Pain"
+ ],
+ "LOL": [
+  "Happy Jump Male",
+  "happy_jump_m",
+  "Happy Jump Female",
+  "happy_jump_f"
+ ],
+ "Wave": [
+  "Big Wave Hello"
+ ],
+ "Yes": [
+  "Agree Gesture"
+ ],
+ "No": [
+  "Finger Wag No"
+ ],
+ "Hmm": [
+  "Confused Scratch"
+ ],
+ "Shrug": [
+  "Shrug"
+ ],
+ "Dance": [
+  "Hip Hop Dance"
+ ],
+ "Griddy": [
+  "Funny Dancing 1",
+  "FunnyDancing_01"
+ ],
+ "Spin": [
+  "360 Power Spin Jump"
+ ],
+ "Headbang": [
+  "Bass Beats"
+ ],
+ "Rage": [
+  "Angry Stomp"
+ ],
+ "Come Here": [
+  "Call Gesture"
+ ],
+ "Bored": [
+  "Long Breathe and Look Around"
+ ],
+ "Mwah": [
+  "Big Heart Gesture"
+ ],
+ "Clap": [
+  "Cheer with Both Hands"
+ ],
+ "Sigma": [
+  "Show Both Arm Muscles"
+ ],
+ "_maxdur": {
+  "default": 4.5,
+  "Death": 3,
+  "Pickup": 3,
+  "Cast": 3
+ },
+ "_trim": {
+  "Stab": [
+   0.3,
+   1.25
+  ],
+  "Punch": [
+   0.25,
+   1.35
+  ],
+  "Kick": [
+   0.3,
+   1.5
+  ]
+ }
+}
