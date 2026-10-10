@@ -1,6 +1,6 @@
 # MemeCapes progress
 
-_Last updated: October 10, 2026 (morning)_
+_Last updated: October 10, 2026 (afternoon)_
 
 ## Where to look
 
@@ -66,6 +66,13 @@ Everything below is now on play.html (it used to be preview only).
 - **In the game:** "Play Online: Log in / Create Account" on the start screen, "Continue online as …", bring your browser progress into a new account once, chat commands `/who /trade /ignore /report /logout /deleteaccount`, click a name in chat to trade, ignore or report. The game also says when a new update is out.
 - **It stays offline until the server is switched on**: `config.js` → `server: ""`. Setup steps are in `server/README.md` (Render, about $7 a month, updates itself on every push).
 - **Caped characters:** wearing any cape switches the character to a caped body made in Meshy (male and female), and the cape is painted in that cape's colour. The MemeCape and Quest cape keep their hooded models. Tools: `tools/glb2rig.py` (rigged Meshy character → game model, any bone count) and `tools/capemask.py`.
+
+## Built October 10, 2026 (afternoon): skins
+
+- **12 skins, $2.99 each.** Six weapon skins made in Meshy: Laser Eyes Blade (swords), Up Only Axe (axes), Diamond Hands Pick (pickaxes), Moon Rocket Bat and The Rug Pull (clubs and bats), Crescent Staff (staffs and scrolls). Six cape skins painted onto the caped bodies: Green Candles, Red Candles, Laser Eyes, Diamond Hands, Moon Night and Meme Coin Gold. Looks only, no stats.
+- **Wardrobe** (a button in the Gear tab): wear or take off each skin you own, and see the skin store. A weapon skin replaces every weapon of its type in your hand; a cape skin works on every cape except the MemeCape and the Quest cape.
+- **Selling them:** until card payments exist, a skin comes as a redeem code (`tools/mkcode.py skin sk_laser`, or `skin bundle` with four ids for the $9.99 bundle). The website shop lists "Skin" and "Skin bundle (any 4)"; it stays switched off until the shop wallet is set.
+- Tools: `tools/decimate.cpp` (lowers a full-detail Meshy model to a game-sized one and keeps its texture; used by `tools/glb2mdl.py --tris`), `--orient/--flip/--mirror/--rotx` to stand held items up, `tools/capeskins.py` (the cape patterns).
 
 ## Built October 10, 2026 (day): launch content
 

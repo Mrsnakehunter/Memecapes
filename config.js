@@ -30,7 +30,11 @@ window.MC_CONFIG = {
     { id: "cape",      name: "Custom cape", usd: 75,
       text: "A one-of-a-kind cape with your design, worn in 3D. Delivered as a redeem code for your account." },
     { id: "item",      name: "Custom item", usd: 40,
-      text: "A cosmetic hat, pet skin or held item with your design. Cosmetic only: no combat stats. Delivered as a redeem code." }
+      text: "A cosmetic hat, pet skin or held item with your design. Cosmetic only: no combat stats. Delivered as a redeem code." },
+    { id: "skin",      name: "Skin", usd: 2.99,
+      text: "One weapon or cape skin. Weapons: Laser Eyes Blade, Up Only Axe, Diamond Hands Pick, Moon Rocket Bat, The Rug Pull, Crescent Staff. Capes: Green Candles, Red Candles, Laser Eyes, Diamond Hands, Moon Night, Meme Coin Gold. Write which one in the notes. Looks only, no stats. Delivered as a redeem code." },
+    { id: "skin4",     name: "Skin bundle (any 4)", usd: 9.99,
+      text: "Any four skins from the list above, in one redeem code. Write which four in the notes." }
   ],
 
   // ---- $CAPES and Meme Coins
