@@ -14,10 +14,11 @@ def rep(old, new, count=1):
     h = h.replace(old, new)
 
 
-HP12 = 2201  # XT[11] with the divisor below: the XP for Hitpoints level 12
+HP12 = 756  # XT[11] on the curve below: the XP for Health level 12
 # ---- the table: levels 1..100, level 100 = 20,000,000
+# our own curve: each level costs (level-1) x 1.095^(level-1) x K, with K set so level 100 is exactly 20,000,000 XP
 rep("const XT=[0];{let p=0;for(let l=1;l<99;l++){p+=Math.floor(l+300*Math.pow(2,l/7));XT.push(Math.floor(p/4))}}",
-    "const XT=[0];{let p=0;for(let l=1;l<100;l++){p+=Math.floor(l+300*Math.pow(2,l/7));XT.push(Math.floor(p/2.8782321))}}")
+    "const XT=[0];{const K=2e7/(99*Math.pow(1.095,99));for(let l=2;l<=100;l++)XT.push(Math.round(K*(l-1)*Math.pow(1.095,l-1)));XT[99]=2e7}")
 rep("const lvl=x=>{let l=1;while(l<99&&x>=XT[l])l++;return l};", "const lvl=x=>{let l=1;while(l<100&&x>=XT[l])l++;return l};")
 # ---- progress bars and the skills tab: level 100 is the top
 rep("const L=lvl(st.xp[k]),pc=L>=99?100:Math.max(0,Math.min(100,Math.round(100*(st.xp[k]-XT[L-1])/(XT[L]-XT[L-1]))));",
