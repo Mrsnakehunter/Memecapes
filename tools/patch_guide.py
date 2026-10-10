@@ -29,7 +29,7 @@ const GST=[
  {t:'Chop a tree',h:'Tap a tree to chop it with your axe. You get logs.',ok:()=>st.ev&&st.ev.chop,at:()=>gNear(trees,o=>!(o.d>tickN)&&!inCastle(o.x,o.y,0)),up:3.4},
  {t:'Light a fire',h:'Walk out of the castle, tap the logs in your bag, then Light.',ok:()=>st.ev&&st.ev.fire},
  {t:'Catch shrimps',h:'Tap a fishing spot (the bubbles in the water) to use your net.',ok:()=>st.xp.fi>0,at:()=>gNear(fish,o=>!o.gone),up:1.2},
- {t:'Cook your catch',h:'Tap your fire, or a cooking range in town, while you carry raw shrimps.',ok:()=>st.ev&&st.ev.cook,at:()=>gNear(fires.concat(PR.ranges.map(r=>({x:Math.floor(r[0]),y:Math.floor(r[1])})))),up:1.6},
+ {t:'Cook your catch',h:'Tap your fire, or a cooking range in town, while you carry raw shrimps. Burnt ones count: practice makes perfect.',ok:()=>(st.ev&&st.ev.cook)||has('burnt')||has('cfish'),at:()=>has('fish')?gNear(fires.concat(PR.ranges.map(r=>({x:Math.floor(r[0]),y:Math.floor(r[1])})))):gNear(fish,o=>!o.gone),up:1.6},
  {t:'Mine some ore',h:'Tap a copper or tin rock with your pickaxe.',ok:()=>st.ev&&st.ev.mine,at:()=>gNear(rocks,o=>!(o.d>tickN)),up:1.8},
  {t:'Defeat a meme',h:'Tap a weak meme (level 5 or lower) to fight it. Eat bread from your bag if your health gets low.',ok:()=>(st.xp.at||0)+(st.xp.str||0)+(st.xp.def||0)>0,at:()=>gNear(gobs,g=>!g.dead&&MT[g.t].lv<=5&&!MT[g.t].boss),up:2.4},
  {t:'Visit a bank',h:'Banks keep your items and Meme Coins safe. Tap a bank and deposit your loot.',ok:()=>st.ev&&st.ev.bank,at:()=>gNear(SB,s=>s.k=='bank',s=>s.nt),up:2.6}];
@@ -46,7 +46,7 @@ function guideDraw(){
  if(!started||!st||!st.xp){gCard.style.display=gArw.style.display=gPill.style.display='none';return}
  if(st.gDone==null)st.gDone=(st.qp>0||(st.xp.wc||0)+(st.xp.mi||0)+(st.xp.fi||0)+(st.xp.at||0)+(st.xp.str||0)>0)?1:0; // players who already started never see the starter steps
  let C=null;
- if(!st.gDone){let i=0;while(i<GST.length&&GST[i].ok())i++;
+ if(!st.gDone){let i=st.gI||0;while(i<GST.length&&GST[i].ok())i++;
   if(i>=GST.length){st.gDone=1;pay(200,'starter guide');if(cap()>0)st.inv.push('lamp5');save();ui();
    say('Starter guide complete! You got 200 Meme Coins and a small XP lamp. The quest card now shows your next quest.','#a60');gFlash=performance.now();return}
   if(st.gI!=null&&i>st.gI){say('Guide: '+GST[st.gI].t+' done! Next: '+GST[i].t+'.','#0a7a2a');gFlash=performance.now()}st.gI=i;
