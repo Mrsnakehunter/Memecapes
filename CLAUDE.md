@@ -77,6 +77,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 11, bridges: "bridges unforgettable, 1000x better; why 3 tiny bridges where we need one; all walkable".
+  Bridges came from random roads stepping onto water (BR tiles). tools/patch_bridges.py plans one straight crossing
+  per spot (merge within 16 tiles, main road near a town wins), restores water elsewhere, keeps land reachable
+  (BFS; boardwalk fallback), stone arch bridges (walk height follows the arch via HG) and timber ones near Froggo.
+  Walk-tested every type (tools: /tmp/walk.py pattern: __tp then S.go(null,x,y), poll P and hgt).
+
 - Oct 11, water edges: "all the water with really sharp square lines... gradually going to the water, more realistic".
   tools/patch_water.py: Catmull-Rom shore field over tile centres (+ edge noise), sloping bank and deepening bed,
   4x4 subdivided shore tiles, sand/wet-sand/bed colours, depth-faded turquoise-to-blue water with foam and lapping

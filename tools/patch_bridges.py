@@ -142,5 +142,9 @@ OLD_DRAW = "MAT=2;for(const [x,y] of L.br){YO=hgt(x+.5,y+.5);boxR(x+.5,.09,y+.5,
 rep(OLD_DRAW, "if(L.bg)L.bg.forEach(bridgeObj);if(L.bw)L.bw.forEach(([x,y])=>boardObj(x,y));MAT=0;")
 rep("function buildObjs(ch,key){", DRAW + "function buildObjs(ch,key){")
 
+# keep fishing docks off the bridge ends
+rep("if(BLDK[k])L.push([k,o.x+.5,o.y+.5,((o.x*3+o.y)%6)*1.05,.75,30,o])});return L})();",
+    "if(BLDK[k])L.push([k,o.x+.5,o.y+.5,((o.x*3+o.y)%6)*1.05,.75,30,o])});return L.filter(c=>c[0]!='b_dock'||!BRG.some(b=>[[b.x,b.y],[b.x+b.dx*b.n,b.y+b.dy*b.n]].some(e=>Math.hypot(c[1]-e[0]-.5*b.dy,c[2]-e[1]-.5*b.dx)<3.2)))})();")
+
 open(PATH, 'w', encoding='utf-8').write(h)
 print('bridges patch applied')
