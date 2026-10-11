@@ -29,7 +29,7 @@ numbers in here or anywhere in the repo.
 - The game is one file. `tools/build.sh` rebuilds play.html from the base by running every `tools/patch_*.py` in
   order, then makes preview.html and the test pages (tools/dev/mktest.sh, copied from scratch: test.html, test2.html, test3.html, test7.html).
 - Ship: `tools/ship.sh` (copies preview.html to play.html, writes version.json). Check the live build number at
-  https://memecapes.com/version.json.
+  https://memecapes.com/version.json from a browser tab (fetch it in page JS); the shell and WebFetch can't reach the site.
 - PROGRESS.md is the public log: add a dated section for every shipped feature, in plain words.
 - Patches use exact-string `rep(old, new, count)` with an assertion; if an anchor moves, fix the anchor, never loosen it.
 
@@ -59,6 +59,16 @@ numbers in here or anywhere in the repo.
 - Techniques that worked for the ground (roads v3): per-pixel road edges from a road-tile texture with noise warp;
   height blending (dirt fills joints first, stones sink, tops show last); pillow-shaped stones lit by the sun;
   subtle colour variety; fade fine detail with distance; wet darkening and sky-reflecting puddles in rain.
+
+## Task log (newest first): what was asked, what we learned
+
+- Oct 11, roads v3: "do more research and make the roads even better, blend them". Shipped build 20261011090233.
+  Learned: crisp per-pixel edges look cartoonish unless softened with fine noise (tufts); facet-lit Voronoi stones look
+  like broken tiles, pillow-shaped stones look like cobbles; black joints look fake, dirt-brown joints look real; a dark
+  ring around a fountain reads as a solid band unless the joints between its stones are wider. Before/after sheets
+  (tools/dev/roadsheet.py) are the best way to show Albert a change.
+- Oct 11, roads v2: v1 had tile-shaped plazas and rows of stones; Albert hated it. Round plazas, random stones,
+  grey dirt edges fixed it.
 
 ## Open items
 
