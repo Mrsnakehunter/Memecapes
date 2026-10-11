@@ -56,11 +56,16 @@ numbers in here or anywhere in the repo.
   Plazas round and symmetrical. Grey dirt around cobbles, blending into normal dirt. Cobblestone in towns,
   concrete only at Wall St., dirt in the countryside and Froggo's Pond.
 - He likes: the original dirt ground re-coloured grey as a blend zone; things that look real rather than tiled.
+- Website pictures: no Wall St. shots.
 - Techniques that worked for the ground (roads v3): per-pixel road edges from a road-tile texture with noise warp;
   height blending (dirt fills joints first, stones sink, tops show last); pillow-shaped stones lit by the sun;
   subtle colour variety; fade fine detail with distance; wet darkening and sky-reflecting puddles in rain.
 
 ## Task log (newest first): what was asked, what we learned
+
+- Oct 11, website screenshots: Albert approved roads v3 ("they are awesome") and said leave Wall St. out of the
+  website pictures. Home strip = 6 squares (700 px webp), Towns page = 9 squares (640 px webp, class tshot), all
+  embedded as base64 in index.html. Camera yaw about 3.14 looks north with the sun behind the camera (best light).
 
 - Oct 11, roads v3: "do more research and make the roads even better, blend them". Shipped build 20261011090233.
   Learned: crisp per-pixel edges look cartoonish unless softened with fine noise (tufts); facet-lit Voronoi stones look
