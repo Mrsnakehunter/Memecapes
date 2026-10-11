@@ -77,6 +77,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 11, water edges: "all the water with really sharp square lines... gradually going to the water, more realistic".
+  tools/patch_water.py: Catmull-Rom shore field over tile centres (+ edge noise), sloping bank and deepening bed,
+  4x4 subdivided shore tiles, sand/wet-sand/bed colours, depth-faded turquoise-to-blue water with foam and lapping
+  waves. Tile centres never change side (walking and fishing unchanged). Before/after water_sheet.jpg.
+- Oct 11, see-through: Albert said things disappear; only massive structures may. tools/patch_seethru.py.
+
 - Oct 11, trade window v2: "look more into the trading of players and the interface and seeing the actual items,
   1000 times better, perfect, one of the last things before going live" (Stock Exchange parked for later).
   Built tools/patch_trade.py + server versioned accepts. Researched the classic two-screen trade, change warnings
