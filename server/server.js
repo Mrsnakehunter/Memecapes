@@ -30,6 +30,9 @@ const PARTNER_PCT = +process.env.PARTNER_PCT || 3;
 const PARTNER_DAYS = +process.env.PARTNER_DAYS || 14;
 const PARTNER_CHECK = +process.env.PARTNER_CHECK_MS || 15 * 60e3;   // how often partners' wallets are checked
 const SWEEP = +process.env.SWEEP_MS || 60e3;
+// burn ads: burn at least BURN_PCT % of all $CAPES (after the ad is approved) = an ad on memecapes.com for BURN_AD_DAYS days (0 = for good)
+const BURN_PCT = +process.env.BURN_PCT || 1;
+const BURN_AD_DAYS = process.env.BURN_AD_DAYS != null ? +process.env.BURN_AD_DAYS : 0;
 const SKIN_IDS = ['sk_laser', 'sk_upaxe', 'sk_dpick', 'sk_rocket', 'sk_rug', 'sk_moon',
   'cs_green_candles', 'cs_red_candles', 'cs_laser_eyes', 'cs_diamond_hands', 'cs_moon_night', 'cs_coin_gold'];  // same list as tools/patch_skins.py
 
@@ -47,7 +50,10 @@ CREATE TABLE IF NOT EXISTS wallets(uid INTEGER PRIMARY KEY, wallet TEXT UNIQUE, 
   ok INT DEFAULT 0, pct REAL DEFAULT 0, claimed INT DEFAULT 0, claims INT DEFAULT 0, err TEXT DEFAULT '');
 CREATE TABLE IF NOT EXISTS partners(uid INTEGER PRIMARY KEY, brand TEXT, line TEXT, link TEXT, color TEXT, g INT DEFAULT 0, img TEXT,
   status TEXT DEFAULT 'pending', note TEXT DEFAULT '', updated INT, approved INT DEFAULT 0);`);
-try { db.exec('ALTER TABLE wallets ADD COLUMN since3 INT DEFAULT 0'); } catch (e) { }  // when the wallet last reached PARTNER_PCT %
+try { db.exec('ALTER TABLE wallets ADD COLUMN since3 INT DEFAULT 0'); } catch (e) { }
+db.exec(`CREATE TABLE IF NOT EXISTS burnads(id INTEGER PRIMARY KEY, wallet TEXT, brand TEXT, line TEXT, link TEXT, img TEXT, status TEXT DEFAULT 'pending',
+  note TEXT DEFAULT '', created INT, approved INT DEFAULT 0, burn_sig TEXT UNIQUE, burned TEXT DEFAULT '', live_at INT DEFAULT 0, ends INT DEFAULT 0);`);
+try { db.exec('ALTER TABLE burnads ADD COLUMN shares INT DEFAULT 1'); } catch (e) { }  // how many whole BURN_PCT %s were burned = share of the ad spot  // when the wallet last reached PARTNER_PCT %
 const Q = {
   byName: db.prepare('SELECT * FROM users WHERE name=?'),
   byId: db.prepare('SELECT * FROM users WHERE id=?'),
@@ -85,6 +91,16 @@ const Q = {
     ON CONFLICT(uid) DO UPDATE SET brand=excluded.brand,line=excluded.line,link=excluded.link,color=excluded.color,g=excluded.g,img=excluded.img,status='pending',note='',updated=excluded.updated`),
   ptStatus: db.prepare('UPDATE partners SET status=?, note=?, approved=? WHERE uid=?'),
   ptDel: db.prepare('DELETE FROM partners WHERE uid=?'),
+  baAdd: db.prepare('INSERT INTO burnads(wallet,brand,line,link,img,status,created) VALUES(?,?,?,?,?,\'pending\',?)'),
+  baGet: db.prepare('SELECT * FROM burnads WHERE id=?'),
+  baByWallet: db.prepare('SELECT id,brand,line,link,status,note,created,burned,live_at,ends,shares FROM burnads WHERE wallet=? ORDER BY id DESC LIMIT 10'),
+  baOpen: db.prepare("SELECT COUNT(*) n FROM burnads WHERE wallet=? AND status IN ('pending','approved')"),
+  baStatus: db.prepare('UPDATE burnads SET status=?, note=?, approved=? WHERE id=?'),
+  baLive: db.prepare("UPDATE burnads SET status='live', burn_sig=?, burned=?, live_at=?, ends=?, shares=? WHERE id=? AND status='approved'"),
+  baBySig: db.prepare('SELECT id FROM burnads WHERE burn_sig=?'),
+  baDel: db.prepare('DELETE FROM burnads WHERE id=?'),
+  baAll: db.prepare('SELECT id,wallet,brand,line,link,status,note,created,burned,live_at,ends FROM burnads ORDER BY id DESC LIMIT 200'),
+  baShow: db.prepare("SELECT id,brand,line,link,live_at,shares FROM burnads WHERE status='live' AND (ends=0 OR ends>?) ORDER BY live_at"),
   ptAll: db.prepare('SELECT p.uid,p.brand,p.line,p.link,p.color,p.g,p.status,p.note,p.updated,u.name,w.pct,w.since3 FROM partners p JOIN users u ON u.id=p.uid LEFT JOIN wallets w ON w.uid=p.uid ORDER BY p.uid'),
   walErr: db.prepare('UPDATE wallets SET due=?, err=? WHERE uid=?'),
   walClaim: db.prepare('UPDATE wallets SET claimed=?, claims=claims+1 WHERE uid=?'),
@@ -388,9 +404,9 @@ async function rpc(method, params) {
   const j = await r.json(); if (j.error) throw new Error(j.error.message || 'rpc error'); return j.result;
 }
 let supplyC = { t: 0, v: 0n };
-async function capesSupply() {
-  if (supplyC.v && now() - supplyC.t < 3600e3) return supplyC.v;
-  const r = await rpc('getTokenSupply', [CAPES_MINT]); supplyC = { t: now(), v: BigInt(r.value.amount) }; return supplyC.v;
+async function capesSupply(fresh) {
+  if (!fresh && supplyC.v && now() - supplyC.t < 3600e3) return supplyC.v;
+  const r = await rpc('getTokenSupply', [CAPES_MINT]); supplyC = { t: now(), v: BigInt(r.value.amount), d: r.value.decimals | 0 }; return supplyC.v;
 }
 async function capesBalance(w) {
   const r = await rpc('getTokenAccountsByOwner', [w, { mint: CAPES_MINT }, { encoding: 'jsonParsed', commitment: 'confirmed' }]);
@@ -525,6 +541,106 @@ Object.assign(H, {
   partnerInfo(c) { if (c.uid) c.send(partnerInfo(c.uid)); },
   partnerSave,
 });
+
+// ---------- burn ads (website) ----------
+// 1. On memecapes.com the buyer connects their wallet and signs a free message (proves the wallet is theirs), and sends the ad.
+// 2. An admin approves it in game (/burnad view 7, /burnad approve 7). Nothing is burned before that, so a refused ad costs nothing.
+// 3. The buyer burns BURN_PCT % of all $CAPES from that same wallet and pastes the transaction. The server reads it from the
+//    blockchain: a real burn (supply goes down) of the $CAPES mint, signed by that wallet, big enough, never used before. Then it's live.
+const baNonce = new Map();  // wallet -> { msg, t }
+function baMsg(w) {
+  const m = 'MemeCapes: prove this wallet is yours to send a website ad.\n\nWallet: ' + w + '\nCode: ' + crypto.randomBytes(8).toString('hex') +
+    '\n\nSigning this is free. It is not a transaction and it does not move or burn any tokens.';
+  if (baNonce.size > 2000) baNonce.clear();
+  baNonce.set(w, { msg: m, t: now() }); return m;
+}
+function baProof(w, sig) {  // the signed message must be the latest one we gave this wallet, under 15 minutes old
+  const n = baNonce.get(w); if (!n || now() - n.t > 15 * 60e3) return false;
+  return sigOk(w, n.msg, sig);
+}
+// one ad spot on the website, shared: each page view shows one live ad, picked with odds = its shares / all shares
+const baPub = r => ({ id: r.id, brand: r.brand, line: r.line, link: r.link, v: r.live_at, w: Math.max(1, r.shares | 0) });
+const baNeed = async () => { const s = await capesSupply(); return s * BigInt(Math.round(BURN_PCT * 10000)) / 1000000n; };  // tokens (base units) for BURN_PCT %
+async function baCheckBurn(w, sig) {
+  const tx = await rpc('getTransaction', [sig, { encoding: 'jsonParsed', maxSupportedTransactionVersion: 0, commitment: 'confirmed' }]);
+  if (!tx) return { err: 'That transaction was not found yet. Wait a minute and try again.' };
+  if (tx.meta && tx.meta.err) return { err: 'That transaction failed on the blockchain.' };
+  const ins = [...(tx.transaction.message.instructions || []), ...((tx.meta && tx.meta.innerInstructions) || []).flatMap(x => x.instructions || [])];
+  let burned = 0n;
+  for (const i of ins) {
+    const t = i.parsed && i.parsed.type, info = i.parsed && i.parsed.info;
+    if (!/^spl-token/.test(i.program || '') || !(t === 'burn' || t === 'burnChecked') || !info) continue;
+    if (info.mint !== CAPES_MINT || info.authority !== w) continue;
+    burned += BigInt(t === 'burnChecked' ? info.tokenAmount.amount : info.amount);
+  }
+  if (!burned) return { err: 'That transaction does not burn $CAPES from your wallet. Use your wallet app\'s Burn option (not a send).' };
+  const s = await capesSupply(true), before = s + burned;  // supply now has the burn taken out
+  if (burned * 1000000n < before * BigInt(Math.round(BURN_PCT * 10000))) return { err: 'That burn is under ' + BURN_PCT + '% of all $CAPES.' };
+  const shares = Number(burned * 1000000n / (before * BigInt(Math.round(BURN_PCT * 10000))));  // whole BURN_PCT %s burned
+  return { burned, shares: Math.max(1, shares) };
+}
+function baBody(req, max) {
+  return new Promise((ok, no) => { let n = 0; const parts = []; req.on('data', d => { n += d.length; if (n > max) { no(new Error('too big')); req.destroy(); } else parts.push(d); });
+    req.on('end', () => { try { ok(JSON.parse(Buffer.concat(parts).toString('utf8') || '{}')); } catch (e) { no(e); } }); req.on('error', no); });
+}
+async function baHttp(req, res, url, json) {
+  if (url.pathname === '/burnads' && req.method === 'GET') return json(Q.baShow.all(now()).map(baPub));
+  const im = /^\/burnads\/(\d+)\.jpg$/.exec(url.pathname);
+  if (im) {
+    const r = Q.baGet.get(+im[1]); if (!r || r.status !== 'live' || (r.ends && r.ends < now())) return json({ error: 'not found' }, 404);
+    res.writeHead(200, { 'Content-Type': 'image/jpeg', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=600' }); return res.end(Buffer.from(r.img, 'base64'));
+  }
+  if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET', 'Access-Control-Allow-Headers': 'Content-Type' }); return res.end(); }
+  if (req.method !== 'POST' || !url.pathname.startsWith('/burnad/')) return false;
+  if (!CAPES_MINT) return json({ error: 'Website ads open when $CAPES launches.' }, 400);
+  let m; try { m = await baBody(req, 600 * 1024); } catch (e) { return json({ error: 'Bad request.' }, 400); }
+  const w = String(m.wallet || ''); const pk = b58(w); if (!pk || pk.length !== 32) return json({ error: 'That is not a Solana wallet address.' }, 400);
+  const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  if (url.pathname === '/burnad/nonce') { if (tooMany('ba' + ip)) return json({ error: 'Too many tries. Wait a few minutes.' }, 429); return json({ msg: baMsg(w) }); }
+  if (url.pathname === '/burnad/status') {
+    let need = ''; try { const n = await baNeed(), d = BigInt(supplyC.d || 0), q = 10n ** d; need = (n / q + (n % q ? 1n : 0n)).toLocaleString('en-US'); } catch (e) { }  // whole tokens, rounded up
+    const live = Q.baShow.all(now()); return json({ pct: BURN_PCT, days: BURN_AD_DAYS, need, live: live.length, shares: live.reduce((a, r) => a + Math.max(1, r.shares | 0), 0), ads: Q.baByWallet.all(w) });
+  }
+  if (url.pathname === '/burnad/submit') {
+    if (!baProof(w, m.sig)) return json({ error: 'The wallet signature did not match. Connect your wallet and try again.' }, 400);
+    baNonce.delete(w);
+    if (Q.baOpen.get(w).n >= 2) return json({ error: 'This wallet already has an ad waiting. Finish that one first.' }, 400);
+    const brand = clean1(m.brand, 24), line = clean1(m.line, 90), link = String(m.link || '').trim().slice(0, 100);
+    if (brand.length < 2) return json({ error: 'Give your project a name (2 to 24 letters).' }, 400);
+    if (link && !/^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(\/[^\s<>"']*)?$/i.test(link)) return json({ error: 'The link must start with https:// and be a normal web address.' }, 400);
+    const mm = /^data:image\/jpeg;base64,([A-Za-z0-9+/=]+)$/.exec(String(m.img || '')); if (!mm) return json({ error: 'Add a picture for the ad.' }, 400);
+    const raw = Buffer.from(mm[1], 'base64'); if (raw.length > 400 * 1024 || raw[0] !== 0xff || raw[1] !== 0xd8) return json({ error: 'That picture could not be used. Try a smaller JPEG or PNG.' }, 400);
+    const r = Q.baAdd.run(w, brand, line, link, raw.toString('base64'), now());
+    for (const o of online.values()) if (o.role === 'admin') say(o, 'New website ad #' + r.lastInsertRowid + ' (' + brand + '). Look at it with /burnad view ' + r.lastInsertRowid, '#c80');
+    return json({ ok: true, id: Number(r.lastInsertRowid), status: 'pending' });
+  }
+  if (url.pathname === '/burnad/burn') {
+    const r = Q.baGet.get(+m.id); if (!r || r.wallet !== w) return json({ error: 'No ad with that number for this wallet.' }, 404);
+    if (r.status === 'live') return json({ ok: true, status: 'live' });
+    if (r.status !== 'approved') return json({ error: r.status === 'pending' ? 'Your ad is not approved yet. Do not burn anything until it is.' : 'This ad was not approved.' }, 400);
+    const sig = String(m.burnSig || '').trim(); if (!/^[1-9A-HJ-NP-Za-km-z]{64,90}$/.test(sig)) return json({ error: 'Paste the transaction signature of your burn.' }, 400);
+    if (Q.baBySig.get(sig)) return json({ error: 'That burn was already used for an ad.' }, 400);
+    let v; try { v = await baCheckBurn(w, sig); } catch (e) { return json({ error: 'Could not reach the blockchain. Try again in a minute.' }, 502); }
+    if (v.err) return json({ error: v.err }, 400);
+    const ends = BURN_AD_DAYS > 0 ? now() + BURN_AD_DAYS * 864e5 : 0;
+    try { Q.baLive.run(sig, String(v.burned), now(), ends, v.shares, r.id); } catch (e) { return json({ error: 'That burn was already used for an ad.' }, 400); }
+    console.log('burn ad live', r.id, r.brand, String(v.burned));
+    return json({ ok: true, status: 'live' });
+  }
+  return json({ error: 'not found' }, 404);
+}
+function burnadCmd(c, name, arg, rest) {
+  const usage = () => say(c, 'Usage: /burnad list, /burnad view 7, /burnad approve 7, /burnad reject 7 reason, /burnad remove 7', '#a60');
+  if (!name || name === 'list') { const L = Q.baAll.all(); return say(c, L.length ? 'Website ads: ' + L.map(r => '#' + r.id + ' ' + r.brand + ' (' + r.status + ')').join('; ') : 'No website ads yet.', '#a60'); }
+  const r = Q.baGet.get(+arg); if (!r) return usage();
+  if (name === 'view') return c.send({ t: 'partnerReview', kind: 'burn', id: r.id, name: '#' + r.id, brand: r.brand, line: r.line, link: r.link, status: r.status, wallet: r.wallet, img: 'data:image/jpeg;base64,' + r.img });
+  const note = rest.split(' ').slice(2).join(' ').slice(0, 120);
+  if (name === 'approve') { if (r.status !== 'pending') return say(c, 'Ad #' + r.id + ' is ' + r.status + '.', '#c00'); Q.baStatus.run('approved', '', now(), r.id); }
+  else if (name === 'reject') Q.baStatus.run('rejected', note || 'Please change the ad and send it again.', 0, r.id);
+  else if (name === 'remove') Q.baDel.run(r.id);
+  else return usage();
+  say(c, 'Website ad #' + r.id + ': ' + name + (name === 'approve' ? 'd. The buyer can burn now; it goes live when the burn checks out.' : name === 'reject' ? 'ed. Nothing was burned.' : 'd.'), '#0a0');
+}
 // once a day at a random hour, every linked wallet is checked again (up to 20 a minute); partners every 15 minutes
 let walBusy = false;
 setInterval(async () => {
@@ -545,9 +661,10 @@ function adminCmd(c, raw) {
     case 'kick': if (!o) break; o.send({ t: 'kicked', text: 'A moderator removed you from the game.' }); o.close(); return say(c, name + ' kicked.');
     case 'rollback': if (!u) break; Q.rollback.run(u.id); if (o) { o.send({ t: 'kicked', text: 'Your progress was restored by a moderator. Log in again.' }); o.close(); } return say(c, name + ' rolled back one save.');
     case 'partner': return partnerCmd(c, name, arg, rest);
+    case 'burnad': return burnadCmd(c, name, arg, rest);
     case 'mod': if (!u) break; Q.setRole.run(arg === 'off' ? '' : 'mod', u.id); return say(c, name + (arg === 'off' ? ' is no longer a mod.' : ' is now a mod.'));
   }
-  say(c, 'Commands: /announce text, /mute name minutes, /unmute name, /ban name, /unban name, /kick name, /rollback name, /partner list', '#a60');
+  say(c, 'Commands: /announce text, /mute name minutes, /unmute name, /ban name, /unban name, /kick name, /rollback name, /partner list, /burnad list', '#a60');
 }
 
 function onMessage(c, msg) {
@@ -583,9 +700,10 @@ function backup() {
 setInterval(backup, 3600e3); setTimeout(backup, 5000);
 
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   const json = (o, s) => { res.writeHead(s || 200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }); res.end(JSON.stringify(o, null, 1)); };
+  if (url.pathname.startsWith('/burnad')) { try { if (await baHttp(req, res, url, json) !== false) return; } catch (e) { console.error('burnad', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, online: online.size });
   if (url.pathname === '/partners') return json(partnersLive());
   const pm = /^\/partners\/(\d+)\.jpg$/.exec(url.pathname);
@@ -600,6 +718,7 @@ const server = http.createServer((req, res) => {
     if (url.pathname === '/admin/flags') return json(Q.listFlags.all());
     if (url.pathname === '/admin/reports') return json(Q.listReports.all());
     if (url.pathname === '/admin/holders') return json(Q.walList.all());
+    if (url.pathname === '/admin/burnads') return json(Q.baAll.all());
     if (url.pathname === '/admin/partners') return json(Q.ptAll.all().map(r => ({ ...r, live: partnerState(r.uid).live })));
     if (url.pathname === '/admin/backup') { const f = path.join(DATA, 'backups', 'download.db'); try { fs.rmSync(f, { force: true }); db.exec(`VACUUM INTO '${f.replace(/'/g, "''")}'`); } catch (e) { return json({ error: String(e) }, 500); } res.writeHead(200, { 'Content-Type': 'application/octet-stream', 'Content-Disposition': 'attachment; filename=memecapes.db' }); return fs.createReadStream(f).pipe(res); }
   }

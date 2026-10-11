@@ -21,6 +21,7 @@ window.MC_CONFIG = {
   solUsdFallback: 150,           // used only if the live SOL price can't be fetched
 
   // ---- shop (prices in US dollars; SOL is worked out at the live price, $CAPES at capesUsd)
+  burnPct: 1,                    // burn this % of all $CAPES for the website ad spot (must match BURN_PCT on the server)
   capesUsd: 0,                   // price of 1 $CAPES in dollars, once it trades (0 = $CAPES not accepted yet)
   shop: [
     { id: "billboard", name: "Town billboard", days: 7,  usd: 50,
