@@ -1,6 +1,6 @@
 # MemeCapes progress
 
-_Last updated: October 10, 2026 (afternoon)_
+_Last updated: October 11, 2026_
 
 ## Where to look
 
@@ -66,6 +66,29 @@ Everything below is now on play.html (it used to be preview only).
 - **In the game:** "Play Online: Log in / Create Account" on the start screen, "Continue online as …", bring your browser progress into a new account once, chat commands `/who /trade /ignore /report /logout /deleteaccount`, click a name in chat to trade, ignore or report. The game also says when a new update is out.
 - **It stays offline until the server is switched on**: `config.js` → `server: ""`. Setup steps are in `server/README.md` (Render, about $7 a month, updates itself on every push).
 - **Caped characters:** wearing any cape switches the character to a caped body made in Meshy (male and female), and the cape is painted in that cape's colour. The MemeCape and Quest cape keep their hooded models. Tools: `tools/glb2rig.py` (rigged Meshy character → game model, any bone count) and `tools/capemask.py`.
+
+## Built October 11, 2026: road surfaces (live)
+
+- **Roads are no longer all dirt.** Town centres are cobblestone, by how important the place is: Castle Gigachad and Gigachad Town (the capital) with the King's Road down to Wow Landing, Stonks City, Diamond Hands, Moon Landing, HODL Heights and Chad Falls get big round cobbled plazas; Wow Landing gets a small cobbled market square; Rugpull Ridge has worn cobbles with stones missing; Froggo's Pond stays swamp mud. **Wall St. is the only concrete.**
+- **Real-looking cobbles:** irregular, randomly sized and shaded stones, no rows or grid. Plazas are smooth and round (Gigachad Town a rounded rectangle), not tile-shaped.
+- **Grey dirt edges:** every paved area is ringed with grey dirt that blends into the normal dirt roads (cobble, then grey dirt, then dirt), and the stones thin out one by one at the edge. Country roads stay dirt. The minimap and world map show paved streets in grey.
+- Drawn by the terrain shader: nothing extra to download. Tool: `tools/patch_roads.py`.
+
+## Built October 10, 2026 (late night): website ads for burning 1% (switched off until the token exists)
+
+- **Burn 1% of all $CAPES = your ad on the memecapes.com home page.** One ad card in the page flow, styled like the site's own cards and labelled Sponsored. No pop-ups, nothing sticky, no motion, hidden when there are no ads.
+- **The spot is shared:** each visit shows one ad, with odds by how much each project burned (1% = 1 share, 2% = 2 shares).
+- **Approval before burning:** the project sends its ad in the Shop (wallet signature, no transaction), Albert approves it in game (`/burnad view 7`), then they burn from the same wallet and paste the transaction; the server checks the burn on the blockchain and the ad goes up. Terms say burns are not refundable.
+
+## Built October 10, 2026 (night): partners (switched off until the token exists)
+
+- **Hold at least 3% of all $CAPES for 14 days = a free partner ad for as long as you keep 3%:** a billboard with your picture and an NPC (your line, link and cape colour) in every meme town, plus that cape colour for your own character. With more than 8 partners the billboards take turns.
+- Partners make their ad in the "Partners" box at any bank; Albert approves each one (`/partner view Name`). Partner wallets are checked every 15 minutes; under 3% everything comes down. Going back over 3% starts a new 14 days.
+
+## Built October 10, 2026 (evening): holder perks (switched off until the token exists)
+
+- **Hold at least 1% of all $CAPES = free Cape Club membership, plus one free skin from the skin store every 14 days** (the first after 14 days of holding). Linked at any bank by signing a free message in the wallet app; the server checks the balance on the blockchain at link time, every login and daily.
+- Switch on with `CAPES_MINT` on the Render server (`HOLDER_PCT`, `HOLDER_DAYS`, `PARTNER_PCT`, `PARTNER_DAYS`, `BURN_PCT`, `BURN_AD_DAYS` change the numbers). Server tests: `node server/test_holder.js` (51 checks) and `node server/test.js` (30).
 
 ## Built October 10, 2026 (afternoon): skins
 
