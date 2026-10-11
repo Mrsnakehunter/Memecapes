@@ -110,5 +110,7 @@ numbers in here or anywhere in the repo.
 
 ## Open items
 
-- Trade window v2 is on preview: waiting for Albert to say ship.
-- Waiting on Albert: shop wallet go-live decision, Render server address, DNS, Stripe.
+- Render: Albert linked GitHub on Oct 11; card failed on his phone, he'll add it from his laptop, then send the
+  .onrender.com address. Then: test it, set config.js `server`, push.
+- Preview has trade v2, see-through, water edges, bridges: waiting for Albert to say ship.
+- Waiting on Albert: shop wallet go-live decision, DNS (api.memecapes.com), Stripe.
