@@ -67,6 +67,16 @@ Everything below is now on play.html (it used to be preview only).
 - **It stays offline until the server is switched on**: `config.js` → `server: ""`. Setup steps are in `server/README.md` (Render, about $7 a month, updates itself on every push).
 - **Caped characters:** wearing any cape switches the character to a caped body made in Meshy (male and female), and the cape is painted in that cape's colour. The MemeCape and Quest cape keep their hooded models. Tools: `tools/glb2rig.py` (rigged Meshy character → game model, any bone count) and `tools/capemask.py`.
 
+## Built October 11, 2026 (morning): roads v3 (live)
+
+- **Natural road edges everywhere:** dirt roads now meet the grass with wavy, uneven edges and little grass tufts, instead of blurry tile-shaped smudges. The grass along a road is a bit worn and yellower.
+- **Real-looking cobbles:** each stone is rounded and lit by the sun, with dirt and moss in the joints and its own shade of grey, blue-grey or warm tan.
+- **Paving that blends into dirt:** where a plaza ends, dirt fills the joints first, then the stones sink into the dirt with only their tops showing, then a few loose stones, then grey dirt, then dirt. Plazas stay round.
+- **Fountain squares:** a collar of big pale flagstones and a ring of edge stones around the fountain in every paved town.
+- **Rugpull Ridge** is properly run down: stones missing, dirt washed over them, moss in the gaps.
+- **Wall St.** has kerb stones and straight, clean street edges, with staggered concrete slabs and stains.
+- **Rain** darkens and wets the stones and dirt, and puddles collect on the dirt and reflect the sky. Loose pebbles on country roads. Far-off plazas no longer shimmer.
+
 ## Built October 11, 2026: road surfaces (live)
 
 - **Roads are no longer all dirt.** Town centres are cobblestone, by how important the place is: Castle Gigachad and Gigachad Town (the capital) with the King's Road down to Wow Landing, Stonks City, Diamond Hands, Moon Landing, HODL Heights and Chad Falls get big round cobbled plazas; Wow Landing gets a small cobbled market square; Rugpull Ridge has worn cobbles with stones missing; Froggo's Pond stays swamp mud. **Wall St. is the only concrete.**
