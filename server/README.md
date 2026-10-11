@@ -8,7 +8,7 @@ Plain Node.js 22 with no packages to install (built-in SQLite, crypto and a smal
 - **Cloud saves**: the game uploads progress every ~10 seconds. Each save has a number, so an old save can never overwrite a newer one (for example, a trade).
 - **Live players**: everyone within 48 tiles sees everyone else move, 5 times a second, with their name, level and cape.
 - **Chat**: everyone online, a word filter (`badwords.txt`), 1 message per 1.2 s, ignore, report.
-- **Trades**: the server checks both offers against each player's saved bag and does the swap itself. Untradeable items (capes, pets, custom shop items, clue, lamps) are refused.
+- **Trades**: the server checks both offers against each player's saved bag and does the swap itself. Untradeable items (capes, pets, custom shop items, clue, lamps) are refused. Every offer change gets a version number and an accept only counts for the exact version that player saw; for `TRADE_LOCK_MS` (2.5 s) after the other player changes their offer, accepts are refused. Both players accept, then both seal on a final screen. Every finished trade is stored in the `trades` table.
 - **Cheat watch**: big jumps in coins or XP between saves are written to a flags list for a moderator to look at.
 - **Moderators**: `/announce text`, `/mute name minutes`, `/unmute name`, `/kick name`, `/ban name`, `/unban name`, `/rollback name` (undo that player's last save), `/mod name` (make a mod).
 - **Holder perks**: a player links their wallet by signing a short free message in their wallet app (not a transaction). The server reads that wallet's $CAPES balance from the blockchain at link time, at every login and once a day at a random hour. Holding at least `HOLDER_PCT` % of all $CAPES = free Cape Club membership while it lasts, and one free skin from the skin store after `HOLDER_DAYS` days of holding without dropping below, then every `HOLDER_DAYS` days. One wallet per account. Passing tokens to another wallet restarts the count, so the same tokens can't collect extra skins. `node test_holder.js` checks all of it against a fake blockchain.
@@ -31,6 +31,7 @@ Plain Node.js 22 with no packages to install (built-in SQLite, crypto and a smal
 | `PARTNER_DAYS` | days at that share before the ad goes live. Default 14 |
 | `BURN_PCT` | share of all $CAPES to burn for a website ad, in %. Default 1. Keep `burnPct` in config.js the same |
 | `BURN_AD_DAYS` | days a website ad runs; 0 = for good. Default 0 |
+| `TRADE_LOCK_MS` | no accepting for this long after the other player changes their offer. Default 2500 |
 | `ALLOWED_ORIGINS` | websites allowed to connect. Default: memecapes.com and localhost |
 
 ## Admin pages
