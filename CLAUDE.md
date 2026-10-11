@@ -40,6 +40,13 @@ numbers in here or anywhere in the repo.
 - The test machine renders with SwiftShader (software). Heavy shaders make it slow: use wait 30000 and camwait 12000,
   or the shot shows sky or the wrong place.
 - Make the character tough in `setup` (xp 2e7, hp 999) or monsters kill it and it respawns in Gigachad Town.
+- tools/dev/mktest.sh reads play.html, so only run it through build.sh (alone it rebuilds the test pages from the
+  live game, not the new build).
+- UI flows: `python3 tools/dev/ui_trade.py plan.json [width height port]` (steps: js, click, rclick, hover, wait, shot).
+  Use force clicks: SwiftShader is too slow for Playwright's "stable element" check. Test phones at 390x844.
+- Online flows: `python3 tools/dev/trade_e2e.py` runs the real server plus two players (must be served on port 8000,
+  the server only accepts that origin locally). Sign-in takes 20-40 s on this machine: poll for NETS.name, then set
+  bags and send a save before testing. Server tests: `node server/test.js` (35) and `node server/test_holder.js`.
 - Rain: `(Date.now()/60000)%17 < 4`. Day: `((Date.now()/1000)%1800)/1800`. Shift time with window.__toff / __day(dp).
 
 ## Engine facts learned the hard way
@@ -47,6 +54,9 @@ numbers in here or anywhere in the repo.
 - The ground is drawn by shader program pg3 (not pg). Its vertex colours blend road and grass per corner
   (road weight 3, grass 1, water 0); the normal's length carries the paving material and amount.
 - Texture units 0-4 are taken; the road map uses unit 5. WebGL1: NPOT textures need CLAMP_TO_EDGE and no mipmaps.
+- Game CSS has many short global class names (.pr .nm .v .n .st .big .pic .g .bar .side .bad .warn ...). New UI
+  must use its own prefixed class names (trade uses tr*/is*), or old styles leak in and break layouts.
+- Painted item icons are nested SVGs: size only the outer one (`.x>svg`), never `.x svg`, or the sprite zooms and crops.
 - A JS comment inside a Python string inside a JS string breaks things: keep GLSL comments out (patch_roads.glsl()
   strips them).
 
@@ -62,6 +72,13 @@ numbers in here or anywhere in the repo.
   subtle colour variety; fade fine detail with distance; wet darkening and sky-reflecting puddles in rain.
 
 ## Task log (newest first): what was asked, what we learned
+
+- Oct 11, trade window v2: "look more into the trading of players and the interface and seeing the actual items,
+  1000 times better, perfect, one of the last things before going live" (Stock Exchange parked for later).
+  Built tools/patch_trade.py + server versioned accepts. Researched the classic two-screen trade, change warnings
+  and inspection rules. Learned: big painted pictures with names and values make items readable; warnings must sit
+  next to the Accept button (sticky footer) or nobody sees them; the item close-up works as a pop-up card next to
+  the item, not a box below the fold; test online flows with two real players against the real server.
 
 - Oct 11, website screenshots: Albert approved roads v3 ("they are awesome") and said leave Wall St. out of the
   website pictures. Home strip = 6 squares (700 px webp), Towns page = 9 squares (640 px webp, class tshot), all

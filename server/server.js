@@ -18,7 +18,8 @@ const ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://memecapes.com,https://w
 const MAX_SAVE = 900 * 1024;          // bytes of save JSON
 const MAX_FRAME = 1024 * 1024;        // biggest WebSocket message accepted
 const VIEW = 48;                      // tiles: you see players this close
-const BAG = 35;                       // bag slots (the coin stack takes one)
+const BAG = 35;
+const TRADE_LOCK_MS = +(process.env.TRADE_LOCK_MS || 2500);   // no accepting for this long after the OTHER player changes their offer                       // bag slots (the coin stack takes one)
 // holder perks: hold at least HOLDER_PCT % of all $CAPES in a wallet you own = free Cape Club, and one free shop skin every HOLDER_DAYS days
 const CAPES_MINT = process.env.CAPES_MINT || '';                 // empty = holder perks switched off
 const RPC = process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
@@ -316,19 +317,22 @@ const H = {
     if (!o || c.pendingFrom !== o.uid || now() - c.pendingT > 60e3) return say(c, 'That trade request ran out.', '#c00');
     if (c.trade || o.trade) return say(c, 'One of you is already trading.', '#c00');
     c.pendingFrom = null;
-    const T = { a: o, b: c, stage: 1, off: new Map([[o.uid, { items: [], coins: 0 }], [c.uid, { items: [], coins: 0 }]]), acc: new Set(), t: now() };
+    const T = { a: o, b: c, stage: 1, off: new Map([[o.uid, { items: [], coins: 0 }], [c.uid, { items: [], coins: 0 }]]), acc: new Set(), t: now(), ver: 0, chg: 0 };
     o.trade = c.trade = T;
     o.send({ t: 'tradeStart', with: c.name }); c.send({ t: 'tradeStart', with: o.name });
   },
   tradeOffer(c, m) {
     const T = c.trade; if (!T || T.stage !== 1) return;
-    const items = Array.isArray(m.items) ? m.items.slice(0, 28).map(String) : [], coins = Math.max(0, Math.floor(+m.coins || 0));
-    const why = offerProblem(c.uid, items, coins); if (why) return say(c, why, '#c00');
-    T.off.set(c.uid, { items, coins }); T.acc.clear();
-    other(T, c).send({ t: 'tradeTheirs', items, coins });
+    const items = Array.isArray(m.items) ? m.items.slice(0, BAG).map(String) : [], coins = Math.max(0, Math.floor(+m.coins || 0));
+    const why = offerProblem(c.uid, items, coins); if (why) { const was = T.off.get(c.uid); c.send({ t: 'tradeVer', ver: T.ver, bad: 1, items: was.items, coins: was.coins }); return say(c, why, '#c00'); }
+    // every change gets a new version number: an accept only counts for the exact offer that player was looking at
+    T.off.set(c.uid, { items, coins }); T.acc.clear(); T.ver++; T.chg = now(); T.chgBy = c.uid;
+    other(T, c).send({ t: 'tradeTheirs', items, coins, ver: T.ver }); c.send({ t: 'tradeVer', ver: T.ver });
   },
   tradeAccept(c, m) {
     const T = c.trade; if (!T || (m.stage | 0) !== T.stage) return;
+    if ((m.ver | 0) !== T.ver) return c.send({ t: 'tradeNoAcc', why: 'The offer changed. Check it again, then accept.' });
+    if (T.chgBy !== c.uid && now() - T.chg < TRADE_LOCK_MS) return c.send({ t: 'tradeNoAcc', why: 'The offer just changed. Take a moment to check it, then accept.' });
     T.acc.add(c.uid); other(T, c).send({ t: 'tradeAcc', stage: T.stage });
     if (T.acc.size < 2) return;
     if (T.stage === 1) { T.stage = 2; T.acc.clear(); T.a.send({ t: 'tradeStage2' }); T.b.send({ t: 'tradeStage2' }); return; }

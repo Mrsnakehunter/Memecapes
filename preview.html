@@ -1,5 +1,123 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><style>:root{color-scheme:light dark}#pnm{position:fixed;z-index:60;display:none;background:linear-gradient(#5a0d14,#2a0508);border:2px solid #c9a03a;border-radius:8px;padding:8px;min-width:140px;box-shadow:0 6px 18px #000a;font:13px Georgia;color:#ffe9a8}#pnm b{display:block;margin-bottom:6px;color:#ffd23f;font-family:Cinzel,Georgia,serif}#pnm button{display:block;width:100%;margin:3px 0;padding:6px;background:#3a070c;color:#ffe9a8;border:1px solid #c9a03a;border-radius:5px;cursor:pointer;font:13px Georgia}#pnm button:hover{background:#6a1018}.ntag{position:fixed;z-index:4;transform:translate(-50%,-100%);pointer-events:none;white-space:nowrap;font:700 11px Cinzel,Georgia,serif;color:#ffd23f;text-shadow:0 1px 2px #000,0 0 3px #000}.pn{text-decoration:none;cursor:pointer}.pn:hover{text-decoration:underline}</style><meta charset="utf-8">
+<html lang="en"><head><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><style>:root{color-scheme:light dark}#pnm{position:fixed;z-index:60;display:none;background:linear-gradient(#5a0d14,#2a0508);border:2px solid #c9a03a;border-radius:8px;padding:8px;min-width:140px;box-shadow:0 6px 18px #000a;font:13px Georgia;color:#ffe9a8}#pnm b{display:block;margin-bottom:6px;color:#ffd23f;font-family:Cinzel,Georgia,serif}#pnm button{display:block;width:100%;margin:3px 0;padding:6px;background:#3a070c;color:#ffe9a8;border:1px solid #c9a03a;border-radius:5px;cursor:pointer;font:13px Georgia}#pnm button:hover{background:#6a1018}.ntag{position:fixed;z-index:4;transform:translate(-50%,-100%);pointer-events:none;white-space:nowrap;font:700 11px Cinzel,Georgia,serif;color:#ffd23f;text-shadow:0 1px 2px #000,0 0 3px #000}.pn{text-decoration:none;cursor:pointer}.pn:hover{text-decoration:underline}
+/* ---- trade window v2 (tools/patch_trade.py) */
+#modal #mb.tr{max-width:1080px;max-height:92vh}
+#trroot{position:relative}
+#trroot .mk-head .ghost{margin-left:auto}
+#trroot .trlv{font:700 11px Alegreya,Georgia,serif;color:#d9b98a;-webkit-text-fill-color:#d9b98a;margin-left:6px}
+.trstep{display:flex;gap:6px;list-style:none;margin:10px 0 0;padding:0;font:700 10px Cinzel,Georgia,serif;flex-wrap:wrap}
+.trstep li{padding:3px 9px;border:1px solid #d9a52055;border-radius:10px;color:#8a6a3a}
+.trstep li.on{color:#2a1400;background:linear-gradient(#ffe88a,#f2b400);border-color:#6b4a06}
+.trstep li.ok{color:#39ff88;border-color:#39ff8866}
+.tr-main{display:grid;grid-template-columns:236px 1fr 1fr;gap:10px;margin-top:10px;align-items:start}
+@media (max-width:860px){.tr-main{grid-template-columns:1fr 1fr}.trbag{grid-column:1/-1;order:3}}
+@media (max-width:440px){.tr-main{grid-template-columns:1fr}#modal #mb.tr{max-height:96vh;padding:10px}}
+.trp{border:1px solid #d9a52066;border-radius:6px;background:linear-gradient(#2b0810,#1f0509);display:flex;flex-direction:column;min-width:0;min-height:240px}
+.trp header{display:flex;justify-content:space-between;align-items:baseline;gap:6px;padding:7px 10px;border-bottom:1px solid #d9a52033}
+.trp h4{margin:0;font:700 13px Cinzel,Georgia,serif;color:#ffd23f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trp header span{font-size:11px;color:#d9b98a;white-space:nowrap}
+.trp.ist{box-shadow:inset 0 0 0 1px #39ff8818}
+.trp.ischg{animation:tr-flash 1s ease-out 2}
+.trp footer{margin-top:auto;padding:7px 10px;border-top:1px solid #d9a52033;font-size:12px;color:#d9b98a}.trp footer b{color:#f6eedc}
+.trg{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:6px;padding:8px}
+.trt{position:relative;background:#16030a;border:1px solid #d9a52033;border-bottom:2px solid var(--rc,#bbb);border-radius:6px;padding:6px 3px 4px;text-align:center;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s;min-width:0;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.trt:hover{border-color:#ffd23f;transform:translateY(-1px)}
+.trt.issel{border-color:#ffd23f;box-shadow:0 0 0 1px #ffd23f,0 0 14px #ffd23f55}
+.trt .trpic{position:relative;width:54px;height:54px;margin:0 auto 3px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,#ffffff12 0%,transparent 68%)}
+.trt .trpic>svg{width:50px;height:50px;filter:drop-shadow(0 2px 2px #000)}
+.trt .trn{position:absolute;right:-8px;bottom:-3px;background:#000d;color:#ffd23f;font:700 11px Cinzel,Georgia,serif;padding:1px 5px;border-radius:8px;border:1px solid #d9a52099}
+.trt .trnm{display:block;font-size:11px;line-height:1.15;color:#f6eedc;height:2.3em;overflow:hidden}
+.trt .trv{display:block;font-size:10px;color:#d9b98a;white-space:nowrap}
+.trt.iscoin .trnm{color:#ffd23f;font:700 12px Cinzel,Georgia,serif;height:auto}
+.trt.isnew{border-color:#39ff88;box-shadow:0 0 0 1px #39ff88,0 0 16px #39ff8866;animation:tr-glow 1.2s ease-in-out 3}
+.trt .trtag{position:absolute;left:-10px;top:-6px;background:#39ff88;color:#04210f;font:900 9px Cinzel,Georgia,serif;padding:1px 4px;border-radius:3px;font-style:normal;box-shadow:0 1px 3px #000}
+.trt .treye{position:absolute;right:-6px;top:-5px;width:12px;height:12px;border-radius:50%;background:#ffd23f;box-shadow:0 0 0 2px #2b0810,0 0 8px #ffd23f;animation:tr-pulse 1.4s infinite}
+.trt.isgone{border:1px dashed #ff7a59;border-bottom:2px solid #ff4a3a;background:#2a0606;cursor:help}
+.trt.isgone .trpic>svg{opacity:.3;filter:grayscale(1)}
+.trt.isgone .trbang{position:absolute;inset:0;display:grid;place-items:center;font:900 32px/1 Cinzel,Georgia,serif;color:#ff4a3a;text-shadow:0 0 10px #f00,0 2px 0 #000;font-style:normal;animation:tr-pulse 1s infinite}
+.trt.isgone .trv{color:#ff7a59;font-weight:700}
+.tre{color:#8a6a3a;font-size:12px;padding:2px 10px 10px;text-align:center;margin:0}.tre.issmall{font-size:11px;padding-top:0}
+.trc{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:0 8px 8px}
+.trc label{display:flex;align-items:center;gap:6px;font:700 12px Cinzel,Georgia,serif;color:#d9b98a;flex:1 1 100%}
+#mb .trc input{flex:1;min-width:0;width:100%;box-sizing:border-box;font:700 15px Cinzel,Georgia,serif;color:#ffd23f;padding:6px 8px}
+#mb .trc input.bad{border-color:#ff7a59;box-shadow:0 0 0 2px #ff7a5944}
+#mb .trc button{padding:5px 7px;font-size:11px}
+.trc small{flex:1 1 100%;font-size:11px}
+.trbag .trgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:8px}
+.trs{position:relative;aspect-ratio:1;background:#1a0408;border:1px solid #d9a52033;border-bottom:2px solid var(--rc,#d9a52033);border-radius:4px;display:grid;place-items:center;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.trs>svg:not(.trlk){width:82%;height:82%;filter:drop-shadow(0 1px 1px #000)}
+.trs:hover{border-color:#ffd23f}
+.trs.isin{opacity:.32}
+.trs.isin::after{content:"";position:absolute;right:2px;top:2px;width:9px;height:9px;border-radius:50%;background:#39ff88;box-shadow:0 0 6px #39ff88}
+.trs.isno{opacity:.35;cursor:not-allowed}
+.trs .trlk{position:absolute;right:1px;bottom:1px;width:13px;height:13px}
+.trs.isempty{cursor:default;border-bottom-color:#d9a52018}.trs.isempty:hover{border-color:#d9a52033}
+.trs small{position:absolute;left:3px;top:1px;font:700 10px Cinzel,Georgia,serif;color:#ffd23f;text-shadow:0 1px 0 #000}
+.trs.iscoin>svg{width:96%;height:96%}
+.tri{display:flex;gap:12px;align-items:flex-start;padding:10px;border:1px solid #d9a52044;border-radius:6px;background:#16030a;min-height:112px}
+.tri.isempty{align-items:center;justify-content:center;color:#8a6a3a;font-size:12px;text-align:center}
+.tri .trbig{width:84px;height:84px;flex:none;border-radius:10px;display:grid;place-items:center;background:radial-gradient(circle,#ffffff16,transparent 70%),#1f0509;box-shadow:inset 0 0 0 1px var(--rc),0 0 22px -6px var(--rc)}
+.tri .trbig>svg{width:76px;height:76px;filter:drop-shadow(0 3px 3px #000)}
+.tri .trtxt{min-width:0;flex:1}
+.tri h5{margin:0;font:900 17px Cinzel,Georgia,serif;color:var(--rc)}.tri h5 span{color:#ffd23f;font-size:13px}
+.tri .trty{font-size:11px;color:#d9b98a;text-transform:uppercase;letter-spacing:.6px}
+.tri .trst{display:flex;gap:5px;flex-wrap:wrap;margin:5px 0 2px}.tri .trst span{background:#2b0810;border:1px solid #d9a52055;border-radius:10px;padding:1px 8px;font-size:11px;color:#f6eedc}
+.tri p{margin:4px 0;font-style:italic;color:#e8dcc0}
+.tri .trpr{font-size:12px;color:#d9b98a}.tri .trpr b{color:#ffd23f}
+.tri .trown{font-size:11px;color:#a8875a;margin-top:2px}.tri .trbad{color:#ff7a59}
+.trb{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin-top:10px}
+.trb .trside small{display:block;font-size:10px;color:#d9b98a;text-transform:uppercase;letter-spacing:.6px}.trb .trside b{font:700 14px Cinzel,Georgia,serif;color:#f6eedc}.trb .trside.isr{text-align:right}
+.trb .trbar{height:10px;background:#120306;border-radius:5px;overflow:hidden;display:flex;border:1px solid #000;box-shadow:inset 0 1px 2px #000}
+.trb .trbar i{display:block;height:100%;transition:width .4s}.trb .trbar .tra{background:linear-gradient(90deg,#c98a10,#ffd23f)}.trb .trbar .trbb{background:linear-gradient(90deg,#39ff88,#1e9a52)}
+.trnet{text-align:center;font-size:12px;margin-top:3px}.trnet.trup,.trsum .trup{color:#39ff88}.trnet.trdn,.trsum .trdn{color:#ff7a59}
+.trw{margin-top:8px;display:flex;flex-direction:column;gap:5px}.tr-foot .trw{flex:1 1 100%;margin:0}
+.trw div{padding:7px 10px;border-radius:4px;font-size:12px;font-weight:700;border-left:3px solid;line-height:1.35}
+.trw .trwbad{background:#3a0808;border-color:#ff4a3a;color:#ffc2b6}
+.trw .trwwarn{background:#3a2208;border-color:#ffb02a;color:#ffdca6}
+.trw .trwinfo{background:#2a2208;border-color:#ffd23f;color:#ffeab0}
+.tr-foot{position:sticky;bottom:-14px;margin:12px -14px -14px;padding:10px 14px;background:linear-gradient(#2b0810f2,#15030a);border-top:1px solid #d9a52066;display:flex;gap:10px;align-items:center;flex-wrap:wrap;z-index:3}
+@media (max-width:440px){.tr-foot{bottom:-10px;margin:12px -10px -10px;padding:8px 10px}}
+#mb .tr-foot [data-tacc]{font-size:15px;padding:10px 20px;min-width:180px}
+.tr-foot .tr-status{margin:0;flex:1 1 260px}
+.trmenu{position:absolute;z-index:6;background:#15030a;border:1px solid #d9a520;border-radius:4px;box-shadow:0 10px 28px #000d;min-width:160px;padding:4px}
+#mb .trmenu button{display:block;width:100%;text-align:left;background:none;border:0;box-shadow:none;padding:8px 10px;font:700 12px Cinzel,Georgia,serif;color:#ffe9b0;border-radius:2px}
+#mb .trmenu button:hover{background:#7a1420}
+.trmenu .trhd{padding:4px 10px 6px;font:700 12px Alegreya,Georgia,serif;color:#ffd23f;border-bottom:1px solid #d9a52033;margin-bottom:2px}
+.trmenu form{display:flex;gap:4px;padding:4px}#mb .trmenu form input{width:110px}#mb .trmenu form button{width:auto;text-align:center;background:linear-gradient(#ffe88a,#f2b400);color:#2a1400}
+.trx{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}@media (max-width:600px){.trx{grid-template-columns:1fr}}
+.trx section{border:1px solid #d9a52066;border-radius:6px;background:linear-gradient(#2b0810,#1f0509);padding:8px 10px;display:flex;flex-direction:column}
+.trx section.ist{box-shadow:inset 0 0 0 1px #39ff8822}
+.trx h4{margin:0 0 6px;font:700 13px Cinzel,Georgia,serif;color:#ffd23f}
+.trx footer{margin-top:auto;padding-top:6px;font-size:12px;color:#d9b98a}.trx footer b{color:#f6eedc}
+.trr{display:grid;grid-template-columns:42px 1fr auto auto;gap:8px;align-items:center;padding:5px 4px 5px 8px;border-bottom:1px solid #ffd23f14;border-left:3px solid var(--rc,#bbb);cursor:pointer;margin-bottom:3px;border-radius:2px;background:#16030a}
+.trr:hover,.trr.issel{background:#2b0810}
+#trpop{position:absolute;z-index:7;display:none;filter:drop-shadow(0 10px 24px #000e)}
+#trpop .tri{background:linear-gradient(#2b0810,#15030a);border:1px solid #d9a520;min-height:0}
+#trpop .trpx{position:absolute;right:6px;top:4px;padding:2px 6px}
+.trs.issel{border-color:#ffd23f;box-shadow:0 0 0 1px #ffd23f}
+.trr>svg{width:40px;height:40px;filter:drop-shadow(0 2px 2px #000)}
+.trr .trnm{font-weight:700;min-width:0}.trr .trnm small{display:block;font-weight:400;font-size:11px;color:#a8875a}
+.trr .trn{color:#ffd23f;font:700 13px Cinzel,Georgia,serif}.trr .trv{color:#d9b98a;font-size:12px;text-align:right;white-space:nowrap}
+.trr.iscoin .trnm{color:#ffd23f}
+.trr.isgone{border-left-color:#ff4a3a;background:#2a0606}.trr.isgone .trnm{color:#ff7a59;text-decoration:line-through}.trr.isgone>svg{opacity:.4;filter:grayscale(1)}
+.trsum{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;padding:8px 10px;border:1px solid #d9a52044;border-radius:6px;background:#16030a;font-size:12px;color:#d9b98a}.trsum b{color:#f6eedc}
+.trh{display:flex;flex-direction:column;gap:6px;margin-top:10px;max-height:60vh;overflow:auto}
+.trhr{display:grid;grid-template-columns:130px 1fr 1fr;gap:8px;padding:8px;border:1px solid #d9a52033;border-radius:6px;background:#16030a;align-items:center}
+@media (max-width:520px){.trhr{grid-template-columns:1fr}}
+.trhr .trwhen b{display:block;color:#ffd23f}.trhr small{color:#a8875a;font-size:11px}
+.trhr .trmini{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}.trhr .trmini span{display:inline-flex;align-items:center;gap:2px;font-size:11px;color:#f6eedc}.trhr .trmini span>svg{width:26px;height:26px}.trhr em{color:#8a6a3a;font-size:11px}
+#trq{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:30;display:none;align-items:center;gap:10px;background:radial-gradient(120% 120% at 50% 0%,#5a1220,#24060c);border:2px solid #d9a520;outline:1px solid #15030a;border-radius:6px;padding:10px 12px 12px;box-shadow:0 10px 30px #000c;color:#f6eedc;font:13px Alegreya,Georgia,serif;max-width:calc(100vw - 24px);overflow:hidden}
+#trq img{width:38px;height:38px;border-radius:50%;box-shadow:0 0 0 2px #d9a520;flex:none}
+#trq .trqt b{font:900 15px Cinzel,Georgia,serif;color:#ffd23f}#trq .trqt small{color:#d9b98a}#trq .trqt span{display:block;color:#f6eedc}
+#trq button{font:700 13px Cinzel,Georgia,serif;color:#2a1400;background:linear-gradient(#ffe88a,#f2b400 55%,#c98a10);border:1px solid #6b4a06;border-radius:3px;padding:8px 14px;cursor:pointer}
+#trq button.trqn{background:none;border-color:transparent;color:#d9b98a;text-decoration:underline;padding:8px 6px}
+#trq i{position:absolute;left:0;bottom:0;height:3px;width:100%;background:#ffd23f}#trq.go i{animation:trq-t 60s linear forwards}
+@keyframes trq-t{to{width:0}}
+.ntag.pn{pointer-events:auto;cursor:pointer;padding:2px 4px}.ntag.pn:hover{color:#fff2a8}
+@keyframes tr-glow{50%{box-shadow:0 0 0 2px #39ff88,0 0 26px #39ff88aa}}
+@keyframes tr-pulse{50%{opacity:.4}}
+@media (prefers-reduced-motion:reduce){.trt,.trt.new,.trt .eye,.trt.gone .bang,.trp.ischg{animation:none!important;transition:none!important}}
+</style><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MemeCapes - The internet has become a world</title>
 <link rel="icon" href="data:image/png;base64,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">
@@ -237,7 +355,7 @@ body.pre #col{display:none!important}
 <div id="ctx"></div><div id="modal"><div id="mb"></div></div>
 <script>
 (()=>{
-const $=i=>document.getElementById(i);const BUILD='20261011090233';
+const $=i=>document.getElementById(i);const BUILD='20261011184627';
 let W=384,H=384;const CX=192,CY=192,W0=384,H0=384;
 let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:756,ck:0,sm:0,str:0,def:0},inv:[],hp:12,hp10:1,run:0,en:100,flow:[]};
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
@@ -700,7 +818,7 @@ function netConnect(first){if(!SRV())return;try{NETS.ws&&NETS.ws.close()}catch(e
  const ws=new WebSocket(SRV());NETS.ws=ws;
  ws.onopen=()=>{NETS.retry=0;if(first)netSend(first);else{const tk=LS.get('mc_tok');if(tk)netSend({t:'resume',token:tk})}};
  ws.onmessage=e=>{let m;try{m=JSON.parse(e.data)}catch(x){return}const f=NETH[m.t];if(f)try{f(m)}catch(x){console.error(x)}};
- ws.onclose=()=>{if(NETS.ws!==ws)return;const was=NETS.on;NETS.on=false;NETS.others.clear();netTagsClear();if(NETS.kicked)return;
+ ws.onclose=()=>{if(NETS.ws!==ws)return;const was=NETS.on;NETS.on=false;if(T2&&T2.p.net){NETS.inTrade=0;p2pCancel('The connection dropped, so the trade window closed. If both seals were already pressed, your bag updates when you reconnect; otherwise nothing was swapped.',1)}NETS.others.clear();netTagsClear();if(NETS.kicked)return;
   if(was){say('Lost the connection to the server. Reconnecting...','#c00')}
   if(was||NETS.retry){const d=Math.min(30,2+NETS.retry*3);NETS.retry++;setTimeout(()=>netConnect(),d*1000)}else if(NETS.want){netErr('Could not reach the game server. Try again in a minute, or play offline.')}}}
 function netErr(t){const e=$('ner');if(e)e.textContent=t;else say(t,'#c00')}
@@ -731,17 +849,19 @@ const NETH={
  pl(m){NETS.n=m.n;const seen=new Set();for(const q of m.p){const[id,x,y,r,mv]=q;if(netIgn.has((NETS.info.get(id)||{}).name))continue;seen.add(id);let o=NETS.others.get(id);if(!o){o={id,px:x,py:y,tx:x,ty:y,r,mv:0};NETS.others.set(id,o)}o.tx=x;o.ty=y;o.tr=r;o.mv=mv;o.seen=performance.now()}
   for(const[id,o] of NETS.others)if(!seen.has(id)&&performance.now()-o.seen>1500){NETS.others.delete(id);netTagDel(id)}},
  chat(m){if(m.name===NETS.name||netIgn.has(m.name))return;say('<b>'+(m.role?'<span style="color:#c80">['+esc(m.role)+']</span> ':'')+netName(m.name)+':</b> '+esc(m.text),'#1a1aa0');const o=NETS.others.get(m.id);if(o)netBubble(o,m.text)},
- tradeReq(m){say(netName(m.from)+' wants to trade with you. <a href="#" class="pn" data-ty="'+esc(m.from)+'" style="color:#0a0;font-weight:700">Accept trade</a>','#a60');netSaveNow()},
+ tradeReq(m){say(netName(m.from)+' wants to trade with you. <a href="#" class="pn" data-ty="'+esc(m.from)+'" style="color:#0a0;font-weight:700">Accept trade</a>','#a60');netSaveNow();trReq(m.from)},
  tradeStart(m){NETS.inTrade=1;netSaveNow();NETS.inTrade=1;p2pOpen({name:m.with,net:1})},
- tradeTheirs(m){p2pTheirs(m.items,m.coins)},
+ tradeTheirs(m){p2pTheirs(m.items,m.coins,m.ver)},
+ tradeVer(m){if(!T2)return;T2.pend=0;T2.ver=m.ver|0;if(m.bad&&Array.isArray(m.items)){T2.mine={items:m.items.slice(),coins:m.coins|0};netOfferLast=JSON.stringify(T2.mine)}p2pUI()},
+ tradeNoAcc(m){if(!T2)return;T2.acc[0]=0;T2.lock=Math.max(T2.lock,Date.now()+1200);say(esc(m.why||'Check the trade again.'),'#c00');p2pUI()},
  tradeAcc(){if(T2){T2.acc[1]=1;p2pUI()}},
  tradeStage2(){if(T2)p2pStage2()},
- tradeDone(m){NETS.inTrade=0;if(T2){T2.mine=m.gave;T2.theirs=m.got;try{p2pDone()}catch(e){}}T2=null;M.style.display='none';st.inv=m.inv;st.coins=m.coins;NETS.rev=m.rev;LS.set('mc_rev',String(m.rev));ui();save()},
- tradeCancel(m){NETS.inTrade=0;if(T2){say(esc(m.why||'Trade cancelled.'),'#c00');T2=null;M.style.display='none'}}
+ tradeDone(m){NETS.inTrade=0;st.inv=m.inv;st.coins=m.coins;NETS.rev=m.rev;LS.set('mc_rev',String(m.rev));if(T2)p2pFinish(m.gave,m.got,0);else{ui();save()}},
+ tradeCancel(m){NETS.inTrade=0;if(T2)p2pCancel(m.why||'Trade cancelled.',1)}
 };
 function netName(n){n=String(n).replace(/[^A-Za-z0-9_]/g,'');return '<a href="#" class="pn" data-pn="'+n+'" style="color:inherit">'+n+'</a>'}
-window.NET={chat:t=>{if(NETS.on)netSend({t:'chat',text:t})},tradeOpen:p=>{},tradeAccept:s=>{if(NETS.on&&NETS.inTrade)netSend({t:'tradeAccept',stage:s})},tradeDone:()=>{},tradeCancel:()=>{if(NETS.inTrade){NETS.inTrade=0;netSend({t:'tradeCancel'})}},mkPlace:()=>{}};
-let netOfferLast='';function netTradeSync(T){if(!T.p.net||T.stage!=1||!NETS.inTrade)return;const s=JSON.stringify(T.mine);if(s===netOfferLast)return;netOfferLast=s;netSend({t:'tradeOffer',items:T.mine.items,coins:T.mine.coins})}
+window.NET={chat:t=>{if(NETS.on)netSend({t:'chat',text:t})},tradeOpen:p=>{},tradeAccept:s=>{if(NETS.on&&NETS.inTrade)netSend({t:'tradeAccept',stage:s,ver:T2?T2.ver:0})},tradeDone:()=>{},tradeCancel:()=>{if(NETS.inTrade){NETS.inTrade=0;netSend({t:'tradeCancel'})}},mkPlace:()=>{}};
+let netOfferLast='';function netTradeSync(T){if(!T.p.net||T.stage!=1||!NETS.inTrade)return;const s=JSON.stringify(T.mine);if(s===netOfferLast)return;netOfferLast=s;T.pend=1;netSend({t:'tradeOffer',items:T.mine.items,coins:T.mine.coins})}
 // chat commands; anything else that starts with / goes to the server (moderator commands)
 function netCmd(t){const[c,a,...r]=t.slice(1).split(' '),nm=(a||'').replace(/[^A-Za-z0-9_]/g,'');
  if(c=='help'){say('Commands: /who, /trade name, /ignore name, /unignore name, /report name reason, /logout'+(SRV()?'':' (online play is not switched on yet)'),'#a60');return true}
@@ -774,7 +894,7 @@ function netDraw(now){if(!NETS.on||!NETS.others.size)return;const dt=Math.min(.1
   if(inf.c&&!CBo)qCape(o.px+.5,o.py+.5,o.r,inf.c)}
  netTags()}
 const NTAG=new Map();function netTagDel(id){const d=NTAG.get(id);if(d){d.remove();NTAG.delete(id)}}function netTagsClear(){for(const id of [...NTAG.keys()])netTagDel(id)}
-function netTags(){for(const o of NETS.others.values()){const inf=NETS.info.get(o.id);if(!inf)continue;let d=NTAG.get(o.id);if(!d){d=document.createElement('div');d.className='ntag';document.body.appendChild(d);NTAG.set(o.id,d)}
+function netTags(){for(const o of NETS.others.values()){const inf=NETS.info.get(o.id);if(!inf)continue;let d=NTAG.get(o.id);if(!d){d=document.createElement('div');d.className='ntag pn';document.body.appendChild(d);NTAG.set(o.id,d)}if(d.dataset.pn!==inf.name)d.dataset.pn=inf.name;
   const lbl=inf.name+' (lvl '+inf.lv+')';if(d.textContent!==lbl)d.textContent=lbl;
   const p=[o.px+.5-E[0],2.05+hgt(o.px+.5,o.py+.5)-E[1],o.py+.5-E[2]],zz=d3(p,Fw);if(zz<=0){d.style.display='none';continue}
   const sx=d3(p,Rt)/(zz*TH*asp),sy=d3(p,Up)/(zz*TH);d.style.display=(Math.abs(sx)>1.1||Math.abs(sy)>1.1||zz>40)?'none':'block';d.style.left=((sx+1)/2*CW)+'px';d.style.top=((1-sy)/2*CH)+'px'}}
@@ -1486,40 +1606,169 @@ function mkBind(){const m=MKS();const X=$('x');if(X)X.onclick=()=>M.style.displa
  MB.querySelectorAll('[data-mka]').forEach(b=>b.onclick=()=>{const o=m.offers.find(x=>x.id==+b.dataset.mka);if(o)mkAbort(o)});
  MB.querySelectorAll('[data-mkpt]').forEach(b=>b.onclick=()=>p2pOpen({name:'Practice bot',bot:1}));
  const q=$('geq');if(q)q.oninput=()=>{geQ=q.value.toLowerCase();const sv=q.selectionStart;geOpen();const q2=$('geq');q2.focus();q2.setSelectionRange(sv,sv)}}
-// ---- player-to-player trade: offer, accept, seal, swap
-let T2=null;
-function p2pOpen(partner){if(st.iron)return say('In Diamond Hands mode you cannot trade.');netOfferLast='';T2={p:partner,stage:1,mine:{items:[],coins:0},theirs:{items:[],coins:0},acc:[0,0],t:Date.now(),chg:0};if(partner.bot)p2pBot('open');if(window.NET&&NET.tradeOpen&&!partner.bot)NET.tradeOpen(partner);p2pUI()}
-function p2pVal(o){return o.items.reduce((a,k)=>a+gePrice(k),0)+o.coins}
-// the other side changed their offer (the server calls this): both accepts reset and their vault flashes
-function p2pTheirs(items,coins){const T=T2;if(!T||T.stage!=1)return;T.theirs={items:items.slice(),coins:coins|0};T.acc=[0,0];T.chg=Date.now();say(T.p.name+' changed the offer. Accepts reset: check it again.','#c00');p2pUI();setTimeout(()=>{if(T2===T)p2pUI()},4200)}
-function p2pBot(ev){const T=T2;if(!T||!T.p.bot)return;if(ev=='open'){const pool=Object.keys(IN).filter(k=>TRADEABLE(k)&&GV(k)<=400);const n=1+Math.floor(Math.random()*3);T.theirs.items=[];for(let i=0;i<n;i++)T.theirs.items.push(pool[Math.floor(Math.random()*pool.length)]);T.theirs.coins=Math.floor(Math.random()*150);
-  if(Math.random()<.35){const T0=T;setTimeout(()=>{if(T2!==T0||T0.stage!=1)return;p2pTheirs(T0.theirs.items.slice(0,Math.max(0,T0.theirs.items.length-1)),T0.theirs.coins+40)},6000+Math.random()*6000)}}
- if(ev=='accept'){const T0=T;setTimeout(()=>{if(T2!==T0)return;T0.acc[1]=1;if(T0.stage==1&&T0.acc[0]){p2pStage2()}else if(T0.stage==2&&T0.acc[0])p2pDone();else p2pUI()},1500+Math.random()*2000)}}
-function p2pStage2(){const T=T2;T.stage=2;T.acc=[0,0];if(T.p.bot)p2pBot('accept');p2pUI()}
-function p2pDone(){const T=T2;let free=cap()+T.mine.items.length;if(T.theirs.items.length>free)return p2pCancel('You do not have enough bag space for their items.');
- let rm=T.mine.items.slice();st.inv=st.inv.filter(k=>{const i=rm.indexOf(k);if(i>=0){rm.splice(i,1);return false}return true});if(T.mine.coins)burn(T.mine.coins,'trade with '+T.p.name);T.theirs.items.forEach(k=>st.inv.push(k));if(T.theirs.coins)pay(T.theirs.coins,'trade with '+T.p.name);
- say('Trade sealed with '+T.p.name+': you gave '+(T.mine.items.map(k=>IN[k]).join(', ')||'nothing')+(T.mine.coins?' + '+fmt(T.mine.coins)+' MC':'')+', you got '+(T.theirs.items.map(k=>IN[k]).join(', ')||'nothing')+(T.theirs.coins?' + '+fmt(T.theirs.coins)+' MC':'')+'.','#0a0');if(window.NET&&NET.tradeDone&&!T.p.bot)NET.tradeDone(T);T2=null;M.style.display='none';ui();save()}
-function p2pCancel(why){say(why||'Trade declined.','#c00');if(window.NET&&NET.tradeCancel&&T2&&!T2.p.bot)NET.tradeCancel();T2=null;M.style.display='none'}
-function p2pUI(){const T=T2;if(!T)return;netTradeSync(T);M.style.display='flex';MB.className='tr';const nm=esc(T.p.name),fresh=T.chg&&Date.now()-T.chg<4000;
- const vault=(o,who,mine,cls)=>'<div class="vault'+(cls||'')+'"><h4><span>'+who+'</span>'+(fresh&&!mine?'<em>Offer changed</em>':'')+'</h4>'+(o.items.length?o.items.map((k,i)=>'<div class="it">'+ICS(k)+IN[k]+(mine&&T.stage==1?'<button class="ghost" data-tr="'+i+'" title="Take it back">remove</button>':'')+'</div>').join(''):'<div class="none">'+(mine&&T.stage==1?'Tap items in your bag to add them.':'Nothing yet.')+'</div>')+(o.coins?'<span class="coins">'+ICS('coin')+fmt(o.coins)+' MC</span>':'')+'<div class="val">Worth about '+fmt(p2pVal(o))+' MC at guide prices</div></div>';
- const vm=p2pVal(T.mine),vt=p2pVal(T.theirs),tot=vm+vt||1;
- const fair='<div class="tr-fair"><span>You give</span><div class="bar"><i class="a" style="width:'+Math.round(100*vm/tot)+'%"></i><i class="b" style="width:'+Math.round(100*vt/tot)+'%"></i></div><span>You get</span></div>'+(vm>vt*2+50?'<div class="tr-warn">You are giving about '+(vt?(Math.round(vm/vt*10)/10)+'x':'')+' more than you get. Make sure that is what you want.</div>':'');
- const seal='<div class="tr-mid"><div class="tr-seal '+(T.acc[0]&&T.acc[1]?'both':(T.acc[0]||T.acc[1])?'half':'')+'"><img src="'+BRAND.logo+'" alt=""></div></div>';
- const status='<div class="tr-status"><span class="dot'+(T.acc[1]?' on':'')+'"></span><span>'+(T.acc[1]?'<b>'+nm+' has accepted.</b>':nm+(T.stage==1?' is looking at the offer.':' is checking the final trade.'))+'</span><span class="dot'+(T.acc[0]?' on':'')+'"></span><span>'+(T.acc[0]?'<b>You have accepted.</b>':'Waiting for you.')+'</span></div>';
- let h='<div id="trroot"><div class="mk-head"><img class="mk-logo" src="'+BRAND.logo+'" alt=""><h2>'+(T.stage==1?'Trading with '+nm:'Seal the trade')+'<br><small>'+(T.stage==1?'Both of you accept, then both of you seal it. Nothing moves before that.':'Check both sides one more time. Nothing moves until you both press the seal.')+'</small></h2></div>';
- if(T.stage==1){const used={},seen={};T.mine.items.forEach(k=>used[k]=(used[k]||0)+1);
-  h+='<div class="tr-vaults" style="margin-top:12px">'+vault(T.mine,'Your offer',1)+seal+vault(T.theirs,nm+"'s offer",0,fresh?' changed':'')+'</div>'+fair
-  +'<div class="tr-coins"><button data-tc="100">+100 MC</button><button data-tc="1000">+1K MC</button><button data-tc="10000">+10K MC</button><button data-tc="all">All coins</button><button class="ghost" data-tc="0">Clear coins</button></div>'
-  +'<div class="tr-bag"><div class="g">'+st.inv.map((k,i)=>{const no=!TRADEABLE(k)||(seen[k]=(seen[k]||0)+1)<=(used[k]||0);return '<div class="s'+(no?' no':'')+'" data-ta="'+i+'" title="'+IN[k]+'"><svg viewBox="0 0 24 24">'+IC[k]+'</svg></div>'}).join('')+'</div></div>'
-  +status+'<div class="tr-acts"><button data-tacc="1"'+(T.acc[0]?' disabled':'')+'>'+(T.acc[0]?'Accepted':'Accept offer')+'</button><button class="ghost" data-tdec="1">Decline</button></div>'}
- else{h+='<div class="tr-conf"><div class="wax'+(T.acc[0]?' sealed':'')+'"><img src="'+BRAND.logo+'" alt=""></div><p>'+(T.acc[0]?'Your seal is on it.':'Your seal goes here.')+'</p></div><div class="tr-vaults">'+vault(T.mine,'You give',0)+seal+vault(T.theirs,'You get',0)+'</div>'+fair+status
-  +'<div class="tr-acts"><button data-tacc="1"'+(T.acc[0]?' disabled':'')+'>'+(T.acc[0]?'Sealed':'Press your seal')+'</button><button class="ghost" data-tdec="1">Decline</button></div>'}
- MB.innerHTML=h+'</div>';
- MB.querySelectorAll('[data-ta]').forEach(d=>d.onclick=()=>{const i=+d.dataset.ta,k=st.inv[i];if(!TRADEABLE(k))return say('That cannot be traded.','#c00');const used=T.mine.items.filter(x=>x==k).length,have=st.inv.filter(x=>x==k).length;if(used>=have)return;T.mine.items.push(k);T.acc=[0,0];p2pUI()});
- MB.querySelectorAll('[data-tr]').forEach(b=>b.onclick=()=>{T.mine.items.splice(+b.dataset.tr,1);T.acc=[0,0];p2pUI()});
- MB.querySelectorAll('[data-tc]').forEach(b=>b.onclick=()=>{const v=b.dataset.tc;if(v=='all')T.mine.coins=st.coins;else if(v=='0')T.mine.coins=0;else T.mine.coins=Math.min(st.coins,T.mine.coins+ +v);T.acc=[0,0];p2pUI()});
- MB.querySelectorAll('[data-tacc]').forEach(b=>b.onclick=()=>{T.acc[0]=1;if(window.NET&&NET.tradeAccept&&!T.p.bot)NET.tradeAccept(T.stage);if(T.p.bot)p2pBot('accept');if(T.acc[1]&&!T.p.net){if(T.stage==1)p2pStage2();else p2pDone()}else p2pUI()});
- MB.querySelectorAll('[data-tdec]').forEach(b=>b.onclick=()=>p2pCancel('You decline the trade.'))}
+// ---- player-to-player trade, version 2 (tools/patch_trade.py)
+let T2=null,TRS=null,TRlp=0;
+const TRRN=['Common','Uncommon','Rare','Epic','Legendary'],TRLOCK=3000;
+const trRar=k=>ITM[k]?Math.max(0,Math.min(4,ITM[k][4]||0)):({'#5c5':1,'#4a9aff':2,'#c77dff':3,'#ff9a2a':4})[RAR[k]]||0;
+const trCnt=a=>{const o={};a.forEach(k=>o[k]=(o[k]||0)+1);return o};
+const trGroup=a=>{const m=new Map();a.forEach(k=>m.set(k,(m.get(k)||0)+1));return[...m.entries()]};
+const trVal=o=>o.items.reduce((a,k)=>a+gePrice(k),0)+(o.coins|0);
+const trShort=n=>n>=1e7?Math.floor(n/1e6)+'M':n>=1e5?Math.floor(n/1e3)+'K':fmt(n);
+const trWords=n=>n>=1e9?(Math.round(n/1e7)/100)+' billion':n>=1e6?(Math.round(n/1e4)/100)+' million':n>=1e4?(Math.round(n/10)/100)+' thousand':'';
+const trSv=k=>'<svg viewBox="0 0 24 24">'+(k=='coin'?COINI(1e6):IC[k])+'</svg>';
+const TRLK='<svg class="trlk" viewBox="0 0 24 24"><path d="M7.5 11V8a4.5 4.5 0 0 1 9 0v3" fill="none" stroke="#ffd23f" stroke-width="2.6"/><rect x="5" y="11" width="14" height="10" rx="2" fill="#ffd23f"/></svg>';
+function trInfo(k){const L=[];let ty='Item';
+ if(HEAL[k]){ty='Food';L.push('Heals '+HEAL[k])}
+ if(SLOT[k])ty=(SLN[SLOT[k]]||'Gear')+' gear';
+ if(WST[k]){ty='Weapon';L.push('Attack +'+WST[k][0],'Strength +'+WST[k][1])}else if(WB[k])L.push('Hit +'+WB[k]);
+ if(AB[k])L.push('Defence +'+AB[k]);
+ if(/^tab_/.test(k))ty='Teleport';else if(/^s(pot|onion|cab|tom)$/.test(k))ty='Seed';
+ return{ty,L}}
+// how many free bag slots you will have after the trade (negative = their items won't fit)
+function trSpace(T){const coins=st.coins-T.mine.coins+T.theirs.coins;return 35-(coins>0?1:0)-(st.inv.length-T.mine.items.length+T.theirs.items.length)}
+const trUnseen=T=>trGroup(T.theirs.items).map(e=>e[0]).filter(k=>!T.seen[k]);
+function trReq(from){if(T2)return;let d=$('trq');if(!d){d=document.createElement('div');d.id='trq';document.body.appendChild(d)}const inf=typeof NETS!='undefined'?[...NETS.info.values()].find(i=>i.name===from):null;
+ d.innerHTML='<img src="'+BRAND.logo+'" alt=""><div class="trqt"><b>'+esc(from)+'</b>'+(inf&&inf.lv?' <small>level '+inf.lv+'</small>':'')+'<span>wants to trade with you</span></div><button data-q="y">Trade</button><button class="trqn" data-q="n">No thanks</button><i></i>';
+ d.style.display='flex';d.classList.remove('go');void d.offsetWidth;d.classList.add('go');clearTimeout(trReq.t);trReq.t=setTimeout(()=>{d.style.display='none'},60000);
+ d.onclick=e=>{const q=e.target.dataset.q;if(!q)return;d.style.display='none';if(q=='y'&&typeof netSend=='function'){netSaveNow();netSend({t:'tradeYes',name:from})}}}
+function p2pOpen(partner){{const q=$('trq');if(q)q.style.display='none'}if(st.iron)return say('In Diamond Hands mode you cannot trade.');if(typeof netOfferLast!='undefined')netOfferLast='';TRS=null;
+ T2={p:partner,stage:1,mine:{items:[],coins:0},theirs:{items:[],coins:0},acc:[0,0],ver:0,pend:0,t:Date.now(),chg:0,lock:0,gone:{},fresh:{},coinDrop:0,seen:{},sel:null,warnU:0,menu:null,flash:0};
+ if(partner.bot)p2pBot('open');p2pUI()}
+// the other side changed their offer (the server calls this with the new version number)
+function p2pTheirs(items,coins,ver){const T=T2;if(!T||T.stage!=1)return;const a=trCnt(T.theirs.items),b=trCnt(items),now=Date.now(),had=T.theirs.items.length||T.theirs.coins;coins=coins|0;
+ for(const k in a){const d=a[k]-(b[k]||0);if(d>0)T.gone[k]=(T.gone[k]||0)+d}
+ for(const k in b){const d=b[k]-(a[k]||0);if(d>0){T.fresh[k]=now;delete T.seen[k];if(T.gone[k]){T.gone[k]-=d;if(T.gone[k]<=0)delete T.gone[k]}}}
+ if(coins<T.theirs.coins)T.coinDrop+=T.theirs.coins-coins;else if(coins>T.theirs.coins){T.coinDrop=Math.max(0,T.coinDrop-(coins-T.theirs.coins));T.fresh.coin=now}
+ const wasAcc=T.acc[0]||T.acc[1];T.theirs={items:items.slice(),coins};if(ver!=null)T.ver=ver|0;T.acc=[0,0];T.chg=now;T.lock=now+TRLOCK;T.warnU=0;T.flash=now;
+ if(had||wasAcc)say(T.p.name+' changed their offer'+(wasAcc?'. Both accepts were reset':'')+'. Check it again.','#c00');p2pUI()}
+function p2pBot(ev){const T=T2;if(!T||!T.p.bot)return;
+ if(ev=='open'){const pool=Object.keys(IN).filter(k=>TRADEABLE(k)&&GV(k)<=400&&IC[k]);const n=2+Math.floor(Math.random()*3),it=[];for(let i=0;i<n;i++)it.push(pool[Math.floor(Math.random()*pool.length)]);if(Math.random()<.5)it.push(it[0]);
+  const T0=T;setTimeout(()=>{if(T2===T0)p2pTheirs(it,Math.floor(Math.random()*150)*10)},900);
+  if(Math.random()<.6)setTimeout(()=>{if(T2!==T0||T0.stage!=1)return;p2pTheirs(T0.theirs.items.slice(0,Math.max(0,T0.theirs.items.length-1)),Math.max(0,T0.theirs.coins-200))},7000+Math.random()*6000)}
+ if(ev=='accept'){const T0=T,s=T.stage;setTimeout(()=>{if(T2!==T0||T0.stage!=s)return;T0.acc[1]=1;if(T0.acc[0]){if(s==1)p2pStage2();else p2pFinish(T0.mine,T0.theirs,1)}else p2pUI()},1500+Math.random()*2000)}}
+function p2pStage2(){const T=T2;if(!T)return;T.stage=2;T.acc=[0,0];T.lock=Date.now()+1500;T.menu=null;T.warnU=0;if(T.p.bot)p2pBot('accept');p2pUI()}
+// your own offer changed
+function trMine(){const T=T2;T.acc=[0,0];T.warnU=0;T.menu=null;p2pUI()}
+function trAdd(k,n){const T=T2;if(!T||T.stage!=1)return;if(!TRADEABLE(k))return say('That cannot be traded.','#c00');const have=st.inv.filter(x=>x==k).length,used=T.mine.items.filter(x=>x==k).length;n=Math.min(n,have-used);if(n<=0)return;for(let i=0;i<n;i++)T.mine.items.push(k);trMine()}
+function trTake(k,n){const T=T2;if(!T||T.stage!=1)return;for(let i=T.mine.items.length-1;i>=0&&n>0;i--)if(T.mine.items[i]==k){T.mine.items.splice(i,1);n--}trMine()}
+function trCoins(v){const T=T2;if(!T||T.stage!=1)return;T.mine.coins=Math.max(0,Math.min(st.coins,Math.floor(v)||0));trMine()}
+const trParse=s=>{const m=String(s).trim().toLowerCase().replace(/,/g,'').match(/^(\d+(?:\.\d+)?)\s*([kmb]?)$/);if(!m)return null;return Math.floor(+m[1]*({'':1,k:1e3,m:1e6,b:1e9})[m[2]])};
+function trAccept(){const T=T2;if(!T||T.acc[0]||T.pend||Date.now()<T.lock)return;if(trSpace(T)<0)return p2pUI();
+ if(T.stage==1&&trUnseen(T).length&&!T.warnU){T.warnU=1;return p2pUI()}
+ T.acc[0]=1;T.warnU=0;if(T.p.net&&window.NET&&NET.tradeAccept)NET.tradeAccept(T.stage);if(T.p.bot)p2pBot('accept');
+ if(!T.p.net&&T.acc[1]){if(T.stage==1)p2pStage2();else p2pFinish(T.mine,T.theirs,1);return}p2pUI()}
+// the trade went through: local = do the swap here (practice partner); online the server already did it
+function p2pFinish(gave,got,local){const T=T2;if(!T)return;
+ if(local){if(trSpace(T)<0)return p2pCancel('You do not have enough bag space for their items.');let rm=gave.items.slice();st.inv=st.inv.filter(k=>{const i=rm.indexOf(k);if(i>=0){rm.splice(i,1);return false}return true});if(gave.coins)burn(gave.coins,'trade with '+T.p.name);got.items.forEach(k=>st.inv.push(k));if(got.coins)pay(got.coins,'trade with '+T.p.name)}
+ const rec={t:Date.now(),p:T.p.name,gave:{items:gave.items.slice(),coins:gave.coins|0},got:{items:got.items.slice(),coins:got.coins|0}};if(!Array.isArray(st.tlog))st.tlog=[];st.tlog.unshift(rec);st.tlog.length=Math.min(st.tlog.length,30);
+ say('Trade complete with '+T.p.name+': you gave '+(trList(gave)||'nothing')+', you got '+(trList(got)||'nothing')+'.','#0a0');
+ T2=null;TRS={m:'done',r:rec};p2pUI();ui();save()}
+const trList=o=>trGroup(o.items).map(([k,n])=>IN[k]+(n>1?' x'+n:'')).concat(o.coins?[fmt(o.coins)+' MC']:[]).join(', ');
+function p2pCancel(why,them){const T=T2;say(why||'Trade declined.','#c00');if(window.NET&&NET.tradeCancel&&T&&!T.p.bot&&!them)NET.tradeCancel();T2=null;if(them&&T){TRS={m:'cancel',why:why||'The trade was cancelled.',p:T.p.name};p2pUI()}else{TRS=null;M.style.display='none'}}
+// ---- drawing
+function trTile(T,k,n,side){const now=Date.now(),fr=side=='t'&&T.fresh[k]&&now-T.fresh[k]<9000,un=side=='t'&&T.stage==1&&!T.seen[k],sel=T.sel&&T.sel.k==k&&T.sel.s==side;
+ return '<div class="trt'+(fr?' isnew':'')+(un?' isuns':'')+(sel?' issel':'')+'" data-tk="'+k+'" data-ts="'+side+'" data-tn="'+n+'" style="--rc:'+RC[trRar(k)]+'" title="'+IN[k]+'"><div class="trpic">'+trSv(k)+(n>1?'<b class="trn">x'+n+'</b>':'')+(fr?'<i class="trtag">NEW</i>':'')+(un?'<i class="treye"></i>':'')+'</div><span class="trnm">'+IN[k]+'</span><span class="trv">'+trShort(gePrice(k)*n)+' MC</span></div>'}
+function trCoinTile(T,o,side){const fr=side=='t'&&T.fresh.coin&&Date.now()-T.fresh.coin<9000;return '<div class="trt iscoin'+(fr?' isnew':'')+'" data-tk="coin" data-ts="'+side+'" data-tn="'+o.coins+'" style="--rc:#ffd23f"><div class="trpic"><svg viewBox="0 0 24 24">'+COINI(o.coins)+'</svg>'+(fr?'<i class="trtag">NEW</i>':'')+'</div><span class="trnm">'+trShort(o.coins)+'</span><span class="trv">Meme Coins</span></div>'}
+function trPanel(T,side){const o=side=='m'?T.mine:T.theirs,nm=esc(T.p.name),g=trGroup(o.items);let t='';
+ if(o.coins)t+=trCoinTile(T,o,side);t+=g.map(([k,n])=>trTile(T,k,n,side)).join('');
+ if(side=='t'){for(const k in T.gone)t+='<div class="trt isgone" data-tk="'+k+'" data-ts="g" data-tn="'+T.gone[k]+'" title="Taken out of the offer"><div class="trpic">'+trSv(k)+'<i class="trbang">!</i></div><span class="trnm">'+IN[k]+'</span><span class="trv">Taken out'+(T.gone[k]>1?' x'+T.gone[k]:'')+'</span></div>';if(T.coinDrop)t+='<div class="trt isgone" data-tk="coin" data-ts="g" data-tn="'+T.coinDrop+'"><div class="trpic"><svg viewBox="0 0 24 24">'+COINI(T.coinDrop)+'</svg><i class="trbang">!</i></div><span class="trnm">'+trShort(T.coinDrop)+' MC</span><span class="trv">Taken out</span></div>'}
+ const empty=!o.items.length&&!o.coins,cnt=o.items.length;
+ return '<section class="trp is'+side+(side=='t'&&T.flash&&Date.now()-T.flash<2500?' ischg':'')+'"><header><h4>'+(side=='m'?'You give':nm+' gives')+'</h4><span>'+(cnt?cnt+' item'+(cnt>1?'s':''):'')+(cnt&&o.coins?' + coins':o.coins?'coins':'')+'</span></header>'
+  +'<div class="trg">'+t+'</div>'+(empty?'<div class="tre">'+(side=='m'?'Nothing yet. Tap items in your bag to offer them.':nm+' has not offered anything yet.')+'</div>':'')
+  +(side=='m'&&T.stage==1?'<div class="trc"><label>Coins <input id="trci" inputmode="decimal" autocomplete="off" placeholder="0" value="'+(T.mine.coins||'')+'"></label><button data-tc="1000">+1K</button><button data-tc="10000">+10K</button><button data-tc="100000">+100K</button><button data-tc="1000000">+1M</button><button data-tc="all">All</button>'+(T.mine.coins?'<button class="ghost" data-tc="0">Clear</button>':'')+'<small>You have '+fmt(st.coins)+' MC. Type an amount like 25k or 1.5m.</small></div>':'')
+  +'<footer>Worth about <b>'+fmt(trVal(o))+' MC</b></footer></section>'}
+function trBag(T){const used=trCnt(T.mine.items),seen={};let s='',n=0;
+ if(st.coins>0){n++;const left=st.coins-T.mine.coins;s+='<div class="trs iscoin'+(left<=0?' isin':'')+'" data-bc="1" title="Meme Coins: type an amount under your offer"><svg viewBox="0 0 24 24">'+COINI(Math.max(1,left))+'</svg><small>'+trShort(Math.max(0,left))+'</small></div>'}
+ st.inv.forEach((k,i)=>{n++;seen[k]=(seen[k]||0)+1;const inO=seen[k]<=(used[k]||0),no=!TRADEABLE(k);s+='<div class="trs'+(no?' isno':'')+(inO?' isin':'')+'" data-bi="'+i+'" data-tk="'+k+'" data-ts="b" style="--rc:'+RC[trRar(k)]+'" title="'+IN[k]+(no?' (cannot be traded)':'')+'">'+trSv(k)+(no?TRLK:'')+'</div>'});
+ for(;n<35;n++)s+='<div class="trs isempty"></div>';
+ return '<section class="trp trbag"><header><h4>Your bag</h4><span>'+(35-(st.coins>0?1:0)-st.inv.length)+' free</span></header><div class="trgrid">'+s+'</div><div class="tre issmall">Tap to offer one. Right-click or hold for more.</div></section>'}
+function trInsp(T){const s=T&&T.sel;if(!s)return '';
+ const k=s.k,n=s.n||1;
+ if(k=='coin')return '<div class="tri" style="--rc:#ffd23f"><div class="trbig"><svg viewBox="0 0 24 24">'+COINI(n)+'</svg></div><div class="trtxt"><h5>'+fmt(n)+' Meme Coins</h5><div class="trty">Currency'+(trWords(n)?' · '+trWords(n):'')+'</div><p>'+(s.s=='g'?'Taken out of '+esc(T.p.name)+"'s offer.":'Meme Coins. Trade them, spend them, swap them for $CAPES at any bank.')+'</p></div></div>';
+ const r=trRar(k),inf=trInfo(k),have=st.inv.filter(x=>x==k).length;
+ return '<div class="tri" style="--rc:'+RC[r]+'"><div class="trbig"><svg viewBox="0 0 24 24">'+IC[k]+'</svg></div><div class="trtxt"><h5>'+IN[k]+(n>1?' <span>x'+n+'</span>':'')+'</h5><div class="trty">'+TRRN[r]+' · '+inf.ty+'</div>'
+  +(inf.L.length?'<div class="trst">'+inf.L.map(x=>'<span>'+x+'</span>').join('')+'</div>':'')+'<p>'+(EX[k]||'')+'</p>'
+  +'<div class="trpr">Guide price <b>'+fmt(gePrice(k))+' MC</b> each'+(n>1?' · '+n+' = <b>'+fmt(gePrice(k)*n)+' MC</b>':'')+'</div>'
+  +'<div class="trown">'+(s.s=='g'?'<b class="trbad">Taken out of '+esc(T.p.name)+"'s offer</b> · ":s.s=='t'?'In '+esc(T.p.name)+"'s offer · ":s.s=='m'?'In your offer · ':'')+(have?'You have '+have+' in your bag':'You have none')+(TRADEABLE(k)?'':' · <b class="trbad">Cannot be traded</b>')+'</div></div></div>'}
+function trWarn(T){const W=[],nm=esc(T.p.name),vm=trVal(T.mine),vt=trVal(T.theirs),sp=trSpace(T),gone=Object.keys(T.gone);
+ if(gone.length||T.coinDrop)W.push(['trwbad',nm+' took things out of their offer: '+gone.map(k=>IN[k]+(T.gone[k]>1?' x'+T.gone[k]:'')).concat(T.coinDrop?[fmt(T.coinDrop)+' MC']:[]).join(', ')+' (marked with a red !). Check what is left before you accept.']);
+ if(sp<0)W.push(['trwbad','Their items will not fit: you need '+(-sp)+' more free bag slot'+(sp<-1?'s':'')+'.']);
+ if(vm>0&&!T.theirs.items.length&&!T.theirs.coins)W.push(['trwwarn','You get nothing back. This would be a gift.']);
+ else if(vt>0&&vm>vt*2&&vm-vt>200)W.push(['trwwarn','You are giving about '+(Math.round(vm/vt*10)/10)+' times more than you get, at guide prices.']);
+ if(T.warnU){const u=trUnseen(T);if(u.length)W.push(['trwinfo','You have not looked at '+u.map(k=>IN[k]).join(', ')+' yet (gold dot). Tap '+(u.length>1?'them':'it')+' to check, or press Accept again.'])}
+ return W.length?'<div class="trw">'+W.map(w=>'<div class="'+w[0]+'">'+w[1]+'</div>').join('')+'</div>':''}
+function trScale(T){const vm=trVal(T.mine),vt=trVal(T.theirs),tot=vm+vt||1,d=vt-vm;
+ return '<div class="trb"><div class="trside"><small>You give</small><b>'+fmt(vm)+' MC</b></div><div class="trbar"><i class="tra" style="width:'+(100*vm/tot)+'%"></i><i class="trbb" style="width:'+(100*vt/tot)+'%"></i></div><div class="trside isr"><small>You get</small><b>'+fmt(vt)+' MC</b></div></div>'
+  +(vm||vt?'<div class="trnet '+(d>=0?'trup':'trdn')+'">'+(d>=0?'+':'−')+fmt(Math.abs(d))+' MC for you at guide prices</div>':'')}
+function trAccLabel(T){const now=Date.now(),s=Math.ceil((T.lock-now)/1000);if(T.acc[0])return[1,T.stage==1?'Accepted':'Sealed'];if(T.pend)return[1,'Sending...'];if(trSpace(T)<0)return[1,'No bag space'];
+ const base=T.stage==1?(T.warnU?'Accept anyway':'Accept offer'):'Press your seal';return now<T.lock?[1,base+' ('+s+')']:[0,base]}
+function trStatus(T){const nm=esc(T.p.name);return '<div class="tr-status"><span class="dot'+(T.acc[1]?' on':'')+'"></span><span>'+(T.acc[1]?'<b>'+nm+(T.stage==1?' has accepted.':' has pressed their seal.')+'</b>':nm+(T.stage==1?' is choosing.':' is checking the final trade.'))+'</span><span class="dot'+(T.acc[0]?' on':'')+'"></span><span>'+(T.acc[0]?'<b>You have '+(T.stage==1?'accepted.':'pressed your seal.')+'</b>':'Waiting for you.')+'</span></div>'}
+function trHead(title,sub,stage){return '<div class="mk-head"><img class="mk-logo" src="'+BRAND.logo+'" alt=""><h2>'+title+'<br><small>'+sub+'</small></h2>'+(Array.isArray(st.tlog)&&st.tlog.length&&!(TRS&&TRS.m=='hist')?'<button class="ghost" data-trh="1">History</button>':'')+'</div>'
+ +(stage?'<ol class="trstep"><li class="'+(stage==1?'on':'ok')+'">1 · Offer</li><li class="'+(stage==2?'on':stage>2?'ok':'')+'">2 · Final check</li><li class="'+(stage>2?'on':'')+'">3 · Done</li></ol>':'')}
+function trRows(o,side,gone){const g=trGroup(o.items);let s=(o.coins?'<div class="trr iscoin" data-tk="coin" data-ts="'+side+'" data-tn="'+o.coins+'" style="--rc:#ffd23f"><svg viewBox="0 0 24 24">'+COINI(o.coins)+'</svg><span class="trnm">'+fmt(o.coins)+' Meme Coins'+(trWords(o.coins)?'<small>'+trWords(o.coins)+'</small>':'')+'</span><span class="trn"></span><span class="trv">'+fmt(o.coins)+' MC</span></div>':'')
+  +g.map(([k,n])=>'<div class="trr" data-tk="'+k+'" data-ts="'+side+'" data-tn="'+n+'" style="--rc:'+RC[trRar(k)]+'">'+trSv(k)+'<span class="trnm">'+IN[k]+'<small>'+TRRN[trRar(k)]+' · '+trInfo(k).ty+'</small></span><span class="trn">x'+n+'</span><span class="trv">'+fmt(gePrice(k)*n)+' MC</span></div>').join('');
+ if(gone)for(const k in gone)s+='<div class="trr isgone" data-tk="'+k+'" data-ts="g" data-tn="'+gone[k]+'">'+trSv(k)+'<span class="trnm">'+IN[k]+'<small>Taken out earlier</small></span><span class="trn">x'+gone[k]+'</span><span class="trv">removed</span></div>';
+ return s||'<div class="tre">Nothing</div>'}
+function p2pUI(){const T=T2;M.style.display='flex';MB.className='tr';const ae=document.activeElement,foc=ae&&ae.id=='trci',cs=foc?ae.selectionStart:0;
+ if(!T)return trScreen();if(typeof netTradeSync=='function')netTradeSync(T);
+ const nm=esc(T.p.name),lv=T.p.net&&typeof NETS!='undefined'?[...NETS.info.values()].find(i=>i.name===T.p.name):null,acc=trAccLabel(T);
+ let x='<div id="trroot">';
+ if(T.stage==1){x+=trHead('Trading with '+nm+(lv&&lv.lv?' <span class="trlv">level '+lv.lv+'</span>':''),T.p.bot?'Practice partner. The swap is real, so only offer things you do not need.':'Pick what you give. Both of you accept, then both of you check the final trade and press your seal. Nothing moves before that.',1);
+  x+='<div class="tr-main">'+trBag(T)+trPanel(T,'m')+trPanel(T,'t')+'</div>'+trScale(T)}
+ else{const sp=trSpace(T),d=trVal(T.theirs)-trVal(T.mine);x+=trHead('Final check','Read both lists. Nothing moves until both of you press your seal.',2);
+  x+='<div class="trx"><section><h4>You give</h4>'+trRows(T.mine,'m')+'<footer>Worth about <b>'+fmt(trVal(T.mine))+' MC</b></footer></section><section class="ist"><h4>You get from '+nm+'</h4>'+trRows(T.theirs,'t',T.gone)+'<footer>Worth about <b>'+fmt(trVal(T.theirs))+' MC</b></footer></section></div>'
+  +'<div class="trsum"><span>After the trade you will have <b>'+Math.max(0,sp)+'</b> free bag slot'+(sp==1?'':'s')+'.</span><span class="'+(d>=0?'trup':'trdn')+'">'+(d>=0?'You come out about +':'You come out about −')+fmt(Math.abs(d))+' MC at guide prices.</span></div>'
+  +'<div class="tr-conf"><div class="wax'+(T.acc[0]?' sealed':'')+'"><img src="'+BRAND.logo+'" alt=""></div></div>'}
+ x+='<div class="tr-foot">'+trWarn(T)+trStatus(T)+'<button id="tracc" data-tacc="1"'+(acc[0]?' disabled':'')+'>'+acc[1]+'</button><button class="ghost" data-tdec="1">Decline</button></div>';
+ if(T.menu)x+=trMenuH(T);
+ MB.innerHTML=x+'</div>';trWire(T);
+ if(foc){const q=$('trci');if(q){q.focus();try{q.setSelectionRange(cs,cs)}catch(e){}}}}
+function trScreen(){const S=TRS;if(!S){M.style.display='none';return}let x='<div id="trroot">';
+ if(S.m=='done'){const r=S.r;x+=trHead('Trade complete','With '+esc(r.p)+' · '+new Date(r.t).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),3)+'<div class="tr-conf"><div class="wax sealed"><img src="'+BRAND.logo+'" alt=""></div><p>Sealed. The items are in your bag.</p></div><div class="trx"><section class="ist"><h4>You got</h4>'+trRows(r.got,'x')+'</section><section><h4>You gave</h4>'+trRows(r.gave,'x')+'</section></div>'}
+ else if(S.m=='cancel')x+=trHead('Trade cancelled',esc(S.p||''),0)+'<div class="trw"><div class="trwwarn">'+esc(S.why)+'</div></div><p class="tre">'+(/connection dropped/.test(S.why)?'':'Nothing was swapped. Your items are still in your bag.')+'</p>';
+ else if(S.m=='hist'){const L=Array.isArray(st.tlog)?st.tlog:[];x+=trHead('Trade history','Your last '+L.length+' trade'+(L.length==1?'':'s')+', newest first.',0)+'<div class="trh">'+(L.map(r=>'<div class="trhr"><div class="trwhen"><b>'+esc(r.p)+'</b><small>'+new Date(r.t).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})+'</small></div><div class="trcol"><small>You gave</small>'+trMini(r.gave)+'</div><div class="trcol"><small>You got</small>'+trMini(r.got)+'</div></div>').join('')||'<p class="tre">No trades yet.</p>')+'</div>'}
+ x+='<div class="tr-foot"><span style="flex:1"></span>'+(S.m=='hist'&&S.back?'<button data-trb="1">Back</button>':'<button data-trx="1">Close</button>')+'</div></div>';MB.innerHTML=x;
+ MB.querySelectorAll('[data-trx]').forEach(b=>b.onclick=()=>{TRS=null;M.style.display='none'});MB.querySelectorAll('[data-trb]').forEach(b=>b.onclick=()=>{TRS=S.back;p2pUI()});MB.querySelectorAll('[data-trh]').forEach(b=>b.onclick=()=>{TRS={m:'hist',back:S};p2pUI()})}
+const trMini=o=>'<div class="trmini">'+(o.coins?'<span title="'+fmt(o.coins)+' MC"><svg viewBox="0 0 24 24">'+COINI(o.coins)+'</svg>'+trShort(o.coins)+'</span>':'')+trGroup(o.items).map(([k,n])=>'<span title="'+IN[k]+'">'+trSv(k)+(n>1?'x'+n:'')+'</span>').join('')+(!o.coins&&!o.items.length?'<em>nothing</em>':'')+'</div>';
+function trMenuH(T){const m=T.menu,k=m.k,nm=IN[k]||'';let b='';
+ if(m.s=='b'){const left=st.inv.filter(x=>x==k).length-T.mine.items.filter(x=>x==k).length;if(TRADEABLE(k)&&left>0){b+='<button data-tm="a1">Offer 1</button>';if(left>1)b+='<button data-tm="a5">Offer 5</button><button data-tm="a10">Offer 10</button><button data-tm="aall">Offer all ('+left+')</button><button data-tm="ax">Offer X...</button>'}}
+ if(m.s=='m'){const c=T.mine.items.filter(x=>x==k).length;b+='<button data-tm="t1">Take back 1</button>';if(c>1)b+='<button data-tm="t5">Take back 5</button><button data-tm="tall">Take back all ('+c+')</button>'}
+ b+='<button data-tm="look">Look at it</button><button data-tm="close">Cancel</button>';
+ return '<div class="trmenu" style="left:'+m.x+'px;top:'+m.y+'px"><div class="trhd">'+nm+'</div>'+(m.ask?'<form data-tmf="1"><input id="trmx" inputmode="numeric" placeholder="How many?" autocomplete="off"><button>OK</button></form>':b)+'</div>'}
+function trPop(T,el,pin){const k=el.dataset.tk,s=el.dataset.ts||'b',n=+el.dataset.tn||1,root=$('trroot');if(!k||!root)return;T.sel={k,s,n};if(pin)T.pin=1;
+ if(s=='t'&&T.stage==1&&!T.seen[k]){T.seen[k]=1;MB.querySelectorAll('.trt[data-ts="t"][data-tk="'+k+'"]').forEach(e=>{e.classList.remove('isuns');const y=e.querySelector('.treye');if(y)y.remove()})}
+ MB.querySelectorAll('.issel').forEach(e=>e.classList.remove('issel'));el.classList.add('issel');
+ let p=$('trpop');if(!p){p=document.createElement('div');p.id='trpop';root.appendChild(p)}p.innerHTML=trInsp(T)+(T.pin?'<button class="ghost trpx" data-trpx="1">Close</button>':'');p.style.display='block';
+ const R=root.getBoundingClientRect(),E=el.getBoundingClientRect(),w=Math.min(330,R.width-12);p.style.width=w+'px';
+ let x=E.right-R.left+8,y=E.top-R.top-6;if(x+w>R.width-4){x=E.left-R.left-w-8;if(x<4){x=Math.max(4,Math.min(R.width-w-4,E.left-R.left+E.width/2-w/2));y=E.bottom-R.top+6}}
+ p.style.left=x+'px';p.style.top=Math.max(4,Math.min(y,R.height-p.offsetHeight-4))+'px';const c=p.querySelector('[data-trpx]');if(c)c.onclick=e=>{e.stopPropagation();trUnpop(T,1)}}
+function trUnpop(T,force){if(T&&T.pin&&!force)return;if(T){T.pin=0;T.sel=null}const p=$('trpop');if(p)p.style.display='none';MB.querySelectorAll('.issel').forEach(e=>e.classList.remove('issel'))}
+function trMenuAt(T,ev,k,s,i){const R=$('trroot').getBoundingClientRect(),x=Math.max(4,Math.min(R.width-170,(ev.clientX||0)-R.left)),y=Math.max(4,(ev.clientY||0)-R.top);T.menu={k,s,i,x,y};p2pUI()}
+function trHold(el,fn){let t=0;el.addEventListener('pointerdown',e=>{if(e.pointerType=='mouse')return;t=setTimeout(()=>{TRlp=Date.now();fn(e)},450)});['pointerup','pointerleave','pointercancel','pointermove'].forEach(v=>el.addEventListener(v,e=>{if(v=='pointermove'&&Math.abs(e.movementX||0)+Math.abs(e.movementY||0)<6)return;clearTimeout(t)}))}
+function trWire(T){const Q=s=>MB.querySelectorAll(s);
+ Q('[data-bi]').forEach(d=>{const k=st.inv[+d.dataset.bi];d.onclick=()=>{if(Date.now()-TRlp<600)return;trAdd(k,1)};d.oncontextmenu=e=>{e.preventDefault();trMenuAt(T,e,k,'b')};trHold(d,e=>trMenuAt(T,e,k,'b'));
+  d.onmouseenter=()=>trPop(T,d);d.onmouseleave=()=>trUnpop(T)});
+ Q('[data-bc]').forEach(d=>d.onclick=()=>{const q=$('trci');if(q){q.focus();q.select()}});
+ Q('.trt,.trr').forEach(d=>{const s=d.dataset.ts,k=d.dataset.tk;d.onmouseenter=()=>trPop(T,d);d.onmouseleave=()=>trUnpop(T);
+  d.onclick=e=>{e.stopPropagation();if(Date.now()-TRlp<600)return;if(s=='m'&&T.stage==1&&k!='coin'){T.pin=0;return trTake(k,1)}if(s=='m'&&k=='coin'&&T.stage==1){const q=$('trci');if(q){q.focus();q.select()}return}trPop(T,d,1)};
+  if(s=='m'&&T.stage==1&&k!='coin'){d.oncontextmenu=e=>{e.preventDefault();trMenuAt(T,e,k,'m')};trHold(d,e=>trMenuAt(T,e,k,'m'))}});
+ const q=$('trci');if(q){q.oninput=()=>{const v=q.value.trim()?trParse(q.value):0;q.classList.toggle('bad',v==null||v>st.coins);if(v!=null&&v!=T.mine.coins&&v<=st.coins)trCoins(v)};q.onkeydown=e=>{e.stopPropagation();if(e.key=='Enter')q.blur()}}
+ Q('[data-tc]').forEach(b=>b.onclick=()=>{const v=b.dataset.tc;trCoins(v=='all'?st.coins:v=='0'?0:T.mine.coins+ +v)});
+ Q('[data-tacc]').forEach(b=>b.onclick=trAccept);Q('[data-tdec]').forEach(b=>b.onclick=()=>p2pCancel('You declined the trade.'));
+ Q('[data-trh]').forEach(b=>b.onclick=trHist);
+ Q('[data-tm]').forEach(b=>b.onclick=e=>{e.stopPropagation();const m=T.menu,a=b.dataset.tm,c=a.slice(1);if(!m)return;
+  if(a=='close'){T.menu=null;return p2pUI()}if(a=='look'){T.menu=null;T.sel={k:m.k,s:m.s,n:1};T.pin=1;return p2pUI()}if(a=='ax'){m.ask=1;p2pUI();const i=$('trmx');if(i)i.focus();return}
+  T.menu=null;const n=c=='all'?99:+c;if(a[0]=='a')trAdd(m.k,n);else trTake(m.k,n)});
+ Q('[data-tmf]').forEach(f=>f.onsubmit=e=>{e.preventDefault();const m=T.menu,v=trParse($('trmx').value);T.menu=null;if(m&&v)trAdd(m.k,v);else p2pUI()});
+ const mx=$('trmx');if(mx)mx.onkeydown=e=>{e.stopPropagation();if(e.key=='Escape'){T.menu=null;p2pUI()}};
+ const root=$('trroot');if(root)root.addEventListener('click',e=>{if(Date.now()-TRlp<600)return;if(T.menu&&!e.target.closest('.trmenu')){T.menu=null;return p2pUI()}if(T.pin&&!e.target.closest('#trpop,.trt,.trr,.trs'))trUnpop(T,1)});
+ if(T.pin&&T.sel){const el=MB.querySelector('[data-tk="'+T.sel.k+'"][data-ts="'+T.sel.s+'"]');if(el)trPop(T,el,1);else T.pin=0}}
+// trade history opened from inside a live trade comes back to the trade
+function trHist(){const T=T2;const S={m:'hist',back:null};if(T){const keepT=T;let x;TRS=S;T2=null;trScreen();T2=keepT;TRS=null;MB.querySelectorAll('[data-trx]').forEach(b=>{b.textContent='Back to the trade';b.onclick=()=>p2pUI()})}else{TRS=S;trScreen()}}
+// keep the Accept countdown and the NEW glows fresh without redrawing the whole window
+setInterval(()=>{const T=T2;if(!T||M.style.display=='none')return;const b=$('tracc');if(!b)return;const a=trAccLabel(T);if(b.textContent!=a[1]){b.textContent=a[1];b.disabled=!!a[0]}
+ const now=Date.now();MB.querySelectorAll('.trt.isnew').forEach(e=>{const k=e.dataset.tk;if(!T.fresh[k]||now-T.fresh[k]>9000){e.classList.remove('isnew');const t=e.querySelector('.trtag');if(t)t.remove()}})},250);
+
 // --- Wandering Trader (two-screen trade)
 function tradeOpen(){if(st.iron)return say('In Diamond Hands mode you cannot trade.');if(!trd){const pool=['potion','rgem','runes','tab_w','tab_s','tab_p','spade','tinder','scab','stom','protein','gold','plank','bbones'];const k=pool[Math.floor(Math.random()*pool.length)];trd={k,v:Math.ceil(gePrice(k)*1.15),off:[],coins:0,stage:1}}tradeUI()}
 function tradeUI(){const T=trd,val=T.off.reduce((a,i)=>a+GV(st.inv[i]),0)+T.coins;M.style.display='flex';let h;
