@@ -11,11 +11,14 @@ const ok = (c, msg) => { console.log((c ? 'PASS ' : 'FAIL ') + msg); if (!c) fai
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 // ---- fake chain: total supply 1,000,000,000 (6 decimals); balances by wallet
-const SUPPLY = 1000000000n * 1000000n, BAL = {};
+const SUPPLY = 1000000000n * 1000000n, BAL = {}, TXS = {};
+const burnTx = (auth, amount, mint) => ({ meta: { err: null, innerInstructions: [] }, transaction: { message: { instructions: [{ program: 'spl-token', parsed: { type: 'burnChecked', info: { mint: mint || 'CapesMint1111111111111111111111111111111111', authority: auth, account: 'x', tokenAmount: { amount: String(amount) } } } }] } } });
+const fakeSig = n => 'S'.repeat(80) + n;
 const rpcSrv = http.createServer((req, res) => {
   let b = ''; req.on('data', d => b += d); req.on('end', () => {
     const q = JSON.parse(b); let result;
     if (q.method === 'getTokenSupply') result = { value: { amount: String(SUPPLY), decimals: 6 } };
+    if (q.method === 'getTransaction') result = TXS[q.params[0]] || null;
     if (q.method === 'getTokenAccountsByOwner') { const a = BAL[q.params[0]] || 0n; result = { value: a ? [{ account: { data: { parsed: { info: { tokenAmount: { amount: String(a) } } } } } }] : [] }; }
     res.writeHead(200, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ jsonrpc: '2.0', id: q.id, result }));
   });
@@ -107,6 +110,38 @@ function client(name) {
   BAL[w3.addr] = SUPPLY * 35n / 1000n; await wait(2000);
   ok(!(await fetch('http://127.0.0.1:' + PORT + '/partners').then(r => r.json())).length, 'back above 3%: waits a full partner period again');
   await b.next('partners', m => m.list.length === 1, 9000); ok(true, 'after a new full period at 3% the ad comes back');
+
+  // ---- website ads for burning 1%: approve first, then burn; the spot is shared by how much each burned
+  const API = 'http://127.0.0.1:' + PORT, post = (path, body) => fetch(API + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(async r => ({ status: r.status, ...(await r.json()) }));
+  const bw = wallet(), bw2 = wallet();
+  let nr = await post('/burnad/nonce', { wallet: bw.addr }); ok(nr.msg && nr.msg.includes('does not move or burn'), 'website ad: sign message says nothing is burned');
+  let sr = await post('/burnad/submit', { wallet: bw.addr, sig: thief.sign(nr.msg), brand: 'Burn Bros', line: 'We burned 1%', link: 'https://burnbros.example', img: jpg });
+  ok(sr.status === 400 && sr.error.includes('signature'), 'website ad: wrong wallet signature refused');
+  nr = await post('/burnad/nonce', { wallet: bw.addr });
+  sr = await post('/burnad/submit', { wallet: bw.addr, sig: bw.sign(nr.msg), brand: 'Burn Bros', line: 'We burned 1%', link: 'https://burnbros.example', img: jpg });
+  ok(sr.ok && sr.status === 'pending', 'website ad sent, waiting for approval');
+  ok(!!(await ad.next('info', m => m.text.includes('New website ad #' + sr.id))), 'admin is told about the website ad');
+  TXS[fakeSig(1)] = burnTx(bw.addr, SUPPLY * 12n / 1000n);  // 1.2%
+  let br = await post('/burnad/burn', { wallet: bw.addr, id: sr.id, burnSig: fakeSig(1) }); ok(br.status === 400 && br.error.includes('not approved yet'), 'cannot use a burn before the ad is approved');
+  ad.send({ t: 'chat', text: '/burnad view ' + sr.id }); const bv = await ad.next('partnerReview', m => m.kind === 'burn'); ok(bv.brand === 'Burn Bros' && bv.img.startsWith('data:image/jpeg'), 'admin sees the website ad');
+  ad.send({ t: 'chat', text: '/burnad approve ' + sr.id }); await ad.next('info', m => m.text.includes('approved'));
+  TXS[fakeSig(2)] = burnTx(bw.addr, SUPPLY * 5n / 1000n);  // 0.5%
+  br = await post('/burnad/burn', { wallet: bw.addr, id: sr.id, burnSig: fakeSig(2) }); ok(br.status === 400 && br.error.includes('under 1%'), 'a burn under 1% is refused');
+  TXS[fakeSig(3)] = burnTx(bw2.addr, SUPPLY * 12n / 1000n);
+  br = await post('/burnad/burn', { wallet: bw.addr, id: sr.id, burnSig: fakeSig(3) }); ok(br.status === 400 && br.error.includes('does not burn'), 'someone else\'s burn is refused');
+  TXS[fakeSig(4)] = burnTx(bw.addr, SUPPLY * 12n / 1000n, 'OtherMint11111111111111111111111111111111111');
+  br = await post('/burnad/burn', { wallet: bw.addr, id: sr.id, burnSig: fakeSig(4) }); ok(br.status === 400, 'burning a different token is refused');
+  br = await post('/burnad/burn', { wallet: bw.addr, id: sr.id, burnSig: fakeSig(1) }); ok(br.ok && br.status === 'live', 'a 1.2% burn from the right wallet puts the ad live');
+  let live = await fetch(API + '/burnads').then(r => r.json()); ok(live.length === 1 && live[0].brand === 'Burn Bros' && live[0].w === 1, 'the website gets the ad (1 share)');
+  ok((await fetch(API + '/burnads/' + live[0].id + '.jpg')).status === 200, 'the website gets its picture');
+  // a second burner with 2.5% gets 2 shares; the old burn can't be reused
+  nr = await post('/burnad/nonce', { wallet: bw2.addr }); sr = await post('/burnad/submit', { wallet: bw2.addr, sig: bw2.sign(nr.msg), brand: 'Second', line: '', link: '', img: jpg });
+  ad.send({ t: 'chat', text: '/burnad approve ' + sr.id }); await ad.next('info', m => m.text.includes('#' + sr.id));
+  br = await post('/burnad/burn', { wallet: bw2.addr, id: sr.id, burnSig: fakeSig(1) }); ok(br.status === 400, 'a burn already used cannot be used again');
+  TXS[fakeSig(5)] = burnTx(bw2.addr, SUPPLY * 25n / 1000n);
+  br = await post('/burnad/burn', { wallet: bw2.addr, id: sr.id, burnSig: fakeSig(5) }); ok(br.ok, 'second burner live');
+  live = await fetch(API + '/burnads').then(r => r.json()); ok(live.length === 2 && live.find(x => x.brand === 'Second').w === 2, 'shares follow the burn: 2.5% = 2 shares of the spot');
+  const st2 = await post('/burnad/status', { wallet: bw2.addr }); ok(st2.live === 2 && st2.shares === 3 && st2.ads[0].status === 'live', 'status shows the spot is split 3 ways');
 
   console.log(fails ? fails + ' FAILED' : 'all holder checks passed');
   srv.kill(); rpcSrv.close(); process.exit(fails ? 1 : 0);

@@ -29,6 +29,10 @@ services:
         value: "3"
       - key: PARTNER_DAYS
         value: "14"
+      - key: BURN_PCT
+        value: "1"
+      - key: BURN_AD_DAYS
+        value: "0"
     disk:
       name: memecapes-data
       mountPath: /var/data

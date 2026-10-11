@@ -52,6 +52,11 @@ function ptTalk(o){const p=ptAt(o.pi);if(!p)return;M.style.display='flex';MB.onc
   +(p.link?'<button id="ptv">Visit '+esc(p.link.replace(/^https:\/\//,'').split('/')[0])+'</button> ':'')+'<button id="x">Close</button><div id="ptw" style="font-size:12px;margin-top:8px"></div>';
  $('x').onclick=()=>M.style.display='none';
  if(p.link)$('ptv').onclick=()=>{$('ptw').innerHTML='This opens <b>'+esc(p.link)+'</b> outside MemeCapes. Partner sites are run by the partner, not by us. Never enter your seed phrase or private key anywhere.<br><button id="ptgo" style="margin-top:6px">Open it</button>';$('ptgo').onclick=()=>{window.open(p.link,'_blank','noopener,noreferrer');M.style.display='none'}}}
+function baReview(m){M.style.display='flex';MB.onclick=null;
+ MB.innerHTML='<h2>Website ad '+esc(m.name)+': '+esc(m.brand)+'</h2><img src="'+m.img+'" style="width:100%;max-width:380px;border:1px solid #c9a24a"><p style="font-size:13px">For the memecapes.com home page. Status: '+esc(m.status)+'.<br>Line: "'+esc(m.line)+'"<br>Link: '+esc(m.link||'none')+'<br>Wallet: '+esc(m.wallet)+'<br>Nothing is burned yet: after you approve, they burn and paste the burn, and it goes up by itself.</p>'
+  +'<button id="pra">Approve</button> <input id="prn" placeholder="Reason if you reject" style="width:50%"> <button id="prr">Reject</button> <button id="x">Close</button>';
+ $('x').onclick=()=>M.style.display='none';$('pra').onclick=()=>{netSend({t:'chat',text:'/burnad approve '+m.id});M.style.display='none'};
+ $('prr').onclick=()=>{netSend({t:'chat',text:'/burnad reject '+m.id+' '+($('prn').value||'')});M.style.display='none'}}
 // the bank box
 function partnerHTML(){const P=NETS.partner,H=HPK();if(!SRV()||!NETS.on||!H||!H.on)return '';const need=P?P.need:3,days=P?P.days:14;
  let h='<div id="ptk" style="margin-top:12px;padding-top:10px;border-top:1px dashed #fff4"><b style="color:#ffd23f">Partners</b><br><span style="font-size:12px">Hold '+need+'% or more of all $CAPES for '+days+' days: your project gets a billboard and an NPC in every meme town, and a cape in your colour, free for as long as you keep '+need+'%. Under '+need+'% they come down.</span><br>';
@@ -74,7 +79,7 @@ function ptForm(){const A=(NETS.partner&&NETS.partner.ad)||{};let img='';M.style
  $('ptf').onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{const c=$('ptp'),x=c.getContext('2d'),r=Math.max(512/im.width,256/im.height),w=im.width*r,hh=im.height*r;x.fillStyle='#2a0a10';x.fillRect(0,0,512,256);x.drawImage(im,(512-w)/2,(256-hh)/2,w,hh);img=c.toDataURL('image/jpeg',.85);URL.revokeObjectURL(u)};im.onerror=()=>{$('ptr').textContent='That picture could not be opened.'};im.src=u};
  $('pts').onclick=()=>{if(!img)return $('ptr').textContent='Add a picture for the billboard.';const lk=$('ptu').value.trim();
   netSend({t:'partnerSave',brand:$('ptb').value.trim(),line:$('ptl').value.trim(),link:lk=='https://'?'':lk,color:$('ptc').value,g:+$('ptg').value,img});$('pts').disabled=true;$('pts').textContent='Sending...';setTimeout(()=>{if(M.style.display!='none'&&$('pts'))modal('bank')},1500)}}
-function ptReview(m){M.style.display='flex';MB.onclick=null;
+function ptReview(m){if(m.kind=='burn')return baReview(m);M.style.display='flex';MB.onclick=null;
  MB.innerHTML='<h2>Partner ad: '+esc(m.brand)+'</h2><img src="'+m.img+'" style="width:100%;max-width:380px;border:1px solid #c9a24a"><p style="font-size:13px">From <b>'+esc(m.name)+'</b>, holding '+m.pct+'% for '+m.heldDays+' days. Status: '+esc(m.status)+'.<br>NPC says: "'+esc(m.line)+'"<br>Link: '+esc(m.link||'none')+'<br>Cape colour: <span style="display:inline-block;width:14px;height:14px;background:'+esc(m.color)+';vertical-align:middle"></span> '+esc(m.color)+', '+(m.g?'woman':'man')+'</p>'
   +'<button id="pra">Approve</button> <input id="prn" placeholder="Reason if you reject" style="width:50%"> <button id="prr">Reject</button> <button id="x">Close</button>';
  $('x').onclick=()=>M.style.display='none';$('pra').onclick=()=>{netSend({t:'chat',text:'/partner approve '+m.name});M.style.display='none'};

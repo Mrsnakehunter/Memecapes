@@ -13,6 +13,7 @@ Plain Node.js 22 with no packages to install (built-in SQLite, crypto and a smal
 - **Moderators**: `/announce text`, `/mute name minutes`, `/unmute name`, `/kick name`, `/ban name`, `/unban name`, `/rollback name` (undo that player's last save), `/mod name` (make a mod).
 - **Holder perks**: a player links their wallet by signing a short free message in their wallet app (not a transaction). The server reads that wallet's $CAPES balance from the blockchain at link time, at every login and once a day at a random hour. Holding at least `HOLDER_PCT` % of all $CAPES = free Cape Club membership while it lasts, and one free skin from the skin store after `HOLDER_DAYS` days of holding without dropping below, then every `HOLDER_DAYS` days. One wallet per account. Passing tokens to another wallet restarts the count, so the same tokens can't collect extra skins. `node test_holder.js` checks all of it against a fake blockchain.
 - **Partners**: a wallet that has held at least `PARTNER_PCT` % of all $CAPES for `PARTNER_DAYS` days can run a free partner ad: a billboard with their picture and an NPC (their name, line, link and cape colour) in each of the 8 meme towns, plus that cape colour for themselves. They make the ad at any bank; an admin reviews it with `/partner view Name` and `/partner approve Name` or `/partner reject Name reason` (`/partner list`, `/partner remove Name`). Partner wallets are checked every 15 minutes, and the ad comes down at the first check below `PARTNER_PCT` %. Going back above restarts the `PARTNER_DAYS` count. `GET /partners` is the live list and `GET /partners/<id>.jpg` their billboard pictures.
+- **Website ads for burning**: a project sends its ad on memecapes.com (wallet signature, no transaction). An admin approves it in game (`/burnad list`, `/burnad view 7`, `/burnad approve 7`, `/burnad reject 7 reason`, `/burnad remove 7`). Only then does the project burn `BURN_PCT` % of all $CAPES from that wallet and paste the transaction; the server reads it from the blockchain (a real burn of the $CAPES mint, signed by that wallet, big enough, never used before) and the ad goes up. One ad spot on the home page, shared: each visit shows one ad, with odds = how many whole `BURN_PCT` %s each project burned. `GET /burnads` lists them. `BURN_AD_DAYS` limits how long an ad runs (0 = for good).
 - **Backups**: a copy of the database every day, the last 14 kept, in `DATA_DIR/backups`.
 
 ## Settings (environment variables)
@@ -28,6 +29,8 @@ Plain Node.js 22 with no packages to install (built-in SQLite, crypto and a smal
 | `HOLDER_DAYS` | days between free skins (and the first wait). Default 14 |
 | `PARTNER_PCT` | share of all $CAPES for a partner ad, in %. Default 3 |
 | `PARTNER_DAYS` | days at that share before the ad goes live. Default 14 |
+| `BURN_PCT` | share of all $CAPES to burn for a website ad, in %. Default 1. Keep `burnPct` in config.js the same |
+| `BURN_AD_DAYS` | days a website ad runs; 0 = for good. Default 0 |
 | `ALLOWED_ORIGINS` | websites allowed to connect. Default: memecapes.com and localhost |
 
 ## Admin pages
@@ -36,6 +39,7 @@ Send the header `Authorization: Bearer <ADMIN_KEY>`:
 - `/admin/flags`: suspicious saves
 - `/admin/holders`: linked wallets, their share of $CAPES, whether they pass, free skins claimed
 - `/admin/partners`: every partner ad, its status and whether it is live
+- `/admin/burnads`: every website ad, its status and how much was burned
 - `/admin/reports`: player reports with the chat around them
 - `/admin/backup`: download the whole database
 
