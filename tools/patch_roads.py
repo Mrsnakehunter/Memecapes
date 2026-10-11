@@ -128,7 +128,7 @@ vec3 vcc=vc;float rdz=0.;
   vec2 wn=vec2(texture2D(dt,vw*.21+.13).r,texture2D(dt,vw*.21+.61).g)-.5;
   float tuft=texture2D(dt,vw*5.3).g-.5+.6*(texture2D(dt,vw*2.1+.4).r-.5);
   vec4 rh=rmT(vw);float rs=rmT(vw+wn*.7).r;
-  rdz=mix(smoothstep(.22,.47,rs+tuft*.3),smoothstep(.47,.53,rh.r),step(.5,rh.a));float gside=(1.-rdz)*smoothstep(.02,.3,rs)*(1.-rh.a);
+  rdz=mix(smoothstep(.22,.47,rs+tuft*.3),smoothstep(.47,.53,rh.r),step(.02,rh.a));float gside=(1.-rdz)*smoothstep(.02,.3,rs)*(1.-rh.a);
   vec3 G=vec3(.298,.624,.275),R=vec3(.741,.608,.384),Q=mix(vec3(.553,.529,.498),vec3(.702,.686,.655),rh.a);
   vcc=vc+(mix(G,mix(R,Q,gy),rdz)-mix(mix(G,R,tv),Q,gy))*lm*ny;vcc*=mix(vec3(1.),vec3(.93,.94,.8),gside*.7*ny);}}
 vec3 c=vcc*l;
@@ -157,7 +157,7 @@ if(rdz>.01&&vm>10.5&&vm<14.5){
   float k=smoothstep(.6,.8,pe);cc*=1.-.25*wt;
   pv=mix(pv,cc,k);SP=pow(max(Hh.y,0.),80.)*(.03+.45*wt)*k;hidden=1.-k;
  }else{
-  float cov=clamp(smoothstep(.5,.85,pe)-smoothstep(.62,.82,nl)*.4-worn*.22,0.,1.);
+  float cov=clamp(smoothstep(.5,.85,pe)-smoothstep(.62,.82,nl)*.4-worn*(.3+.25*smoothstep(.35,.65,nm)),0.,1.);
   // the nearest fountain: a collar of big flagstones, then one ring of edge stones
   float fr=99.,fR=0.;vec2 fd=vec2(1.,0.);
   for(int i=0;i<12;i++){if(float(i)>=FTn)break;vec2 dv=vw-FT[i].xy;float r=length(dv);if(r<fr){fr=r;fR=FT[i].z;fd=dv/max(r,.001);}}
@@ -180,7 +180,7 @@ if(rdz>.01&&vm>10.5&&vm<14.5){
   vec3 N=normalize(vec3(dir.x*tl+nz.x,1.,dir.y*tl+nz.y));
   float lam=max(dot(N,LS),0.)/.828,ao=mix(.62,1.,smoothstep(0.,jw+.035,gw));
   vec3 stc=vec3(sg)*tint*(.9+.2*texture2D(dt,vw*4.3+h1).r)*(.95+.08*d)*mix(1.,lam,.8)*(.95+.08*hg);
-  float mo=clamp(smoothstep(.5,.78,nm)*.7+worn*.45+(1.-cov)*.25,0.,1.);
+  float mo=clamp(smoothstep(.5,.78,nm)*.7+worn*.7+(1.-cov)*.25,0.,1.);
   vec3 jc=mix(pv*vec3(.66,.62,.56),pv*vec3(.5,.7,.36),mo*.75);
   vec3 scol=mix(stc,jc,1.-smoothstep(jw*.4,jw+.01,gw))*ao;
   // height blend: the dirt fills the joints first, then covers the low stones, the tallest tops show longest
