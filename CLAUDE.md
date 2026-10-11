@@ -94,5 +94,5 @@ numbers in here or anywhere in the repo.
 
 ## Open items
 
-- Retake the website screenshots (home strip and Towns page) from the current game once Albert approves the roads.
+- Trade window v2 is on preview: waiting for Albert to say ship.
 - Waiting on Albert: shop wallet go-live decision, Render server address, DNS, Stripe.
