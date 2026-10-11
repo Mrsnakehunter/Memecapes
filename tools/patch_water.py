@@ -30,9 +30,10 @@ def rep(old, new, count=1):
 
 SHORE = r"""
 // ---- shores (tools/patch_water.py): a smooth water field, a sloping bank and a deepening bed
+let BRS=null;const isWT=(x,y)=>tile[y][x]==1||(BRS!==null&&BRS[y*W+x]===1);   // bridge tiles count as water for the ground (the river runs under them)
 const WLV=-.25,SAND=[.74,.66,.47],WETS=[.5,.44,.31],BED1=[.6,.55,.4],BED2=[.2,.28,.26];let SHT=null,SHD=null;
 function shInit(){if(SHT)return;SHT=new Float32Array(W*H);SHD=new Float32Array(W*H);const Q=[];
- for(let y=0;y<H;y++)for(let x=0;x<W;x++){const k=y*W+x,w=tile[y][x]==1;SHT[k]=w?1:0;SHD[k]=w?1e9:0;if(!w)Q.push(k)}
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){const k=y*W+x,w=isWT(x,y);SHT[k]=w?1:0;SHD[k]=w?1e9:0;if(!w)Q.push(k)}
  for(let qi=0;qi<Q.length;qi++){const k=Q[qi],x=k%W,y=(k/W)|0,d=SHD[k];for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++){if(!i&&!j)continue;const xx=x+i,yy=y+j;if(xx<0||yy<0||xx>=W||yy>=H)continue;const kk=yy*W+xx,nd=d+(i&&j?1.41:1);if(nd<SHD[kk]-.01){SHD[kk]=nd;Q.push(kk)}}}}
 const shT=(x,y,A)=>A[(y<0?0:y>=H?H-1:y)*W+(x<0?0:x>=W?W-1:x)];
 const shN=(x,z)=>{const ix=Math.floor(x),iz=Math.floor(z),fx=x-ix,fz=z-iz,u=fx*fx*(3-2*fx),v=fz*fz*(3-2*fz),a=hh(ix,iz),b=hh(ix+1,iz),c=hh(ix,iz+1),d=hh(ix+1,iz+1);return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v};
@@ -50,7 +51,7 @@ function shCol(base,X,Z,F,hv){const d=WLV-hv;
  if(F>=.5||!base)return mix3(d<.02?mix3(SAND,WETS,sst(-.08,.02,d)):BED1,BED2,sst(.02,.75,d));
  const s=sst(.16,.46,F+(shN(X*1.3+7,Z*1.3)-.5)*.16),w=sst(.4,.52,F);return mix3(mix3(base,SAND,s*.9),WETS,w*.8)}
 // does this tile need the smooth shore treatment? (water next to land, or land next to water)
-function shEdge(x,y){const w=tile[y][x]==1;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++){const xx=x+i,yy=y+j;if(xx<0||yy<0||xx>=W||yy>=H)continue;if((tile[yy][xx]==1)!=w)return true}return false}
+function shEdge(x,y){const w=isWT(x,y);for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++){const xx=x+i,yy=y+j;if(xx<0||yy<0||xx>=W||yy>=H)continue;if(isWT(xx,yy)!=w)return true}return false}
 """
 rep("const CS=32,CN=Math.ceil(W/CS),chunks={};", SHORE + "const CS=32,CN=Math.ceil(W/CS),chunks={};")
 
@@ -58,13 +59,13 @@ OLD_TILE = ("if(t==1){const q=hh(x,y),v=1+(q-.5)*.12,c=[WA[0]*v,WA[1]*v,WA[2]*v]
             "if(x>0&&tile[y][x-1]!=1)wall(x,y,x,y+1,1,0);if(x<W-1&&tile[y][x+1]!=1)wall(x+1,y,x+1,y+1,-1,0);if(y>0&&tile[y-1][x]!=1)wall(x,y,x+1,y,0,1);if(y<H-1&&tile[y+1][x]!=1)wall(x,y+1,x+1,y+1,0,-1)}\n"
             "else{const A=vcol(x,y),B=vcol(x+1,y),C=vcol(x,y+1),D=vcol(x+1,y+1),pc=t!=1?paveAt(x+.5,y+.5):null,mm=pc&&pc[1]>0?pc[0]+1:1;[[0,0,A],[1,0,B],[0,1,C],[1,0,B],[1,1,D],[0,1,C]].forEach(([i,j,V])=>{let L=1;if(mm>1){const a=paveAt(x+i,y+j);L=mm+.45*(a[0]==pc[0]?a[1]:0)}pvt(x+i,gh(x+i,y+j),y+j,V[3][0]*L,V[3][1]*L,V[3][2]*L,V)})}}")
 NEW_TILE = (
-    "const se=shEdge(x,y),wq=hh(x,y),wv=1+(wq-.5)*.12,cw=[WA[0]*wv,WA[1]*wv,WA[2]*wv];\n"
+    "const tw=isWT(x,y),se=shEdge(x,y),wq=hh(x,y),wv=1+(wq-.5)*.12,cw=[WA[0]*wv,WA[1]*wv,WA[2]*wv];\n"
     # open water: a deepening bed and the surface, two triangles each
-    "if(t==1&&!se){[[0,0],[1,0],[0,1],[1,0],[1,1],[0,1]].forEach(([i,j])=>{const X=x+i,Z=y+j,hb=shG(X,Z);pvt(X,hb,Z,0,1,0,shCol(null,X,Z,1,hb));WB.push(X,WLV,Z,cw[0],cw[1],cw[2],WLV-hb,0,0)})}\n"
+    "if(tw&&!se){[[0,0],[1,0],[0,1],[1,0],[1,1],[0,1]].forEach(([i,j])=>{const X=x+i,Z=y+j,hb=shG(X,Z);pvt(X,hb,Z,0,1,0,shCol(null,X,Z,1,hb));WB.push(X,WLV,Z,cw[0],cw[1],cw[2],WLV-hb,0,0)})}\n"
     # land away from water: as before
     "else if(!se){const A=vcol(x,y),B=vcol(x+1,y),C=vcol(x,y+1),D=vcol(x+1,y+1),pc=paveAt(x+.5,y+.5),mm=pc&&pc[1]>0?pc[0]+1:1;[[0,0,A],[1,0,B],[0,1,C],[1,0,B],[1,1,D],[0,1,C]].forEach(([i,j,V])=>{let L=1;if(mm>1){const a=paveAt(x+i,y+j);L=mm+.45*(a[0]==pc[0]?a[1]:0)}pvt(x+i,gh(x+i,y+j),y+j,V[3][0]*L,V[3][1]*L,V[3][2]*L,V)})}\n"
     # the shore: 4x4 small squares with the bank, sand and the waterline
-    "else{const N=4,lnd=t!=1,A=lnd?vcol(x,y):null,B=lnd?vcol(x+1,y):null,C=lnd?vcol(x,y+1):null,D=lnd?vcol(x+1,y+1):null,pc=lnd?paveAt(x+.5,y+.5):null,mm=pc&&pc[1]>0?pc[0]+1:1,G=[];\n"
+    "else{const N=4,lnd=!tw,A=lnd?vcol(x,y):null,B=lnd?vcol(x+1,y):null,C=lnd?vcol(x,y+1):null,D=lnd?vcol(x+1,y+1):null,pc=lnd?paveAt(x+.5,y+.5):null,mm=pc&&pc[1]>0?pc[0]+1:1,G=[];\n"
     " for(let j=0;j<=N;j++)for(let i=0;i<=N;i++){const u=i/N,v=j/N,X=x+u,Z=y+v,F=shF(X,Z),hv=shH(X,Z,F),nr=shNrm(X,Z);let base=null;\n"
     "  if(lnd)base=u+v<=1?[0,1,2].map(k=>A[k]+(B[k]-A[k])*u+(C[k]-A[k])*v):[0,1,2].map(k=>D[k]+(C[k]-D[k])*(1-u)+(B[k]-D[k])*(1-v));\n"
     "  let L=1;if(lnd&&mm>1){const a=paveAt(X,Z);L=mm+.45*(a[0]==pc[0]?a[1]:0)}G.push({X,Z,h:hv,n:nr,c:shCol(base,X,Z,F,hv),L,d:WLV-hv})}\n"
