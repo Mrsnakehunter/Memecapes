@@ -35,7 +35,7 @@ numbers in here or anywhere in the repo.
 
 ## Screenshots and testing
 
-- Shots: `python3 tools/dev/shoot_site.py plan.json` with jobs {name, day, setup, tp, wait, act, cam:[yaw,pitch,dist],
+- Shots: `PAGE=test7.html PORT=8770 python3 tools/dev/shoot_site.py plan.json` (two runs in parallel need different PORTs) with jobs {name, day, setup, tp, wait, act, cam:[yaw,pitch,dist],
   camwait, frames}. Output in scratch/shots/site; the game canvas is x 0-840 of the 1100 px shot.
 - The test machine renders with SwiftShader (software). Heavy shaders make it slow: use wait 30000 and camwait 12000,
   or the shot shows sky or the wrong place.
@@ -67,6 +67,10 @@ numbers in here or anywhere in the repo.
   concrete only at Wall St., dirt in the countryside and Froggo's Pond.
 - He likes: the original dirt ground re-coloured grey as a blend zone; things that look real rather than tiled.
 - Website pictures: no Wall St. shots.
+- See-through: ONLY massive structures may turn see-through when they block the camera (castle; buildings 6+ tiles
+  tall, or 5+ tall with a 64+ square-tile footprint). Trees, bushes, flowers, rocks, lamps, fences, booths, stalls,
+  Meme Telly rings and small or normal houses must never disappear: the player moves the camera himself.
+  (tools/patch_seethru.py; the castle's procedural walls carry material flag +32.)
 - Techniques that worked for the ground (roads v3): per-pixel road edges from a road-tile texture with noise warp;
   height blending (dirt fills joints first, stones sink, tops show last); pillow-shaped stones lit by the sun;
   subtle colour variety; fade fine detail with distance; wet darkening and sky-reflecting puddles in rain.
