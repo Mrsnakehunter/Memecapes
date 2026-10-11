@@ -7,14 +7,14 @@ INIT="""try{localStorage.setItem('mc_gate_2026-10-10','yes')}catch(e){}
 window.__day=(dp)=>{const n=Date.now()-(window.__toff||0);for(let k=0;k<400;k++){let t=n+k*60000;t=t-((t/1000)%1800)*1000+dp*1800*1000;if(((t/60000)%17)>=4.5&&((t/60000)%17)<16.5){window.__toff=t-n;return}}};"""
 HIDE="body>*:not(#gl){visibility:hidden!important} #gl{visibility:visible!important}"
 async def main(plan):
-    srv=subprocess.Popen(['python3','-m','http.server','8770'],cwd='/home/claude/scratch/site',stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);time.sleep(1)
+    srv=subprocess.Popen(['python3','-m','http.server',os.environ.get('PORT','8770')],cwd='/home/claude/scratch/site',stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);time.sleep(1)
     try:
         async with async_playwright() as p:
             b=await p.chromium.launch(args=['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'])
             ctx=await b.new_context(viewport={'width':1100,'height':800});await ctx.add_init_script(INIT)
             pg=await ctx.new_page();errs=[];pg.on('pageerror',lambda e:errs.append(str(e)[:300]))
             for pat in ['**/fonts.googleapis.com/**','**/fonts.gstatic.com/**']: await pg.route(pat,lambda r:r.abort())
-            await pg.goto('http://localhost:8770/test7.html',wait_until='domcontentloaded',timeout=180000);await pg.wait_for_timeout(5000)
+            await pg.goto('http://localhost:'+os.environ.get('PORT','8770')+'/'+os.environ.get('PAGE','test7.html'),wait_until='domcontentloaded',timeout=180000);await pg.wait_for_timeout(5000)
             await pg.evaluate("()=>document.getElementById('bg').click()");await pg.wait_for_timeout(7000)
             await pg.evaluate("()=>{const S=__S();S.st.gOff=1;S.st.gDone=1}")
             for job in plan:
