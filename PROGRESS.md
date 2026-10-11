@@ -67,6 +67,10 @@ Everything below is now on play.html (it used to be preview only).
 - **It stays offline until the server is switched on**: `config.js` → `server: ""`. Setup steps are in `server/README.md` (Render, about $7 a month, updates itself on every push).
 - **Caped characters:** wearing any cape switches the character to a caped body made in Meshy (male and female), and the cape is painted in that cape's colour. The MemeCape and Quest cape keep their hooded models. Tools: `tools/glb2rig.py` (rigged Meshy character → game model, any bone count) and `tools/capemask.py`.
 
+## Website, October 11, 2026
+
+- **Fresh screenshots from the current game:** all six home page pictures (Stonks City market square, fishing at Froggo's Pond, Castle Gigachad at night, the MemeCape worn, a fight outside Wow Landing, Chad Falls town square) and all nine town pictures on the Towns page, with the new cobbled roads.
+
 ## Built October 11, 2026 (morning): roads v3 (live)
 
 - **Natural road edges everywhere:** dirt roads now meet the grass with wavy, uneven edges and little grass tufts, instead of blurry tile-shaped smudges. The grass along a road is a bit worn and yellower.
