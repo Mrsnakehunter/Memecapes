@@ -30,6 +30,19 @@ _Last updated: October 12, 2026_
 - **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
 
+## Shipped October 12, 2026 (later): every building faces its street, town signs at the roads in (live)
+
+- **Buildings face the street.** Each house, shop and bank turns its front door to the side of its lot with the
+  most road. In Gigachad Town the general store and the house beside it used to face the castle wall; they now open
+  onto the square, and the shopkeeper's counter, the shopkeeper and the crates moved round with the door.
+- **Doorsteps are paved** straight onto the nearest street.
+- **The chapel and one cottage** had their doors on the side of the model; they're turned so the door is at the
+  front.
+- **Town signs where they make sense:** every town has a sign on each real road into town (up to 4), standing beside
+  the road at the edge of town and facing you as you walk in. The old signs in dead corners are gone. Gigachad Town's
+  herald signs stand at its gate roads.
+- **New website pictures,** taken from the game as it is today.
+
 ## Shipped October 12, 2026: monsters that fight back, coin hit markers, water, bridges, trading (live)
 
 - **Monsters hold real weapons and really fight.** Guards and Ratio Knights carry a sword and shield, Bonk and the
