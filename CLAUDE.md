@@ -86,6 +86,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 12, MemeCape: phone photo of the website cape picture, "fix the cape and make like the rest of them". The
+  MemeCape and Quest cape were stiff separate shapes (c_memecape/c_qcape) drawn at the player's position, so they
+  hung off one shoulder; every other cape is the Meshy caped body (moves with the skeleton). tools/mkmemecape.py
+  builds models/player_memecape.json + playerf_memecape.json: the caped body with the pattern painted in the cape's
+  3D space (capeskins.posmap), medallions of the game's own characters (tools/art/memecape, cut from the website
+  portraits), MemeCapes coin, gold border, red lining, and a crown baked in on head bone 5 (its gold sits in a free
+  32 px texture square). tools/patch_memecape.py: capeBody loads it; Quest cape = caped body in its green; no stiff
+  fallback on 3D bodies. Learned: a painted photo of a cape smears on Meshy's cut-up UVs, a clean pattern laid out in
+  metres reads well; charview renders a new model in ~1 min (fast check before in-game shots).
+
 - Oct 12, posts + update: "update the game and website with accurate pictures… 25 X posts, 25 Telegram messages
   (two a day), when I text 'post in telegram' you do it, 'post on x' you do it; after updates make a Telegram post".
   The posts live in Albert's Claude Doc "MemeCapes posts: Telegram and X" (not in this public repo): how-to,
