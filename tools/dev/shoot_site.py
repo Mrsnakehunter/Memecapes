@@ -5,7 +5,7 @@ OUT='/home/claude/scratch/shots/site'; os.makedirs(OUT,exist_ok=True)
 INIT="""try{localStorage.setItem('mc_gate_2026-10-10','yes')}catch(e){}
 (()=>{const n=Date.now.bind(Date);Date.now=()=>n()+(window.__toff||0)})();
 window.__day=(dp)=>{const n=Date.now()-(window.__toff||0);for(let k=0;k<400;k++){let t=n+k*60000;t=t-((t/1000)%1800)*1000+dp*1800*1000;if(((t/60000)%17)>=4.5&&((t/60000)%17)<16.5){window.__toff=t-n;return}}};"""
-HIDE="body>*:not(#gl){visibility:hidden!important} #gl{visibility:visible!important}"
+HIDE="body>*:not(#gl):not(.hm){visibility:hidden!important} #gl,.hm{visibility:visible!important}"   # coin hit markers stay in the shot
 async def main(plan):
     srv=subprocess.Popen(['python3','-m','http.server',os.environ.get('PORT','8770')],cwd='/home/claude/scratch/site',stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);time.sleep(1)
     try:

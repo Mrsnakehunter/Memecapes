@@ -86,6 +86,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 12, posts + update: "update the game and website with accurate pictures… 25 X posts, 25 Telegram messages
+  (two a day), when I text 'post in telegram' you do it, 'post on x' you do it; after updates make a Telegram post".
+  The posts live in Albert's Claude Doc "MemeCapes posts: Telegram and X" (not in this public repo): how-to,
+  Telegram plan Oct 13-25 10 am/7 pm ET, X1-X25 rotation, update template. Post only on his command, through the
+  Claude browser where he is signed in; tick the box after. Only true, shipped facts; no price talk; $CAPES = later,
+  in-game perks only. Shipped build 20261012073101 (facing + signs). shoot_site.py now keeps coin hit markers
+  (.hm) visible in shots.
+
 - Oct 12, building facing + town signs: photo of Gigachad Town, "the yellow house and the red house face the castle
   wall, turn them 180, same with the NPC, boxes and barrels; the town sign isn't doing anything; make all town signs
   make sense; fix all houses pointed in pointless directions". Found: GT lots used ry=PI ("S") which faces NORTH
