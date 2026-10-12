@@ -3,8 +3,8 @@
    Leave a value empty ("") and that feature stays switched off and shows "coming soon". */
 window.MC_CONFIG = {
   // ---- online play: the game server address. Empty = everyone plays offline in their own browser.
-  // After the server is running on Render it will be "wss://api.memecapes.com/ws"
-  server: "",
+  // Live on Render since Oct 12, 2026. Later it can move to "wss://api.memecapes.com/ws" (custom domain).
+  server: "wss://memecapes-server.onrender.com/ws",
 
   // ---- who to contact
   contactEmail: "",              // e.g. "memecapes@gmail.com" once you make it
