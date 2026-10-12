@@ -137,6 +137,7 @@ numbers in here or anywhere in the repo.
 - Render: Albert linked GitHub on Oct 11; card failed on his phone, he'll add it from his laptop, then send the
   .onrender.com address. Then: test it, set config.js `server`, push.
 - Preview has trade v2, see-through, water edges, bridges, NPC weapons/attacks, coin hit markers: waiting for ship.
-  The new models/*.json clips are NOT pushed (live play.html would play attacks without weapons): push with ship.
+  The new models/*.json clips live on branch npc-models (live play.html would play attacks without weapons):
+  at ship, `git merge npc-models` first. For local tests: `git checkout npc-models -- models/` (then restore).
 - Bouncy Hippo needs a new Meshy model (old one broken); uses the blocky hand-built one for now.
 - Waiting on Albert: shop wallet go-live decision, DNS (api.memecapes.com), Stripe.
