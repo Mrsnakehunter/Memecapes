@@ -15,6 +15,8 @@ numbers in here or anywhere in the repo.
 - Never touch crypto wallets, seed phrases, private keys or transactions. Albert signs everything himself.
   A 32-44 character base58 string is a public address, not a seed phrase: say so.
 - No posting on X until launch.
+- Posts (Telegram, X, update posts) never mention dates, deadlines or countdowns (Albert: people get upset when
+  timelines slip). The Telegram plan is a queue, not a calendar.
 - Show screenshots before pushing big game changes live, unless Albert has said ship.
 - IP safety: no RuneScape, OSRS or Jagex names, art or wording anywhere. All names are our own.
 - Token honesty: no hidden wallets, no promised gains; holder perks are in-game only.
