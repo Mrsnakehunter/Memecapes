@@ -1,6 +1,6 @@
 # MemeCapes progress
 
-_Last updated: October 11, 2026_
+_Last updated: October 12, 2026_
 
 ## Where to look
 
@@ -29,6 +29,30 @@ _Last updated: October 11, 2026_
 - **Chat box:** the message log scrolls back through the last 150 lines, and there's a chat line at the bottom (press Enter, type, Enter to send). What you say shows in the log and floats over your head next to a little MemeCapes cape medallion, so other players will see who's talking. Ready to hook up to the multiplayer server.
 - **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
+
+## Shipped October 12, 2026: monsters that fight back, coin hit markers, water, bridges, trading (live)
+
+- **Monsters hold real weapons and really fight.** Guards and Ratio Knights carry a sword and shield, Bonk and the
+  Bonk Hounds a bat (with an overhead BONK), Floki an axe, the Rage Goblin a spiked club, shamans and cultists
+  staffs, and the brawlers use their fists and feet. Each attack is a real motion: a wind-up, then the blow lands
+  the moment the hit number appears. Spell casters raise their staff and throw the bolt.
+- **They react.** Monsters flinch when you hit them and fall over when they die, dropping their weapon, instead of
+  vanishing. Standing monsters breathe and look around, stroll a few steps near home, and turn to watch you.
+- **Town guards, bankers, shopkeepers, quest characters and pets** stand naturally instead of frozen mid-step.
+  Guards hold sword and shield at ease. Swords and clubs (yours too) hang at your side when you're not swinging.
+- **The Bouncy Hippo is visible again** (its 3D model was broken; it uses its hand-built model for now).
+- **New hit markers: Meme Coins.** Every hit pops up as a minted coin with a ridged gold rim: crimson for damage,
+  gold for a zero, green for poison. It flips in, lands with a gold ring pulse and a shine, then floats away.
+  Big hits (10+) are bigger and throw off gold sparks.
+- **Water with real shores:** sloping sandy banks, wet sand, shallow turquoise water that deepens to blue, foam and
+  lapping waves, instead of square edges.
+- **Proper bridges:** one stone arch bridge (or a timber one near Froggo's Pond) where a road crosses water,
+  instead of several small ones. Every bridge is walkable and you walk up and over the arch.
+- **See-through only for big buildings:** only the castle and the tallest buildings turn see-through when they
+  block your view. Trees, bushes, booths and small houses always stay.
+- **Trading, rebuilt:** big item pictures with names and values, a close-up card for any item, warnings right next
+  to Accept when the other player changes the offer, a second check screen, and a trade history. Works online once
+  the game server is up.
 
 ## Launch pieces (live October 10, 2026)
 

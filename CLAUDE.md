@@ -86,6 +86,7 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 12: Albert said "make it live": shipped everything on preview (one build, PROGRESS.md section).
 - Oct 12, hit markers: "change red and blue to our red and gold, different font and shape than RuneScape, jaw
   dropping but simple and original". tools/patch_hitmark.py: fl() now pops a Meme Coin (ridged gold rim, crimson
   enamel for damage, gold coin for 0, green poison, purple specials), Cinzel numbers, flip-in + overshoot, shine
@@ -136,8 +137,7 @@ numbers in here or anywhere in the repo.
 
 - Render: Albert linked GitHub on Oct 11; card failed on his phone, he'll add it from his laptop, then send the
   .onrender.com address. Then: test it, set config.js `server`, push.
-- Preview has trade v2, see-through, water edges, bridges, NPC weapons/attacks, coin hit markers: waiting for ship.
-  The new models/*.json clips live on branch npc-models (live play.html would play attacks without weapons):
-  at ship, `git merge npc-models` first. For local tests: `git checkout npc-models -- models/` (then restore).
+- Shipped Oct 12 (build 20261012061129, "make it live"): trade v2, see-through, water edges, bridges, NPC
+  weapons/attacks (npc-models branch merged), coin hit markers. Preview = live again.
 - Bouncy Hippo needs a new Meshy model (old one broken); uses the blocky hand-built one for now.
 - Waiting on Albert: shop wallet go-live decision, DNS (api.memecapes.com), Stripe.
