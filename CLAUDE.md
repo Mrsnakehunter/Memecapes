@@ -86,6 +86,20 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 12, building facing + town signs: photo of Gigachad Town, "the yellow house and the red house face the castle
+  wall, turn them 180, same with the NPC, boxes and barrels; the town sign isn't doing anything; make all town signs
+  make sense; fix all houses pointed in pointless directions". Found: GT lots used ry=PI ("S") which faces NORTH
+  (front vector is (sin ry, cos ry) in tile x/y, y grows south), so GT's north row faced the wall and its south row
+  the fields; meme-town lots all face the centre even with a street on another side; chapel's door is on its +x
+  side, houseD's on -x (all other models: +z); signs were random spots at random angles. tools/patch_facing.py runs
+  after the whole world is built (just before CKIT): turns each building to the side with the most road (castle
+  side forbidden, away-from-town penalised, quarter turns only if the model fits, shrink <= 22%), moves the
+  shop/bank counter, shopkeeper and crates with the door, paves the doorstep, moves a quest NPC off a doorstep;
+  MOFF table for model door offsets; signs at each real road entrance (road continues 25+ tiles), max 4, own side
+  of the town boundary, not within 7 tiles of another town's sign, facing arriving travellers. 26 buildings turned.
+  Tools: scratch/rt/dumpw.py (world dump), facing.py (road score per side), signs.py. Roads between towns are laid
+  late: any layout pass must run after them (anchor before `const CKIT=(()=>{`).
+
 - Oct 12: Albert said "make it live": shipped everything on preview (one build, PROGRESS.md section).
 - Oct 12, hit markers: "change red and blue to our red and gold, different font and shape than RuneScape, jaw
   dropping but simple and original". tools/patch_hitmark.py: fl() now pops a Meme Coin (ridged gold rim, crimson
