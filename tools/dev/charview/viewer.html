@@ -1,0 +1,44 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#2a2f36}canvas{display:block}</style></head><body>
+<canvas id="c" width="1600" height="900"></canvas>
+<script>
+const cv=document.getElementById('c'),gl=cv.getContext('webgl',{preserveDrawingBuffer:true,antialias:true});
+gl.getExtension('OES_element_index_uint');
+function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw gl.getShaderInfoLog(o);return o}
+const pg=gl.createProgram();
+gl.attachShader(pg,sh(gl.VERTEX_SHADER,'attribute vec3 p,n;attribute vec2 uv;uniform mat4 M;varying vec3 vn;varying vec2 vu;void main(){vn=n;vu=uv;gl_Position=M*vec4(p,1.);}'));
+gl.attachShader(pg,sh(gl.FRAGMENT_SHADER,'precision mediump float;varying vec3 vn;varying vec2 vu;uniform sampler2D tx;uniform float ht;uniform vec3 col;void main(){vec3 n=normalize(vn);vec3 c=ht>.5?texture2D(tx,vu).rgb:col;float d=max(dot(n,normalize(vec3(.4,.8,.6))),0.);gl_FragColor=vec4(c*(.45+.6*d+.1*n.y),1.);}'));
+gl.linkProgram(pg);gl.useProgram(pg);const U={};['M','tx','ht','col'].forEach(k=>U[k]=gl.getUniformLocation(pg,k));
+const bP=gl.createBuffer(),bN=gl.createBuffer(),bU=gl.createBuffer(),bI=gl.createBuffer();
+const dec=(s,T)=>{const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return new T(u.buffer)};
+const MD={};
+async function load(k,url){if(MD[k])return MD[k];const d=await (await fetch(url||('/models/'+k+'.json'))).json();const m={k};m.V=Float32Array.from(dec(d.vb,Int16Array),x=>x/1000);m.N=Float32Array.from(dec(d.nb,Int8Array),x=>x/127);m.UV=Float32Array.from(dec(d.ub,Uint16Array),x=>x/65535);m.I=dec(d.ib,Uint16Array);
+ if(d.jb){m.J=dec(d.jb,Uint8Array);m.W=Float32Array.from(dec(d.wb,Uint8Array),x=>x/255)}m.clips={};for(const c of d.an||[]){let F;if(c.fb){const q=dec(c.fb,Int16Array),n=c.nj*12;F=[];for(let f=0;f<q.length/n;f++){const a=new Float32Array(n);for(let i=0;i<n;i++)a[i]=q[f*n+i]*((i%4==3)?c.qs[1]:c.qs[0])/32767;F.push(a)}}else F=c.f;m.clips[c.n]={F,fps:c.fps,hand:c.hand,handL:c.handL}}
+ if(d.tex){await new Promise(r=>{const im=new Image();im.onload=()=>{const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,im);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);m.tex=t;r()};im.onerror=r;im.src=d.tex})}
+ MD[k]=m;return m}
+function skinF(m,fm){const nv=m.V.length/3,P=new Float32Array(nv*3),N=new Float32Array(nv*3);for(let v=0;v<nv;v++){const x=m.V[v*3],y=m.V[v*3+1],z=m.V[v*3+2],nx=m.N[v*3],ny=m.N[v*3+1],nz=m.N[v*3+2];let px=0,py=0,pz=0,qx=0,qy=0,qz=0;for(let k=0;k<4;k++){const w=m.W[v*4+k];if(!w)continue;const b=m.J[v*4+k]*12;px+=w*(fm[b]*x+fm[b+1]*y+fm[b+2]*z+fm[b+3]);py+=w*(fm[b+4]*x+fm[b+5]*y+fm[b+6]*z+fm[b+7]);pz+=w*(fm[b+8]*x+fm[b+9]*y+fm[b+10]*z+fm[b+11]);qx+=w*(fm[b]*nx+fm[b+1]*ny+fm[b+2]*nz);qy+=w*(fm[b+4]*nx+fm[b+5]*ny+fm[b+6]*nz);qz+=w*(fm[b+8]*nx+fm[b+9]*ny+fm[b+10]*nz)}P[v*3]=px;P[v*3+1]=py;P[v*3+2]=pz;N[v*3]=qx;N[v*3+1]=qy;N[v*3+2]=qz}return{P,N}}
+function mul4(a,b){const o=new Float32Array(16);for(let i=0;i<4;i++)for(let j=0;j<4;j++){let s=0;for(let k=0;k<4;k++)s+=a[k*4+j]*b[i*4+k];o[i*4+j]=s}return o}
+function persp(f,a,n,fa){const t=1/Math.tan(f/2);return new Float32Array([t/a,0,0,0,0,t,0,0,0,0,(fa+n)/(n-fa),-1,0,0,2*fa*n/(n-fa),0])}
+function look(e,c){let z=[e[0]-c[0],e[1]-c[1],e[2]-c[2]];let l=Math.hypot(...z);z=z.map(v=>v/l);let x=[z[2],0,-z[0]];l=Math.hypot(...x);x=x.map(v=>v/l);const y=[z[1]*x[2]-z[2]*x[1],z[2]*x[0]-z[0]*x[2],z[0]*x[1]-z[1]*x[0]];return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-(x[0]*e[0]+x[1]*e[1]+x[2]*e[2]),-(y[0]*e[0]+y[1]*e[1]+y[2]*e[2]),-(z[0]*e[0]+z[1]*e[1]+z[2]*e[2]),1])}
+function draw(P,N,m,M,col){gl.uniformMatrix4fv(U.M,false,M);gl.bindBuffer(gl.ARRAY_BUFFER,bP);gl.bufferData(gl.ARRAY_BUFFER,P,gl.DYNAMIC_DRAW);gl.vertexAttribPointer(0,3,gl.FLOAT,false,0,0);gl.enableVertexAttribArray(0);gl.bindBuffer(gl.ARRAY_BUFFER,bN);gl.bufferData(gl.ARRAY_BUFFER,N,gl.DYNAMIC_DRAW);gl.vertexAttribPointer(1,3,gl.FLOAT,false,0,0);gl.enableVertexAttribArray(1);gl.bindBuffer(gl.ARRAY_BUFFER,bU);gl.bufferData(gl.ARRAY_BUFFER,m.UV,gl.DYNAMIC_DRAW);gl.vertexAttribPointer(2,2,gl.FLOAT,false,0,0);gl.enableVertexAttribArray(2);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,bI);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,m.I,gl.DYNAMIC_DRAW);gl.uniform1f(U.ht,m.tex?1:0);gl.uniform3fv(U.col,col||[.8,.8,.8]);if(m.tex)gl.bindTexture(gl.TEXTURE_2D,m.tex);gl.drawElements(gl.TRIANGLES,m.I.length,gl.UNSIGNED_SHORT,0)}
+gl.bindAttribLocation(pg,0,'p');gl.bindAttribLocation(pg,1,'n');gl.bindAttribLocation(pg,2,'uv');gl.linkProgram(pg);gl.useProgram(pg);['M','tx','ht','col'].forEach(k=>U[k]=gl.getUniformLocation(pg,k));
+// weapon grip (same as the game's qHold)
+const FOFF=(ty,d,o)=>{const a=-d*Math.PI/180,c=Math.cos(a),s=Math.sin(a),b=(o||0)*Math.PI/180,cb=Math.cos(b),sb=Math.sin(b);const mul=(P,Q)=>{const M=[];for(let i=0;i<3;i++)for(let j=0;j<3;j++){let v=0;for(let k=0;k<3;k++)v+=P[i*3+k]*Q[k*3+j];M.push(v)}return M};const A=ty=='a'?[0,0,-1, -1,0,0, 0,1,0]:ty=='v'?[1,0,0, 0,-1,0, 0,0,-1]:[0,0,1, 1,0,0, 0,1,0];return mul([cb,0,sb, 0,1,0, -sb,0,cb],mul([1,0,0, 0,c,-s, 0,s,c],A))};
+const SOFF=[0,0,1,0,-1,0,1,0,0],PALM=[-.03,.14];
+window.WCFG={};window.WHT={};
+function holdXf(H,wk,left,sP,ov){const cf0=WCFG[wk]||[1,.2,'f',25],cf=ov?[cf0[0],cf0[1],ov[0],ov[1],ov[2]]:cf0,O=left?SOFF:FOFF(cf[2],cf[3]||0,cf[4]||0),R=[H[0],H[1],H[2],H[4],H[5],H[6],H[8],H[9],H[10]],T=[H[3]*sP,H[7]*sP,H[11]*sP];const M=[0,0,0,0,0,0,0,0,0];for(let i=0;i<3;i++)for(let j=0;j<3;j++){let s=0;for(let k=0;k<3;k++)s+=R[i*3+k]*O[k*3+j];M[i*3+j]=s*sP}const ws=cf[0]/(WHT[wk]||2),gy=cf[1]*cf[0];const px=(left?0:PALM[0])*sP,py=(left?0:PALM[1])*sP,ht=[T[0]-M[1]*gy+(R[0]*px+R[1]*py),T[1]-M[4]*gy+(R[3]*px+R[4]*py),T[2]-M[7]*gy+(R[6]*px+R[7]*py)];return{M,ht,ws}}
+// panels: [{m, clip, f (frame float), yaw, sc, w:[{k,left}], cam:[yaw,pitch,dist,cy], label}]
+window.render=async function(panels,cols,W,Hh){cv.width=W;cv.height=Hh;const rows=Math.ceil(panels.length/cols),pw=W/cols,ph=Hh/rows;gl.enable(gl.DEPTH_TEST);gl.enable(gl.SCISSOR_TEST);
+ for(let i=0;i<panels.length;i++){const p=panels[i],cx=(i%cols)*pw,cy=Hh-(Math.floor(i/cols)+1)*ph;gl.viewport(cx,cy,pw,ph);gl.scissor(cx,cy,pw,ph);gl.clearColor(.17+.03*(i%2),.19,.22,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  const m=await load(p.m,p.url);const sc=p.sc||1,yaw=p.yaw||0,cs=Math.cos(yaw),sn=Math.sin(yaw);let fm=null,H=null,HL=null;const c=m.clips[p.clip];
+  if(c){const nf=c.F.length,f0=Math.floor(p.f||0)%nf;fm=c.F[f0];H=c.hand&&c.hand[f0];HL=c.handL&&c.handL[f0]}
+  if(p.H)H=p.H;
+  const cam=p.cam||[0.6,0.25,3.2,0.9],cyy=cam[3]*sc,e=[Math.sin(cam[0])*Math.cos(cam[1])*cam[2]*sc,cyy+Math.sin(cam[1])*cam[2]*sc,Math.cos(cam[0])*Math.cos(cam[1])*cam[2]*sc];const M=mul4(persp(.75,pw/ph,.05,100),look(e,[0,cyy,0]));
+  const xf=(P,N)=>{for(let v=0;v<P.length;v+=3){const x=P[v],z=P[v+2];P[v]=x*cs+z*sn;P[v+2]=-x*sn+z*cs;const nx=N[v],nz=N[v+2];N[v]=nx*cs+nz*sn;N[v+2]=-nx*sn+nz*cs}};
+  let P,N;if(fm&&m.J){({P,N}=skinF(m,fm))}else{P=Float32Array.from(m.V);N=Float32Array.from(m.N)}for(let v=0;v<P.length;v++)P[v]*=sc;xf(P,N);draw(P,N,m,M);
+  // ground
+  for(const w of p.w||[]){const hh=w.left?HL:H;if(!hh)continue;const wm=await load(w.k);const X=holdXf(hh,w.k,w.left,sc,w.left?null:p.cfg);const P2=new Float32Array(wm.V.length),N2=new Float32Array(wm.V.length);for(let v=0;v<wm.V.length;v+=3){const x=wm.V[v]*X.ws,y=wm.V[v+1]*X.ws,z=wm.V[v+2]*X.ws;const A=X.M;P2[v]=A[0]*x+A[1]*y+A[2]*z+X.ht[0];P2[v+1]=A[3]*x+A[4]*y+A[5]*z+X.ht[1];P2[v+2]=A[6]*x+A[7]*y+A[8]*z+X.ht[2];const a=wm.N[v],b=wm.N[v+1],d=wm.N[v+2];N2[v]=A[0]*a+A[1]*b+A[2]*d;N2[v+1]=A[3]*a+A[4]*b+A[5]*d;N2[v+2]=A[6]*a+A[7]*b+A[8]*d}xf(P2,N2);draw(P2,N2,wm,M)}
+  if(p.pts){gl.disable(gl.DEPTH_TEST);for(const q of p.pts){const P3=new Float32Array([q[0]*sc,q[1]*sc,q[2]*sc]);}gl.enable(gl.DEPTH_TEST)}
+ }
+ return 'ok'}
+window.ready=1;
+</script></body></html>
