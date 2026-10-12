@@ -133,6 +133,14 @@ numbers in here or anywhere in the repo.
 - Oct 11, roads v2: v1 had tile-shaped plazas and rows of stones; Albert hated it. Round plazas, random stones,
   grey dirt edges fixed it.
 
+## After launch (Albert: "later after launch, make sure things like this get fixed") - bring these up after Nov 2
+
+- Server address: move from wss://memecapes-server.onrender.com/ws to api.memecapes.com (custom domain in Render +
+  one CNAME where the domain was bought; then change config.js `server`). Old address keeps working meanwhile.
+- Bouncy Hippo: new Meshy model (old one is broken, it uses the blocky hand-built hippo).
+- Ghost of Rugmoon: has no idle/attack/death motions (different rig); give it its own.
+- ADMIN_NAMES on Render (which in-game names get admin tools).
+
 ## Open items
 
 - Render: live since Oct 12 (Blueprint "memecapes", service memecapes-server, Starter + 1 GB disk, Ohio).
