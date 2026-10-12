@@ -59,6 +59,15 @@ numbers in here or anywhere in the repo.
 - Painted item icons are nested SVGs: size only the outer one (`.x>svg`), never `.x svg`, or the sprite zooms and crops.
 - A JS comment inside a Python string inside a JS string breaks things: keep GLSL comments out (patch_roads.glsl()
   strips them).
+- Characters: all Meshy humanoids share one 28-bone rig (Hips 0 ... RightHand 16, LeftHand 11; table in tools/rigkit.py).
+  Clips store per-frame skin matrices (bone world x inverse bind), so motions can't be copied between characters as is.
+  tools/npc_clips.py retargets: rebuild each NPC skeleton from its own Walking/Running (0.1 mm fit), then
+  R_npc = R_player @ C per bone (Meshy keeps world rotation changes; fit < 1 degree). Validate on Running.
+- Held weapons: qHold(PM,x,z,yaw,clip,t,wk,left,sc,dd) reads the clip's 'hand'/'handL' grip tracks; sc = character
+  scale, dd = blade tilt override for straight ('f') weapons. A weapon held in a lying hand points at the sky: drop it.
+- Top-level `const` in the game is not on window: page.evaluate can use NPCW directly, not window.NPCW.
+- models/moodeng.json is broken (1 cm tall); the Bouncy Hippo uses its hand-built model (MM.moodeng).
+- Monster AI ticks every 600 ms; gb.cd counts ticks to the next attack, which lands (and splats) at once.
 
 ## Art direction (Albert's feedback)
 
@@ -76,6 +85,21 @@ numbers in here or anywhere in the repo.
   subtle colour variety; fade fine detail with distance; wet darkening and sky-reflecting puddles in rain.
 
 ## Task log (newest first): what was asked, what we learned
+
+- Oct 12, hit markers: "change red and blue to our red and gold, different font and shape than RuneScape, jaw
+  dropping but simple and original". tools/patch_hitmark.py: fl() now pops a Meme Coin (ridged gold rim, crimson
+  enamel for damage, gold coin for 0, green poison, purple specials), Cinzel numbers, flip-in + overshoot, shine
+  sweep, gold ring pulse, sparks on 10+. Pure CSS. Google Fonts are blocked here: previews fall back to Georgia.
+- Oct 11-12, NPC weapons and attacks: "are all the npc holding their weapons 10000% correctly and using attacking
+  motions correctly... spot on". Found: no NPC held anything, attacks were a slide, idle was a frozen stride, kills
+  vanished, guards frozen, hippo model 1 cm tall. Built tools/npc_clips.py (retarget) + tools/patch_npcfight.py
+  (weapons per monster in NPCW, motion timing NCL, wind-up on the tick before the hit, flinch, death + dropped
+  weapon, idle for town NPCs/pets, lowered at-ease grip for swords/clubs incl. the player, monsters stroll).
+  Albert also asked (photo of Castle Gigachad) why NPCs "aren't moving or doing anything": the lv1 starter mobs
+  there are by design; live has no idle and one random step per ~5 s. Learned: check grips from the side, a weapon
+  in a lying hand points at the sky, the slash/stab/punch impact frames (NCL), the game script is not global (test
+  hooks must expose functions), in-game shots need a frozen clock (__FZ) and waiting for real frames (__fc).
+  Tools: tools/dev/charview (fast skinned contact sheets), scratch/rt/show.py (in-game before/after rows).
 
 - Oct 11, bridges: "bridges unforgettable, 1000x better; why 3 tiny bridges where we need one; all walkable".
   Bridges came from random roads stepping onto water (BR tiles). tools/patch_bridges.py plans one straight crossing
@@ -112,5 +136,7 @@ numbers in here or anywhere in the repo.
 
 - Render: Albert linked GitHub on Oct 11; card failed on his phone, he'll add it from his laptop, then send the
   .onrender.com address. Then: test it, set config.js `server`, push.
-- Preview has trade v2, see-through, water edges, bridges: waiting for Albert to say ship.
+- Preview has trade v2, see-through, water edges, bridges, NPC weapons/attacks, coin hit markers: waiting for ship.
+  The new models/*.json clips are NOT pushed (live play.html would play attacks without weapons): push with ship.
+- Bouncy Hippo needs a new Meshy model (old one broken); uses the blocky hand-built one for now.
 - Waiting on Albert: shop wallet go-live decision, DNS (api.memecapes.com), Stripe.
