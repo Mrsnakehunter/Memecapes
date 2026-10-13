@@ -90,6 +90,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 13, bot lines: "at least 1000 different things, none saying the same thing over and over, on a loop, random
+  timing not fast but not too slow". tools/wanderer_lines.py: 1,082 lines (30-31 per bot, each in its own voice)
+  + 40 greetings; patch_wanderers.py asserts 1000+, 25+ per bot, no line twice anywhere. Each bot goes through its
+  whole list in a shuffled order before repeating (localStorage mcWndSaid keeps the place between visits), then
+  reshuffles. Timing: 25-55 s between any two lines, the same bot again after 1.5-5 min (social 1.5-4.5), a random
+  nearby bot is picked (not the first in the list). Fixed: greetings never fired in a session's first 10 min.
+  Lines: no prices, tokens, dates or player-count claims; only real game names (check play.html first).
+  Testing: the game script isn't global, so add a hook to the scratch test page only (window.__wnd). On preview.
+
 - Oct 13, NPC adventurers: Albert wanted ~a dozen chatty "players" plus a few dozen playing, to make the world look
   busy, dropped as real players arrive. Declined fake real players (misleading, token context); built labelled NPCs
   instead (he said "make the npc players"). tools/patch_wanderers.py: 36 NPCs (12 social in towns, 24 chop/fish/mine/
