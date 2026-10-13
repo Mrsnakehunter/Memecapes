@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""NPC adventurers: a few dozen characters who live in the world, so it never feels empty.
+"""Bots: a few dozen characters who live in the world so it never feels empty, and look like players.
 
-Albert asked for "players" that walk, do things and say things like "yoo whats up". They are built as NPCs and
-always labelled as NPCs (an "NPC" tag on the name, "[NPC]" in the chat log), never passed off as real players.
-  - 12 social NPCs hang around the towns: stroll, wave, dance, cheer, and chat; they greet you by name when you
-    come close.
-  - 24 working NPCs chop trees, fish and mine near their home town, and a few walk the roads between towns.
-  - Each has a name, a body, a cape (many wear Skin of the Month capes, so players see the skins in the world),
-    a weapon and their own lines.
-  - They thin out as real players arrive: one NPC hides for every real player nearby, and MC_CONFIG.wanderers in
+Albert (Oct 13): no label on them in the game; the website says plainly that the game has bots that look like
+players (FAQ "Are there bots in the game?" and the $CAPES page), and bots are never counted as players anywhere
+(posts, player numbers, screenshots sold as "players online").
+  - 12 social bots hang around the towns: stroll, wave, dance, cheer, chat, and greet you by name.
+  - 24 working bots chop trees, fish and mine near their home town, and a few walk the roads between towns.
+  - Each has a name, a level shown on the name tag, a body, a cape (many wear Skin of the Month capes), a weapon
+    and their own lines.
+  - They thin out as real players arrive: one bot hides for every real player nearby, and MC_CONFIG.wanderers in
     config.js sets how many there are in all (0 switches them off).
-They are drawn on each player's own screen (not on the server), never block a path, and never touch monsters or
-resources. Clicking one shows who they are.
+They run on each player's own screen (not on the server): they never trade, never use the Stock Market, never
+block a path, and never take a monster's kill or a resource.
 Run from the repo root after patch_skinstore.py:  python3 tools/patch_wanderers.py
 """
 import json
@@ -71,7 +71,7 @@ EMOTES = ['Wave', 'Dance', 'GG', 'Clap', 'Yes', 'LOL', 'Shrug', 'Stonks', 'Gridd
 GREET = ["yoo what's up, {n}!", 'hey {n}!', 'welcome {n}, enjoy the game', "{n}! nice to see a new face", 'gm {n}']
 
 JS = r"""
-// ---- NPC adventurers (tools/patch_wanderers.py): labelled NPCs who live in the world; one hides per real player nearby
+// ---- bots (tools/patch_wanderers.py): characters who live in the world (the website FAQ says the game has bots); one hides per real player nearby
 const WNDD=""" + json.dumps(NPCS) + ",WNDE=" + json.dumps(EMOTES) + ",WNDG=" + json.dumps(GREET) + r""";
 const WND=[];let WNDok=0,WNDtalk=0;const WNDtag=new Map();
 const wndN=()=>{const c=window.MC_CONFIG&&MC_CONFIG.wanderers;return c==null?WNDD.length:Math.max(0,Math.min(WNDD.length,c|0))};
@@ -79,7 +79,7 @@ function wndRng(s){return()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7ffff
 function wndHome(i){if(!i)return[(GT.x0+GT.x1)/2|0,(GT.y0+GT.y1)/2|0];const t=TW[(i-1)%TW.length];return[t.cx|0,t.cy|0]}
 function wndFree(x,y,r,R){for(let k=0;k<80;k++){const a=R()*6.283,d=R()*r,tx=Math.round(x+Math.cos(a)*d),ty=Math.round(y+Math.sin(a)*d);if(!solid(tx,ty))return[tx,ty]}return[x,y]}
 function wndInit(){WNDok=1;WNDD.forEach((d,i)=>{const R=wndRng(7919*(i+3)),hm=wndHome(d[3]),p=wndFree(hm[0],hm[1],d[2]=='social'?7:12,R);
- WND.push({i,id:'wnd'+i,n:d[0],g:d[1],role:d[2],home:d[3],hm,cape:d[4],w:d[5],lines:d[6],R,x:p[0],y:p[1],px:p[0],py:p[1],r:R()*6.283,path:[],st:'idle',until:0,emo:null,next:performance.now()+8000+R()*40000,greet:0,act:null})})}
+ WND.push({i,id:'wnd'+i,lv:3+((R()*55)|0),n:d[0],g:d[1],role:d[2],home:d[3],hm,cape:d[4],w:d[5],lines:d[6],R,x:p[0],y:p[1],px:p[0],py:p[1],r:R()*6.283,path:[],st:'idle',until:0,emo:null,next:performance.now()+8000+R()*40000,greet:0,act:null})})}
 // a short walk: breadth-first search inside a box around the start (never far, never through walls or water)
 const WNDP=new Int32Array(W*H).fill(-1);
 function wndPath(sx,sy,goal,box){const s=sy*W+sx,q=[s],seen=[s];WNDP[s]=s;let f=-1;
@@ -95,7 +95,7 @@ function wndPlan(o,now){const R=o.R;o.act=null;o.emo=null;
  const A=WNDA[o.role],res=wndNear(A[2](),o.hm[0]+(R()-.5)*16,o.hm[1]+(R()-.5)*16,30);
  if(res){o.act=res;o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>Math.max(Math.abs(x-res.x),Math.abs(y-res.y))==1,34);if(o.path.length||Math.max(Math.abs(o.x-res.x),Math.abs(o.y-res.y))<=1.5){o.st=o.path.length?'walk':'work';o.until=now+25000+R()*50000;return}}
  const t=wndFree(o.hm[0],o.hm[1],10,R);o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>x==t[0]&&y==t[1],16);o.st=o.path.length?'walk':'idle';o.until=now+5000+R()*8000}
-function wndSay(o,txt){const t=String(txt).replace('{n}',(st.acct&&st.acct.name)||'adventurer');netBubble(o,t);say('[NPC] '+esc(o.n)+': '+esc(t),'#3a6ea5')}
+function wndSay(o,txt){const t=String(txt).replace('{n}',(st.acct&&st.acct.name)||'adventurer');netBubble(o,t);say('<b>'+esc(o.n)+':</b> '+esc(t),'#1a1aa0')}
 function wndTick(now){if(!started)return;if(!WNDok){if(!trees||!trees.length||!TW||!TW.length)return;wndInit()}
  const dt=Math.min(.1,(now-(wndTick.lt||now))/1000);wndTick.lt=now;
  const real=(NETS.on&&NETS.others)?NETS.others.size:0,N=Math.max(0,wndN()-real);
@@ -109,7 +109,7 @@ function wndTick(now){if(!started)return;if(!WNDok){if(!trees||!trees.length||!T
   if(o.tr!=null){let dr=o.tr-o.r;dr=Math.atan2(Math.sin(dr),Math.cos(dr));o.r+=dr*Math.min(1,dt*8)}
   o.px=o.x;o.py=o.y;
   if(now>o.until&&o.st!='walk')wndPlan(o,now);
-  // talk: greet a player who comes close, and now and then say one of their own lines (never more than one NPC every few seconds)
+  // talk: greet a player who comes close, and now and then say one of their own lines (never more than one bot every few seconds)
   const dp=Math.hypot(o.x-P.px,o.y-P.py);
   if(dp<6&&now-o.greet>600000&&now-WNDtalk>6000&&o.role=='social'){o.greet=now;WNDtalk=now;wndSay(o,WNDG[(o.R()*WNDG.length)|0]);if(o.st!='walk'){o.st='emote';o.emo={n:'Wave',t0:now};o.until=now+3000;o.tr=Math.atan2(P.px-o.x,P.py-o.y)}}
   else if(dp<14&&now>o.next&&now-WNDtalk>22000){WNDtalk=now;o.next=now+(o.role=='social'?60000:120000)+o.R()*120000;wndSay(o,o.lines[(o.R()*o.lines.length)|0])}
@@ -124,7 +124,7 @@ function wndDraw(o,now){const K=o.g?'playerf':'player';needMdl(K);const sk=o.cap
  if(!cl||!PM.clips[cl])cl=PM.clips.Idle?'Idle':null;
  const x=o.x+.5,z=o.y+.5;YO=hgt(x,z);qMdl(PM,x,0,z,o.r,MDLSC.player,cl,t);
  if(WAV.has(wk))qHold(PM,x,z,o.r,cl,t,wk,false,null,heldTilt(cl,t,wk));YO=0}
-function wndTagSet(o){let d=WNDtag.get(o.id);if(!d){d=document.createElement('div');d.className='ntag wndt';d.innerHTML=esc(o.n)+' <b>NPC</b>';d.title=o.n+' is an NPC adventurer, part of the world (not a real player).';d.style.pointerEvents='auto';d.style.cursor='pointer';d.onclick=()=>say(esc(o.n)+' is an NPC adventurer: part of the world, not a real player.','#3a6ea5');document.body.appendChild(d);WNDtag.set(o.id,d)}
+function wndTagSet(o){let d=WNDtag.get(o.id);if(!d){d=document.createElement('div');d.className='ntag';d.textContent=o.n+' (lvl '+o.lv+')';document.body.appendChild(d);WNDtag.set(o.id,d)}
  const p=[o.x+.5-E[0],2.05+hgt(o.x+.5,o.y+.5)-E[1],o.y+.5-E[2]],zz=d3(p,Fw);if(zz<=0){d.style.display='none';return}
  const sx=d3(p,Rt)/(zz*TH*asp),sy=d3(p,Up)/(zz*TH);d.style.display=(Math.abs(sx)>1.1||Math.abs(sy)>1.1||zz>34)?'none':'block';d.style.left=((sx+1)/2*CW)+'px';d.style.top=((1-sy)/2*CH)+'px'}
 function wndTagDel(o){const d=WNDtag.get(o.id);if(d){d.remove();WNDtag.delete(o.id)}}
@@ -133,9 +133,6 @@ rep("function qMdl(m,x,y,z,yaw,s,clip,t,cut,sm,gh,pl){", JS + "function qMdl(m,x
 # drawn every frame with the town guards
 rep("else person('k',a[0],a[1],a[2]||0,1,0,0,1);YO=0});",
     "else person('k',a[0],a[1],a[2]||0,1,0,0,1);YO=0});wndTick(performance.now());")
-CSS = (".ntag.wndt{color:#cfe6ff;font-weight:700}"
-       ".ntag.wndt b{font:700 9px Georgia,serif;color:#0b1d33;background:#9fd0ff;border-radius:6px;padding:0 4px;margin-left:3px;vertical-align:1px}")
-rep(".hit{position:fixed;width:26px;", CSS + ".hit{position:fixed;width:26px;")
 
 open(PATH, 'w', encoding='utf-8').write(h)
-print('NPC adventurers patch applied:', len(NPCS))
+print("bots patch applied:", len(NPCS))
