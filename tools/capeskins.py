@@ -6,7 +6,7 @@ texture space, so it reads as one picture even though the texture is cut into pi
 folds and shading are kept: each texel's brightness multiplies the pattern.
 Writes models/skins/<skin>_m.jpg and <skin>_f.jpg (one per caped body) and a back-view preview of
 each in /tmp/capeskin_<skin>.png when --preview is given.
-usage: python3 tools/capeskins.py [--preview]
+usage: python3 tools/capeskins.py [--preview] [--only=name,name]
 """
 import base64, io, json, math, sys
 import numpy as np
@@ -132,6 +132,9 @@ def coins(u, v):
 
 SKINS = {'green_candles': lambda u, v: candles(u, v, True), 'red_candles': lambda u, v: candles(u, v, False),
          'laser_eyes': laser, 'diamond_hands': diamonds, 'moon_night': moon, 'coin_gold': coins}
+from capeskins2 import MONTHLY   # the Skin of the Month capes
+SKINS.update(MONTHLY)
+ONLY = next((x.split('=', 1)[1].split(',') for x in sys.argv if x.startswith('--only=')), None)
 
 
 def make(body, path, preview):
@@ -148,6 +151,7 @@ def make(body, path, preview):
     v = np.clip((y1 - P[:, 1]) / (y1 - y0), -.1, 1.1)
     lum = tex[sel].mean(1); g = np.clip(lum / np.percentile(lum, 70), .35, 1.25)[:, None]
     for name, fn in SKINS.items():
+        if ONLY and name not in ONLY: continue
         out = tex.copy()
         out[sel] = np.clip(fn(u, v) * g, 0, 255)
         im = Image.fromarray(out.astype(np.uint8))
