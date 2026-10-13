@@ -138,8 +138,8 @@ numbers in here or anywhere in the repo.
   update them when this ships.
 
 - Oct 13, token plan C: buyers balk at a big dev holding, so Albert chose plan C: the creator buys at most 4% in the
-  create transaction (NOT locked, Albert's call Oct 13: public creator wallet; he keeps the pump.fun creator fees, so
-  no revenue share stays true; a coworker buys extra $CAPES for the pot with Albert's money, announced in Telegram); the player pot is NOT bought at launch but over time from the public ecosystem
+  create transaction (NOT locked, Albert's call Oct 13: public creator wallet; the creator keeps the launchpad creator
+  fees, so "no revenue share" stays true; donations to the pot are posted with who paid for them); the player pot is NOT bought at launch but over time from the public ecosystem
   wallet with game income (every buy posted); marketing and payments wallets hold no tokens; four public wallets in
   all. Website $CAPES page, roadmap and cosmetic splits (60% burned, 40% to MemeCapes; the treasury line is gone)
   updated; the in-game exchange note says payouts open once the pot wallet is funded (tools/patch_tokenplan.py,
