@@ -6,6 +6,10 @@ window.MC_CONFIG = {
   // Live on Render since Oct 12, 2026. Later it can move to "wss://api.memecapes.com/ws" (custom domain).
   server: "wss://memecapes-server.onrender.com/ws",
 
+  // ---- NPC adventurers: how many walk the world (each has an "NPC" tag; one hides for every real player nearby).
+  // Lower it as real players arrive; 0 switches them off.
+  wanderers: 36,
+
   // ---- who to contact
   contactEmail: "",              // e.g. "memecapes@gmail.com" once you make it
   xHandle: "Mrsnakebaby",        // shown as the contact until the email is set
