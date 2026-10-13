@@ -88,6 +88,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 13, NPC adventurers: Albert wanted ~a dozen chatty "players" plus a few dozen playing, to make the world look
+  busy, dropped as real players arrive. Declined fake real players (misleading, token context); built labelled NPCs
+  instead (he said "make the npc players"). tools/patch_wanderers.py: 36 NPCs (12 social in towns, 24 chop/fish/mine/
+  travel), each with name, body, cape (many wear Skin of the Month capes), weapon, lines; "NPC" chip on the name
+  tag (click = "an NPC adventurer, not a real player"), "[NPC] Name: ..." in chat, greet the player by name; one
+  hides per real player nearby; config.js `wanderers` (0 = off). Client-side only, never block tiles or touch
+  monsters/resources. Learned: `vis()` is local to the draw function (a top-level helper calling it killed the render
+  loop: use a distance check); keep NPC chat sparse (22 s gap between any two lines). On preview.
+
 - Oct 13, skin store pictures: "people are visual, they need to see what they are buying". Every skin has a picture
   (models/skins/thumbs/<id>.jpg, tools/skinthumbs.py: charview, capes from behind with the model turned to face the
   light, Idle frame 2, preview models need `an` copied in; weapons alone, tilted; bg keyed to a maroon glow). New
