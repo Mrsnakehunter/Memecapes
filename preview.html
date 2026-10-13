@@ -355,7 +355,7 @@ body.pre #col{display:none!important}
 <div id="ctx"></div><div id="modal"><div id="mb"></div></div>
 <script>
 (()=>{
-const $=i=>document.getElementById(i);const BUILD='20261012131619';
+const $=i=>document.getElementById(i);const BUILD='20261013061058';
 let W=384,H=384;const CX=192,CY=192,W0=384,H0=384;
 let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:756,ck:0,sm:0,str:0,def:0},inv:[],hp:12,hp10:1,run:0,en:100,flow:[]};
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
@@ -2181,7 +2181,7 @@ else if(t=='forge'){const o=st.inv.filter(k=>k=='ore').length,bs=st.inv.filter(k
 else if(t=='chest'){h='<h2>Party Chest</h2>Start a drop party and balloons float around the plaza. Pop them for coins! Balloons nobody pops float away.<br><br>Chest: <b>'+st.chest+'</b> Meme Coins | You carry: '+st.coins+'<br><br><button data-p1="10">Deposit 10</button> <button data-p1="100">Deposit 100</button><br><br><button data-p1="party">Start drop party (min 10)</button>'}
 else if(t=='about')h=ABOUT();
 else if(t=='quest')h=QUESTH();
-else h=bankHTML()+'<div style="margin-top:12px;padding-top:10px;border-top:1px dashed #fff4"><b style="color:#ffd23f">Exchange for $CAPES</b><br>Rate: '+exRate()+' Meme Coins = 1 $CAPES<br>Your $CAPES: '+st.scape.toLocaleString()+'<br>Today: '+(EXCAP-exLeft())+' / '+EXCAP+' $CAPES<br><br><button data-x="1">Get 1</button> <button data-x="10">Get 10</button> <button data-x="max">Get max</button><div style="font-size:10px;color:#ccc;margin-top:6px">Uses banked Meme Coins first. The rate gets steeper as the $CAPES pot empties, so it lasts longer. Demo values until $CAPES launches.</div></div>'+depHTML();
+else h=bankHTML()+'<div style="margin-top:12px;padding-top:10px;border-top:1px dashed #fff4"><b style="color:#ffd23f">Exchange for $CAPES</b><br>Rate: '+exRate()+' Meme Coins = 1 $CAPES<br>Your $CAPES: '+st.scape.toLocaleString()+'<br>Today: '+(EXCAP-exLeft())+' / '+EXCAP+' $CAPES<br><br><button data-x="1">Get 1</button> <button data-x="10">Get 10</button> <button data-x="max">Get max</button><div style="font-size:10px;color:#ccc;margin-top:6px">Uses banked Meme Coins first. The rate gets steeper as the $CAPES pot empties, so it lasts longer. Demo values for now: real $CAPES payouts open once the public pot wallet is funded.</div></div>'+depHTML();
 MB.innerHTML=h+'<br><br><button id="x">Close</button>';$('x').onclick=()=>M.style.display='none';if(t=='bank'){bankWire();depWire()}
 MB.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{const p=+b.dataset.p,k=b.dataset.b;if(st.coins<p)return say("You don't have enough coins.",'#c00');if(cap()<=0)return say('Inventory full.','#c00');burn(p,'shop: '+IN[k]);st.inv.push(k);say('You buy a '+IN[k].toLowerCase()+' for '+p+' Meme Coins.');ui();modal('shop')});
 MB.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{const V=Object.assign({logs:1,ore:2,fish:1,cfish:3,bar:6},SELL);let q=0;st.inv=st.inv.filter(k=>{if(V[k]){q+=V[k];return false}return true});const p=pay(q,'sold goods');say('You sell your goods for '+p+' Meme Coins.');ui();modal('shop')});

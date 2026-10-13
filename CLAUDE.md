@@ -88,6 +88,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 13, token plan C: buyers balk at a big dev holding, so Albert chose plan C: the creator buys at most 4% in the
+  create transaction and locks it; the player pot is NOT bought at launch but over time from the public ecosystem
+  wallet with game income (every buy posted); marketing and payments wallets hold no tokens; four public wallets in
+  all. Website $CAPES page, roadmap and cosmetic splits (60% burned, 40% to MemeCapes; the treasury line is gone)
+  updated; the in-game exchange note says payouts open once the pot wallet is funded (tools/patch_tokenplan.py,
+  on preview). Holder rewards (pump.fun creator fees to holders) undecided: the site still says no revenue share;
+  change it only after Albert decides (advised a lawyer first). Never help hide a wallet.
+
 - Oct 12, MemeCape: phone photo of the website cape picture, "fix the cape and make like the rest of them". The
   MemeCape and Quest cape were stiff separate shapes (c_memecape/c_qcape) drawn at the player's position, so they
   hung off one shoulder; every other cape is the Meshy caped body (moves with the skeleton). tools/mkmemecape.py
