@@ -32,7 +32,7 @@ function wallet() {
   return { addr: enc58(raw), sign: msg => crypto.sign(null, Buffer.from(msg, 'utf8'), privateKey).toString('base64') };
 }
 
-const srv = spawn(process.execPath, [path.join(__dirname, 'server.js')], { env: { ...process.env, PORT, DATA_DIR: dir, CAPES_MINT: 'CapesMint1111111111111111111111111111111111', SOLANA_RPC: 'http://127.0.0.1:' + RPCPORT, HOLDER_DAYS: '0.00002', PARTNER_DAYS: '0.00004', PARTNER_CHECK_MS: '500', SWEEP_MS: '700', ADMIN_NAMES: 'Albert' }, stdio: ['ignore', 'pipe', 'inherit'] });
+const srv = spawn(process.execPath, [path.join(__dirname, 'server.js')], { env: { ...process.env, PORT, DATA_DIR: dir, CAPES_MINT: 'CapesMint1111111111111111111111111111111111', SOLANA_RPC: 'http://127.0.0.1:' + RPCPORT, HOLDER_DAYS: '0.00002', SOTM_DAYS: '0.00002', SOTM_START: new Date().toISOString().slice(0, 7), PARTNER_DAYS: '0.00004', PARTNER_CHECK_MS: '500', SWEEP_MS: '700', ADMIN_NAMES: 'Albert' }, stdio: ['ignore', 'pipe', 'inherit'] });
 function client(name) {
   const ws = new WebSocket('ws://127.0.0.1:' + PORT + '/ws', { headers: { origin: 'http://localhost:8000' } });
   const C = { ws, name, got: [], waiters: [] };
@@ -78,6 +78,23 @@ function client(name) {
   h = await b.link(w2); ok(h.member && !h.canClaim, 'tokens moved to a new wallet: Cape Club yes, free skin not straight away');
   a.send({ t: 'walletUnlink' }); await a.next('holder'); h = await a.link(w1); ok(!h.member && h.pct === 0, 'the emptied wallet loses its perks');
   b.send({ t: 'holderClaim', skin: 'sk_moon' }); ok(!!(await b.next('info', m => m.text.includes('not ready'))), 'second wallet must hold for the full period too');
+
+  // ---- Skin of the Month: 0.1% for the holding period = this month's skin (month 1 = Laser Grid), once per account per month
+  const dd = client('Dora'); await dd.open;
+  dd.send({ t: 'register', name: 'Dora', pass: 'password5' }); await dd.next('welcome'); let hm = await dd.next('holder');
+  ok(hm.sotm === 'cs_laser_grid' && hm.sotmNeed === 0.1, 'this month\'s skin is Laser Grid, 0.1% to get it free');
+  dd.send({ t: 'save', st: { coins: 0, bank: 0, inv: [], xp: {} }, rev: 0 }); await dd.next('saved');
+  const w4 = wallet(); BAL[w4.addr] = SUPPLY / 2000n;  // 0.05%
+  hm = await dd.link(w4); ok(!hm.sotmOk && !hm.canSotm, 'under 0.1%: no monthly skin');
+  BAL[w4.addr] = SUPPLY / 1000n;  // 0.1%
+  dd.send({ t: 'walletUnlink' }); await dd.next('holder'); hm = await dd.link(w4); ok(hm.sotmOk && !hm.canSotm && !hm.member, 'at 0.1%: counting, not ready yet, no Cape Club');
+  dd.send({ t: 'holderSotm' }); ok(!!(await dd.next('info', m => m.text.includes('not ready'))), 'monthly skin before the holding period refused');
+  await wait(2200);
+  dd.send({ t: 'holderInfo' }); hm = await dd.next('holder'); ok(hm.canSotm, 'after the holding period this month\'s skin is ready');
+  dd.send({ t: 'holderSotm' }); const gm = await dd.next('skinGift'); ok(gm.skin === 'cs_laser_grid' && gm.skins.includes('cs_laser_grid'), 'monthly skin added to the saved progress');
+  hm = await dd.next('holder'); ok(hm.sotmGot && !hm.canSotm, 'taken: marked for this month');
+  dd.send({ t: 'holderSotm' }); ok(!!(await dd.next('info', m => m.text.includes('already took'))), 'no second monthly skin in the same month');
+  dd.send({ t: 'walletUnlink' }); await dd.next('holder'); hm = await dd.link(w4); ok(hm.sotmGot && !hm.canSotm, 'unlinking and linking again does not give it twice');
 
   // ---- partners: 3% for the partner period = billboard + NPC, approved by an admin, removed under 3%
   const cc = client('Carol'), ad = client('Albert'); await cc.open; await ad.open;

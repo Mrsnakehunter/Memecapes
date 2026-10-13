@@ -94,7 +94,12 @@ numbers in here or anywhere in the repo.
   claimed, NOT tradable (account-bound like all skins: keeps perks in-game, stops farming). 30-month line-up in
   Albert's spreadsheet (CAPES_holder_tiers.xlsx, not in the repo): 19 capes made with tools/capeskins2.py
   (patterns in metres on the cape, `python3 tools/capeskins.py --only=name`), 11 weapon skins still to model in
-  Meshy. Not wired into the game yet (store list, server SKIN_IDS, monthly claim): waiting for Albert's OK.
+  Meshy. Albert OK'd the rules; now on preview: the 19 capes in the store (patch_skins.py), tools/patch_sotm.py
+  (Wardrobe banner + bank box claim; line-up must match server SOTM, the patch asserts it), server: SOTM_PCT 0.1,
+  SOTM_DAYS 30, SOTM_START 2026-11, wallets.sinceM, table sotm(uid,month) so unlink/relink can't claim twice,
+  handler holderSotm (8 new checks in test_holder.js). A month whose weapon skin isn't modelled yet shows no
+  Skin of the Month: model Candle Blade (month 2) before then. Website FAQ/Terms still say only 1%/3% perks:
+  update them when this ships.
 
 - Oct 13, token plan C: buyers balk at a big dev holding, so Albert chose plan C: the creator buys at most 4% in the
   create transaction and locks it; the player pot is NOT bought at launch but over time from the public ecosystem
