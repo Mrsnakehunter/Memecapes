@@ -90,6 +90,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 13: Albert said "make it live": shipped build 20261013182150 (Skin of the Month, picture store + try-on,
+  MemeCape/Quest cape, plan C exchange note, bots with 1,082 lines); live version.json checked in the browser pane.
+  Website: FAQ "What is the Skin of the Month?", 0.1% line in the holders FAQ and Terms, skins can't be traded;
+  new "The MemeCape, worn" picture (GT, yaw 3.14, pit .3, dist 3.6, day .3). Website shots: set MC_CONFIG.wanderers=0
+  so no bots appear, and hide the walk marker (scratch-only hook window.__mk=()=>mk). Telegram update post drafted
+  in the posts doc (bots and token perks left out); post only when he says "post in telegram".
+
 - Oct 13, bot lines: "at least 1000 different things, none saying the same thing over and over, on a loop, random
   timing not fast but not too slow". tools/wanderer_lines.py: 1,082 lines (30-31 per bot, each in its own voice)
   + 40 greetings; patch_wanderers.py asserts 1000+, 25+ per bot, no line twice anywhere. Each bot goes through its
@@ -235,4 +242,6 @@ numbers in here or anywhere in the repo.
   weapons/attacks (npc-models branch merged), coin hit markers. Then build 20261012073101 (building facing +
   town signs) and fresh website pictures (Oct 12). Preview = live again.
 - Bouncy Hippo needs a new Meshy model (old one broken); uses the blocky hand-built one for now.
+- Shipped Oct 13 (build 20261013182150): everything that was on preview. Preview = live again.
+  Still to model in Meshy: the 11 weapon skins (Candle Blade first, Skin of the Month 2).
 - Waiting on Albert: shop wallet go-live decision, DNS (api.memecapes.com), Stripe.
