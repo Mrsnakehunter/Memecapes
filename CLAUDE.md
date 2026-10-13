@@ -88,6 +88,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 13, skin store pictures: "people are visual, they need to see what they are buying". Every skin has a picture
+  (models/skins/thumbs/<id>.jpg, tools/skinthumbs.py: charview, capes from behind with the model turned to face the
+  light, Idle frame 2, preview models need `an` copied in; weapons alone, tilted; bg keyed to a maroon glow). New
+  Wardrobe (tools/patch_skinstore.py, skx* classes, #mb.skx 600 px): Skin of the Month card, picture grid split
+  Capes/Weapons, tap = big picture + Try it on / Wear / Take free / $2.99. Try it on: 30 s, camera circles (yaw)
+  closer and lower (distT, pit restored after), cape shows even with no cape on ('cape_try' key), weapon skins via
+  heldKey. Learned: lazy images inside the modal did not load in time: load them directly. On preview.
+
 - Oct 13, Skin of the Month: "define the free monthly skin (tradable? what is it) and create the next 30 months".
   Proposed rules: one new skin a month (cape or weapon), looks only; free to accounts whose linked wallet holds
   1,000,000+ $CAPES (0.1%) for a 30-day holding period, $2.99 in the store for everyone else, kept for good once
