@@ -1,6 +1,6 @@
 # MemeCapes progress
 
-_Last updated: October 12, 2026_
+_Last updated: October 13, 2026_
 
 ## Where to look
 
@@ -29,6 +29,26 @@ _Last updated: October 12, 2026_
 - **Chat box:** the message log scrolls back through the last 150 lines, and there's a chat line at the bottom (press Enter, type, Enter to send). What you say shows in the log and floats over your head next to a little MemeCapes cape medallion, so other players will see who's talking. Ready to hook up to the multiplayer server.
 - **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
+
+## Shipped October 13, 2026: Skin of the Month, a skin store with pictures, the MemeCape, a livelier world (live)
+
+- **Skin store with pictures.** The Wardrobe shows a picture of every skin, capes and weapons in their own sections.
+  Tap one for a big picture, then Wear it, take it free if you can, or buy it for $2.99.
+- **Try it on.** Any skin can be tried on for 30 seconds before you buy: your character wears it and the camera
+  circles round so you can see it from every side.
+- **Skin of the Month.** One new skin each month, a cape pattern or a weapon look (looks only, never stats). Accounts
+  whose linked wallet has held at least 0.1% of all $CAPES for 30 days take it free at any bank or in the Wardrobe,
+  once per account; everyone else can buy it in the store, and it stays there after its month. Skins belong to your
+  account and can't be traded. 19 new cape patterns are in the store.
+- **The MemeCape and the Quest cape** are now real capes that hang from the shoulders and move with your character,
+  like every other cape. The MemeCape has medallions of the game's own characters, a gold border and a crown.
+- **The exchange** says plainly that payouts open once the player pot wallet is funded.
+- **A livelier world.** The game has bots that look like players (the FAQ says so): a dozen hang around the towns,
+  wave, dance and chat, and two dozen chop trees, fish, mine and walk the roads. They have over a thousand different
+  things to say, each one works through all its lines before it repeats one, and they talk at random, unhurried
+  times. They never trade, never take your kills or resources, and there are fewer of them as more people play.
+  Bots are never counted as players.
+- **Website:** the FAQ explains the Skin of the Month and the bots, and the Terms cover skins.
 
 ## Shipped October 12, 2026 (later): every building faces its street, town signs at the roads in (live)
 
