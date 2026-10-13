@@ -88,6 +88,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 13, Skin of the Month: "define the free monthly skin (tradable? what is it) and create the next 30 months".
+  Proposed rules: one new skin a month (cape or weapon), looks only; free to accounts whose linked wallet holds
+  1,000,000+ $CAPES (0.1%) for a 30-day holding period, $2.99 in the store for everyone else, kept for good once
+  claimed, NOT tradable (account-bound like all skins: keeps perks in-game, stops farming). 30-month line-up in
+  Albert's spreadsheet (CAPES_holder_tiers.xlsx, not in the repo): 19 capes made with tools/capeskins2.py
+  (patterns in metres on the cape, `python3 tools/capeskins.py --only=name`), 11 weapon skins still to model in
+  Meshy. Not wired into the game yet (store list, server SKIN_IDS, monthly claim): waiting for Albert's OK.
+
 - Oct 13, token plan C: buyers balk at a big dev holding, so Albert chose plan C: the creator buys at most 4% in the
   create transaction and locks it; the player pot is NOT bought at launch but over time from the public ecosystem
   wallet with game income (every buy posted); marketing and payments wallets hold no tokens; four public wallets in
