@@ -4,7 +4,7 @@
   weapon skins  models/w_sk_<id>.json (made in Meshy, converted with tools/glb2mdl.py), held in place
                 of every weapon of that type; same grip and size settings as the weapon they replace
   cape skins    models/skins/<id>_m.jpg / _f.jpg (tools/capeskins.py), painted onto the caped bodies;
-                not on the hooded MemeCape and Quest cape
+                not on the MemeCape
 
 Owned skins live in st.skins, the ones switched on in st.wear (one per weapon type, one for capes).
 The Wardrobe (a button in the Gear tab) switches them on and off and shows the skin store. Until card
@@ -38,6 +38,26 @@ SKINS = [
     ('cs_diamond_hands', 'Diamond Hands', 'cape', 'A quilted diamond pattern with crystal glints.'),
     ('cs_moon_night', 'Moon Night', 'cape', 'Night sky, stars and a crescent moon.'),
     ('cs_coin_gold', 'Meme Coin Gold', 'cape', 'Gold coins with happy little faces.'),
+    # Skin of the Month capes (tools/capeskins2.py)
+    ('cs_laser_grid', 'Laser Grid', 'cape', 'A striped sunset sun over a glowing pink grid on deep purple.'),
+    ('cs_pond_lily', 'Pond Lily', 'cape', 'Lily pads and pink flowers floating on teal pond water.'),
+    ('cs_stonks_arrow', 'Stonks Arrow', 'cape', 'A glowing green line zig-zagging up a dark ticker grid.'),
+    ('cs_moon_phases', 'Moon Phases', 'cape', 'Seven moons, new to full, on a starry night.'),
+    ('cs_wow_plaid', 'Wow Plaid', 'cape', 'Cream tartan in doge gold and brown with thin red lines.'),
+    ('cs_whale_waves', 'Whale Waves', 'cape', 'Rows of deep-blue waves with white foam crests.'),
+    ('cs_shades_on', 'Shades On', 'cape', 'Rows of black sunglasses on hot pink.'),
+    ('cs_royal_ermine', 'Royal Ermine', 'cape', 'Royal purple velvet with a white ermine trim.'),
+    ('cs_the_burn', 'The Burn', 'cape', 'Flames rising from the hem. Where supply goes to die.'),
+    ('cs_rug_fringe', 'Rug Fringe', 'cape', 'A woven red rug with navy diamonds and a tassel fringe.'),
+    ('cs_hodl_frost', 'HODL Frost', 'cape', 'Ice-blue fade covered in snowflakes.'),
+    ('cs_jungle_leaves', 'Jungle Leaves', 'cape', 'Big green jungle leaves on dark green.'),
+    ('cs_rocket_trail', 'Rocket Trail', 'cape', 'A little rocket at the collar, its flame trail down your back.'),
+    ('cs_wen_lambo', 'Wen Lambo', 'cape', 'A waving black-and-white racing checker.'),
+    ('cs_chad_marble', 'Chad Marble', 'cape', 'White marble with gold veins.'),
+    ('cs_up_only_rainbow', 'Up Only Rainbow', 'cape', 'Rainbow bands climbing up and across.'),
+    ('cs_bonk_stripes', 'Bonk Stripes', 'cape', 'Red and white diagonal stripes.'),
+    ('cs_copium_crystal', 'Copium Crystal', 'cape', 'Grey mine rock with purple crystals breaking through.'),
+    ('cs_comfy_knit', 'Comfy Knit', 'cape', 'A cozy knitted sweater pattern.'),
 ]
 # how a weapon skin sits in the hand when it differs from the weapon it replaces (see WCFG in patch_held.py):
 # [length, grip height as a fraction of the length, carry, tilt, swing]
@@ -54,7 +74,7 @@ function skinW(k){const g=SKG[k],id=g&&st.wear&&st.wear[g];return id&&skOwn(id)?
 function capeSkin(){const id=st.wear&&st.wear.cape;return id&&skOwn(id)?id:null}
 const SKHOLD=""" + json.dumps(HOLD) + r""";SKN.forEach(s=>{if(s.g!='cape'&&WCFG[SKB[s.g]])WCFG['w_'+s.id]=SKHOLD[s.id]||WCFG[SKB[s.g]]});
 function skinGive(id){if(!skById(id))return false;(st.skins=st.skins||[]);if(!st.skins.includes(id))st.skins.push(id);(st.wear=st.wear||{})[skById(id).g]=id;save();return true}
-function wardrobeUI(){M.style.display='flex';MB.onclick=null;const W=st.wear||{};let h='<h2>Wardrobe</h2><p style="font-size:12px">Skins change how a weapon type or your cape looks. They never change stats. Cape skins work on every cape except the MemeCape and the Quest cape.</p>';
+function wardrobeUI(){M.style.display='flex';MB.onclick=null;const W=st.wear||{};let h='<h2>Wardrobe</h2><p style="font-size:12px">Skins change how a weapon type or your cape looks. They never change stats. Cape skins work on every cape except the MemeCape.</p>';
  const own=SKN.filter(s=>skOwn(s.id));h+=own.length?'':'<p style="font-size:12px;color:#ccc">You do not own any skins yet.</p>';
  own.forEach(s=>{const on=W[s.g]==s.id;h+='<div class="row"><span><b style="color:#ffd23f">'+s.n+'</b> <small>('+SKGN[s.g]+')</small></span><button data-wr="'+s.id+'">'+(on?'Take off':'Wear')+'</button></div>'});
  h+='<h2 style="margin-top:14px">Skin store</h2><p style="font-size:12px">$2.99 each. Card payments open with the game servers; until then skins come as redeem codes from the shop on memecapes.com.</p>';

@@ -35,7 +35,22 @@ const SWEEP = +process.env.SWEEP_MS || 60e3;
 const BURN_PCT = +process.env.BURN_PCT || 1;
 const BURN_AD_DAYS = process.env.BURN_AD_DAYS != null ? +process.env.BURN_AD_DAYS : 0;
 const SKIN_IDS = ['sk_laser', 'sk_upaxe', 'sk_dpick', 'sk_rocket', 'sk_rug', 'sk_moon',
-  'cs_green_candles', 'cs_red_candles', 'cs_laser_eyes', 'cs_diamond_hands', 'cs_moon_night', 'cs_coin_gold'];  // same list as tools/patch_skins.py
+  'cs_green_candles', 'cs_red_candles', 'cs_laser_eyes', 'cs_diamond_hands', 'cs_moon_night', 'cs_coin_gold',
+  'cs_pond_lily', 'cs_wow_plaid', 'cs_stonks_arrow', 'cs_bonk_stripes', 'cs_rug_fringe', 'cs_hodl_frost', 'cs_moon_phases', 'cs_chad_marble', 'cs_laser_grid', 'cs_shades_on', 'cs_whale_waves', 'cs_rocket_trail', 'cs_the_burn', 'cs_copium_crystal', 'cs_wen_lambo', 'cs_jungle_leaves', 'cs_up_only_rainbow', 'cs_comfy_knit', 'cs_royal_ermine'];  // same list as tools/patch_skins.py
+// Skin of the Month: a wallet holding at least SOTM_PCT % of all $CAPES for SOTM_DAYS days gets that month's skin free,
+// one per account per month. Month 1 of the line-up is SOTM_START (UTC). Same line-up as tools/patch_sotm.py.
+const SOTM_PCT = +process.env.SOTM_PCT || 0.1;
+const SOTM_DAYS = +process.env.SOTM_DAYS || 30;
+const SOTM_START = process.env.SOTM_START || '2026-11';
+const SOTM = ['cs_laser_grid', 'sk_candle', 'cs_pond_lily', 'cs_stonks_arrow', 'sk_banhammer', 'cs_moon_phases', 'cs_wow_plaid', 'sk_copium',
+  'cs_whale_waves', 'cs_shades_on', 'sk_chonkaxe', 'cs_royal_ermine', 'cs_the_burn', 'sk_oracle', 'cs_rug_fringe', 'cs_hodl_frost', 'sk_frostfang',
+  'cs_jungle_leaves', 'cs_rocket_trail', 'sk_sweeper', 'cs_wen_lambo', 'cs_chad_marble', 'sk_gascleaver', 'cs_up_only_rainbow', 'cs_bonk_stripes',
+  'sk_goldrush', 'cs_copium_crystal', 'cs_comfy_knit', 'sk_bubble', 'sk_wrench'];
+function sotmNow(t) {
+  const d = new Date(t || now()), [y, m] = SOTM_START.split('-').map(Number), i = (d.getUTCFullYear() - y) * 12 + d.getUTCMonth() - (m - 1);
+  const id = i >= 0 && i < SOTM.length ? SOTM[i] : '';
+  return { n: i + 1, key: d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0'), skin: SKIN_IDS.includes(id) ? id : '' };  // a skin not made yet = none this month
+}
 
 fs.mkdirSync(path.join(DATA, 'backups'), { recursive: true });
 const db = new DatabaseSync(path.join(DATA, 'memecapes.db'));
@@ -52,6 +67,8 @@ CREATE TABLE IF NOT EXISTS wallets(uid INTEGER PRIMARY KEY, wallet TEXT UNIQUE, 
 CREATE TABLE IF NOT EXISTS partners(uid INTEGER PRIMARY KEY, brand TEXT, line TEXT, link TEXT, color TEXT, g INT DEFAULT 0, img TEXT,
   status TEXT DEFAULT 'pending', note TEXT DEFAULT '', updated INT, approved INT DEFAULT 0);`);
 try { db.exec('ALTER TABLE wallets ADD COLUMN since3 INT DEFAULT 0'); } catch (e) { }
+try { db.exec('ALTER TABLE wallets ADD COLUMN sinceM INT DEFAULT 0'); } catch (e) { }  // when the wallet last reached SOTM_PCT %
+db.exec('CREATE TABLE IF NOT EXISTS sotm(uid INT, month TEXT, skin TEXT, t INT, PRIMARY KEY(uid, month))');  // Skin of the Month claims (per account, kept after unlinking)
 db.exec(`CREATE TABLE IF NOT EXISTS burnads(id INTEGER PRIMARY KEY, wallet TEXT, brand TEXT, line TEXT, link TEXT, img TEXT, status TEXT DEFAULT 'pending',
   note TEXT DEFAULT '', created INT, approved INT DEFAULT 0, burn_sig TEXT UNIQUE, burned TEXT DEFAULT '', live_at INT DEFAULT 0, ends INT DEFAULT 0);`);
 try { db.exec('ALTER TABLE burnads ADD COLUMN shares INT DEFAULT 1'); } catch (e) { }  // how many whole BURN_PCT %s were burned = share of the ad spot  // when the wallet last reached PARTNER_PCT %
@@ -86,7 +103,9 @@ const Q = {
   walBy: db.prepare('SELECT * FROM wallets WHERE wallet=?'),
   walSet: db.prepare('INSERT OR REPLACE INTO wallets(uid,wallet,linked,since,checked,due,ok,pct,claimed,claims,err) VALUES(?,?,?,0,0,0,0,0,?,?,\'\')'),
   walDel: db.prepare('DELETE FROM wallets WHERE uid=?'),
-  walCheck: db.prepare('UPDATE wallets SET since=?, since3=?, checked=?, due=?, ok=?, pct=?, err=? WHERE uid=?'),
+  walCheck: db.prepare('UPDATE wallets SET since=?, since3=?, sinceM=?, checked=?, due=?, ok=?, pct=?, err=? WHERE uid=?'),
+  sotmGet: db.prepare('SELECT * FROM sotm WHERE uid=? AND month=?'),
+  sotmAdd: db.prepare('INSERT INTO sotm(uid,month,skin,t) VALUES(?,?,?,?)'),
   ptGet: db.prepare('SELECT * FROM partners WHERE uid=?'),
   ptSet: db.prepare(`INSERT INTO partners(uid,brand,line,link,color,g,img,status,note,updated) VALUES(?,?,?,?,?,?,?,'pending','',?)
     ON CONFLICT(uid) DO UPDATE SET brand=excluded.brand,line=excluded.line,link=excluded.link,color=excluded.color,g=excluded.g,img=excluded.img,status='pending',note='',updated=excluded.updated`),
@@ -426,20 +445,24 @@ async function holderCheck(row) {
     const fresh = now() - cur.checked < 3 * 864e5, p3 = pct >= PARTNER_PCT;
     const since = ok ? (cur.ok && cur.since && fresh ? cur.since : now()) : 0;
     const since3 = p3 ? (cur.since3 && fresh ? cur.since3 : now()) : 0;
+    const sinceM = pct >= SOTM_PCT ? (cur.sinceM && fresh ? cur.sinceM : now()) : 0;
     // partners (and anyone close to the line) are checked every 15 minutes, so an ad comes down soon after the balance drops
     const due = pct >= PARTNER_PCT * 0.8 || Q.ptGet.get(row.uid) ? now() + PARTNER_CHECK : nextDue();
-    Q.walCheck.run(since, since3, now(), due, ok ? 1 : 0, pct, '', row.uid);
+    Q.walCheck.run(since, since3, sinceM, now(), due, ok ? 1 : 0, pct, '', row.uid);
     setTimeout(partnersMaybeChanged, 0);
   } catch (e) { Q.walErr.run(now() + 3600e3, String(e.message || e).slice(0, 120), row.uid); }
   return Q.wal.get(row.uid);
 }
 function holderInfo(uid) {
   const w = Q.wal.get(uid), d = HOLD_DAYS * 864e5;
-  const base = { t: 'holder', on: !!CAPES_MINT, need: HOLD_PCT, days: HOLD_DAYS };
+  const S = sotmNow(), md = SOTM_DAYS * 864e5, got = S.skin ? !!Q.sotmGet.get(uid, S.key) : false;
+  const base = { t: 'holder', on: !!CAPES_MINT, need: HOLD_PCT, days: HOLD_DAYS, sotm: S.skin, sotmN: S.n, sotmNeed: SOTM_PCT, sotmDays: SOTM_DAYS, sotmGot: got };
   if (!w) return base;
+  const mAt = w.sinceM ? w.sinceM + md : 0;
   const ready = w.ok && w.since ? Math.max(w.since + d, (w.claimed || 0) + d) : 0;
   return { ...base, wallet: w.wallet, pct: w.pct, member: !!w.ok, checked: w.checked, held: w.ok && w.since ? now() - w.since : 0,
-    claimAt: ready, canClaim: !!w.ok && ready > 0 && now() >= ready, claims: w.claims, err: w.err || '' };
+    claimAt: ready, canClaim: !!w.ok && ready > 0 && now() >= ready, claims: w.claims, err: w.err || '',
+    sotmOk: !!w.sinceM, sotmAt: mAt, canSotm: !!S.skin && !got && mAt > 0 && now() >= mAt };
 }
 Object.assign(H, {
   holderInfo(c) { if (c.uid) c.send(holderInfo(c.uid)); },
@@ -478,6 +501,24 @@ Object.assign(H, {
       try { Q.setSave.run(JSON.stringify(st), u.rev + 1, now(), u.id); Q.walClaim.run(now(), c.uid); db.exec('COMMIT'); }
       catch (e) { db.exec('ROLLBACK'); return say(c, 'That did not work. Nothing changed.', '#c00'); }
       c.send({ t: 'skinGift', skin, skins: st.skins, rev: u.rev + 1 }); c.send(holderInfo(c.uid));
+    } finally { c.claiming = 0; }
+  },
+  async holderSotm(c) {   // Skin of the Month: free for SOTM_PCT % holders after SOTM_DAYS days, once per account per month
+    if (!c.uid || c.claiming) return;
+    let info = holderInfo(c.uid); if (!info.sotm) return say(c, 'There is no Skin of the Month right now.', '#c00');
+    if (info.sotmGot) return say(c, "You already took this month's skin.", '#c00');
+    if (!info.canSotm) return say(c, "This month's free skin is not ready for you yet.", '#c00');
+    c.claiming = 1;
+    try {
+      await holderCheck(Q.wal.get(c.uid)); info = holderInfo(c.uid);  // one fresh look at the balance right now
+      if (!info.canSotm) { c.send(info); return say(c, 'Your wallet is below ' + SOTM_PCT + "% of $CAPES now, so this month's skin is on hold.", '#c00'); }
+      const { u, st } = loadSave(c.uid); if (!st) return say(c, 'Your progress has not reached the server yet. Try again in a few seconds.', '#c00');
+      st.skins = Array.isArray(st.skins) ? st.skins : []; if (st.skins.includes(info.sotm)) return say(c, 'You already own this skin.', '#c00');
+      st.skins.push(info.sotm);
+      db.exec('BEGIN');
+      try { Q.setSave.run(JSON.stringify(st), u.rev + 1, now(), u.id); Q.sotmAdd.run(c.uid, sotmNow().key, info.sotm, now()); db.exec('COMMIT'); }
+      catch (e) { db.exec('ROLLBACK'); return say(c, 'That did not work. Nothing changed.', '#c00'); }
+      c.send({ t: 'skinGift', skin: info.sotm, skins: st.skins, rev: u.rev + 1 }); c.send(holderInfo(c.uid));
     } finally { c.claiming = 0; }
   },
 });
