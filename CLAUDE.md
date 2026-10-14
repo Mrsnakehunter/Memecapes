@@ -90,6 +90,21 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 14, launchpad look v2 (branch `launchpad`, NOT live): "top of the line, visually like nothing done before, token
+  pictures not a list, streaming interactive for new users, watch like FOMO + X, 1000x better". Coins page = the forge
+  floor: hero + latest strike spotlight, "Hot right now" rail, then walls of coin tiles (Fresh from the forge / Heating
+  up / In the vault); every coin is a struck gold coin (stamp(): reeded rim, molten progress ring, heat glow that cools
+  over 24 h, laurel when graduated, 3D tilt toward the pointer via .coin3d, embers canvas #forge behind everything).
+  Watch = trading floor: live trades column (new rows slide in), wallet of the hour, featured stream with chat beside
+  the video, feed with filter chips, trending, top wallets (server /lp/leaders?by=wallet&range=hour|day|week).
+  Stream = "Go live. Keep everything." with a mock-up of what viewers see, 3 steps, FAQ. index.html Watch/Stream now
+  go to launch.html#/watch and #/stream. Fixed: fee numerator is /1e5 for bps (was /1e7); mine() used a dead card().
+  Testing: scratch/lp/test/seed.mjs (14 sample coins from tools/art/memecape, 377 trades, posts, 2 live channels with
+  fake video pages on port 8793) + shoot.py step {"fakelive":1} stubs LPC.dbc() so market caps and rings render
+  without Solana. In shoot.py a step runs url -> js -> wait -> shot, so put measuring js in its own step after a wait.
+  Gotcha: inline style on .wgrid overrode the phone media query (now .ugrid); long unbroken addresses need
+  overflow-wrap:anywhere or the page widens on phones. Shots: scratch/lp/shots/review_desktop.jpg, review_phone.jpg.
+
 - Oct 14, Play/Watch/Stream/Launch (branch `launchpad`): home top = PLAY / WATCH / STREAM / LAUNCH beside the floating
   Meme Cape (#watch, #stream = coming-soon pages). Launchpad: trade indexer (server reads EvtSwap2 from each pool's
   transactions every 20 s; offsets checked against Anchor's decoder), /lp/trades feed, /lp/leaders (SOL out minus in,
