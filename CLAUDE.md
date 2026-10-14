@@ -90,6 +90,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 14, Play/Watch/Stream/Launch (branch `launchpad`): home top = PLAY / WATCH / STREAM / LAUNCH beside the floating
+  Meme Cape (#watch, #stream = coming-soon pages). Launchpad: trade indexer (server reads EvtSwap2 from each pool's
+  transactions every 20 s; offsets checked against Anchor's decoder), /lp/trades feed, /lp/leaders (SOL out minus in,
+  losses shown too), /lp/early launch check (launch-slot buyers = bundling sign, next 3 slots = snipers, still held),
+  Jupiter Plugin on graduated coins (config launchpad.jupReferral). Albert wanted refunds for everyone except snipers:
+  impossible after settlement and not honest to promise; we block up front instead (sniper fee, atomic first buy,
+  launch check; next: Helius MEV Protect, funded-by check; later: presale-style fair launch). Alpha Vault does NOT
+  work with DBC. Streaming plan (not built): 100% of crypto tips/subs to streamers, Cloudflare Stream or Livepeer
+  (~$2.7k-7.9k/mo for 20 streamers x 50 viewers x 4 h/day), 18+, moderation, DMCA/NCMEC/TAKE IT DOWN. Other chains:
+  Robinhood Chain via Bags partner (0.25% of volume), Base via Zora/Clanker. Plan doc: "MemeCapes Launchpad plan".
+  Gotcha: `pkill -f "node server.js"` kills your own shell; start test servers with nohup + pidfile.
+
 - Oct 14, Launchpad (branch `launchpad`, NOT live): "launch on pump.fun, have a launchpad on the site, 50/50 burns, more fee
   options than pump.fun, visible on the site and in game". Built on Meteora DBC (launch.html + lp/app.js + lp/chain.js +
   lp/lpcore.js bundle). This machine has NO npm/CDN/Solana access: lpcore.js is built from GitHub source clones
