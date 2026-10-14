@@ -33,6 +33,14 @@ services:
         value: "1"
       - key: BURN_AD_DAYS
         value: "0"
+      - key: LP_PARTNER         # launchpad fee wallet (public address); empty = the one in config.js
+        sync: false
+      - key: CF_ACCOUNT_ID      # Cloudflare Stream, for live video on Watch/Stream; empty = video off, the rest works
+        sync: false
+      - key: CF_STREAM_TOKEN
+        sync: false
+      - key: CF_CUSTOMER_CODE
+        sync: false
     disk:
       name: memecapes-data
       mountPath: /var/data

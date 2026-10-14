@@ -90,7 +90,7 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
-- Oct 14, launchpad look v2 (branch `launchpad`, NOT live): "top of the line, visually like nothing done before, token
+- Oct 14, launchpad look v2 (shipped Oct 14, build 20261014090407): "top of the line, visually like nothing done before, token
   pictures not a list, streaming interactive for new users, watch like FOMO + X, 1000x better". Coins page = the forge
   floor: hero + latest strike spotlight, "Hot right now" rail, then walls of coin tiles (Fresh from the forge / Heating
   up / In the vault); every coin is a struck gold coin (stamp(): reeded rim, molten progress ring, heat glow that cools
@@ -289,8 +289,11 @@ numbers in here or anywhere in the repo.
 - Bouncy Hippo needs a new Meshy model (old one broken); uses the blocky hand-built one for now.
 - Shipped Oct 13 (build 20261013182150): everything that was on preview. Preview = live again.
   Still to model in Meshy: the 11 weapon skins (Candle Blade first, Skin of the Month 2).
-- Launchpad fee wallet (public address, Albert, Oct 14): 3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg, in config.js
-  launchpad.partner/partnerDevnet on the `launchpad` branch. Render still needs LP_PARTNER (and LP_PARTNER_DEVNET)
-  set to it, or /lp/register rejects every launch. With it set, the Launch button is ON the moment the branch ships.
+- Shipped Oct 14 (build 20261014090407, "make it live"): the whole `launchpad` branch merged to main: Play/Watch/
+  Stream/Launch home, launch.html (forge floor, Watch, Stream, launchpad with launching ON), server launchpad.js +
+  social.js, Launchpad clerk in the game. Fee wallet (public address, Albert): 3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg
+  in config.js launchpad.partner; the server reads it from config.js when Render has no LP_PARTNER. NOT yet tested
+  on devnet or mainnet with a real wallet: the first real launch should be Albert's own small one. Live video needs
+  CF_ACCOUNT_ID/CF_STREAM_TOKEN/CF_CUSTOMER_CODE on Render (render.yaml lists them, sync: false).
 - Waiting on Albert: shop wallet go-live decision, DNS (api.memecapes.com), Stripe, devnet test of the launchpad,
   Cloudflare Stream keys, Helius, Jupiter referral account.
