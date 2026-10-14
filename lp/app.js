@@ -42,6 +42,12 @@
       <circle cx="50" cy="50" r="37.5" fill="none" stroke="#7a5310" stroke-width="1.2"/></svg>${face}</div>`;
   }
 
+  // SOL raised on the curve before a coin graduates at a given market cap (from the same curve the launch uses)
+  const RAISE = {};
+  function raiseFor(mcapSol) {
+    if (RAISE[mcapSol] == null) { try { const sv = F.grad; const g = (C.graduation || []).find(x => x.mcapSol === mcapSol); if (g) F.grad = g.id; RAISE[mcapSol] = n(curveParams().migrationQuoteThreshold) / 1e9; F.grad = sv; } catch (e) { RAISE[mcapSol] = mcapSol * 0.2; } }
+    return RAISE[mcapSol];
+  }
   // ---------- live state for many coins (pools + configs fetched in batches)
   const cache = new Map();   // pool -> {pool, config, t}
   async function liveMany(coins) {
@@ -114,13 +120,14 @@
       <h1>Launch a coin. Keep more of the fees.</h1>
       <p class="lead">Coins launched here start on a fair bonding curve and graduate to a real pool with locked liquidity. You choose the fee, how much of it you keep, how long snipers pay extra, and who your share goes to. Then trade them while you play MemeCapes.</p>
       <div class="acts"><a class="btn gold" href="#/launch">Launch a coin</a><a class="btn line" href="#/how">How it works</a></div></div>
-      <div class="panel"><table class="vs"><thead><tr><th></th><th>MemeCapes</th><th>Typical launchpad</th></tr></thead><tbody>
-        <tr><td>Your share of the trading fee</td><td>You choose, ${C.creatorShare ? C.creatorShare.min + ' to ' + C.creatorShare.max : 50 + ' to ' + 80}% of it</td><td>A fixed small cut</td></tr>
-        <tr><td>Snipers</td><td>Pay a high starting fee that falls over the first ${C.sniperFee ? Math.round(C.sniperFee.maxSeconds / 60) : 10} minutes (to you)</td><td>Usually free to snipe</td></tr>
-        <tr><td>Fee split with your team</td><td>Up to 10 wallets, paid on every claim</td><td>One wallet</td></tr>
-        <tr><td>Team tokens</td><td>Locked and vested on-chain, visible to buyers</td><td>Not offered</td></tr>
-        <tr><td>After graduation</td><td>Liquidity locked forever, you keep earning pool fees</td><td>Varies</td></tr>
-      </tbody></table></div></section>
+      <div class="panel"><table class="vs"><thead><tr><th></th><th>MemeCapes</th><th>pump.fun</th></tr></thead><tbody>
+        <tr><td>Fee traders pay on the curve</td><td>You choose, ${pct(((C.feeBps || {}).min || 25) / 100)} to ${pct(((C.feeBps || {}).max || 200) / 100)} (1% by default)</td><td>1.25%</td></tr>
+        <tr><td>Launcher's cut of each trade</td><td>${(((C.feeBps || {}).def || 100) / 100 * 0.8 * ((C.creatorShare || {}).def || 60) / 100).toFixed(2)}% by default, up to ${(((C.feeBps || {}).max || 200) / 100 * 0.8 * ((C.creatorShare || {}).max || 80) / 100).toFixed(2)}%</td><td>0.30%</td></tr>
+        <tr><td>Sniper fee at launch</td><td>Optional, up to ${pct(((C.sniperFee || {}).maxBps || 5000) / 100)}, falling to normal over up to ${Math.round(((C.sniperFee || {}).maxSeconds || 600) / 60)} minutes</td><td>None in its fee list</td></tr>
+        <tr><td>Team tokens</td><td>Locked on-chain, unlocking after graduation</td><td>Not offered</td></tr>
+        <tr><td>When a coin graduates</td><td>You pick: about ${(C.graduation || []).map(g => raiseFor(g.mcapSol).toFixed(0)).join(', ')} SOL raised</td><td>About 85 SOL raised</td></tr>
+        <tr><td>Play a game while you trade</td><td>Yes</td><td>No</td></tr>
+      </tbody></table><p class="small mute" style="margin:8px 0 0">pump.fun figures from <a href="https://pump.fun/docs/fees" target="_blank" rel="noopener">its fee page</a>, October 2026. Both let you split your fees with up to 10 wallets.</p></div></section>
       <section><div class="tabs" role="tablist">${[['new', 'New'], ['hot', 'Almost graduated'], ['grad', 'Graduated'], ['ver', 'Verified']].map(([k, t]) => `<button class="tab${homeTab === k ? ' on' : ''}" data-t="${k}" role="tab">${t}</button>`).join('')}
         <input class="search" id="q" placeholder="Search name, ticker or address" value="${esc(homeQ)}" aria-label="Search coins"></div>
         <div id="grid" class="coins"><div class="empty" style="grid-column:1/-1">Loading coins…</div></div></section>`;
@@ -307,7 +314,7 @@
     app.innerHTML = `<div class="lgrid"><form id="lf" novalidate>
       <h1 style="margin-top:6px">Launch a coin</h1>
       ${off ? '<div class="warn" style="margin-bottom:14px">Launching opens soon. You can try every setting now; the Launch button switches on when the launchpad goes live.</div>' : ''}
-      ${DEV ? '<div class="warn" style="margin-bottom:14px">You are on Solana\'s test network. Coins and SOL here have no value. Get free test SOL at faucet.solana.com.</div>' : ''}
+      ${DEV ? '<div class="warn" style="margin-bottom:14px">You are on Solana\'s test network. Coins and SOL here have no value. <button type="button" class="btn quiet" id="air" style="padding:4px 10px;font-size:13px;margin-left:6px">Get 1 free test SOL</button></div>' : ''}
       <fieldset><legend>Your coin</legend>
         <div class="pic field"><label class="drop" for="img" id="drop">${F.image ? `<img src="${F.image}" alt="">` : 'Add a picture'}</label><input type="file" id="img" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
           <div class="hint">Square works best. PNG, JPEG, WebP or GIF, up to 2 MB. Only use a picture you made or have the right to use.</div></div>
@@ -328,7 +335,7 @@
           <div class="hint">Split your fees with your team, a charity or a community wallet: up to 10 wallets. Whatever is left goes to you. Your split is published on the coin's page, and paid each time you claim.</div></div>
       </fieldset>
       <fieldset><legend>Graduation</legend>
-        <div class="field"><label>When the coin graduates to a real pool</label><div class="chips">${(C.graduation || []).map(g => `<button type="button" class="chip${F.grad === g.id ? ' on' : ''}" data-g="${g.id}">${esc(g.name)}: ${g.mcapSol} SOL market cap</button>`).join('')}</div>
+        <div class="field"><label>When the coin graduates to a real pool</label><div class="chips">${(C.graduation || []).map(g => `<button type="button" class="chip${F.grad === g.id ? ' on' : ''}" data-g="${g.id}">${esc(g.name)}: about ${raiseFor(g.mcapSol).toFixed(0)} SOL raised</button>`).join('')}</div>
           <div class="hint">At graduation the coin moves to a Meteora pool. Its liquidity is locked forever: nobody, including you and MemeCapes, can pull it.</div></div>
         <div class="field"><label for="pf">Pool fee after graduation</label><div class="range"><input type="range" id="pf" min="${(C.postFeeBps || {}).min || 25}" max="${(C.postFeeBps || {}).max || 200}" step="5" value="${F.postBps}"><output id="pfo"></output></div><div class="hint">You keep earning your share of this fee from the locked pool, for as long as people trade.</div></div>
       </fieldset>
@@ -359,6 +366,7 @@
     $('#addr').onclick = () => { F.routes.push({ to: '', pct: 10 }); drawRoutes(); refresh(); };
     drawRoutes();
     $('#launch').onclick = doLaunch;
+    if ($('#air')) $('#air').onclick = async () => { const b = $('#air'); try { const m = await needWallet(); b.disabled = true; b.textContent = 'Asking the test network…'; await LPC.airdrop(m.address); b.textContent = 'Got 1 test SOL'; } catch (e) { b.disabled = false; b.textContent = 'Get 1 free test SOL'; if (e.message !== 'closed') toast('The test network faucet said no (it limits how often). Try faucet.solana.com.'); } };
     refresh();
   }
   function refresh() {
@@ -375,7 +383,7 @@
     }
     const routed = F.routes.reduce((a, r) => a + (r.pct || 0), 0);
     const startUsd = (C.startMcapSol || 28) * solUsd;
-    $('#sum').innerHTML = `<div><span>Supply</span><b>1,000,000,000</b></div><div><span>Starting market cap</span><b>${usd(startUsd)}</b></div><div><span>Graduates at</span><b>${g.mcapSol} SOL (${usd(g.mcapSol * solUsd)})</b></div>
+    $('#sum').innerHTML = `<div><span>Supply</span><b>1,000,000,000</b></div><div><span>Starting market cap</span><b>${usd(startUsd)}</b></div><div><span>Graduates at</span><b>about ${raiseFor(g.mcapSol).toFixed(0)} SOL raised (${usd(g.mcapSol * solUsd)} market cap)</b></div>
       <div><span>You earn on each trade</span><b>${(F.feeBps / 100 * 0.8 * F.share / 100).toFixed(3)}%</b></div>${routed ? `<div><span>Of that, paid to your split</span><b>${routed}%</b></div>` : ''}
       <div><span>Team tokens</span><b>${F.teamPct ? F.teamPct + '%, locked' : 'None'}</b></div><div><span>Your first buy</span><b>${F.devBuy ? sol(F.devBuy) : 'None'}</b></div>
       <div><span>Launch cost</span><b>${C.creationFeeSol ? sol(C.creationFeeSol) + ' + ' : ''}about 0.03 SOL network rent</b></div>`;
