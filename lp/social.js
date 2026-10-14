@@ -43,7 +43,7 @@
   let myCh = null;
 
   // ---------- the tape: live trades running across the top of every page
-  let tapeT = 0, tapeLast = '';
+  let tapeT = 0, tapeLast = null;   // null, so an empty first answer still replaces "Loading…"
   async function tape() {
     clearTimeout(tapeT);
     try {
