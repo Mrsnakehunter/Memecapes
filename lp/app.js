@@ -130,7 +130,10 @@
       </tbody></table><p class="small mute" style="margin:8px 0 0">pump.fun figures from <a href="https://pump.fun/docs/fees" target="_blank" rel="noopener">its fee page</a>, October 2026. Both let you split your fees with up to 10 wallets.</p></div></section>
       <section><div class="tabs" role="tablist">${[['new', 'New'], ['hot', 'Almost graduated'], ['grad', 'Graduated'], ['ver', 'Verified']].map(([k, t]) => `<button class="tab${homeTab === k ? ' on' : ''}" data-t="${k}" role="tab">${t}</button>`).join('')}
         <input class="search" id="q" placeholder="Search name, ticker or address" value="${esc(homeQ)}" aria-label="Search coins"></div>
-        <div id="grid" class="coins"><div class="empty" style="grid-column:1/-1">Loading coins…</div></div></section>`;
+        <div id="grid" class="coins"><div class="empty" style="grid-column:1/-1">Loading coins…</div></div></section>
+      <section class="live2"><div class="panel"><h3>Live trades</h3><div id="feed" class="small mute">Waiting for trades…</div></div>
+        <div class="panel"><h3>Who's up today</h3><p class="small mute" style="margin:-4px 0 8px">SOL taken out minus SOL put in, per wallet per coin. Coins still held aren't counted.</p><div id="lead" class="small mute">No trades yet today.</div></div></section>`;
+    liveFeed();
     $$('.tab').forEach(b => b.onclick = () => { homeTab = b.dataset.t; home(); });
     $('#q').oninput = e => { homeQ = e.target.value; draw(); };
     let coins = [];
@@ -145,6 +148,21 @@
     };
     draw();
     coins = await liveMany(coins); draw();
+  }
+  function tradeRow(t, withCoin) {
+    return `<div class="tr"><span class="${t.buy ? 'up' : 'dn'}">${t.buy ? 'Bought' : 'Sold'}</span> <b class="num">${sol(t.sol)}</b>${withCoin ? ` of <a href="#/coin/${esc(t.mint)}">$${esc(t.symbol)}</a>` : ''} <a class="addr" href="${LPC.explorer('acct', t.trader)}" target="_blank" rel="noopener">${short(t.trader)}</a> <span class="mute">${ago(t.t)}</span></div>`;
+  }
+  let feedT = 0;
+  async function liveFeed() {
+    clearTimeout(feedT); if (!$('#feed')) return;
+    try {
+      const [f, l] = await Promise.all([api('/lp/trades?limit=14'), api('/lp/leaders?range=day')]);
+      if (!$('#feed')) return;
+      $('#feed').innerHTML = f.trades.length ? f.trades.map(t => tradeRow(t, 1)).join('') : 'No trades yet.';
+      const row = (r, i) => `<div class="tr"><span class="mute num">${i + 1}.</span> <a class="addr" href="${LPC.explorer('acct', r.trader)}" target="_blank" rel="noopener">${short(r.trader)}</a> on <a href="#/coin/${esc(r.mint)}">$${esc(r.symbol)}</a> <b class="num ${r.net >= 0 ? 'up' : 'dn'}">${r.net >= 0 ? '+' : ''}${sol(r.net).replace(' SOL', '')} SOL</b></div>`;
+      $('#lead').innerHTML = l.top.length ? l.top.slice(0, 8).map(row).join('') + (l.bottom.some(r => r.net < 0) ? '<p class="small" style="margin:10px 0 4px"><b>Biggest losses today</b></p>' + l.bottom.filter(r => r.net < 0).slice(0, 4).map(row).join('') : '') : 'No trades yet today.';
+    } catch (e) { }
+    feedT = setTimeout(liveFeed, 10000);
   }
   function card(c) {
     const s = c.live;
@@ -175,6 +193,7 @@
       <div class="panel"><h3>Fees on every trade</h3>${feeBar(fees)}<p class="small mute">${fees.sniper ? `Starts at ${pct(fees.sniper.startBps / 100)} for the first ${fees.sniper.seconds} seconds and falls to ${pct(fees.baseBps / 100)} (stops sniper bots). ` : ''}When trading is busy the fee can rise by up to a fifth to protect the price. After graduation the pool fee is ${pct(fees.postBps / 100)}.</p>
         ${plan.routes && plan.routes.length ? `<p class="small"><b>The launcher's plan for their share:</b> ${plan.routes.map(r => esc(r.pct + '% to ' + (r.label || short(r.to)))).join(', ')}.</p>` : ''}
         ${fees.team ? `<p class="small"><b>Team tokens:</b> ${pct(fees.team.pct)} of the supply, locked, unlocking over ${fees.team.days} days after graduation.</p>` : ''}</div>
+      <div class="panel"><h3>Recent trades</h3><div id="ctr" class="small mute">Loading…</div></div>
       <div class="panel"><h3>Top holders</h3><div id="holders" class="small mute">Loading…</div></div>
       <div class="panel small"><dl class="kv"><dt>Coin address</dt><dd><a href="${LPC.explorer('token', c.mint)}" target="_blank" rel="noopener" class="addr">${esc(c.mint)}</a></dd><dt>Pool</dt><dd><a href="${LPC.explorer('acct', c.pool)}" target="_blank" rel="noopener" class="addr">${esc(short(c.pool))}</a></dd>
         <dt>Supply</dt><dd>${(SUPPLY).toLocaleString()} (no more can ever be made)</dd><dt>Report</dt><dd><button class="btn quiet" style="padding:4px 10px;font-size:13px" id="rep" type="button">Report this coin</button></dd></dl></div>
@@ -182,6 +201,7 @@
     tradeBox(c, vp, cfg, s);
     if (isCreator) creatorBox(c, vp, cfg, plan);
     holders(c, vp);
+    api('/lp/trades?limit=25&mint=' + encodeURIComponent(c.mint)).then(r => { $('#ctr').innerHTML = r.trades.length ? r.trades.map(t => tradeRow(t, 0).replace('</b>', '</b> <span class="mute">for ' + Math.round(t.tokens).toLocaleString() + '</span>')).join('') : 'No trades yet.'; }).catch(() => { $('#ctr').textContent = 'Could not load trades right now.'; });
     $('#rep').onclick = async () => { const why = prompt('What is wrong with this coin? (scam, stolen picture, impersonation, ...)'); if (!why) return; try { await api('/lp/report', { mint: c.mint, why }); toast('Thanks. The MemeCapes team will look at it.'); } catch (e) { toast(e.message); } };
   }
   function feeInfo(cfg) {
