@@ -289,4 +289,8 @@ numbers in here or anywhere in the repo.
 - Bouncy Hippo needs a new Meshy model (old one broken); uses the blocky hand-built one for now.
 - Shipped Oct 13 (build 20261013182150): everything that was on preview. Preview = live again.
   Still to model in Meshy: the 11 weapon skins (Candle Blade first, Skin of the Month 2).
-- Waiting on Albert: shop wallet go-live decision, DNS (api.memecapes.com), Stripe.
+- Launchpad fee wallet (public address, Albert, Oct 14): 3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg, in config.js
+  launchpad.partner/partnerDevnet on the `launchpad` branch. Render still needs LP_PARTNER (and LP_PARTNER_DEVNET)
+  set to it, or /lp/register rejects every launch. With it set, the Launch button is ON the moment the branch ships.
+- Waiting on Albert: shop wallet go-live decision, DNS (api.memecapes.com), Stripe, devnet test of the launchpad,
+  Cloudflare Stream keys, Helius, Jupiter referral account.
