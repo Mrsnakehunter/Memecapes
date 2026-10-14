@@ -47,6 +47,29 @@ window.MC_CONFIG = {
   depositsOpen: false,           // true = players can deposit $CAPES for Meme Coins (needs capesMint and capesWallet)
   withdrawalsOpen: false,        // keep false until the game server exists (see the note in the game's bank)
 
+  // ---- Launchpad (launch.html): coins launched on memecapes.com, built on Meteora's bonding curve on Solana.
+  // partner = the PUBLIC address of the MemeCapes launchpad fee wallet. Empty = launching is switched off (the page
+  // still shows coins). Albert signs everything from that wallet himself; nobody else ever needs its keys.
+  launchpad: {
+    partner: "",                 // MemeCapes launchpad fee wallet on mainnet (public address)
+    partnerDevnet: "",           // the same for Solana's test network (?net=devnet), for testing
+    rpcDevnet: "https://api.devnet.solana.com",
+    burnShare: 50,               // % of MemeCapes' launchpad income that buys $CAPES and burns it (every burn posted)
+    // what launchers can choose (the server refuses coins outside these limits)
+    feeBps: { min: 25, max: 200, def: 100 },              // trading fee on the bonding curve, in basis points (100 = 1%)
+    creatorShare: { min: 50, max: 80, def: 60 },          // % of the fee left after Meteora's 20% that goes to the launcher
+    sniperFee: { maxBps: 5000, defBps: 2500, defSeconds: 60, maxSeconds: 600 },  // starting fee that falls to the normal fee
+    graduation: [                                         // market cap in SOL when the coin moves to a real pool
+      { id: "quick", name: "Quick", mcapSol: 200 },
+      { id: "standard", name: "Standard", mcapSol: 400 },
+      { id: "big", name: "Big", mcapSol: 1000 }
+    ],
+    startMcapSol: 28,            // market cap in SOL at the first trade
+    postFeeBps: { min: 25, max: 200, def: 100 },          // trading fee on the graduated pool
+    teamMaxPct: 10,              // most of the supply a launcher can set aside for a team, always locked and vested
+    creationFeeSol: 0            // fee to launch a coin, in SOL (0 = free)
+  },
+
   // ---- redeem codes for things sold in the shop: SHA-256 of the code -> what it gives
   // make one with:  python3 tools/mkcode.py cape "Shiny cape"
   codes: {}
