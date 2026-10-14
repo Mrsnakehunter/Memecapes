@@ -67,7 +67,9 @@ window.MC_CONFIG = {
     startMcapSol: 28,            // market cap in SOL at the first trade
     postFeeBps: { min: 25, max: 200, def: 100 },          // trading fee on the graduated pool
     teamMaxPct: 10,              // most of the supply a launcher can set aside for a team, always locked and vested
-    creationFeeSol: 0            // fee to launch a coin, in SOL (0 = free)
+    creationFeeSol: 0,           // fee to launch a coin, in SOL (0 = free)
+    jupReferral: "",             // Jupiter referral account (make one at referral.jup.ag) = MemeCapes earns a fee on swaps of graduated coins
+    jupFeeBps: 50                // that fee, in basis points (50 = 0.5%; Jupiter keeps 20% of it)
   },
 
   // ---- redeem codes for things sold in the shop: SHA-256 of the code -> what it gives

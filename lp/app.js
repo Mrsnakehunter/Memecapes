@@ -188,7 +188,8 @@
       <div class="stats num"><div class="stat"><span>Market cap</span><b>${usd(s.mcapUsd)}</b></div><div class="stat"><span>Price</span><b>${s.price < 0.000001 ? s.price.toExponential(2) : s.price.toFixed(9)} SOL</b></div>
         <div class="stat"><span>Raised on the curve</span><b>${sol(s.raised)}</b></div><div class="stat"><span>Fees paid so far</span><b>${sol(s.volume)}</b></div></div>
       ${s.migrated ? '<div class="ok">This coin graduated: it trades in a Meteora pool with its liquidity locked for good.</div>' : `<div><b>${pct(s.prog * 100)}</b> of the way to graduation <span class="mute">(${sol(s.raised)} of ${sol(s.goal)})</span><div class="crucible"><i style="width:${(s.prog * 100).toFixed(1)}%"></i></div><span class="mute small">At ${sol(s.goal)} the coin moves to a Meteora pool and its liquidity is locked for good.</span></div>`}
-      <div class="panel" style="margin-top:16px;padding:0;overflow:hidden"><iframe class="chart" title="Price chart" loading="lazy" src="https://dexscreener.com/solana/${esc(s.migrated ? c.mint : c.pool)}?embed=1&loadChartSettings=0&trades=0&tabs=0&info=0&chartLeftToolbar=0&chartTheme=dark&theme=dark&chartStyle=1&chartType=usd&interval=5"></iframe></div>
+      <div class="panel" id="early" style="margin-top:16px"><h3>Launch check</h3><div class="small mute">Checking who bought first…</div></div>
+      <div class="panel" style="padding:0;overflow:hidden"><iframe class="chart" title="Price chart" loading="lazy" src="https://dexscreener.com/solana/${esc(s.migrated ? c.mint : c.pool)}?embed=1&loadChartSettings=0&trades=0&tabs=0&info=0&chartLeftToolbar=0&chartTheme=dark&theme=dark&chartStyle=1&chartType=usd&interval=5"></iframe></div>
       ${meta.description ? `<div class="panel"><h3>About</h3><p style="white-space:pre-wrap;font-family:var(--serif)">${esc(meta.description)}</p></div>` : ''}
       <div class="panel"><h3>Fees on every trade</h3>${feeBar(fees)}<p class="small mute">${fees.sniper ? `Starts at ${pct(fees.sniper.startBps / 100)} for the first ${fees.sniper.seconds} seconds and falls to ${pct(fees.baseBps / 100)} (stops sniper bots). ` : ''}When trading is busy the fee can rise by up to a fifth to protect the price. After graduation the pool fee is ${pct(fees.postBps / 100)}.</p>
         ${plan.routes && plan.routes.length ? `<p class="small"><b>The launcher's plan for their share:</b> ${plan.routes.map(r => esc(r.pct + '% to ' + (r.label || short(r.to)))).join(', ')}.</p>` : ''}
@@ -201,6 +202,7 @@
     tradeBox(c, vp, cfg, s);
     if (isCreator) creatorBox(c, vp, cfg, plan);
     holders(c, vp);
+    launchCheck(c);
     api('/lp/trades?limit=25&mint=' + encodeURIComponent(c.mint)).then(r => { $('#ctr').innerHTML = r.trades.length ? r.trades.map(t => tradeRow(t, 0).replace('</b>', '</b> <span class="mute">for ' + Math.round(t.tokens).toLocaleString() + '</span>')).join('') : 'No trades yet.'; }).catch(() => { $('#ctr').textContent = 'Could not load trades right now.'; });
     $('#rep').onclick = async () => { const why = prompt('What is wrong with this coin? (scam, stolen picture, impersonation, ...)'); if (!why) return; try { await api('/lp/report', { mint: c.mint, why }); toast('Thanks. The MemeCapes team will look at it.'); } catch (e) { toast(e.message); } };
   }
@@ -224,6 +226,19 @@
       <i style="background:#6b5a44"></i><span>Meteora (runs the pool program)</span><b>${met.toFixed(3)}%</b>
       <span></span><span><b>Total fee on each trade</b></span><b>${tot.toFixed(2)}%</b></div>`;
   }
+  // who bought in the launch block itself (bundled with the launch) and in the next 3 blocks (snipers), and what they still hold
+  async function launchCheck(c) {
+    const el = $('#early'); if (!el) return;
+    try {
+      const r = await api('/lp/early?mint=' + encodeURIComponent(c.mint));
+      if (!r.known) { el.innerHTML = '<h3>Launch check</h3><p class="small mute">No trades read yet. This fills in within a minute of the first trade.</p>'; return; }
+      const lvl = v => v >= 10 ? 'dn' : v >= 3 ? '' : 'up';
+      const line = (t, o, warn) => `<div class="tr">${t}: <b class="num">${o.wallets} wallet${o.wallets === 1 ? '' : 's'}</b> bought <b class="num">${o.boughtPct.toFixed(1)}%</b> of the supply and still hold <b class="num ${lvl(o.heldPct)}">${o.heldPct.toFixed(1)}%</b>${warn && o.heldPct >= 10 ? ' <span class="badge r">Watch out</span>' : ''}</div>`;
+      el.innerHTML = `<h3>Launch check</h3>${r.dev ? `<div class="tr">The launcher's first buy: <b class="num">${r.dev.bought.toFixed(1)}%</b> of the supply, still holds <b class="num">${r.dev.held.toFixed(1)}%</b></div>` : '<div class="tr">The launcher made no first buy.</div>'}
+        ${line('Other wallets in the launch block itself', r.bundled, 1)}${line('Wallets in the next 3 blocks (bots, usually)', r.snipers, 1)}
+        <p class="small mute" style="margin-top:8px">Wallets that buy in the very block a coin is created were often lined up by the launcher in advance ("bundled"). It is a warning sign, not proof. Snipers here paid the coin's sniper fee.</p>`;
+    } catch (e) { el.innerHTML = '<h3>Launch check</h3><p class="small mute">Could not check right now.</p>'; }
+  }
   async function holders(c, vp) {
     try {
       const r = await LPC.connection().getTokenLargestAccounts(PK(c.mint));
@@ -239,7 +254,11 @@
   }
   function tradeBox(c, vp, cfg, s) {
     const box = $('#tbox'); let side = 'buy';
-    if (s.migrated) { box.innerHTML = `<h3>Trade</h3><p>This coin graduated and now trades in its Meteora pool.</p><a class="btn gold" style="width:100%" href="https://jup.ag/swap/SOL-${esc(c.mint)}" target="_blank" rel="noopener">Trade on Jupiter</a>`; return; }
+    if (s.migrated) {
+      box.innerHTML = `<h3>Trade</h3><p class="small mute">This coin graduated and trades in its Meteora pool. Swaps below go through Jupiter, which finds the best price.</p><div id="jup" style="min-height:420px"></div><a class="small" href="https://jup.ag/swap/SOL-${esc(c.mint)}" target="_blank" rel="noopener">Open on jup.ag instead</a>`;
+      if (!DEV) jupiter(c.mint);
+      return;
+    }
     const draw = () => {
       box.innerHTML = `<div class="seg"><button class="buy${side === 'buy' ? ' on' : ''}" type="button" data-s="buy">Buy</button><button class="sell${side === 'sell' ? ' on' : ''}" type="button" data-s="sell">Sell</button></div>
         <div class="field"><label for="amt">${side === 'buy' ? 'You pay (SOL)' : 'You sell ($' + esc(c.symbol) + ')'}</label><input class="inp num" id="amt" inputmode="decimal" placeholder="0.0" autocomplete="off">
@@ -289,6 +308,12 @@
       } catch (e) { if (e.message !== 'closed') $('#terr').textContent = friendly(e); const b = $('#go'); if (b) { b.disabled = false; b.textContent = (side === 'buy' ? 'Buy' : 'Sell') + ' $' + c.symbol; } }
     }
     draw();
+  }
+  // Jupiter's swap box, inside our page (mainnet only); a referral account earns MemeCapes a small fee when set
+  function jupiter(mint) {
+    const go = () => { try { window.Jupiter.init({ displayMode: 'integrated', integratedTargetId: 'jup', formProps: { initialInputMint: 'So11111111111111111111111111111111111111112', initialOutputMint: mint, ...(C.jupReferral ? { referralAccount: C.jupReferral, referralFee: C.jupFeeBps || 50 } : {}) } }); } catch (e) { } };
+    if (window.Jupiter) return go();
+    const sc = document.createElement('script'); sc.src = 'https://plugin.jup.ag/plugin-v1.js'; sc.onload = go; document.head.appendChild(sc);
   }
   function Buffer_readU64(data, off) { const b = data instanceof Uint8Array ? data : new Uint8Array(data); let x = 0n; for (let i = 7; i >= 0; i--) x = x * 256n + BigInt(b[off + i]); return x; }
   function friendly(e) {
