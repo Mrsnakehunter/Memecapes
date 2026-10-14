@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS lp_trades(sig TEXT, ix INT, mint TEXT, net TEXT, trad
 CREATE INDEX IF NOT EXISTS lp_trades_mint ON lp_trades(mint, net, t);
 CREATE INDEX IF NOT EXISTS lp_trades_t ON lp_trades(net, t);
 CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY(mint, net));`);
+  for (const sql of ['ALTER TABLE lp_trades ADD COLUMN slot INT', 'ALTER TABLE lp_coins ADD COLUMN slot INT']) { try { db.exec(sql); } catch (e) { } }
   const Q = {
     metaAdd: db.prepare('INSERT INTO lp_meta(id,json,img,ip,t) VALUES(?,?,?,?,?)'),
     metaGet: db.prepare('SELECT * FROM lp_meta WHERE id=?'),
@@ -54,7 +55,9 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
     allCoins: db.prepare('SELECT mint,net,pool FROM lp_coins WHERE hidden=0 ORDER BY t DESC LIMIT 400'),
     curGet: db.prepare('SELECT last FROM lp_cursor WHERE mint=? AND net=?'),
     curSet: db.prepare('INSERT INTO lp_cursor(mint,net,last) VALUES(?,?,?) ON CONFLICT(mint,net) DO UPDATE SET last=excluded.last'),
-    trAdd: db.prepare('INSERT OR IGNORE INTO lp_trades(sig,ix,mint,net,trader,buy,sol,tokens,fee,t) VALUES(?,?,?,?,?,?,?,?,?,?)'),
+    trAdd: db.prepare('INSERT OR IGNORE INTO lp_trades(sig,ix,mint,net,trader,buy,sol,tokens,fee,t,slot) VALUES(?,?,?,?,?,?,?,?,?,?,?)'),
+    trEarly: db.prepare('SELECT trader, buy, tokens, slot, sol FROM lp_trades WHERE mint=? AND net=? ORDER BY slot, t'),
+    coinSlot: db.prepare('UPDATE lp_coins SET slot=? WHERE mint=? AND net=? AND slot IS NULL'),
     trCoin: db.prepare('SELECT * FROM lp_trades WHERE mint=? AND net=? ORDER BY t DESC LIMIT ?'),
     trFeed: db.prepare('SELECT tr.*, c.name, c.symbol, c.image FROM lp_trades tr JOIN lp_coins c ON c.mint=tr.mint AND c.net=tr.net WHERE tr.net=? AND c.hidden=0 ORDER BY tr.t DESC LIMIT ?'),
     // every wallet's SOL in and out per coin since a time: what they put in, what they took out, tokens still held
@@ -96,7 +99,7 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
       // name, symbol and uri are the first three borsh strings of the instruction's params
       let o = 8; const str = () => { const n = data.readUInt32LE(o); o += 4; const s = data.subarray(o, o + n).toString('utf8'); o += n; return s; };
       const name = str(), symbol = str(), uri = str();
-      return { mint, pool, config, creator, name, symbol, uri, t: (tx.blockTime || Math.floor(now() / 1000)) * 1000 };
+      return { mint, pool, config, creator, name, symbol, uri, slot: tx.slot || 0, t: (tx.blockTime || Math.floor(now() / 1000)) * 1000 };
     }
     return { err: 'That transaction did not create a coin on the bonding curve.' };
   }
@@ -131,7 +134,7 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
           if (s.err) continue;
           let tx; try { tx = await rpc(c.net, 'getTransaction', [s.signature, { encoding: 'json', maxSupportedTransactionVersion: 0, commitment: 'confirmed' }]); } catch (e) { break; }
           if (!tx) continue;
-          tradesIn(tx).filter(x => x.pool === c.pool).forEach((x, i) => Q.trAdd.run(s.signature, i, c.mint, c.net, x.trader, x.buy ? 1 : 0, x.sol, x.tokens, x.fee, x.t || (s.blockTime || 0) * 1000));
+          tradesIn(tx).filter(x => x.pool === c.pool).forEach((x, i) => Q.trAdd.run(s.signature, i, c.mint, c.net, x.trader, x.buy ? 1 : 0, x.sol, x.tokens, x.fee, x.t || (s.blockTime || 0) * 1000, s.slot || tx.slot || 0));
         }
         Q.curSet.run(c.mint, c.net, sigs[0].signature);
       }
@@ -158,6 +161,18 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
       const lim = Math.max(1, Math.min(200, +url.searchParams.get('limit') || 60));
       const rows = url.searchParams.get('sort') === 'verified' ? Q.coinsVer.all(net, lim) : url.searchParams.get('creator') ? Q.coinsBy.all(net, String(url.searchParams.get('creator'))) : Q.coinsNew.all(net, lim);
       return json({ coins: rows.map(pub), partner: net === 'devnet' ? PARTNER_DEV : PARTNER });
+    }
+    if (p === '/lp/early' && req.method === 'GET') {
+      const c = Q.coinGet.get(String(url.searchParams.get('mint') || ''), net); if (!c) return json({ error: 'not found' }, 404);
+      const rows = Q.trEarly.all(c.mint, net); if (!rows.length) return json({ known: false });
+      const s0 = c.slot || rows[0].slot, SUP = 1e9 * 1e6, w = new Map();
+      for (const r of rows) { const e = w.get(r.trader) || { first: r.slot, bought: 0, held: 0 }; if (r.buy) e.bought += r.tokens; e.held += r.buy ? r.tokens : -r.tokens; w.set(r.trader, e); }
+      const pick = f => [...w.entries()].filter(([a, e]) => a !== c.creator && f(e.first - s0));
+      const sum = (L, k) => L.reduce((a, [, e]) => a + Math.max(0, e[k]), 0) / SUP * 100;
+      const bundle = pick(d => d <= 0), snipe = pick(d => d > 0 && d <= 3), dev = w.get(c.creator);
+      return json({ known: true, launchSlot: s0, dev: dev ? { bought: dev.bought / SUP * 100, held: Math.max(0, dev.held) / SUP * 100 } : null,
+        bundled: { wallets: bundle.length, boughtPct: sum(bundle, 'bought'), heldPct: sum(bundle, 'held') },
+        snipers: { wallets: snipe.length, boughtPct: sum(snipe, 'bought'), heldPct: sum(snipe, 'held') } });
     }
     if (p === '/lp/trades' && req.method === 'GET') {
       const lim = Math.max(1, Math.min(200, +url.searchParams.get('limit') || 50)), mint = url.searchParams.get('mint');
@@ -204,7 +219,7 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
       let v = null; for (let i = 0; i < 4; i++) { try { v = await verifyLaunch(bnet, sig); } catch (e) { v = { err: 'Could not reach the blockchain.' }; } if (!/not found|reach/.test(v.err || '')) break; await new Promise(r => setTimeout(r, 2500)); }
       if (v.err) return json({ error: v.err }, 400);
       let image = ''; try { const mm2 = /\/lp\/meta\/([a-f0-9]{24})\.json$/.exec(v.uri); const r = mm2 && Q.metaGet.get(mm2[1]); image = r ? r.img : ''; } catch (e) { }
-      Q.coinAdd.run(v.mint, bnet, v.pool, v.config, v.creator, clean(v.name, 32), clean(v.symbol, 10), v.uri.slice(0, 200), image, sig, v.t);
+      Q.coinAdd.run(v.mint, bnet, v.pool, v.config, v.creator, clean(v.name, 32), clean(v.symbol, 10), v.uri.slice(0, 200), image, sig, v.t); Q.coinSlot.run(v.slot, v.mint, bnet);
       for (const o of online.values()) if (o.role === 'admin') say(o, 'New launchpad coin: ' + clean(v.name, 32) + ' ($' + clean(v.symbol, 10) + ')' + (bnet === 'devnet' ? ' [devnet]' : ''), '#c80');
       return json({ ok: true, coin: pub(Q.coinGet.get(v.mint, bnet)) });
     }
