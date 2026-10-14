@@ -90,6 +90,22 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 14, Launchpad (branch `launchpad`, NOT live): "launch on pump.fun, have a launchpad on the site, 50/50 burns, more fee
+  options than pump.fun, visible on the site and in game". Built on Meteora DBC (launch.html + lp/app.js + lp/chain.js +
+  lp/lpcore.js bundle). This machine has NO npm/CDN/Solana access: lpcore.js is built from GitHub source clones
+  (tools/launchpad/vendor.sh + vendor.lock, build: `node tools/launchpad/build.mjs lp/lpcore.js`, shims in
+  tools/launchpad/shims; spl-token is our own small shim). Per-coin config (createConfigAndPoolWithFirstBuy):
+  fee_claimer = MemeCapes fee wallet (config.js launchpad.partner / Render LP_PARTNER); creator share 50-80% of the
+  non-Meteora 80%; sniper fee = exponential fee scheduler; LP 100% permanently locked, split like the fees; team
+  tokens = lockedVesting. Server: server/launchpad.js (/lp/upload, /lp/meta, /lp/register checks the tx on-chain:
+  DBC init ix + config fee_claimer at offset 40 + creator share at 245 <= LP_CREATOR_MAX; /lp/coins; reports; /lp
+  admin cmd). Game: tools/patch_launchpad.py (Launchpad clerk 'lpad' in GT and Stonks City, opens launch.html in a
+  new tab). Tests: scratch/lp/test (shoot.py with a fake RPC + fake wallet; smoke.mjs offline). Real test still to
+  do on devnet from Albert's computer: launch.html?net=devnet&testwallet=1. Plan doc: "MemeCapes Launchpad plan".
+  Research: pump.fun 1.25% fee, creator 0.30%, splits to 10 wallets since Jan 2026; Bags 100 recipients; Jupiter
+  Studio sniper fee + vesting; Heaven's 100% burn flywheel failed. Never claim features others don't have without
+  checking.
+
 - Oct 13: Albert said "make it live": shipped build 20261013182150 (Skin of the Month, picture store + try-on,
   MemeCape/Quest cape, plan C exchange note, bots with 1,082 lines); live version.json checked in the browser pane.
   Website: FAQ "What is the Skin of the Month?", 0.1% line in the holders FAQ and Terms, skins can't be traded;

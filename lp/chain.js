@@ -31,6 +31,21 @@ window.LPC = (function () {
   const api = Object.freeze({ register: reg });
   try { window.addEventListener('wallet-standard:register-wallet', e => { try { e.detail(api) } catch (_) { } }); window.dispatchEvent(new CustomEvent('wallet-standard:app-ready', { detail: api })); } catch (e) { }
 
+  // Test network only (?net=devnet&testwallet=1): a throwaway wallet made in this page, for testing without a real
+  // wallet. Its key lives in this browser only and works only on Solana's test network, where nothing has value.
+  if (NET() === 'devnet' && new URLSearchParams(location.search).get('testwallet') === '1') {
+    window.addEventListener('load', () => {
+      const w3 = L().web3; let kp;
+      try { const s = localStorage.getItem('lp_devnet_testkey'); kp = s ? w3.Keypair.fromSecretKey(Uint8Array.from(JSON.parse(s))) : null; } catch (e) { }
+      if (!kp) { kp = w3.Keypair.generate(); try { localStorage.setItem('lp_devnet_testkey', JSON.stringify([...kp.secretKey])); } catch (e) { } }
+      const acc = { address: kp.publicKey.toBase58(), publicKey: kp.publicKey.toBytes(), chains: ['solana:devnet'], features: ['solana:signTransaction'] };
+      reg({ version: '1.0.0', name: 'Test-network wallet', icon: '', chains: ['solana:devnet'], accounts: [acc],
+        features: { 'standard:connect': { version: '1.0.0', connect: async () => ({ accounts: [acc] }) },
+          'solana:signTransaction': { version: '1.0.0', supportedTransactionVersions: ['legacy'], signTransaction: async (...ins) => ins.map(i => { const t = w3.Transaction.from(i.transaction); t.partialSign(kp); return { signedTransaction: t.serialize() }; }) } } });
+    });
+  }
+  async function airdrop(addr) { if (NET() !== 'devnet') throw new Error('Free SOL is only for the test network.'); const s = await connection().requestAirdrop(new (L().web3.PublicKey)(addr), 1e9); await confirm(s); return s; }
+
   let W = null, ACC = null;   // the connected wallet and account
   const onChange = new Set();
   function emit() { onChange.forEach(f => { try { f(me()) } catch (e) { } }); }
@@ -120,5 +135,5 @@ window.LPC = (function () {
   async function solBalance(addr) { return (await connection().getBalance(new (L().web3.PublicKey)(addr))) / 1e9; }
   function explorer(kind, id) { const q = NET() === 'devnet' ? '?cluster=devnet' : ''; return 'https://solscan.io/' + (kind === 'tx' ? 'tx/' : kind === 'token' ? 'token/' : 'account/') + id + q; }
 
-  return { NET, RPC_URL, connection, dbc, wallets: () => wallets.slice(), onWallets: f => listeners.add(f), connect, disconnect, autoConnect, me, onChange: f => onChange.add(f), sendAll, confirm, solBalance, explorer, sleep };
+  return { NET, RPC_URL, connection, dbc, wallets: () => wallets.slice(), onWallets: f => listeners.add(f), connect, disconnect, autoConnect, me, onChange: f => onChange.add(f), sendAll, confirm, solBalance, explorer, sleep, airdrop };
 })();
