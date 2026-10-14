@@ -5,3 +5,4 @@ export * as spl from '@solana/spl-token';
 export { default as BN } from 'bn.js';
 export { default as Decimal } from 'decimal.js';
 export { Buffer } from 'buffer';
+export { ed25519 } from '@noble/curves/ed25519';

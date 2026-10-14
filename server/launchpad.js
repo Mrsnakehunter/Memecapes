@@ -20,7 +20,7 @@ const B58A = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 function b58e(u8) { let x = 0n; for (const b of u8) x = x * 256n + BigInt(b); let s = ''; while (x > 0n) { s = B58A[Number(x % 58n)] + s; x /= 58n; } for (const b of u8) { if (b) break; s = '1' + s; } return s; }
 function b58d(s) { let x = 0n; for (const ch of String(s)) { const i = B58A.indexOf(ch); if (i < 0) return null; x = x * 58n + BigInt(i); } const out = []; while (x > 0n) { out.unshift(Number(x & 255n)); x >>= 8n; } for (const ch of String(s)) { if (ch !== '1') break; out.unshift(0); } return Buffer.from(out); }
 
-module.exports = function launchpad({ db, DATA, now, tooMany, say, online, base }) {
+module.exports = function launchpad({ db, DATA, now, tooMany, say, online, sigOk, base }) {
   const PARTNER = process.env.LP_PARTNER || '';                 // the MemeCapes launchpad fee wallet (public address); empty = registrations off
   const PARTNER_DEV = process.env.LP_PARTNER_DEVNET || PARTNER;
   const CREATOR_MAX = +process.env.LP_CREATOR_MAX || 80;      // most a launcher can keep, in % of the fee after Meteora's cut (same as config.js)
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS lp_trades(sig TEXT, ix INT, mint TEXT, net TEXT, trad
 CREATE INDEX IF NOT EXISTS lp_trades_mint ON lp_trades(mint, net, t);
 CREATE INDEX IF NOT EXISTS lp_trades_t ON lp_trades(net, t);
 CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY(mint, net));`);
-  for (const sql of ['ALTER TABLE lp_trades ADD COLUMN slot INT', 'ALTER TABLE lp_coins ADD COLUMN slot INT']) { try { db.exec(sql); } catch (e) { } }
+  for (const sql of ['ALTER TABLE lp_trades ADD COLUMN slot INT', 'ALTER TABLE lp_coins ADD COLUMN slot INT', 'ALTER TABLE lp_coins ADD COLUMN grad INT DEFAULT 0']) { try { db.exec(sql); } catch (e) { } }
   const Q = {
     metaAdd: db.prepare('INSERT INTO lp_meta(id,json,img,ip,t) VALUES(?,?,?,?,?)'),
     metaGet: db.prepare('SELECT * FROM lp_meta WHERE id=?'),
@@ -52,7 +52,11 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
     repSeen: db.prepare('SELECT COUNT(*) n FROM lp_reports WHERE mint=? AND ip=?'),
     repInc: db.prepare('UPDATE lp_coins SET reports=reports+1 WHERE mint=? AND net=?'),
     list: db.prepare('SELECT mint,net,name,symbol,verified,hidden,reports,t FROM lp_coins ORDER BY t DESC LIMIT 30'),
-    allCoins: db.prepare('SELECT mint,net,pool FROM lp_coins WHERE hidden=0 ORDER BY t DESC LIMIT 400'),
+    allCoins: db.prepare('SELECT mint,net,pool,grad FROM lp_coins WHERE hidden=0 ORDER BY t DESC LIMIT 400'),
+    coinGrad: db.prepare('UPDATE lp_coins SET grad=1 WHERE mint=? AND net=?'),
+    spark: db.prepare('SELECT sol, tokens, buy FROM lp_trades WHERE mint=? AND net=? AND tokens>0 ORDER BY t DESC LIMIT 30'),
+    coinHour: db.prepare('SELECT COUNT(*) n, COUNT(DISTINCT trader) w, COALESCE(SUM(sol),0) v, COALESCE(SUM(CASE WHEN buy=1 THEN sol ELSE -sol END),0) flow FROM lp_trades WHERE mint=? AND net=? AND t>?'),
+    coinTraders: db.prepare('SELECT COUNT(DISTINCT trader) w, COUNT(*) n FROM lp_trades WHERE mint=? AND net=?'),
     curGet: db.prepare('SELECT last FROM lp_cursor WHERE mint=? AND net=?'),
     curSet: db.prepare('INSERT INTO lp_cursor(mint,net,last) VALUES(?,?,?) ON CONFLICT(mint,net) DO UPDATE SET last=excluded.last'),
     trAdd: db.prepare('INSERT OR IGNORE INTO lp_trades(sig,ix,mint,net,trader,buy,sol,tokens,fee,t,slot) VALUES(?,?,?,?,?,?,?,?,?,?,?)'),
@@ -73,7 +77,10 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
   }
   const clean = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, n);
   const link = (s) => { s = String(s || '').trim(); return /^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(\/[^\s<>"']*)?$/i.test(s) ? s.slice(0, 200) : ''; };
-  const pub = (r) => ({ mint: r.mint, pool: r.pool, config: r.config, creator: r.creator, name: r.name, symbol: r.symbol, uri: r.uri, image: r.image, t: r.t, verified: !!r.verified, reports: r.reports | 0, net: r.net });
+  const pub = (r) => ({ mint: r.mint, pool: r.pool, config: r.config, creator: r.creator, name: r.name, symbol: r.symbol, uri: r.uri, image: r.image, t: r.t, verified: !!r.verified, reports: r.reports | 0, net: r.net, grad: !!r.grad });
+  // the picture of a coin's last hour: a price sparkline (SOL per token, oldest first), trades, traders, volume and net flow
+  const pulse = (r) => { const h = now() - 3600e3, a = Q.coinHour.get(r.mint, r.net, h) || {}, t = Q.coinTraders.get(r.mint, r.net) || {};
+    return { spark: Q.spark.all(r.mint, r.net).reverse().map(x => x.sol / x.tokens * 1e6 / 1e9), hour: { trades: a.n | 0, traders: a.w | 0, volume: (a.v || 0) / 1e9, flow: (a.flow || 0) / 1e9 }, traders: t.w | 0, trades: t.n | 0, streaming: SO.liveForMint(r.mint).length }; };
   const body = (req, max) => new Promise((ok, no) => { let n = 0; const parts = []; req.on('data', d => { n += d.length; if (n > max) { no(new Error('too big')); req.destroy(); } else parts.push(d); }); req.on('end', () => { try { ok(JSON.parse(Buffer.concat(parts).toString('utf8') || '{}')); } catch (e) { no(e); } }); req.on('error', no); });
   const IMG = { 'image/png': ['png', b => b[0] === 0x89 && b[1] === 0x50], 'image/jpeg': ['jpg', b => b[0] === 0xff && b[1] === 0xd8], 'image/webp': ['webp', b => b.slice(8, 12).toString() === 'WEBP'], 'image/gif': ['gif', b => b.slice(0, 3).toString() === 'GIF'] };
 
@@ -122,6 +129,7 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
     }
     return out;
   }
+  const WHALE = +process.env.LP_WHALE_SOL || 1;
   let indexing = false;
   async function indexTrades() {
     if (indexing) return; indexing = true;
@@ -134,18 +142,24 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
           if (s.err) continue;
           let tx; try { tx = await rpc(c.net, 'getTransaction', [s.signature, { encoding: 'json', maxSupportedTransactionVersion: 0, commitment: 'confirmed' }]); } catch (e) { break; }
           if (!tx) continue;
-          tradesIn(tx).filter(x => x.pool === c.pool).forEach((x, i) => Q.trAdd.run(s.signature, i, c.mint, c.net, x.trader, x.buy ? 1 : 0, x.sol, x.tokens, x.fee, x.t || (s.blockTime || 0) * 1000, s.slot || tx.slot || 0));
+          tradesIn(tx).filter(x => x.pool === c.pool).forEach((x, i) => { const r = Q.trAdd.run(s.signature, i, c.mint, c.net, x.trader, x.buy ? 1 : 0, x.sol, x.tokens, x.fee, x.t || (s.blockTime || 0) * 1000, s.slot || tx.slot || 0);
+            if (r.changes && x.buy && x.sol >= WHALE * 1e9) SO.event({ kind: 'whale', mint: c.mint, net: c.net, wallet: x.trader, sol: x.sol / 1e9, t: x.t || now() }); });
         }
         Q.curSet.run(c.mint, c.net, sigs[0].signature);
+        if (!c.grad) { try { const a = await rpc(c.net, 'getAccountInfo', [c.pool, { encoding: 'base64', commitment: 'confirmed' }]); const d = a && a.value && Buffer.from(a.value.data[0], 'base64');
+          if (d && d.length >= 424 && d[305] === 1) { Q.coinGrad.run(c.mint, c.net); SO.event({ kind: 'grad', mint: c.mint, net: c.net }); } } catch (e) { } }
       }
     } catch (e) { console.error('lp index', e.message); } finally { indexing = false; }
   }
   if (!process.env.LP_NO_INDEX) { setInterval(indexTrades, +process.env.LP_INDEX_MS || 20000); setTimeout(indexTrades, 5000); }
   const trPub = r => ({ sig: r.sig, mint: r.mint, trader: r.trader, buy: !!r.buy, sol: r.sol / 1e9, tokens: r.tokens / 1e6, t: r.t, name: r.name, symbol: r.symbol, image: r.image });
 
+  const SO = require('./social')({ db, now, tooMany, sigOk, say, online, rpc, b58d, PUBLIC, IMG_DIR, coinGet: Q.coinGet });
+
   async function http(req, res, url, json) {
     const p = url.pathname, ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
     const net = url.searchParams.get('net') === 'devnet' ? 'devnet' : 'mainnet';
+    if (p.startsWith('/so/') || p.startsWith('/st/')) return SO.http(req, res, url, json);
     if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET', 'Access-Control-Allow-Headers': 'Content-Type' }); return res.end(); }
     let m;
     if ((m = /^\/lp\/meta\/([a-f0-9]{24})\.json$/.exec(p))) {
@@ -160,7 +174,7 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
     if (p === '/lp/coins' && req.method === 'GET') {
       const lim = Math.max(1, Math.min(200, +url.searchParams.get('limit') || 60));
       const rows = url.searchParams.get('sort') === 'verified' ? Q.coinsVer.all(net, lim) : url.searchParams.get('creator') ? Q.coinsBy.all(net, String(url.searchParams.get('creator'))) : Q.coinsNew.all(net, lim);
-      return json({ coins: rows.map(pub), partner: net === 'devnet' ? PARTNER_DEV : PARTNER });
+      return json({ coins: rows.map(r => ({ ...pub(r), ...pulse(r) })), partner: net === 'devnet' ? PARTNER_DEV : PARTNER });
     }
     if (p === '/lp/early' && req.method === 'GET') {
       const c = Q.coinGet.get(String(url.searchParams.get('mint') || ''), net); if (!c) return json({ error: 'not found' }, 404);
@@ -180,12 +194,17 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
     }
     // who is up and who is down: SOL taken out minus SOL put in, per wallet per coin (tokens still held listed separately)
     if (p === '/lp/leaders' && req.method === 'GET') {
-      const since = now() - (url.searchParams.get('range') === 'week' ? 7 : 1) * 864e5;
-      const rows = Q.trFlows.all(net, since).map(r => ({ trader: r.trader, mint: r.mint, name: r.name, symbol: r.symbol, image: r.image, solIn: r.sol_in / 1e9, solOut: r.sol_out / 1e9, net: (r.sol_out - r.sol_in) / 1e9, held: Math.max(0, r.held) / 1e6, trades: r.n }));
+      const range = url.searchParams.get('range'), since = now() - (range === 'week' ? 7 * 864e5 : range === 'hour' ? 3600e3 : 864e5);
+      let rows = Q.trFlows.all(net, since).map(r => ({ trader: r.trader, mint: r.mint, name: r.name, symbol: r.symbol, image: r.image, solIn: r.sol_in / 1e9, solOut: r.sol_out / 1e9, net: (r.sol_out - r.sol_in) / 1e9, held: Math.max(0, r.held) / 1e6, trades: r.n }));
+      if (url.searchParams.get('by') === 'wallet') {   // one row per wallet across all its coins; best coin named
+        const byW = new Map();
+        for (const r of rows) { const w = byW.get(r.trader) || { trader: r.trader, solIn: 0, solOut: 0, net: 0, trades: 0, coins: 0, best: null, wins: 0 }; w.solIn += r.solIn; w.solOut += r.solOut; w.net += r.net; w.trades += r.trades; w.coins++; if (r.net > 0) w.wins++; if (!w.best || r.net > w.best.net) w.best = { mint: r.mint, symbol: r.symbol, image: r.image, net: r.net }; byW.set(r.trader, w); }
+        rows = [...byW.values()];
+      }
       rows.sort((a, b) => b.net - a.net);
       return json({ top: rows.slice(0, 25), bottom: rows.slice(-10).reverse(), since });
     }
-    if ((m = /^\/lp\/coin\/([1-9A-HJ-NP-Za-km-z]{32,44})$/.exec(p))) { const r = Q.coinGet.get(m[1], net); return r && !r.hidden ? json(pub(r)) : json({ error: 'not found' }, 404); }
+    if ((m = /^\/lp\/coin\/([1-9A-HJ-NP-Za-km-z]{32,44})$/.exec(p))) { const r = Q.coinGet.get(m[1], net); return r && !r.hidden ? json({ ...pub(r), ...pulse(r), streams: SO.liveForMint(r.mint) }) : json({ error: 'not found' }, 404); }
     if (req.method !== 'POST') return false;
     let b; try { b = await body(req, 3 * 1024 * 1024); } catch (e) { return json({ error: 'That is too big. Pictures up to 2 MB.' }, 400); }
     const bnet = b.net === 'devnet' ? 'devnet' : 'mainnet';
@@ -220,6 +239,7 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
       if (v.err) return json({ error: v.err }, 400);
       let image = ''; try { const mm2 = /\/lp\/meta\/([a-f0-9]{24})\.json$/.exec(v.uri); const r = mm2 && Q.metaGet.get(mm2[1]); image = r ? r.img : ''; } catch (e) { }
       Q.coinAdd.run(v.mint, bnet, v.pool, v.config, v.creator, clean(v.name, 32), clean(v.symbol, 10), v.uri.slice(0, 200), image, sig, v.t); Q.coinSlot.run(v.slot, v.mint, bnet);
+      SO.event({ kind: 'launch', mint: v.mint, net: bnet, wallet: v.creator, t: v.t });
       for (const o of online.values()) if (o.role === 'admin') say(o, 'New launchpad coin: ' + clean(v.name, 32) + ' ($' + clean(v.symbol, 10) + ')' + (bnet === 'devnet' ? ' [devnet]' : ''), '#c80');
       return json({ ok: true, coin: pub(Q.coinGet.get(v.mint, bnet)) });
     }
@@ -242,5 +262,5 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
     else return say(c, 'Usage: /lp list, /lp verify <mint start>, /lp unverify ..., /lp hide ..., /lp show ...', '#a60');
     say(c, full.name + ': ' + arg + ' done.', '#0a0');
   }
-  return { http, cmd };
+  return { http, cmd, social: SO };
 };
