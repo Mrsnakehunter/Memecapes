@@ -51,8 +51,8 @@ window.MC_CONFIG = {
   // partner = the PUBLIC address of the MemeCapes launchpad fee wallet. Empty = launching is switched off (the page
   // still shows coins). Albert signs everything from that wallet himself; nobody else ever needs its keys.
   launchpad: {
-    partner: "",                 // MemeCapes launchpad fee wallet on mainnet (public address)
-    partnerDevnet: "",           // the same for Solana's test network (?net=devnet), for testing
+    partner: "3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg",   // MemeCapes launchpad fee wallet on mainnet (public address, set by Albert Oct 14)
+    partnerDevnet: "3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg",   // the same wallet on Solana's test network (?net=devnet), for testing
     rpcDevnet: "https://api.devnet.solana.com",
     burnShare: 50,               // % of MemeCapes' launchpad income that buys $CAPES and burns it (every burn posted)
     // what launchers can choose (the server refuses coins outside these limits)
