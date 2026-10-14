@@ -41,6 +41,7 @@ window.LPC = (function () {
       const acc = { address: kp.publicKey.toBase58(), publicKey: kp.publicKey.toBytes(), chains: ['solana:devnet'], features: ['solana:signTransaction'] };
       reg({ version: '1.0.0', name: 'Test-network wallet', icon: '', chains: ['solana:devnet'], accounts: [acc],
         features: { 'standard:connect': { version: '1.0.0', connect: async () => ({ accounts: [acc] }) },
+          'solana:signMessage': { version: '1.0.0', signMessage: async (...ins) => ins.map(i => ({ signedMessage: i.message, signature: L().ed25519.sign(i.message, kp.secretKey.slice(0, 32)) })) },
           'solana:signTransaction': { version: '1.0.0', supportedTransactionVersions: ['legacy'], signTransaction: async (...ins) => ins.map(i => { const t = w3.Transaction.from(i.transaction); t.partialSign(kp); return { signedTransaction: t.serialize() }; }) } } });
     });
   }
@@ -132,8 +133,22 @@ window.LPC = (function () {
   }
   function bs58(u8) { const A = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; let x = 0n; for (const b of u8) x = x * 256n + BigInt(b); let s = ''; while (x > 0n) { s = A[Number(x % 58n)] + s; x /= 58n; } for (const b of u8) { if (b) break; s = '1' + s; } return s; }
 
+  // sign a short text in the wallet (sign-in): not a transaction, nothing moves. Returns the signature as base64.
+  async function signMessage(text) {
+    if (!ACC) throw new Error('Connect a wallet first.');
+    const f = W.features['solana:signMessage']; if (!f) throw new Error('This wallet cannot sign messages. Try Phantom, Solflare or Backpack.');
+    const [o] = await f.signMessage({ account: ACC, message: new TextEncoder().encode(text) });
+    return btoa(String.fromCharCode(...o.signature));
+  }
+  // pay someone directly: SOL from the connected wallet to `to`, with a short memo on the transaction (tips, subscriptions)
+  async function pay(to, solAmount, memo, onStep) {
+    const { web3 } = L(), me = new web3.PublicKey(ACC.address);
+    const tx = new web3.Transaction().add(web3.SystemProgram.transfer({ fromPubkey: me, toPubkey: new web3.PublicKey(to), lamports: Math.round(solAmount * 1e9) }));
+    if (memo) tx.add(new web3.TransactionInstruction({ keys: [{ pubkey: me, isSigner: true, isWritable: false }], programId: new web3.PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'), data: L().Buffer.from(String(memo).slice(0, 120), 'utf8') }));
+    const [sig] = await sendAll([tx], null, onStep); return sig;
+  }
   async function solBalance(addr) { return (await connection().getBalance(new (L().web3.PublicKey)(addr))) / 1e9; }
   function explorer(kind, id) { const q = NET() === 'devnet' ? '?cluster=devnet' : ''; return 'https://solscan.io/' + (kind === 'tx' ? 'tx/' : kind === 'token' ? 'token/' : 'account/') + id + q; }
 
-  return { NET, RPC_URL, connection, dbc, wallets: () => wallets.slice(), onWallets: f => listeners.add(f), connect, disconnect, autoConnect, me, onChange: f => onChange.add(f), sendAll, confirm, solBalance, explorer, sleep, airdrop };
+  return { NET, RPC_URL, connection, dbc, wallets: () => wallets.slice(), onWallets: f => listeners.add(f), connect, disconnect, autoConnect, me, onChange: f => onChange.add(f), sendAll, confirm, solBalance, explorer, sleep, airdrop, signMessage, pay };
 })();

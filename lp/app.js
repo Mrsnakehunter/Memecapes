@@ -1,5 +1,6 @@
-/* MemeCapes Launchpad (launch.html). Views: coins (#/), one coin (#/coin/<mint>), launch (#/launch), my coins (#/me),
-   how it works (#/how), MemeCapes fee desk (#/desk, only for the launchpad fee wallet).
+/* MemeCapes app (launch.html): Coins (#/), one coin (#/coin/<mint>), Launch (#/launch), my coins (#/me), how it works
+   (#/how), the MemeCapes fee desk (#/desk, only for the launchpad fee wallet). Watch, Stream, channels and profiles live
+   in lp/social.js, which registers its views here through window.LPAPP.
    Everything on-chain goes through Meteora's Dynamic Bonding Curve SDK (lp/lpcore.js) and the person's own wallet (lp/chain.js). */
 (function () {
   'use strict';
@@ -19,7 +20,7 @@
   // ---------- small helpers
   function toast(t, ms) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), ms || 3500); }
   const usd = v => !isFinite(v) ? '-' : v >= 1e9 ? '$' + (v / 1e9).toFixed(2) + 'B' : v >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' : v >= 1e3 ? '$' + (v / 1e3).toFixed(1) + 'K' : '$' + v.toFixed(v < 10 ? 2 : 0);
-  const sol = v => (v >= 100 ? v.toFixed(0) : v >= 1 ? v.toFixed(2) : v.toFixed(4)) + ' SOL';
+  const sol = v => (v >= 100 ? v.toFixed(0) : v >= 1 ? v.toFixed(2) : String(+v.toFixed(4))) + ' SOL';
   const pct = v => (v >= 10 ? v.toFixed(0) : v.toFixed(1)) + '%';
   const ago = t => { const s = (Date.now() - t) / 1000; return s < 60 ? 'just now' : s < 3600 ? Math.floor(s / 60) + 'm ago' : s < 86400 ? Math.floor(s / 3600) + 'h ago' : Math.floor(s / 86400) + 'd ago'; };
   async function api(path, body) {
@@ -32,15 +33,51 @@
   const ps = v => (v && v.poolState) || v;            // VirtualPool wraps PoolState
   const n = b => b == null ? 0 : Number(b.toString());
 
-  // one coin, as a struck gold coin: picture in the middle, molten ring = how close it is to graduating
-  function stamp(c, prog) {
+  // one coin, as a struck gold coin: picture in the middle, reeded rim, molten ring = how close it is to graduating.
+  // heat (0..1) makes a freshly struck coin glow orange; it cools as the coin ages. Graduated coins get a laurel.
+  function stamp(c, prog, o) {
+    o = o || {};
     const p = Math.max(0, Math.min(1, prog || 0)), R = 46, L2 = 2 * Math.PI * R;
-    const ring = p > 0 ? `<circle cx="50" cy="50" r="${R}" fill="none" stroke="url(#mlt)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(L2 * p).toFixed(1)} ${L2.toFixed(1)}" transform="rotate(-90 50 50)"/>` : '';
+    const ring = p > 0 ? `<circle class="ring" cx="50" cy="50" r="${R}" fill="none" stroke="url(#mlt)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(L2 * p).toFixed(1)} ${L2.toFixed(1)}" transform="rotate(-90 50 50)"/>` : '';
     const face = c && c.image ? `<img src="${esc(c.image)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="ph">${esc(((c && c.symbol) || '?').slice(0, 3))}</div>`;
-    return `<div class="stamp"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="mlt" x1="0" x2="1"><stop offset="0" stop-color="#ff8a3d"/><stop offset="1" stop-color="#ffd23f"/></linearGradient><radialGradient id="gld" cx=".35" cy=".3"><stop offset="0" stop-color="#ffe58a"/><stop offset=".6" stop-color="#d9a520"/><stop offset="1" stop-color="#7a5310"/></radialGradient></defs>
-      <circle cx="50" cy="50" r="46" fill="url(#gld)"/><circle cx="50" cy="50" r="46" fill="none" stroke="#2b1d05" stroke-opacity=".35" stroke-width="5"/>${ring}
-      <circle cx="50" cy="50" r="37.5" fill="none" stroke="#7a5310" stroke-width="1.2"/></svg>${face}</div>`;
+    const heat = o.heat ? ` style="--heat:${o.heat.toFixed(2)}"` : '';
+    const laurel = o.grad ? `<path class="laurel" d="M22 72 q-10-14-4-30 q2 10 10 16 M78 72 q10-14 4-30 q-2 10-10 16" fill="none" stroke="#ffd23f" stroke-width="2.2" stroke-linecap="round"/>` : '';
+    return `<div class="stamp${o.grad ? ' grad' : ''}${o.heat ? ' hot' : ''}"${heat}><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="mlt" x1="0" x2="1"><stop offset="0" stop-color="#ff8a3d"/><stop offset="1" stop-color="#ffd23f"/></linearGradient><radialGradient id="gld" cx=".35" cy=".3"><stop offset="0" stop-color="#ffe58a"/><stop offset=".6" stop-color="#d9a520"/><stop offset="1" stop-color="#7a5310"/></radialGradient></defs>
+      <circle cx="50" cy="50" r="48" fill="#5a3a0c"/><circle cx="50" cy="50" r="48" fill="none" stroke="#2b1d05" stroke-width="1.2" stroke-dasharray="1.6 1.6" opacity=".7"/>
+      <circle cx="50" cy="50" r="46" fill="url(#gld)"/><circle cx="50" cy="50" r="46" fill="none" stroke="#2b1d05" stroke-opacity=".35" stroke-width="4"/>${ring}
+      <circle cx="50" cy="50" r="37.5" fill="none" stroke="#7a5310" stroke-width="1.2"/><circle cx="50" cy="50" r="39" fill="none" stroke="#fff3c4" stroke-opacity=".45" stroke-width=".8"/>${laurel}</svg>${face}<i class="sheen"></i></div>`;
   }
+  // how hot a coin still is: 1 in its first minutes, 0 after a day
+  const heatOf = c => Math.max(0, 1 - (Date.now() - c.t) / 864e5) ** 2;
+
+  // ---------- the look: embers rising behind everything, and coins that tilt toward the pointer
+  (function forge() {
+    const cv = document.getElementById('forge'); if (!cv || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const g = cv.getContext('2d'); let W = 0, H = 0, P = [], raf = 0;
+    const size = () => { const d = Math.min(devicePixelRatio || 1, 1.5); W = cv.width = innerWidth * d; H = cv.height = innerHeight * d; cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px'; };
+    const mk = (fresh) => ({ x: Math.random() * W, y: fresh ? H + 10 : Math.random() * H, r: (0.6 + Math.random() * 1.8) * (W / 1400), v: 0.15 + Math.random() * 0.45, s: Math.random() * 6.28, a: 0.25 + Math.random() * 0.6, k: Math.random() < 0.7 ? 0 : 1 });
+    const reset = () => { size(); P = Array.from({ length: Math.round(Math.min(90, innerWidth / 14)) }, () => mk(false)); };
+    const tick = () => {
+      g.clearRect(0, 0, W, H);
+      for (const p of P) {
+        p.y -= p.v * (W / 1400); p.s += 0.01; p.x += Math.sin(p.s) * 0.25;
+        if (p.y < -10) Object.assign(p, mk(true));
+        const f = Math.min(1, (H - p.y) / (H * 0.25));   // embers fade in near the bottom
+        g.globalAlpha = p.a * (p.k ? 0.5 : 1) * Math.min(1, p.y / (H * 0.3) + 0.2) * f;
+        g.fillStyle = p.k ? '#ffd23f' : '#ff8a3d'; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.28); g.fill();
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    reset(); addEventListener('resize', reset); tick();
+    document.addEventListener('visibilitychange', () => { if (document.hidden) cancelAnimationFrame(raf); else raf = requestAnimationFrame(tick); });
+  })();
+  document.addEventListener('pointermove', e => {
+    const t = e.target.closest && e.target.closest('.coin3d'); if (!t || e.pointerType === 'touch') return;
+    const r = t.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    t.style.setProperty('--ry', ((x - 0.5) * 22).toFixed(1) + 'deg'); t.style.setProperty('--rx', ((0.5 - y) * 22).toFixed(1) + 'deg');
+    t.style.setProperty('--mx', (x * 100).toFixed(0) + '%'); t.style.setProperty('--my', (y * 100).toFixed(0) + '%');
+  });
+  document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('.coin3d'); if (t && !t.contains(e.relatedTarget)) { t.style.removeProperty('--rx'); t.style.removeProperty('--ry'); } });
 
   // SOL raised on the curve before a coin graduates at a given market cap (from the same curve the launch uses)
   const RAISE = {};
@@ -77,7 +114,7 @@
   // ---------- wallet button + picker
   function drawWallet() {
     const m = LPC.me(), b = $('#wbtn');
-    b.innerHTML = m ? (m.icon ? `<img src="${esc(m.icon)}" alt="">` : '') + esc(short(m.address)) : 'Connect wallet';
+    b.innerHTML = m ? (LPSO ? LPSO.avatar(m.address) : (m.icon ? `<img src="${esc(m.icon)}" alt="">` : '')) + esc((LPSO && LPSO.nameOf(m.address)) || short(m.address)) : 'Connect wallet';
     $('#net').innerHTML = DEV ? '<span class="netpill" title="Solana test network: coins and SOL here have no value">Test network</span>' : '';
   }
   function pickWallet() {
@@ -104,7 +141,10 @@
 
   // ---------- views
   const views = { home, coin, launch, me: mine, how, desk };
+  let leaving = [];   // things a view wants stopped when the next view opens (timers, cameras)
+  function onLeave(f) { leaving.push(f); }
   function route() {
+    leaving.forEach(f => { try { f(); } catch (e) { } }); leaving = [];
     const h = location.hash.replace(/^#\/?/, ''), [v, arg] = h.split('/');
     const name = views[v] ? v : 'home';
     $$('[data-r]').forEach(a => a.classList.toggle('on', a.dataset.r === name));
@@ -112,64 +152,93 @@
     Promise.resolve(views[name](arg)).catch(e => { app.innerHTML = `<div class="empty" style="margin:30px 0">${esc(e.message || e)}</div>`; });
   }
   window.addEventListener('hashchange', route);
+  // tiny inline price chart from the last trades (SOL per token), green when up, red when down
+  function sparkline(a, w, h) {
+    w = w || 84; h = h || 26; if (!a || a.length < 2) return `<svg class="spark" viewBox="0 0 ${w} ${h}"><line x1="0" y1="${h / 2}" x2="${w}" y2="${h / 2}" stroke="#4e3a22" stroke-dasharray="2 3"/></svg>`;
+    const mn = Math.min(...a), mx = Math.max(...a), r = mx - mn || mx || 1;
+    const pts = a.map((v, i) => [(i / (a.length - 1)) * (w - 2) + 1, h - 2 - ((v - mn) / r) * (h - 4)]);
+    const up = a[a.length - 1] >= a[0], col = up ? '#5fd3a8' : '#e0533d';
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline points="${pts.map(p => p.map(x => x.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linejoin="round"/><circle cx="${pts[pts.length - 1][0].toFixed(1)}" cy="${pts[pts.length - 1][1].toFixed(1)}" r="2" fill="${col}"/></svg>`;
+  }
+  const coinFace = (c, cls) => c && c.image ? `<img class="${cls || 'cf'}" src="${esc(c.image)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="${cls || 'cf'} ph">${esc(((c && c.symbol) || '?').slice(0, 3))}</span>`;
 
-  // ---- home: what's new on the launchpad
-  let homeTab = 'new', homeQ = '';
+  // ---- Coins: the forge floor. Pictures first: every coin is a coin you can pick up. The newest strike is spotlit,
+  // the hottest six run along a rail, then three walls: fresh from the forge, heating up, graduated (in the vault).
+  let boardQ = '', boardCoins = [], seen = new Set(), boardFirst = true;
   async function home() {
-    app.innerHTML = `<section class="hero"><div>
-      <h1>Launch a coin. Keep more of the fees.</h1>
-      <p class="lead">Coins launched here start on a fair bonding curve and graduate to a real pool with locked liquidity. You choose the fee, how much of it you keep, how long snipers pay extra, and who your share goes to. Then trade them while you play MemeCapes.</p>
-      <div class="acts"><a class="btn gold" href="#/launch">Launch a coin</a><a class="btn line" href="#/how">How it works</a></div></div>
-      <div class="panel"><table class="vs"><thead><tr><th></th><th>MemeCapes</th><th>pump.fun</th></tr></thead><tbody>
-        <tr><td>Fee traders pay on the curve</td><td>You choose, ${pct(((C.feeBps || {}).min || 25) / 100)} to ${pct(((C.feeBps || {}).max || 200) / 100)} (1% by default)</td><td>1.25%</td></tr>
-        <tr><td>Launcher's cut of each trade</td><td>${(((C.feeBps || {}).def || 100) / 100 * 0.8 * ((C.creatorShare || {}).def || 60) / 100).toFixed(2)}% by default, up to ${(((C.feeBps || {}).max || 200) / 100 * 0.8 * ((C.creatorShare || {}).max || 80) / 100).toFixed(2)}%</td><td>0.30%</td></tr>
-        <tr><td>Sniper fee at launch</td><td>Optional, up to ${pct(((C.sniperFee || {}).maxBps || 5000) / 100)}, falling to normal over up to ${Math.round(((C.sniperFee || {}).maxSeconds || 600) / 60)} minutes</td><td>None in its fee list</td></tr>
-        <tr><td>Team tokens</td><td>Locked on-chain, unlocking after graduation</td><td>Not offered</td></tr>
-        <tr><td>When a coin graduates</td><td>You pick: about ${(C.graduation || []).map(g => raiseFor(g.mcapSol).toFixed(0)).join(', ')} SOL raised</td><td>About 85 SOL raised</td></tr>
-        <tr><td>Play a game while you trade</td><td>Yes</td><td>No</td></tr>
-      </tbody></table><p class="small mute" style="margin:8px 0 0">pump.fun figures from <a href="https://pump.fun/docs/fees" target="_blank" rel="noopener">its fee page</a>, October 2026. Both let you split your fees with up to 10 wallets.</p></div></section>
-      <section><div class="tabs" role="tablist">${[['new', 'New'], ['hot', 'Almost graduated'], ['grad', 'Graduated'], ['ver', 'Verified']].map(([k, t]) => `<button class="tab${homeTab === k ? ' on' : ''}" data-t="${k}" role="tab">${t}</button>`).join('')}
-        <input class="search" id="q" placeholder="Search name, ticker or address" value="${esc(homeQ)}" aria-label="Search coins"></div>
-        <div id="grid" class="coins"><div class="empty" style="grid-column:1/-1">Loading coins…</div></div></section>
-      <section class="live2"><div class="panel"><h3>Live trades</h3><div id="feed" class="small mute">Waiting for trades…</div></div>
-        <div class="panel"><h3>Who's up today</h3><p class="small mute" style="margin:-4px 0 8px">SOL taken out minus SOL put in, per wallet per coin. Coins still held aren't counted.</p><div id="lead" class="small mute">No trades yet today.</div></div></section>`;
-    liveFeed();
-    $$('.tab').forEach(b => b.onclick = () => { homeTab = b.dataset.t; home(); });
-    $('#q').oninput = e => { homeQ = e.target.value; draw(); };
-    let coins = [];
-    try { coins = (await api('/lp/coins?limit=150')).coins; } catch (e) { $('#grid').innerHTML = `<div class="empty" style="grid-column:1/-1">${esc(e.message)}</div>`; return; }
-    const draw = () => {
-      const q = homeQ.trim().toLowerCase();
-      let L2 = coins.filter(c => !q || (c.name + ' ' + c.symbol + ' ' + c.mint).toLowerCase().includes(q));
-      if (homeTab === 'hot') L2 = L2.filter(c => c.live && !c.live.migrated && c.live.prog >= 0.5).sort((a, b) => b.live.prog - a.live.prog);
-      if (homeTab === 'grad') L2 = L2.filter(c => c.live && c.live.migrated);
-      if (homeTab === 'ver') L2 = L2.filter(c => c.verified);
-      $('#grid').innerHTML = L2.length ? L2.map(card).join('') : `<div class="empty" style="grid-column:1/-1">${coins.length ? 'No coins here yet.' : 'No coins launched yet. <a href="#/launch">Be the first.</a>'}</div>`;
-    };
-    draw();
-    coins = await liveMany(coins); draw();
+    boardFirst = true;
+    app.innerHTML = `<section class="phero"><div><p class="kicker">The MemeCapes forge</p><h1>Every coin struck here, live</h1>
+        <p class="lead">New coins land on the floor the second they are made. Pick one up to trade it, watch its launch stream, or talk about it. Launch your own in a minute, with fees you choose.</p>
+        <div class="now" id="now"></div></div>
+      <div class="spot" id="spot"></div></section>
+      <div class="boardhead"><input class="search" id="q" placeholder="Search name, ticker or address" value="${esc(boardQ)}" aria-label="Search coins"><span class="sp"></span><a class="btn gold" href="#/launch">Launch a coin</a></div>
+      <section class="wall" id="w-hot"><h2><span class="flame"></span>Hot right now <span class="cnt" id="n-hot"></span></h2><div class="rail" id="r-hot"></div></section>
+      <section class="wall" id="w-new"><h2><span class="pulse"></span>Fresh from the forge <span class="cnt" id="n-new"></span><span class="sub">newest first; the glow fades as a coin ages</span></h2><div class="tiles" id="r-new"></div></section>
+      <section class="wall" id="w-up"><h2>🔥 Heating up <span class="cnt" id="n-up"></span><span class="sub">20%+ of the way to graduation, or busy this hour</span></h2><div class="tiles" id="r-up"></div></section>
+      <section class="wall" id="w-grad"><h2>🏛 In the vault <span class="cnt" id="n-grad"></span><span class="sub">graduated: liquidity locked for good, trading on Jupiter</span></h2><div class="tiles" id="r-grad"></div></section>`;
+    $('#q').oninput = e => { boardQ = e.target.value; drawBoard(); };
+    await loadBoard();
+    const t = setInterval(loadBoard, 12000); onLeave(() => clearInterval(t));
   }
-  function tradeRow(t, withCoin) {
-    return `<div class="tr"><span class="${t.buy ? 'up' : 'dn'}">${t.buy ? 'Bought' : 'Sold'}</span> <b class="num">${sol(t.sol)}</b>${withCoin ? ` of <a href="#/coin/${esc(t.mint)}">$${esc(t.symbol)}</a>` : ''} <a class="addr" href="${LPC.explorer('acct', t.trader)}" target="_blank" rel="noopener">${short(t.trader)}</a> <span class="mute">${ago(t.t)}</span></div>`;
+  async function loadBoard() {
+    if (!$('#r-new')) return;
+    try { const r = await api('/lp/coins?limit=200'); boardCoins = r.coins; } catch (e) { if (boardFirst) $('#r-new').innerHTML = `<div class="empty" style="grid-column:1/-1">${esc(e.message)}</div>`; return; }
+    nowStrip();
+    drawBoard();
+    boardCoins = await liveMany(boardCoins); drawBoard();
+    boardFirst = false;
   }
-  let feedT = 0;
-  async function liveFeed() {
-    clearTimeout(feedT); if (!$('#feed')) return;
-    try {
-      const [f, l] = await Promise.all([api('/lp/trades?limit=14'), api('/lp/leaders?range=day')]);
-      if (!$('#feed')) return;
-      $('#feed').innerHTML = f.trades.length ? f.trades.map(t => tradeRow(t, 1)).join('') : 'No trades yet.';
-      const row = (r, i) => `<div class="tr"><span class="mute num">${i + 1}.</span> <a class="addr" href="${LPC.explorer('acct', r.trader)}" target="_blank" rel="noopener">${short(r.trader)}</a> on <a href="#/coin/${esc(r.mint)}">$${esc(r.symbol)}</a> <b class="num ${r.net >= 0 ? 'up' : 'dn'}">${r.net >= 0 ? '+' : ''}${sol(r.net).replace(' SOL', '')} SOL</b></div>`;
-      $('#lead').innerHTML = l.top.length ? l.top.slice(0, 8).map(row).join('') + (l.bottom.some(r => r.net < 0) ? '<p class="small" style="margin:10px 0 4px"><b>Biggest losses today</b></p>' + l.bottom.filter(r => r.net < 0).slice(0, 4).map(row).join('') : '') : 'No trades yet today.';
-    } catch (e) { }
-    feedT = setTimeout(liveFeed, 10000);
+  async function nowStrip() {
+    const el = $('#now'); if (!el) return;
+    try { const r = await api('/so/trending'); const n = r.now;
+      el.innerHTML = `<div class="hot"><b class="num">${n.tradesHour}</b>trades this hour</div><div><b class="num">${sol(n.volumeHour)}</b>traded</div><div><b class="num">${n.tradersHour}</b>wallets trading</div><div><b class="num">${n.launchesDay}</b>struck today</div>${n.live ? `<div class="lv"><b class="num">${n.live}</b><span class="badge live">LIVE</span> streaming</div>` : ''}`;
+    } catch (e) { el.innerHTML = ''; }
   }
-  function card(c) {
-    const s = c.live;
-    return `<a class="coin" href="#/coin/${esc(c.mint)}">${stamp(c, s && s.prog)}<b>${esc(c.name)}</b><span class="tk">$${esc(c.symbol)}</span>${c.verified ? ' <span class="badge v">Verified</span>' : ''}
-      <div class="mc num">${s ? usd(s.mcapUsd) : '…'}</div><div class="mute small">${s ? (s.migrated ? 'Graduated' : pct(s.prog * 100) + ' to graduation') : ''}${c.t ? ' · ' + ago(c.t) : ''}</div></a>`;
+  function drawBoard() {
+    if (!$('#r-new')) return;
+    const q = boardQ.trim().toLowerCase();
+    const L2 = boardCoins.filter(c => !q || (c.name + ' ' + c.symbol + ' ' + c.mint).toLowerCase().includes(q));
+    const isGrad = c => c.grad || (c.live && c.live.migrated), prog = c => c.live ? c.live.prog : 0;
+    const grad = L2.filter(isGrad).sort((a, b) => (b.hour.volume - a.hour.volume) || (b.t - a.t));
+    const up = L2.filter(c => !isGrad(c) && (prog(c) >= 0.2 || c.hour.trades >= 5)).sort((a, b) => (prog(b) - prog(a)) || (b.hour.volume - a.hour.volume));
+    const fresh = L2.filter(c => !isGrad(c) && !up.includes(c)).sort((a, b) => b.t - a.t);
+    const hot = L2.filter(c => c.hour.volume > 0).sort((a, b) => b.hour.volume - a.hour.volume).slice(0, 8);
+    const fill = (k, L3, empty, big) => { const el = $('#r-' + k); el.innerHTML = L3.length ? L3.map(c => ctile(c, big)).join('') : `<div class="empty" style="grid-column:1/-1">${empty}</div>`; $('#n-' + k).textContent = L3.length || ''; $('#w-' + k).classList.toggle('none', !L3.length && k === 'hot'); };
+    fill('hot', hot, '', 1);
+    fill('new', fresh, boardCoins.length ? 'Everything here has moved on to the next wall.' : 'No coins yet. <a href="#/launch">Be the first to strike one.</a>');
+    fill('up', up, 'Nothing is heating up right now. Coins land here at 20% to graduation, or when they get busy.');
+    fill('grad', grad, 'No graduates yet. A coin graduates when its curve raises its goal; then its liquidity is locked for good.');
+    spotlight(L2.slice().sort((a, b) => b.t - a.t)[0]);
+    L2.forEach(c => seen.add(c.mint));
   }
-
+  // the newest strike, big, with who struck it and its first numbers
+  function spotlight(c) {
+    const el = $('#spot'); if (!el) return;
+    if (!c) { el.innerHTML = ''; return; }
+    if (el.dataset.mint === c.mint && !c.live) return;
+    const s = c.live, h = c.hour || {}, isNew = el.dataset.mint && el.dataset.mint !== c.mint; el.dataset.mint = c.mint;
+    el.innerHTML = `<a class="spotc coin3d${isNew ? ' struck' : ''}" href="#/coin/${esc(c.mint)}">${stamp(c, s && s.prog, { heat: heatOf(c), grad: !!(c.grad || (s && s.migrated)) })}</a>
+      <div class="spott"><span class="kicker">Latest strike · ${ago(c.t)}</span><a class="nm" href="#/coin/${esc(c.mint)}">${esc(c.name)}</a><span class="sy">$${esc(c.symbol)}${c.streaming ? ' <span class="badge live">LIVE</span>' : ''}</span>
+        <div class="spotn num"><div><b>${s ? usd(s.mcapUsd) : '…'}</b>market cap</div><div><b>${h.trades | 0}</b>trades · 1h</div><div><b>${c.traders | 0}</b>traders</div></div>
+        <div class="small mute">Struck by ${LPSO ? LPSO.avatar(c.creator, 'xs') : ''} <a class="addr" href="#/u/${esc(c.creator)}">${esc((LPSO && LPSO.nameOf(c.creator)) || short(c.creator))}</a></div></div>`;
+  }
+  // one coin tile. big = the rail (larger coin, fewer words)
+  function ctile(c, big) {
+    const s = c.live, h = c.hour || {}, isNew = !seen.has(c.mint) && seen.size > 0, grad = !!(c.grad || (s && s.migrated));
+    const stat = s ? (grad ? 'Graduated' : pct(s.prog * 100) + ' to graduation') : '';
+    const flow = h.volume ? `<span class="${h.flow >= 0 ? 'up' : 'dn'}">${h.flow >= 0 ? '+' : ''}${h.flow.toFixed(2)} SOL</span> <span class="mute">· 1h</span>` : '<span class="mute">quiet this hour</span>';
+    return `<a class="ctile coin3d${isNew ? ' struck' : ''}${big ? ' big' : ''}" href="#/coin/${esc(c.mint)}" title="${esc(c.name)}">
+      ${stamp(c, s && s.prog, { heat: grad ? 0 : heatOf(c), grad })}
+      <div class="ct"><b class="nm">${esc(c.name)}</b><span class="sy">$${esc(c.symbol)}${c.verified ? ' <span class="badge v" title="Checked by MemeCapes">✓</span>' : ''}${c.streaming ? ' <span class="badge live">LIVE</span>' : ''}</span>
+        <div class="mc num">${s ? usd(s.mcapUsd) : '<span class="mute">…</span>'}</div><div class="fl num">${flow}</div>
+        ${sparkline(c.spark, 120, 28)}
+        <div class="meta num"><span>${h.trades | 0} trades</span><span>${c.traders | 0} traders</span><span>${ago(c.t)}</span></div>${stat ? `<div class="meta st">${stat}</div>` : ''}</div></a>`;
+  }
+  // a trade, with the coin's face and the trader's cape
+  function tradeRow(t, withCoin, noWho) {
+    return `<div class="tr">${noWho ? '' : (LPSO ? LPSO.avatar(t.trader, 'av') : '')}<span class="${t.buy ? 'up' : 'dn'}">${t.buy ? 'Bought' : 'Sold'}</span> <b class="num">${sol(t.sol)}</b>${withCoin ? ` of <a class="cchip" href="#/coin/${esc(t.mint)}">${coinFace(t)}$${esc(t.symbol)}</a>` : ` <span class="mute">for ${Math.round(t.tokens).toLocaleString()}</span>`}${noWho ? '' : ` <a class="addr" href="#/u/${esc(t.trader)}">${LPSO && LPSO.nameOf(t.trader) || short(t.trader)}</a>`}<span class="t">${ago(t.t)}</span></div>`;
+  }
+  let LPSO = null;   // set by lp/social.js
   // ---- one coin
   async function coin(mint) {
     app.innerHTML = '<div class="empty" style="margin:30px 0">Loading the coin…</div>';
@@ -182,9 +251,12 @@
     const fees = feeInfo(cfg);
     const me = LPC.me(), isCreator = me && me.address === c.creator;
     const links = [['website', 'Website'], ['twitter', 'X'], ['telegram', 'Telegram']].filter(([k]) => meta[k]).map(([k, t]) => `<a href="${esc(meta[k])}" target="_blank" rel="noopener nofollow">${t}</a>`).join(' · ');
+    const h = c.hour || {}, streams = c.streams || [];
     app.innerHTML = `<div class="cgrid"><div>
-      <div class="chead">${stamp(c, s.prog)}<div><h1>${esc(c.name)}</h1><div><b>$${esc(c.symbol)}</b> ${c.verified ? '<span class="badge v" title="Checked by the MemeCapes team">Verified</span>' : ''} ${s.migrated ? '<span class="badge g">Graduated</span>' : ''} ${c.reports > 2 ? '<span class="badge r">Reported</span>' : ''}</div>
-        <div class="small mute">Launched ${ago(c.t)} by <a href="${LPC.explorer('acct', c.creator)}" target="_blank" rel="noopener" class="addr">${short(c.creator)}</a>${links ? ' · ' + links : ''}</div></div></div>
+      <div class="chero"><div class="coin3d">${stamp(c, s.prog, { heat: s.migrated ? 0 : heatOf(c), grad: s.migrated })}</div><div><h1>${esc(c.name)}</h1><div class="sub"><b style="font-size:18px">$${esc(c.symbol)}</b> ${c.verified ? '<span class="badge v" title="Checked by the MemeCapes team">Verified</span>' : ''} ${s.migrated ? '<span class="badge g">Graduated</span>' : ''} ${c.reports > 2 ? '<span class="badge r">Reported</span>' : ''}${streams.length ? ' <a class="badge live" href="#/ch/' + esc(streams[0].wallet) + '" style="text-decoration:none">LIVE: ' + esc(streams[0].name) + '</a>' : ''}</div>
+        <div class="small mute">Launched ${ago(c.t)} by ${LPSO ? LPSO.avatar(c.creator, 'xs') : ''} <a href="#/u/${esc(c.creator)}" class="addr">${(LPSO && LPSO.nameOf(c.creator)) || short(c.creator)}</a>${links ? ' · ' + links : ''}</div>
+        <div class="small" style="margin-top:6px"><b class="num">${h.trades | 0}</b> trades and <b class="num">${sol(h.volume || 0)}</b> in the last hour · <b class="num">${c.traders | 0}</b> traders in all ${sparkline(c.spark, 120, 30).replace('class="spark"', 'class="spark" style="display:inline-block;vertical-align:middle;margin:0 0 0 8px"')}</div></div></div>
+      ${streams.length ? streams.map(st => `<div class="panel cstream" style="margin-top:14px;padding:0;overflow:hidden"><div id="cstream-${esc(st.wallet)}"></div><div style="padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="badge live">LIVE</span><b>${esc(st.title || st.name)}</b><span class="mute small">${esc(st.name)} · ${st.viewers} watching</span><span class="sp"></span><a class="btn sm line" href="#/ch/${esc(st.wallet)}">Open the stream</a></div></div>`).join('') : ''}
       <div class="stats num"><div class="stat"><span>Market cap</span><b>${usd(s.mcapUsd)}</b></div><div class="stat"><span>Price</span><b>${s.price < 0.000001 ? s.price.toExponential(2) : s.price.toFixed(9)} SOL</b></div>
         <div class="stat"><span>Raised on the curve</span><b>${sol(s.raised)}</b></div><div class="stat"><span>Fees paid so far</span><b>${sol(s.volume)}</b></div></div>
       ${s.migrated ? '<div class="ok">This coin graduated: it trades in a Meteora pool with its liquidity locked for good.</div>' : `<div><b>${pct(s.prog * 100)}</b> of the way to graduation <span class="mute">(${sol(s.raised)} of ${sol(s.goal)})</span><div class="crucible"><i style="width:${(s.prog * 100).toFixed(1)}%"></i></div><span class="mute small">At ${sol(s.goal)} the coin moves to a Meteora pool and its liquidity is locked for good.</span></div>`}
@@ -195,6 +267,7 @@
         ${plan.routes && plan.routes.length ? `<p class="small"><b>The launcher's plan for their share:</b> ${plan.routes.map(r => esc(r.pct + '% to ' + (r.label || short(r.to)))).join(', ')}.</p>` : ''}
         ${fees.team ? `<p class="small"><b>Team tokens:</b> ${pct(fees.team.pct)} of the supply, locked, unlocking over ${fees.team.days} days after graduation.</p>` : ''}</div>
       <div class="panel"><h3>Recent trades</h3><div id="ctr" class="small mute">Loading…</div></div>
+      <div class="panel" id="cposts"><h3>Talk about $${esc(c.symbol)}</h3><div class="small mute">Loading…</div></div>
       <div class="panel"><h3>Top holders</h3><div id="holders" class="small mute">Loading…</div></div>
       <div class="panel small"><dl class="kv"><dt>Coin address</dt><dd><a href="${LPC.explorer('token', c.mint)}" target="_blank" rel="noopener" class="addr">${esc(c.mint)}</a></dd><dt>Pool</dt><dd><a href="${LPC.explorer('acct', c.pool)}" target="_blank" rel="noopener" class="addr">${esc(short(c.pool))}</a></dd>
         <dt>Supply</dt><dd>${(SUPPLY).toLocaleString()} (no more can ever be made)</dd><dt>Report</dt><dd><button class="btn quiet" style="padding:4px 10px;font-size:13px" id="rep" type="button">Report this coin</button></dd></dl></div>
@@ -203,11 +276,12 @@
     if (isCreator) creatorBox(c, vp, cfg, plan);
     holders(c, vp);
     launchCheck(c);
-    api('/lp/trades?limit=25&mint=' + encodeURIComponent(c.mint)).then(r => { $('#ctr').innerHTML = r.trades.length ? r.trades.map(t => tradeRow(t, 0).replace('</b>', '</b> <span class="mute">for ' + Math.round(t.tokens).toLocaleString() + '</span>')).join('') : 'No trades yet.'; }).catch(() => { $('#ctr').textContent = 'Could not load trades right now.'; });
+    api('/lp/trades?limit=25&mint=' + encodeURIComponent(c.mint)).then(r => { $('#ctr').innerHTML = r.trades.length ? r.trades.map(t => tradeRow(t, 0)).join('') : 'No trades yet.'; }).catch(() => { $('#ctr').textContent = 'Could not load trades right now.'; });
+    if (LPSO) { LPSO.coinPosts(c, $('#cposts')); streams.forEach(st => LPSO.embed(st, $('#cstream-' + st.wallet))); }
     $('#rep').onclick = async () => { const why = prompt('What is wrong with this coin? (scam, stolen picture, impersonation, ...)'); if (!why) return; try { await api('/lp/report', { mint: c.mint, why }); toast('Thanks. The MemeCapes team will look at it.'); } catch (e) { toast(e.message); } };
   }
   function feeInfo(cfg) {
-    const bf = cfg.poolFees.baseFee, cliff = n(bf.cliffFeeNumerator) / 1e7;   // bps
+    const bf = cfg.poolFees.baseFee, cliff = n(bf.cliffFeeNumerator) / 1e5;   // fee numerator is out of 1e9; 1e5 of that is one basis point
     let baseBps = cliff, sniper = null;
     // fee scheduler: firstFactor = number of periods, secondFactor = seconds per period, thirdFactor = reduction factor
     try { const end = dbc.calculateFeeSchedulerEndingBaseFeeBps(n(bf.cliffFeeNumerator), n(bf.firstFactor), n(bf.secondFactor), n(bf.thirdFactor), bf.baseFeeMode); if (end && end < cliff) { baseBps = end; sniper = { startBps: cliff, seconds: n(bf.firstFactor) * n(bf.secondFactor) }; } } catch (e) { }
@@ -417,7 +491,7 @@
   function refresh() {
     if (!$('#pv')) return;
     const g = (C.graduation || []).find(x => x.id === F.grad) || { mcapSol: 400 };
-    $('#pv').innerHTML = `${stamp({ image: F.image, symbol: F.symbol || '?' }, 0)}<h3>${esc(F.name || 'Your coin')}</h3><div class="mute">${F.symbol ? '$' + esc(F.symbol) : ''}</div>`;
+    $('#pv').innerHTML = `<div class="coin3d">${stamp({ image: F.image, symbol: F.symbol || '?' }, 0, { heat: 1 })}</div><h3>${esc(F.name || 'Your coin')}</h3><div class="mute">${F.symbol ? '$' + esc(F.symbol) : ''}</div>`;
     $('#fb').innerHTML = feeBar({ baseBps: F.feeBps, creatorShare: F.share });
     // the sniper fee curve: exponential fall from the start fee to the normal fee
     const svg = $('#decay'); if (svg) {
@@ -496,10 +570,10 @@
   async function mine() {
     const m = LPC.me();
     if (!m) { app.innerHTML = `<div class="empty" style="margin:30px 0"><p>Connect the wallet you launched with to see your coins and claim your fees.</p><button class="btn gold" id="cw" type="button">Connect wallet</button></div>`; $('#cw').onclick = () => pickWallet().catch(() => { }); return; }
-    app.innerHTML = '<h1 style="margin-top:22px">My coins</h1><div id="grid" class="coins"><div class="empty" style="grid-column:1/-1">Loading…</div></div>';
+    app.innerHTML = '<h1 style="margin-top:22px">My coins</h1><div id="grid" class="tiles"><div class="empty" style="grid-column:1/-1">Loading…</div></div>';
     let coins = (await api('/lp/coins?creator=' + m.address)).coins;
     coins = await liveMany(coins);
-    $('#grid').innerHTML = coins.length ? coins.map(c => card(c).replace('</a>', c.live && c.live.creatorFee > 0 ? `<div class="small" style="color:var(--gold)">${sol(c.live.creatorFee)} to claim</div></a>` : '</a>')).join('') : '<div class="empty" style="grid-column:1/-1">No coins launched from this wallet yet. <a href="#/launch">Launch one.</a></div>';
+    $('#grid').innerHTML = coins.length ? coins.map(c => ctile(c).replace('</div></a>', (c.live && c.live.creatorFee > 0 ? `<div class="meta st" style="color:var(--gold)">${sol(c.live.creatorFee)} to claim</div>` : '') + '</div></a>')).join('') : '<div class="empty" style="grid-column:1/-1">No coins launched from this wallet yet. <a href="#/launch">Launch one.</a></div>';
     if (PARTNER && m.address === PARTNER) app.insertAdjacentHTML('afterbegin', '<p style="margin-top:14px"><a class="btn line" href="#/desk">Open the MemeCapes fee desk</a></p>');
   }
 
@@ -542,6 +616,7 @@
     };
   }
 
+  window.LPAPP = { $, $$, esc, short, api, toast, usd, sol, pct, ago, stamp, coinFace, sparkline, liveMany, stats, needWallet, pickWallet, friendly, PK, cache, views, route, onLeave, SRV, NET, DEV, C, app, tradeRow, setSocial: o => { LPSO = o; } };
   drawWallet();
   LPC.autoConnect().then(drawWallet);
   route();
