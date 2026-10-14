@@ -21,8 +21,12 @@ function b58e(u8) { let x = 0n; for (const b of u8) x = x * 256n + BigInt(b); le
 function b58d(s) { let x = 0n; for (const ch of String(s)) { const i = B58A.indexOf(ch); if (i < 0) return null; x = x * 58n + BigInt(i); } const out = []; while (x > 0n) { out.unshift(Number(x & 255n)); x >>= 8n; } for (const ch of String(s)) { if (ch !== '1') break; out.unshift(0); } return Buffer.from(out); }
 
 module.exports = function launchpad({ db, DATA, now, tooMany, say, online, sigOk, base }) {
-  const PARTNER = process.env.LP_PARTNER || '';                 // the MemeCapes launchpad fee wallet (public address); empty = registrations off
-  const PARTNER_DEV = process.env.LP_PARTNER_DEVNET || PARTNER;
+  // the MemeCapes launchpad fee wallet (a public address). Render's LP_PARTNER wins; otherwise the one in the site's own
+  // config.js (the same file the page uses, so the two can't disagree). Empty = registrations off.
+  const fromCfg = (k) => { try { const m = new RegExp(k + ':\\s*"([1-9A-HJ-NP-Za-km-z]{32,44})"').exec(fs.readFileSync(path.join(__dirname, '..', 'config.js'), 'utf8')); return m ? m[1] : ''; } catch (e) { return ''; } };
+  const PARTNER = process.env.LP_PARTNER || fromCfg('partner');
+  const PARTNER_DEV = process.env.LP_PARTNER_DEVNET || fromCfg('partnerDevnet') || PARTNER;
+  console.log('launchpad fee wallet: ' + (PARTNER || 'not set (launch registrations off)'));
   const CREATOR_MAX = +process.env.LP_CREATOR_MAX || 80;      // most a launcher can keep, in % of the fee after Meteora's cut (same as config.js)
   const RPCS = { mainnet: process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com', devnet: process.env.SOLANA_RPC_DEVNET || 'https://api.devnet.solana.com' };
   const PUBLIC = (process.env.PUBLIC_URL || base || 'https://memecapes-server.onrender.com').replace(/\/$/, '');
