@@ -1,6 +1,6 @@
 # MemeCapes progress
 
-_Last updated: October 13, 2026_
+_Last updated: October 14, 2026_
 
 ## Where to look
 
@@ -29,6 +29,16 @@ _Last updated: October 13, 2026_
 - **Chat box:** the message log scrolls back through the last 150 lines, and there's a chat line at the bottom (press Enter, type, Enter to send). What you say shows in the log and floats over your head next to a little MemeCapes cape medallion, so other players will see who's talking. Ready to hook up to the multiplayer server.
 - **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
+
+## Shipped October 14, 2026: Play, Watch, Stream, Launch (live)
+
+- **The home page now opens on four words:** PLAY, WATCH, STREAM and LAUNCH, beside the floating Meme Cape. Each one is a door into a side of memecapes.com.
+- **Launch: the MemeCapes Launchpad.** Anyone can launch a Solana coin from memecapes.com. You pick the trading fee and how much of it you keep, bots that buy in the first seconds pay a sniper fee that fades to the normal fee, you can split your share with up to 10 wallets, and the coin's liquidity is locked for good when it graduates. Every coin page shows a launch check (who bought in the launch block, who sniped, what they still hold), where every fee goes, recent trades and the coin's own posts. Half of what MemeCapes earns from the launchpad buys $CAPES and burns it, and every burn is posted. It runs on Meteora's audited bonding-curve program; your wallet signs everything and MemeCapes never holds your keys or your money.
+- **Coins look like coins.** Every coin on the launchpad is a struck gold coin: a reeded rim, a molten ring that fills as it nears graduation, a glow that cools over its first day, a laurel once it graduates, and it tilts toward your pointer. New coins land on the forge floor the moment they are made: the latest strike is spotlit, the hottest run along a rail, then the walls: Fresh from the forge, Heating up, In the vault.
+- **Watch: the trading floor.** Live trades slide in as they happen (whale buys marked), the wallet of the hour is spotlit, the featured stream plays with its chat beside it, and a feed takes posts (tag a coin with its $TICKER) and shows launches, whale buys, graduations, streams and tips. Trending coins and the day's top wallets sit on the right. Sign-in is your wallet signing a short message, never a transaction.
+- **Stream: go live and keep everything.** Name a channel, go live from your browser (camera or screen) or from OBS with a stream key, attach your coin so viewers get a buy box under your video. Viewers tip and subscribe in SOL, straight from their wallet to yours; MemeCapes takes nothing. Live video switches on once the streaming service is connected; channels, chat, tips and subscriptions work now.
+- **In the game:** a Launchpad clerk in Gigachad Town and Stonks City shows the newest coins and opens the launchpad.
+- **Website:** the Watch and Stream pages, a "Launch a coin while you play" section on the home page, and a Launchpad link in the menu.
 
 ## Shipped October 13, 2026: Skin of the Month, a skin store with pictures, the MemeCape, a livelier world (live)
 

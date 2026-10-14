@@ -90,6 +90,21 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 14, launchpad look v2 (shipped Oct 14, build 20261014090407): "top of the line, visually like nothing done before, token
+  pictures not a list, streaming interactive for new users, watch like FOMO + X, 1000x better". Coins page = the forge
+  floor: hero + latest strike spotlight, "Hot right now" rail, then walls of coin tiles (Fresh from the forge / Heating
+  up / In the vault); every coin is a struck gold coin (stamp(): reeded rim, molten progress ring, heat glow that cools
+  over 24 h, laurel when graduated, 3D tilt toward the pointer via .coin3d, embers canvas #forge behind everything).
+  Watch = trading floor: live trades column (new rows slide in), wallet of the hour, featured stream with chat beside
+  the video, feed with filter chips, trending, top wallets (server /lp/leaders?by=wallet&range=hour|day|week).
+  Stream = "Go live. Keep everything." with a mock-up of what viewers see, 3 steps, FAQ. index.html Watch/Stream now
+  go to launch.html#/watch and #/stream. Fixed: fee numerator is /1e5 for bps (was /1e7); mine() used a dead card().
+  Testing: scratch/lp/test/seed.mjs (14 sample coins from tools/art/memecape, 377 trades, posts, 2 live channels with
+  fake video pages on port 8793) + shoot.py step {"fakelive":1} stubs LPC.dbc() so market caps and rings render
+  without Solana. In shoot.py a step runs url -> js -> wait -> shot, so put measuring js in its own step after a wait.
+  Gotcha: inline style on .wgrid overrode the phone media query (now .ugrid); long unbroken addresses need
+  overflow-wrap:anywhere or the page widens on phones. Shots: scratch/lp/shots/review_desktop.jpg, review_phone.jpg.
+
 - Oct 14, Play/Watch/Stream/Launch (branch `launchpad`): home top = PLAY / WATCH / STREAM / LAUNCH beside the floating
   Meme Cape (#watch, #stream = coming-soon pages). Launchpad: trade indexer (server reads EvtSwap2 from each pool's
   transactions every 20 s; offsets checked against Anchor's decoder), /lp/trades feed, /lp/leaders (SOL out minus in,
@@ -274,4 +289,11 @@ numbers in here or anywhere in the repo.
 - Bouncy Hippo needs a new Meshy model (old one broken); uses the blocky hand-built one for now.
 - Shipped Oct 13 (build 20261013182150): everything that was on preview. Preview = live again.
   Still to model in Meshy: the 11 weapon skins (Candle Blade first, Skin of the Month 2).
-- Waiting on Albert: shop wallet go-live decision, DNS (api.memecapes.com), Stripe.
+- Shipped Oct 14 (build 20261014090407, "make it live"): the whole `launchpad` branch merged to main: Play/Watch/
+  Stream/Launch home, launch.html (forge floor, Watch, Stream, launchpad with launching ON), server launchpad.js +
+  social.js, Launchpad clerk in the game. Fee wallet (public address, Albert): 3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg
+  in config.js launchpad.partner; the server reads it from config.js when Render has no LP_PARTNER. NOT yet tested
+  on devnet or mainnet with a real wallet: the first real launch should be Albert's own small one. Live video needs
+  CF_ACCOUNT_ID/CF_STREAM_TOKEN/CF_CUSTOMER_CODE on Render (render.yaml lists them, sync: false).
+- Waiting on Albert: shop wallet go-live decision, DNS (api.memecapes.com), Stripe, devnet test of the launchpad,
+  Cloudflare Stream keys, Helius, Jupiter referral account.
