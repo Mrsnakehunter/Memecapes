@@ -360,7 +360,12 @@ legend{font-family:var(--coin);font-weight:800;color:var(--gold);font-size:19px;
 .ldr .nm{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* stream */
 .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
-@media(max-width:760px){.steps3{grid-template-columns:1fr}}
+.steps3.four{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1000px){.steps3.four{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.steps3,.steps3.four{grid-template-columns:1fr}}
+.pass{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+.passrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:#120c06;border:1px solid var(--line2);border-radius:14px;padding:12px 14px;margin:10px 0}
+.passrow>div{flex:1;min-width:180px}.passrow b{display:block;font-family:var(--coin);font-size:24px;color:var(--gold)}
 .step{background:var(--anvil);border:1px solid var(--line);border-radius:16px;padding:18px;position:relative}
 .step i{font-style:normal;font-family:var(--coin);font-weight:800;font-size:44px;color:var(--gold);line-height:1;display:block;margin-bottom:8px}
 .step b{display:block;font-size:17px;margin-bottom:4px}

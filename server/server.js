@@ -708,7 +708,7 @@ function adminCmd(c, raw) {
     case 'partner': return partnerCmd(c, name, arg, rest);
     case 'burnad': return burnadCmd(c, name, arg, rest);
     case 'lp': return LP.cmd(c, name, arg);
-    case 'watch': return LP.social.cmd(c, name, arg);
+    case 'watch': return LP.social.cmd(c, name, rest.split(' ').slice(1).join(' ').trim());
     case 'mod': if (!u) break; Q.setRole.run(arg === 'off' ? '' : 'mod', u.id); return say(c, name + (arg === 'off' ? ' is no longer a mod.' : ' is now a mod.'));
   }
   say(c, 'Commands: /announce text, /mute name minutes, /unmute name, /ban name, /unban name, /kick name, /rollback name, /partner list, /burnad list', '#a60');

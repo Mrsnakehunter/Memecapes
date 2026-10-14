@@ -23,6 +23,19 @@ module.exports = function social({ db, now, tooMany, sigOk, say, online, rpc, b5
   const CF = { acct: process.env.CF_ACCOUNT_ID || '', token: process.env.CF_STREAM_TOKEN || '', code: process.env.CF_CUSTOMER_CODE || '' };
   const STREAMING = !!(CF.acct && CF.token);
   const MEMO = 'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr';
+  // the streamer pass: a flat monthly fee, paid in SOL from the streamer's wallet to the MemeCapes wallet below,
+  // checked on-chain like a tip. The price in USD and the wallet come from the site's config.js (Render env wins).
+  const cfgNum = (k, d) => { try { const m = new RegExp(k + ':\\s*([0-9.]+)').exec(fs.readFileSync(path.join(__dirname, '..', 'config.js'), 'utf8')); return m ? +m[1] : d; } catch (e) { return d; } };
+  const cfgStr = (k) => { try { const m = new RegExp(k + ':\\s*"([1-9A-HJ-NP-Za-km-z]{32,44})"').exec(fs.readFileSync(path.join(__dirname, '..', 'config.js'), 'utf8')); return m ? m[1] : ''; } catch (e) { return ''; } };
+  const PASS = { usd: process.env.STREAM_PASS_USD != null ? +process.env.STREAM_PASS_USD : cfgNum('streamPassUsd', 20), days: cfgNum('streamPassDays', 30), to: process.env.STREAM_PASS_WALLET || cfgStr('streamPassWallet') || process.env.LP_PARTNER || cfgStr('partner') };
+  console.log('streamer pass: $' + PASS.usd + ' for ' + PASS.days + ' days -> ' + (PASS.to || 'no wallet set (streaming free)'));
+  let solUsd = { v: 0, t: 0 };
+  async function solPrice() {
+    if (now() - solUsd.t < 60e3 && solUsd.v) return solUsd.v;
+    try { const j = await (await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd', { signal: AbortSignal.timeout(8000) })).json(); if (j.solana && j.solana.usd > 1) solUsd = { v: j.solana.usd, t: now() }; } catch (e) { }
+    return solUsd.v || cfgNum('solUsdFallback', 150);
+  }
+  const quotes = new Map();   // wallet -> {sol, t}: the SOL amount we showed, honoured for 15 minutes
 
   db.exec(`CREATE TABLE IF NOT EXISTS so_sessions(token TEXT PRIMARY KEY, wallet TEXT, t INT);
 CREATE TABLE IF NOT EXISTS so_profiles(wallet TEXT PRIMARY KEY, name TEXT, about TEXT, x TEXT, avatar TEXT, t INT);
@@ -37,7 +50,9 @@ CREATE TABLE IF NOT EXISTS so_channels(wallet TEXT PRIMARY KEY, name TEXT, about
 CREATE TABLE IF NOT EXISTS so_chat(id INTEGER PRIMARY KEY, channel TEXT, wallet TEXT, text TEXT, t INT);
 CREATE INDEX IF NOT EXISTS so_chat_c ON so_chat(channel, id);
 CREATE TABLE IF NOT EXISTS so_tips(sig TEXT PRIMARY KEY, channel TEXT, wallet TEXT, sol REAL, t INT);
-CREATE TABLE IF NOT EXISTS so_subs(channel TEXT, wallet TEXT, until INT, sig TEXT, sol REAL, PRIMARY KEY(channel, wallet));`);
+CREATE TABLE IF NOT EXISTS so_subs(channel TEXT, wallet TEXT, until INT, sig TEXT, sol REAL, PRIMARY KEY(channel, wallet));
+CREATE TABLE IF NOT EXISTS so_pass(wallet TEXT PRIMARY KEY, until INT, t INT);
+CREATE TABLE IF NOT EXISTS so_pass_pay(sig TEXT PRIMARY KEY, wallet TEXT, sol REAL, usd REAL, days INT, t INT);`);
   const Q = {
     sesAdd: db.prepare('INSERT INTO so_sessions(token,wallet,t) VALUES(?,?,?)'), sesGet: db.prepare('SELECT wallet FROM so_sessions WHERE token=? AND t>?'),
     profGet: db.prepare('SELECT * FROM so_profiles WHERE wallet=?'),
@@ -65,6 +80,8 @@ CREATE TABLE IF NOT EXISTS so_subs(channel TEXT, wallet TEXT, until INT, sig TEX
     tipSum: db.prepare('SELECT COALESCE(SUM(sol),0) s, COUNT(*) n FROM so_tips WHERE channel=?'), tipSig: db.prepare('SELECT 1 FROM so_tips WHERE sig=?'),
     subSet: db.prepare('INSERT INTO so_subs(channel,wallet,until,sig,sol) VALUES(?,?,?,?,?) ON CONFLICT(channel,wallet) DO UPDATE SET until=excluded.until,sig=excluded.sig,sol=excluded.sol'),
     subN: db.prepare('SELECT COUNT(*) n FROM so_subs WHERE channel=? AND until>?'), subHas: db.prepare('SELECT until FROM so_subs WHERE channel=? AND wallet=? AND until>?'), subSig: db.prepare('SELECT 1 FROM so_subs WHERE sig=?'),
+    passGet: db.prepare('SELECT until FROM so_pass WHERE wallet=?'), passSet: db.prepare('INSERT INTO so_pass(wallet,until,t) VALUES(?,?,?) ON CONFLICT(wallet) DO UPDATE SET until=excluded.until,t=excluded.t'),
+    passPay: db.prepare('INSERT INTO so_pass_pay(sig,wallet,sol,usd,days,t) VALUES(?,?,?,?,?,?)'), passSig: db.prepare('SELECT 1 FROM so_pass_pay WHERE sig=?'),
     trStats: db.prepare('SELECT COUNT(*) n, COUNT(DISTINCT mint) coins, SUM(CASE WHEN buy=1 THEN sol ELSE 0 END) sin, SUM(CASE WHEN buy=0 THEN sol ELSE 0 END) sout FROM lp_trades WHERE trader=? AND net=?'),
     trHour: db.prepare('SELECT COUNT(*) n, COUNT(DISTINCT trader) w, COALESCE(SUM(sol),0) v FROM lp_trades WHERE net=? AND t>?'),
     trTrend: db.prepare(`SELECT tr.mint, c.name, c.symbol, c.image, COUNT(*) n, COUNT(DISTINCT tr.trader) w, SUM(tr.sol) v, SUM(CASE WHEN buy=1 THEN sol ELSE -sol END) flow
@@ -79,6 +96,8 @@ CREATE TABLE IF NOT EXISTS so_subs(channel TEXT, wallet TEXT, until INT, sig TEX
   const who = (req) => { const m = /^Bearer ([a-f0-9]{48})$/.exec(req.headers.authorization || ''); const r = m && Q.sesGet.get(m[1], now() - 30 * 864e5); return r ? r.wallet : ''; };
   const prof = (w) => { const p = Q.profGet.get(w) || {}; return { wallet: w, name: p.name || '', about: p.about || '', x: p.x || '', avatar: p.avatar || '' }; };
   const chPub = (c) => c ? { wallet: c.wallet, name: c.name, about: c.about, category: c.category, subSol: c.subSol, live: !!c.live, title: c.title, mode: c.mode, playKind: c.playKind, playUrl: c.playUrl, mint: c.mint, startedAt: c.startedAt, viewers: viewersOf(c.wallet) } : null;
+  const passUntil = (w) => { const r = Q.passGet.get(w); return r ? r.until : 0; };
+  const passOn = (w) => !PASS.to || PASS.usd <= 0 || passUntil(w) > now();   // no wallet or $0 = streaming is free
   function viewersOf(ch) { const m = watchers.get(ch); if (!m) return 0; const cut = now() - 70e3; for (const [k, t] of m) if (t < cut) m.delete(k); return m.size; }
   function coinOf(mint, net) { const c = mint && coinGet.get(mint, net); return c ? { mint: c.mint, name: c.name, symbol: c.symbol, image: c.image } : null; }
 
@@ -112,7 +131,13 @@ CREATE TABLE IF NOT EXISTS so_subs(channel TEXT, wallet TEXT, until INT, sig TEX
     let m; const me = who(req);
     // ---- reads
     if (req.method === 'GET') {
-      if (p === '/so/me') { if (!me) return json({ error: 'Sign in first.' }, 401); return json({ ...prof(me), channel: chPub(Q.chGet.get(me)), following: Q.folOf.all(me).map(r => r.target), streaming: STREAMING }); }
+      if (p === '/so/me') { if (!me) return json({ error: 'Sign in first.' }, 401); return json({ ...prof(me), channel: chPub(Q.chGet.get(me)), following: Q.folOf.all(me).map(r => r.target), streaming: STREAMING, pass: { usd: PASS.usd, days: PASS.days, until: passUntil(me), active: passOn(me), needed: !!(PASS.to && PASS.usd > 0) } }); }
+      if (p === '/st/pass') {   // the price now, in SOL, for this wallet (honoured for 15 minutes)
+        if (!me) return json({ error: 'Sign in first.' }, 401);
+        if (!PASS.to || PASS.usd <= 0) return json({ needed: false, active: true, usd: 0, days: PASS.days, until: 0 });
+        const price = await solPrice(), sol = Math.ceil(PASS.usd / price * 1e4) / 1e4; quotes.set(me, { sol, t: now() });
+        return json({ needed: true, usd: PASS.usd, days: PASS.days, sol, solUsd: price, to: PASS.to, until: passUntil(me), active: passOn(me) });
+      }
       if ((m = /^\/so\/u\/([1-9A-HJ-NP-Za-km-z]{32,44})$/.exec(p))) {
         const w = m[1], s = Q.trStats.get(w, net) || {};
         return json({ ...prof(w), channel: chPub(Q.chGet.get(w)), followers: Q.folN.get(w).n, trades: s.n | 0, coins: s.coins | 0, solIn: (s.sin || 0) / 1e9, solOut: (s.sout || 0) / 1e9, net: ((s.sout || 0) - (s.sin || 0)) / 1e9,
@@ -192,8 +217,21 @@ CREATE TABLE IF NOT EXISTS so_subs(channel TEXT, wallet TEXT, until INT, sig TEX
       const subSol = Math.max(0.01, Math.min(10, +b.subSol || 0.1));
       Q.chSet.run(me, name, clean(b.about, 300), clean(b.category, 24) || 'MemeCapes', subSol, now()); return json({ channel: chPub(Q.chGet.get(me)) });
     }
+    if (p === '/st/pass') {
+      if (!PASS.to || PASS.usd <= 0) return json({ ok: true, until: 0, active: true });
+      const sig = String(b.sig || '').trim(); if (!/^[1-9A-HJ-NP-Za-km-z]{64,90}$/.test(sig)) return json({ error: 'Bad transaction signature.' }, 400);
+      if (Q.passSig.get(sig)) return json({ error: 'That payment was already counted.' }, 400);
+      const q = quotes.get(me); const minSol = q && now() - q.t < 15 * 60e3 ? q.sol * 0.985 : Math.ceil(PASS.usd / await solPrice() * 1e4) / 1e4 * 0.985;
+      let v; try { v = await checkPay(bnet, sig, PASS.to, minSol); } catch (e) { return json({ error: 'Could not reach the blockchain. Try again in a minute.' }, 502); }
+      if (v.err) return json({ error: v.err }, 400);
+      if (v.from !== me) return json({ error: 'That payment came from a different wallet than the one you are signed in with.' }, 400);
+      const until = Math.max(now(), passUntil(me)) + PASS.days * 864e5;
+      Q.passPay.run(sig, me, v.sol, PASS.usd, PASS.days, now()); Q.passSet.run(me, until, now()); quotes.delete(me);
+      return json({ ok: true, until, active: true });
+    }
     if (p === '/st/golive') {
       const c = Q.chGet.get(me); if (!c) return json({ error: 'Set up your channel first.' }, 400);
+      if (!passOn(me)) return json({ error: 'You need a streamer pass to go live: $' + PASS.usd + ' for ' + PASS.days + ' days, paid from your wallet.', pass: true }, 402);
       if (!STREAMING) return json({ error: 'Live video is not switched on yet. Your channel is saved; you will be able to go live as soon as it is.' }, 503);
       const mode = b.mode === 'obs' ? 'obs' : 'browser', mint = b.mint && coinGet.get(String(b.mint), bnet) ? String(b.mint) : null;
       let inp; try { inp = await cfCreate(c.name + ' ' + now()); } catch (e) { return json({ error: 'Could not start the stream: ' + e.message }, 502); }
@@ -216,7 +254,8 @@ CREATE TABLE IF NOT EXISTS so_subs(channel TEXT, wallet TEXT, until INT, sig TEX
     if (arg === 'hidepost') { db.prepare('UPDATE so_posts SET hidden=1 WHERE id=?').run(+id); return say(c, 'Post hidden.', '#0a0'); }
     if (arg === 'endstream') { const ch = Q.chGet.get(String(id)); if (ch && ch.cfUid) cfDelete(ch.cfUid); Q.chEnd.run(String(id)); return say(c, 'Stream ended.', '#0a0'); }
     if (arg === 'hidechannel') { db.prepare('UPDATE so_channels SET hidden=1, live=0 WHERE wallet=?').run(String(id)); return say(c, 'Channel hidden.', '#0a0'); }
-    say(c, 'Usage: /watch hidepost <id>, /watch endstream <wallet>, /watch hidechannel <wallet>', '#a60');
+    if (arg === 'pass') { const [w, d] = String(id || '').split(/\s+/); if (!isW(w)) return say(c, 'Usage: /watch pass <wallet> [days]', '#a60'); const until = Math.max(now(), passUntil(w)) + (+d || PASS.days) * 864e5; Q.passSet.run(w, until, now()); return say(c, 'Streamer pass for ' + w.slice(0, 6) + '… until ' + new Date(until).toISOString().slice(0, 10) + '.', '#0a0'); }
+    say(c, 'Usage: /watch hidepost <id>, /watch endstream <wallet>, /watch hidechannel <wallet>, /watch pass <wallet> [days]', '#a60');
   }
   return { http, event, cmd, streaming: STREAMING, liveForMint: (mint) => Q.chByMint.all(mint).map(chPub) };
 };

@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 14, streamer pass: "charge them a flat 20 dollars a month for being able to stream". config.js launchpad.streamPassUsd 20,
+  streamPassDays 30, streamPassWallet "" (= the launchpad fee wallet). Server (social.js): so_pass(wallet, until) +
+  so_pass_pay(sig…); GET /st/pass quotes the SOL amount at the live coingecko price (held 15 min per wallet, fallback
+  solUsdFallback), POST /st/pass {sig} checks the transfer on-chain (checkPay, >= 98.5% of the quote, from the signed-in
+  wallet) and adds 30 days; /st/golive answers 402 without a pass; /so/me carries pass{}; admin `/watch pass <wallet>
+  [days]` grants one free (server.js now passes the whole argument to /watch). Stream page: 4 steps when the pass is
+  needed, pass panel with "Pay x SOL from my wallet" (LPC.pay + memo), FAQ/earn text; website: home blurb, FAQ
+  "What does streaming cost?" + "What is the launchpad?", Terms 6a (launchpad, pass non-refundable, tips untouched,
+  18+ to stream). Tested: gating + quote with sotest_pass.mjs; pass panel with the fake wallet (shoot p16.json).
+
 - Oct 14, launchpad look v2 (shipped Oct 14, build 20261014090407): "top of the line, visually like nothing done before, token
   pictures not a list, streaming interactive for new users, watch like FOMO + X, 1000x better". Coins page = the forge
   floor: hero + latest strike spotlight, "Hot right now" rail, then walls of coin tiles (Fresh from the forge / Heating
