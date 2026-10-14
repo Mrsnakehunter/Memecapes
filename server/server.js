@@ -707,6 +707,7 @@ function adminCmd(c, raw) {
     case 'rollback': if (!u) break; Q.rollback.run(u.id); if (o) { o.send({ t: 'kicked', text: 'Your progress was restored by a moderator. Log in again.' }); o.close(); } return say(c, name + ' rolled back one save.');
     case 'partner': return partnerCmd(c, name, arg, rest);
     case 'burnad': return burnadCmd(c, name, arg, rest);
+    case 'lp': return LP.cmd(c, name, arg);
     case 'mod': if (!u) break; Q.setRole.run(arg === 'off' ? '' : 'mod', u.id); return say(c, name + (arg === 'off' ? ' is no longer a mod.' : ' is now a mod.'));
   }
   say(c, 'Commands: /announce text, /mute name minutes, /unmute name, /ban name, /unban name, /kick name, /rollback name, /partner list, /burnad list', '#a60');
@@ -744,10 +745,14 @@ function backup() {
 }
 setInterval(backup, 3600e3); setTimeout(backup, 5000);
 
+// ---------- Launchpad (server/launchpad.js): coin pictures, metadata and the list of coins launched on memecapes.com ----------
+const LP = require('./launchpad')({ db, DATA, now, tooMany, say, online, base: process.env.RENDER_EXTERNAL_URL });
+
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   const json = (o, s) => { res.writeHead(s || 200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }); res.end(JSON.stringify(o, null, 1)); };
+  if (url.pathname.startsWith('/lp/')) { try { if (await LP.http(req, res, url, json) !== false) return; } catch (e) { console.error('lp', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname.startsWith('/burnad')) { try { if (await baHttp(req, res, url, json) !== false) return; } catch (e) { console.error('burnad', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, online: online.size });
   if (url.pathname === '/partners') return json(partnersLive());
