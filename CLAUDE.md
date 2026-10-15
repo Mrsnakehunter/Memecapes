@@ -90,6 +90,10 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 15: Albert loved the security plan: website page #security ('The Stronghold': Sentinel + Watchtower cards, 'nothing to
+  steal' tiles, daily AI patrol, user safety habits, honest line) + nav link 'Security' after AI Agent. sx-* classes.
+  Public copy must never give away thresholds, intervals, commands, endpoints or how addresses are read.
+
 - Oct 15: "make the site almost impenetrable, a bunker, fail-safes, an AI bot protecting us at all times". Built:
   server/sentinel.js (G): real IP = right-most public X-Forwarded-For entry (Render appends; visitors can spoof the left;
   PROXY_HOPS overrides); per-IP GET/POST buckets, strikes -> blocks 10 min/1 h/6 h/1 day; TRAP regex for probe paths;
