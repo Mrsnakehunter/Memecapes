@@ -214,7 +214,7 @@ footer p{max-width:680px;margin:0 auto}
   <section class="sec">
     <div class="sec-h"><h2>Token Launch Protocol</h2><span>How the Token Mint wing works</span></div>
     <div class="steps">
-      <div class="step"><div class="n">1</div><div><h3>Legal first</h3><p>LLC set up and a lawyer reviews the plan before anything goes live.</p></div></div>
+      <div class="step"><div class="n">1</div><div><h3>Security first</h3><p>Wallets, keys, accounts and the launch site are locked down and checked before anything goes live.</p></div></div>
       <div class="step"><div class="n">2</div><div><h3>Tokenomics</h3><p>A public supply split, written down. No revenue-share promises.</p></div></div>
       <div class="step"><div class="n">3</div><div><h3>Contract checks</h3><p>Tested on a test network first. Mint and freeze settings reviewed before launch.</p></div></div>
       <div class="step"><div class="n">4</div><div><h3>Launch site</h3><p>Countdown page, with the contract address posted only from official channels.</p></div></div>
@@ -296,7 +296,7 @@ const ROOM_INFO = {
   creator:{title:'Content Studio', tag:'Part 1. Builds the AI creator: persona, posts, growth, fan replies, and brand deals.'},
   trading:{title:'Trading Floor', tag:'Part 2. Practices crypto trading on paper with hard risk limits, aiming for a funded account.'},
   memecapes:{title:'MemeCapes Workshop', tag:'Part 3. Finishes, tests, and markets the game for the November 2 launch.'},
-  token:{title:'Token Mint', tag:'Part 4. Prepares token launches: legal review, tokenomics, contract checks, and launch day.'},
+  token:{title:'Token Mint', tag:'Part 4. Prepares token launches: security checks, tokenomics, contract checks, and launch day.'},
   treasury:{title:'Treasury', tag:'Every dollar in and out is logged here. Mr Snake approves every money move.'},
   outbox:{title:'Outbox Gate', tag:'Finished work ships out here: posts, builds, and reports.'}
 };
@@ -306,7 +306,7 @@ const STATIONS = {
   creator:[['Persona','easel',24,30],['Content Studio','camera',62,30],['Growth','monitor',102,30],['Engagement','desk',40,62],['Money','chest',92,62]],
   trading:[['Market Scouts','telescope',26,30],['Strategy Lab','chalk',56,30],['Trading Bot Desk','candles',86,30],['Risk Officer','shield',114,30],['Review and Coach','desk',46,62],['Prop Firm Scout','scroll',96,62]],
   memecapes:[['Game Build','anvil',22,30],['QA Testers','bugs',52,30],['Launch Marketing','mega',82,30],['Community','table',112,30],['Launch-Day Ops','server',42,62],['Token and Legal','scroll',92,62]],
-  token:[['Legal Review','scroll',26,30],['Tokenomics','pie',56,30],['Contract Audit','shield',86,30],['Launch Site','monitor',114,30],['Hype Crew','mega',46,62],['Launch Control','rocket',96,62]]
+  token:[['Security Review','server',26,30],['Tokenomics','pie',56,30],['Contract Audit','shield',86,30],['Launch Site','monitor',114,30],['Hype Crew','mega',46,62],['Launch Control','rocket',96,62]]
 };
 const SKINS = ['#f1c27d','#e0ac69','#c68642','#8d5524','#ffdbac','#d9a066'];
 const HAIRS = ['#2b1b10','#5a3a1a','#d9b04c','#141414','#a33a2a','#e8e4da','#3a2a5a'];
@@ -795,7 +795,7 @@ const SAMPLE = {
     {id: 'creator', status: 'working', task: 'Batching next week of posts in the persona\'s voice', crews: st('creator', {'Persona': 'done', 'Content Studio': 'working', 'Growth': 'working'})},
     {id: 'trading', status: 'working', task: 'Paper trading the strategy card on demo, risk limits on', crews: st('trading', {'Market Scouts': 'done', 'Trading Bot Desk': 'working', 'Risk Officer': 'working', 'Strategy Lab': 'working'})},
     {id: 'memecapes', status: 'working', task: 'Fixing launch-blockers before November 2', crews: st('memecapes', {'Game Build': 'working', 'QA Testers': 'working', 'Launch Marketing': 'working', 'Community': 'working'})},
-    {id: 'token', status: 'working', task: 'Preparing the launch checklist for legal review', crews: st('token', {'Legal Review': 'working', 'Tokenomics': 'working', 'Contract Audit': 'blocked', 'Launch Control': 'idle'})}
+    {id: 'token', status: 'working', task: 'Running the security checklist before launch', crews: st('token', {'Security Review': 'working', 'Tokenomics': 'working', 'Contract Audit': 'blocked', 'Launch Control': 'idle'})}
   ],
   log: [
     {time: ago(1), part: 'memecapes', agent: 'QA Testers', text: 'Ran browser tests on phone and desktop. 2 bugs sent to Game Build.'},
@@ -815,7 +815,7 @@ const DEMO_POOL = [
   ['token', 'Hype Crew', 'Wording check removed a price promise from a teaser post.'],
   ['memecapes', 'Community', 'Answered 12 Discord questions from the FAQ.'],
   ['hq', 'MemeSnake', 'Daily check-in sent to Mr Snake. 1 item needs his approval.'],
-  ['token', 'Legal Review', 'Updated the question list for the lawyer: LLC, disclaimers.'],
+  ['token', 'Security Review', 'Checked every launch account for two-factor sign-in and fake look-alike links.'],
   ['memecapes', 'Launch Marketing', 'Queued the "built on a phone" Short for tomorrow 6 PM.'],
   ['trading', 'Review and Coach', 'Mid-week review: zero rule breaks this week.'],
   ['creator', 'Engagement', 'Replied to 18 comments. Flagged 2 brand inquiries.'],

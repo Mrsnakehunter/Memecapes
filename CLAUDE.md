@@ -90,6 +90,11 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 15: "stop making legal the biggest priority on the AI agent, switch the first step to security". MemeSnake page:
+  Token Launch Protocol step 1 = "Security first"; Token Mint crew 'Legal Review' -> 'Security Review' (server prop),
+  room tag + demo samples say security; feed.json crew renamed. Albert's StarNet prompt must use 'Security Review' too
+  (gave him the lines). Don't lead with legal in his agent/product copy; security comes first.
+
 - Oct 15: NPCs page order: "no-picture ones to the bottom, above them the T-pose ones, same character with different
   names never back to back". tools/site/bestiary_order.py reorders each section of #pg-bestiary: natural-pose pictures
   first (TPOSE_FREE list, judged by eye), then T-pose, then 'Picture coming' cards; same character = near-identical
