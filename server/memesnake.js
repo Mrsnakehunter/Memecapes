@@ -12,7 +12,7 @@ const crypto = require('crypto');
 module.exports = function memesnake({ DATA }) {
   const KEY = process.env.MEMESNAKE_KEY || '';
   const FILE = path.join(DATA, 'memesnake_feed.json');
-  const PARTS = ['creator', 'trading', 'memecapes'], PST = ['idle', 'working', 'done', 'blocked'], TOP = ['online', 'paused', 'offline'];
+  const PARTS = ['creator', 'trading', 'memecapes', 'token'], PST = ['idle', 'working', 'done', 'blocked'], TOP = ['online', 'paused', 'offline'];
   const AGENT = ['hq', ...PARTS];
   const empty = () => ({ updated: new Date().toISOString(), status: 'offline', headline: '', parts: [], log: [] });
   let feed = empty(); try { feed = JSON.parse(fs.readFileSync(FILE, 'utf8')); } catch (e) { }
@@ -30,7 +30,7 @@ module.exports = function memesnake({ DATA }) {
     return { time: iso(e.time), part: AGENT.includes(e.part) ? e.part : 'hq', agent: agent || 'MemeSnake', text };
   }
   function parts(list, why) {
-    return (Array.isArray(list) ? list : []).filter(p => p && PARTS.includes(p.id)).slice(0, 3).map(p => {
+    return (Array.isArray(list) ? list : []).filter(p => p && PARTS.includes(p.id)).slice(0, 4).map(p => {
       let task = clean(p.task, 140); if (!check(task)) { why.push('hid the ' + p.id + ' task (money amount or key)'); task = ''; }
       return { id: p.id, status: PST.includes(p.status) ? p.status : 'idle', task,
         crews: (Array.isArray(p.crews) ? p.crews : []).slice(0, 12).map(c => ({ name: clean(c && c.name, 32), status: PST.includes(c && c.status) ? c.status : 'idle' })).filter(c => c.name) };

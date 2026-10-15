@@ -103,6 +103,11 @@ numbers in here or anywhere in the repo.
   the log has entries; back link https://memecapes.com/; memesnake.html redirects; nav link 'MemeSnake' after
   Launchpad. The agent prompt file stays OFF the site (it's for StarNet). He then sent the full logo as an image (1254 px PNG):
   now embedded in memesnake/index.html as a 640 px webp. Demo mode shows the feed's real status, not "Online". Server /ms/feed still exists but the page doesn't use it.
+  Oct 15: Albert sent v2 (pixel world) + a prompt with a 4th part, Token Mint (Legal Review, Tokenomics, Contract Audit,
+  Launch Site, Hype Crew, Launch Control). HTML cut at 100k again: kept his head/CSS, rebuilt the body: canvas world with
+  4 rooms + throne, one worker per crew walks a scroll to the throne per log entry, room panel, comms filters, Token Mint
+  steps, money order, promises. feed.json + server/memesnake.js accept part 'token'. Draw small logos via a smoothed
+  offscreen canvas (imageSmoothingEnabled=false turns them to noise). Never pkill -f a pattern that's in your own command.
 
 - Oct 14 late: "make the bots look 100% like real characters (the site discloses them), a little spaced out". Gaps found:
   bot names had spaces (real usernames can't), tags/chat names not clickable, capes skipped on the blocky body, no
