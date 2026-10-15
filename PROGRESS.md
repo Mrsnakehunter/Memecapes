@@ -2,6 +2,10 @@
 
 _Last updated: October 14, 2026_
 
+## Oct 15, 2026: the Security page
+
+A new Security page (in the menu after AI Agent) explains how MemeCapes is guarded. It covers Sentinel inside the servers, Watchtower outside them, the daily AI security patrol, why there is nothing at MemeCapes worth stealing, and four habits that keep players safe from scams.
+
 ## Oct 15, 2026: the stronghold (security)
 
 - **Sentinel, an always-on guard inside the game server.** It knows every visitor's real address and blocks floods, hacker probes and password or admin-key guessing on its own. An account name locks for 15 minutes after 8 wrong passwords. One address can hold at most 8 game connections. Every answer from the server carries security headers.
