@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 15: "everything at a minimum of 7.5k triangles" (Meshy remesh is free: 0 credits). All 109 Meshy structures remeshed
+  from their textured originals (Custom 8000, Triangle; redo at 9500 when Meshy lands under 7.5k, it often gives ~7-8% less)
+  and converted with glb2mdl --tex 512 (bounds identical to the old 6k models). Models folder 28.5 MB -> ~40 MB.
+  Meshy web app lessons: the search box needs an Enter keydown; Confirm/Download need a REAL click (find ref);
+  the Remesh menu opens with dispatched pointer events; setTimeout is throttled to ~1/min when the pane is hidden,
+  so sleep through a Web Worker; thumbnails load via /_next/image?url=...&w=256 (direct api.meshy.ai is CORS-blocked);
+  tell same-name assets apart by thumbnail similarity and pick the TEXTURED original (colourful thumbnail; the grey
+  one with the same face count is untextured); downloads in the desktop pane sometimes stay as <uuid>.tmp files in
+  Downloads (complete GLBs): identify them by triangle count. Helpers live in Meshy's localStorage (mc_rh, mc_dq, mc_sig).
+
 - Oct 15: Albert loved the security plan: website page #security ('The Stronghold': Sentinel + Watchtower cards, 'nothing to
   steal' tiles, daily AI patrol, user safety habits, honest line) + nav link 'Security' after AI Agent. sx-* classes.
   Public copy must never give away thresholds, intervals, commands, endpoints or how addresses are read.
