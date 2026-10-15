@@ -30,6 +30,11 @@ _Last updated: October 14, 2026_
 - **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
 
+## Shipped October 14, 2026 (late): see what other players are doing (live)
+
+- **Other players now show what they're doing.** When another player stands still you see them idle, chopping, fishing, mining, fighting or dancing, holding the weapon or tool they really have and wearing their cape skin. Before, other players stood in a stiff pose with empty hands.
+- **The world's characters move at real speeds**, walking a tile a step and running on longer trips, and they keep a little space from each other instead of bunching up.
+
 ## Shipped October 14, 2026 (evening): online first, a calmer town square (live)
 
 - **Online is now the way in.** The start screen leads with "Play Online: Create Account" and "Log in". The browser-only ways to play are folded under "Play offline instead (nobody else can see you)", so nobody ends up alone by accident. Already played offline? Create an account and tick "bring my progress".

@@ -295,8 +295,8 @@ const H = {
     if (!c.uid) return;
     const x = +m.x, y = +m.y; if (!Number.isFinite(x) || !Number.isFinite(y)) return;
     const first = !c.pos;
-    c.pos = { x, y, r: +m.r || 0, m: m.m | 0, a: String(m.a || '').slice(0, 16) };
-    const look = { g: m.g ? 1 : 0, c: String(m.c || '').slice(0, 24), lv: Math.max(3, Math.min(200, m.lv | 0)) };
+    c.pos = { x, y, r: +m.r || 0, m: m.m | 0, a: String(m.a || '').slice(0, 48) };
+    const look = { g: m.g ? 1 : 0, c: String(m.c || '').slice(0, 48), lv: Math.max(3, Math.min(200, m.lv | 0)) };
     if (first || look.g !== c.look.g || look.c !== c.look.c || look.lv !== c.look.lv) { c.look = look; broadcast({ t: 'pi', ...pub(c) }, c); }
   },
   chat(c, m) {

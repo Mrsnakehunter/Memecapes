@@ -75,7 +75,17 @@ assert sorted(LINES) == sorted(n[0] for n in NPCS), 'every bot needs its lines i
 _all = [l.strip().lower() for v in LINES.values() for l in v] + [g.lower() for g in GREET]
 assert len(_all) == len(set(_all)), 'two lines are the same: ' + str([l for l in set(_all) if _all.count(l) > 1])
 assert sum(len(v) for v in LINES.values()) >= 1000 and min(len(v) for v in LINES.values()) >= 25, 'need 1000+ lines, 25+ per bot'
-NPCS = [n + (LINES[n[0]],) for n in NPCS]
+UNAME = {'Bramblefoot': 'bramblefoot', 'Kettle Kate': 'KettleKate', 'Sir Hodlington': 'SirHodl', 'Pixel Pete': 'PixelPete99',
+  'Mossy Meg': 'mossy_meg', 'Wen Wally': 'WenWally', 'Froggy Fran': 'FroggyFran', 'Chartwell': 'Chartwell', 'Diamond Di': 'DiamondDi',
+  'Ghosty Gus': 'ghostygus', 'Frosty Flo': 'FrostyFlo', 'Luna Lex': 'LunaLex', 'Timber Tom': 'TimberTom', 'Oakley': 'oakley_',
+  'Barky Bo': 'BarkyBo', 'Willow Wyn': 'willowwyn', 'Splinters': 'Splinters', 'Pinecone Pam': 'PineconePam', 'Captain Cast': 'CaptainCast',
+  'Reel Rita': 'ReelRita', 'Gill Bill': 'GillBill', 'Nets Nora': 'nets_nora', 'Bait Boris': 'BaitBoris', 'Rocky Rae': 'RockyRae',
+  'Dusty Dan': 'DustyDan', 'Pebble Pip': 'PebblePip', 'Gravel Greg': 'GravelGreg', 'Ore-ville': 'Oreville', 'Wander Will': 'WanderWill',
+  'Roadie Roz': 'RoadieRoz', 'Hiker Hal': 'HikerHal', 'Scout Sky': 'ScoutSky', 'Bonk Buddy': 'BonkBuddy', 'Tidal Tess': 'TidalTess',
+  'Crag Carl': 'CragCarl', 'Leafy Lou': 'LeafyLou'}
+import re as _re
+assert sorted(UNAME) == sorted(n[0] for n in NPCS) and all(_re.fullmatch(r'[A-Za-z0-9_]{3,12}', v) for v in UNAME.values()) and len(set(v.lower() for v in UNAME.values())) == len(UNAME)
+NPCS = [n + (LINES[n[0]], UNAME[n[0]]) for n in NPCS]
 
 JS = r"""
 // ---- bots (tools/patch_wanderers.py): characters who live in the world (the website FAQ says the game has bots); one hides per real player nearby
@@ -89,9 +99,10 @@ function wndNext(key,list){let s=WNDsv[key];if(!Array.isArray(s)||s[2]!==list.le
 const wndN=()=>{const c=window.MC_CONFIG&&MC_CONFIG.wanderers;return c==null?WNDD.length:Math.max(0,Math.min(WNDD.length,c|0))};
 function wndRng(s){return()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff}}
 function wndHome(i){if(!i)return[(GT.x0+GT.x1)/2|0,(GT.y0+GT.y1)/2|0];const t=TW[(i-1)%TW.length];return[t.cx|0,t.cy|0]}
-function wndFree(x,y,r,R){for(let k=0;k<80;k++){const a=R()*6.283,d=R()*r,tx=Math.round(x+Math.cos(a)*d),ty=Math.round(y+Math.sin(a)*d);if(!solid(tx,ty))return[tx,ty]}return[x,y]}
+function wndFree(x,y,r,R,me){let best=null;for(let k=0;k<80;k++){const a=R()*6.283,d=R()*r,tx=Math.round(x+Math.cos(a)*d),ty=Math.round(y+Math.sin(a)*d);if(solid(tx,ty))continue;if(!best)best=[tx,ty];
+ if(WND.every(o=>o===me||(Math.max(Math.abs(o.x-tx),Math.abs(o.y-ty))>=3&&(!o.dest||Math.max(Math.abs(o.dest[0]-tx),Math.abs(o.dest[1]-ty))>=3))))return[tx,ty]}return best||[x,y]}
 function wndInit(){WNDok=1;WNDD.forEach((d,i)=>{const R=wndRng(7919*(i+3)),hm=wndHome(d[3]),p=wndFree(hm[0],hm[1],d[2]=='social'?13:14,R);
- WND.push({i,id:'wnd'+i,lv:3+((R()*55)|0),n:d[0],g:d[1],role:d[2],home:d[3],hm,cape:d[4],w:d[5],lines:d[6],R,x:p[0],y:p[1],px:p[0],py:p[1],r:R()*6.283,path:[],st:'idle',until:0,emo:null,next:performance.now()+15000+Math.random()*75000,greet:-1e9,act:null})})}
+ WND.push({i,id:'wnd'+i,lv:3+((R()*55)|0),n:d[0],dn:d[7],g:d[1],role:d[2],home:d[3],hm,cape:d[4],w:d[5],lines:d[6],R,x:p[0],y:p[1],px:p[0],py:p[1],r:R()*6.283,path:[],st:'idle',until:0,emo:null,next:performance.now()+15000+Math.random()*75000,greet:-1e9,act:null})})}
 // a short walk: breadth-first search inside a box around the start (never far, never through walls or water)
 const WNDP=new Int32Array(W*H).fill(-1);
 function wndPath(sx,sy,goal,box){const s=sy*W+sx,q=[s],seen=[s];WNDP[s]=s;let f=-1;
@@ -102,22 +113,22 @@ const WNDA={chop:['Chop','axe',()=>trees],fish:['Fish','net',()=>fish],mine:['Mi
 function wndPlan(o,now){const R=o.R;o.act=null;o.emo=null;
  if(o.role=='social'){if(R()<.3){o.st='emote';o.emo={n:WNDE[(R()*WNDE.length)|0],t0:now};o.until=now+3500+R()*2500;return}
   if(R()<.35){o.st='idle';o.tr=R()*6.283;o.until=now+8000+R()*14000;return}
-  const t=wndFree(o.hm[0],o.hm[1],16,R);o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>x==t[0]&&y==t[1],30);o.st=o.path.length?'walk':'idle';o.until=now+9000+R()*16000;return}
+  const t=wndFree(o.hm[0],o.hm[1],16,R,o);o.dest=t;o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>x==t[0]&&y==t[1],30);o.st=o.path.length?'walk':'idle';o.until=now+9000+R()*16000;return}
  if(o.role=='travel'){const k=1+((R()*TW.length)|0),t=wndHome(R()<.25?0:k);const dx=t[0]-o.x,dy=t[1]-o.y,L=Math.hypot(dx,dy)||1,s=Math.min(40,L),gx=Math.round(o.x+dx/L*s),gy=Math.round(o.y+dy/L*s);
   o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>Math.abs(x-gx)<=3&&Math.abs(y-gy)<=3,44);o.st=o.path.length?'walk':'idle';o.until=now+2000+R()*6000;if(!o.path.length)o.hm=wndHome(k);return}
  const A=WNDA[o.role],res=wndNear(A[2](),o.hm[0]+(R()-.5)*16,o.hm[1]+(R()-.5)*16,30);
  if(res){o.act=res;o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>Math.max(Math.abs(x-res.x),Math.abs(y-res.y))==1,34);if(o.path.length||Math.max(Math.abs(o.x-res.x),Math.abs(o.y-res.y))<=1.5){o.st=o.path.length?'walk':'work';o.until=now+25000+R()*50000;return}}
- const t=wndFree(o.hm[0],o.hm[1],10,R);o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>x==t[0]&&y==t[1],16);o.st=o.path.length?'walk':'idle';o.until=now+5000+R()*8000}
-function wndSay(o,txt){const t=String(txt).replace('{n}',(st.acct&&st.acct.name)||'adventurer');netBubble(o,t);say('<b>'+esc(o.n)+':</b> '+esc(t),'#1a1aa0')}
+ const t=wndFree(o.hm[0],o.hm[1],10,R,o);o.dest=t;o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>x==t[0]&&y==t[1],16);o.st=o.path.length?'walk':'idle';o.until=now+5000+R()*8000}
+function wndSay(o,txt){const t=String(txt).replace('{n}',(st.acct&&st.acct.name)||'adventurer');netBubble(o,t);say('<b>'+netName(o.dn)+':</b> '+esc(t),'#1a1aa0')}
 function wndTick(now){if(!started)return;if(!WNDok){if(!trees||!trees.length||!TW||!TW.length)return;wndInit()}
  const dt=Math.min(.1,(now-(wndTick.lt||now))/1000);wndTick.lt=now;
  const real=(NETS.on&&NETS.others)?NETS.others.size:0,N=Math.max(0,wndN()-real);
  const cand=[];WND.forEach((o,k)=>{const on=k<N,near=Math.abs(o.x-P.px)<90&&Math.abs(o.y-P.py)<90;
-  if(!on||!near){wndTagDel(o);return}
+  if(!on||!near||netIgn.has(o.dn)||(NETS.on&&[...NETS.info.values()].some(i=>i.name&&i.name.toLowerCase()===o.dn.toLowerCase()))){wndTagDel(o);return}
   // move along the path
-  if(o.st=='walk'&&o.path.length){const n=o.path[0],dx=n[0]-o.x,dy=n[1]-o.y,L=Math.hypot(dx,dy),sp=2.3*dt;
+  if(o.st=='walk'&&o.path.length){if(o.run==null)o.run=o.path.length>10&&o.R()<.7;const n=o.path[0],dx=n[0]-o.x,dy=n[1]-o.y,L=Math.hypot(dx,dy),sp=(o.run?3.33:1.67)*dt;
    if(L<=sp){o.x=n[0];o.y=n[1];o.path.shift()}else{o.x+=dx/L*sp;o.y+=dy/L*sp}
-   o.tr=Math.atan2(dx,dy);if(!o.path.length){if(o.act){o.st='work'}else o.st='idle'}}
+   o.tr=Math.atan2(dx,dy);if(!o.path.length){o.run=null;o.dest=null;if(o.act){o.st='work'}else o.st='idle'}}
   if(o.st=='work'&&o.act){o.tr=Math.atan2(o.act.x-o.x,o.act.y-o.y);if(o.act.gone||o.act.dead)o.until=0}
   if(o.tr!=null){let dr=o.tr-o.r;dr=Math.atan2(Math.sin(dr),Math.cos(dr));o.r+=dr*Math.min(1,dt*8)}
   o.px=o.x;o.py=o.y;
@@ -131,15 +142,15 @@ function wndTick(now){if(!started)return;if(!WNDok){if(!trees||!trees.length||!T
   wndDraw(o,now);wndTagSet(o)});
  if(cand.length&&now>WNDtalk){const o=cand[(Math.random()*cand.length)|0];WNDlast=now;WNDtalk=now+25000+Math.random()*30000;o.next=now+(o.role=='social'?90000:120000)+Math.random()*180000;wndSay(o,wndNext(o.n,o.lines))}}
 function wndDraw(o,now){const K=o.g?'playerf':'player';needMdl(K);const sk=o.cape&&o.cape.startsWith('cs_')?o.cape:null,ck=sk?'cape_npc':o.cape;
- const CB=ck&&st.body!==0?capeBody(K,ck,sk):null,PM=CB||((MDL[K]&&MDL[K].ok)?MDL[K]:MDL.player);if(!PM||!PM.ok)return;
+ const CB=ck?capeBody(K,ck,sk):null,PM=CB||((MDL[K]&&MDL[K].ok)?MDL[K]:MDL.player);if(!PM||!PM.ok)return;
  let cl=null,t=now/1000+o.i*.37,wk='w_'+o.w;
- if(o.st=='walk')cl='Walking';
+ if(o.st=='walk')cl=o.run?'Running':'Walking';
  else if(o.st=='work'&&o.act){cl=WNDA[o.role][0];wk='w_'+WNDA[o.role][1]}
  else if(o.st=='emote'&&o.emo&&PM.clips[o.emo.n]){cl=o.emo.n;t=(now-o.emo.t0)/1000;const c=PM.clips[cl];if(c&&c.nf&&t>(c.nf-1)/c.fps){o.emo=null;o.st='idle'}}
  if(!cl||!PM.clips[cl])cl=PM.clips.Idle?'Idle':null;
- const x=o.x+.5,z=o.y+.5;YO=hgt(x,z);qMdl(PM,x,0,z,o.r,MDLSC.player,cl,t);
+ const x=o.x+.5,z=o.y+.5;YO=hgt(x,z);qMdl(PM,x,0,z,o.r,MDLSC.player,cl,t,0,null,false,1);if(o.cape&&!CB)qCape(x,z,o.r,o.cape);
  if(WAV.has(wk))qHold(PM,x,z,o.r,cl,t,wk,false,null,heldTilt(cl,t,wk));YO=0}
-function wndTagSet(o){let d=WNDtag.get(o.id);if(!d){d=document.createElement('div');d.className='ntag';d.textContent=o.n+' (lvl '+o.lv+')';document.body.appendChild(d);WNDtag.set(o.id,d)}
+function wndTagSet(o){let d=WNDtag.get(o.id);if(!d){d=document.createElement('div');d.className='ntag pn';d.dataset.pn=o.dn;d.textContent=o.dn+' (lvl '+o.lv+')';document.body.appendChild(d);WNDtag.set(o.id,d)}
  const p=[o.x+.5-E[0],2.05+hgt(o.x+.5,o.y+.5)-E[1],o.y+.5-E[2]],zz=d3(p,Fw);if(zz<=0){d.style.display='none';return}
  const sx=d3(p,Rt)/(zz*TH*asp),sy=d3(p,Up)/(zz*TH);d.style.display=(Math.abs(sx)>1.1||Math.abs(sy)>1.1||zz>34)?'none':'block';d.style.left=((sx+1)/2*CW)+'px';d.style.top=((1-sy)/2*CH)+'px'}
 function wndTagDel(o){const d=WNDtag.get(o.id);if(d){d.remove();WNDtag.delete(o.id)}}
