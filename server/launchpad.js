@@ -20,7 +20,7 @@ const B58A = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 function b58e(u8) { let x = 0n; for (const b of u8) x = x * 256n + BigInt(b); let s = ''; while (x > 0n) { s = B58A[Number(x % 58n)] + s; x /= 58n; } for (const b of u8) { if (b) break; s = '1' + s; } return s; }
 function b58d(s) { let x = 0n; for (const ch of String(s)) { const i = B58A.indexOf(ch); if (i < 0) return null; x = x * 58n + BigInt(i); } const out = []; while (x > 0n) { out.unshift(Number(x & 255n)); x >>= 8n; } for (const ch of String(s)) { if (ch !== '1') break; out.unshift(0); } return Buffer.from(out); }
 
-module.exports = function launchpad({ db, DATA, now, tooMany, say, online, sigOk, base }) {
+module.exports = function launchpad({ db, DATA, now, tooMany, say, online, sigOk, base, G }) {
   // the MemeCapes launchpad fee wallet (a public address). Render's LP_PARTNER wins; otherwise the one in the site's own
   // config.js (the same file the page uses, so the two can't disagree). Empty = registrations off.
   const fromCfg = (k) => { try { const m = new RegExp(k + ':\\s*"([1-9A-HJ-NP-Za-km-z]{32,44})"').exec(fs.readFileSync(path.join(__dirname, '..', 'config.js'), 'utf8')); return m ? m[1] : ''; } catch (e) { return ''; } };
@@ -158,10 +158,10 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
   if (!process.env.LP_NO_INDEX) { setInterval(indexTrades, +process.env.LP_INDEX_MS || 20000); setTimeout(indexTrades, 5000); }
   const trPub = r => ({ sig: r.sig, mint: r.mint, trader: r.trader, buy: !!r.buy, sol: r.sol / 1e9, tokens: r.tokens / 1e6, t: r.t, name: r.name, symbol: r.symbol, image: r.image });
 
-  const SO = require('./social')({ db, now, tooMany, sigOk, say, online, rpc, b58d, PUBLIC, IMG_DIR, coinGet: Q.coinGet });
+  const SO = require('./social')({ db, now, tooMany, sigOk, say, online, rpc, b58d, PUBLIC, IMG_DIR, coinGet: Q.coinGet, G });
 
   async function http(req, res, url, json) {
-    const p = url.pathname, ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    const p = url.pathname, ip = req.ip || G.ipOf(req);
     const net = url.searchParams.get('net') === 'devnet' ? 'devnet' : 'mainnet';
     if (p.startsWith('/so/') || p.startsWith('/st/')) return SO.http(req, res, url, json);
     if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET', 'Access-Control-Allow-Headers': 'Content-Type' }); return res.end(); }
@@ -213,6 +213,7 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
     let b; try { b = await body(req, 3 * 1024 * 1024); } catch (e) { return json({ error: 'That is too big. Pictures up to 2 MB.' }, 400); }
     const bnet = b.net === 'devnet' ? 'devnet' : 'mainnet';
     if (p === '/lp/upload') {
+      if (!G.allow('upload')) return json({ error: G.pausedMsg() }, 503);
       if (tooMany('lpu' + ip) || Q.metaByIp.get(ip, now() - 3600e3).n >= 30) return json({ error: 'Too many uploads. Wait a while.' }, 429);
       const name = clean(b.name, 32), symbol = clean(b.symbol, 10).replace(/\s/g, '').toUpperCase();
       if (name.length < 2) return json({ error: 'Give your coin a name (2 to 32 letters).' }, 400);
@@ -238,9 +239,12 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
     }
     if (p === '/lp/register') {
       const sig = String(b.sig || '').trim(); if (!/^[1-9A-HJ-NP-Za-km-z]{64,90}$/.test(sig)) return json({ error: 'Bad transaction signature.' }, 400);
+      if (!G.allow('launch')) return json({ error: G.pausedMsg() + ' Your coin is safe on the blockchain; it will be listed here when you try again.' }, 503);
       if (tooMany('lpr' + ip)) return json({ error: 'Too many tries. Wait a few minutes.' }, 429);
       let v = null; for (let i = 0; i < 4; i++) { try { v = await verifyLaunch(bnet, sig); } catch (e) { v = { err: 'Could not reach the blockchain.' }; } if (!/not found|reach/.test(v.err || '')) break; await new Promise(r => setTimeout(r, 2500)); }
       if (v.err) return json({ error: v.err }, 400);
+      // the coin's details must live on our own server (not an address the launcher controls and could change later)
+      if (!new RegExp('^' + PUBLIC.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '/lp/meta/[a-f0-9]{24}\\.json$').test(v.uri)) return json({ error: 'That coin was not made with the MemeCapes launch page, so it can\'t be listed here.' }, 400);
       let image = ''; try { const mm2 = /\/lp\/meta\/([a-f0-9]{24})\.json$/.exec(v.uri); const r = mm2 && Q.metaGet.get(mm2[1]); image = r ? r.img : ''; } catch (e) { }
       Q.coinAdd.run(v.mint, bnet, v.pool, v.config, v.creator, clean(v.name, 32), clean(v.symbol, 10), v.uri.slice(0, 200), image, sig, v.t); Q.coinSlot.run(v.slot, v.mint, bnet);
       SO.event({ kind: 'launch', mint: v.mint, net: bnet, wallet: v.creator, t: v.t });
@@ -249,7 +253,7 @@ CREATE TABLE IF NOT EXISTS lp_cursor(mint TEXT, net TEXT, last TEXT, PRIMARY KEY
     }
     if (p === '/lp/report') {
       const mint = String(b.mint || ''); const r = Q.coinGet.get(mint, bnet); if (!r) return json({ error: 'not found' }, 404);
-      if (Q.repSeen.get(mint, ip).n) return json({ ok: true });
+      if (Q.repSeen.get(mint, ip).n || tooMany('lprep' + ip)) return json({ ok: true });
       Q.repAdd.run(mint, bnet, ip, clean(b.why, 300), now()); Q.repInc.run(mint, bnet);
       for (const o of online.values()) if (o.role === 'admin') say(o, 'Launchpad report on ' + r.name + ': ' + clean(b.why, 120), '#c00');
       return json({ ok: true });

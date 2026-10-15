@@ -37,6 +37,12 @@ services:
         sync: false
       - key: MEMESNAKE_KEY      # the key the MemeSnake agent posts its live feed with (memesnake.html); you make it up
         sync: false
+      - key: GUARD_WEBHOOK      # Sentinel alerts: a Discord webhook URL (optional)
+        sync: false
+      - key: GUARD_TG_TOKEN     # Sentinel alerts to Telegram: bot token (optional)
+        sync: false
+      - key: GUARD_TG_CHAT      # ...and the chat id to post in
+        sync: false
       - key: CF_ACCOUNT_ID      # Cloudflare Stream, for live video on Watch/Stream; empty = video off, the rest works
         sync: false
       - key: CF_STREAM_TOKEN

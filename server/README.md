@@ -36,6 +36,12 @@ Plain Node.js 22 with no packages to install (built-in SQLite, crypto and a smal
 | `BURN_AD_DAYS` | days a website ad runs; 0 = for good. Default 0 |
 | `TRADE_LOCK_MS` | no accepting for this long after the other player changes their offer. Default 2500 |
 | `ALLOWED_ORIGINS` | websites allowed to connect. Default: memecapes.com and localhost |
+| `GUARD_WEBHOOK` | Sentinel alerts: a Discord (or Slack) webhook URL. Empty = alerts only in game and in the server log |
+| `GUARD_TG_TOKEN`, `GUARD_TG_CHAT` | Sentinel alerts to Telegram: a bot token (from @BotFather) and the chat id to post in |
+| `GUARD_ALLOW` | addresses Sentinel never blocks, comma separated (e.g. your own) |
+| `GUARD_WS_PER_IP` | most game connections from one address at once. Default 8 |
+| `PROXY_HOPS` | how many proxies add themselves to X-Forwarded-For after the visitor. Empty = the right-most public address is the visitor |
+| `ALLOW_DEVNET_PAY` | `1` = devnet payments count for passes, tips and subs (testing only; never on the live server) |
 
 ## Admin pages
 Send the header `Authorization: Bearer <ADMIN_KEY>`:
@@ -46,9 +52,20 @@ Send the header `Authorization: Bearer <ADMIN_KEY>`:
 - `/admin/burnads`: every website ad, its status and how much was burned
 - `/admin/reports`: player reports with the chat around them
 - `/admin/backup`: download the whole database
+- `/admin/guard`: Sentinel: mode, blocked addresses, locked names, disk, the latest guard log
+- `POST /admin/guard/mode?to=normal|shield|lockdown`: switch Sentinel's mode
+
+## Sentinel (sentinel.js): the always-on guard
+Blocks floods, hacker probes (/.env, /wp-admin ...), password and admin-key guessing; locks a name for 15 minutes after 8 wrong
+passwords; at most 8 game connections per address; security headers on every answer; pauses uploads before the disk fills;
+an alarm if the wallet addresses in config.js change. Modes: `normal`; `shield` (new accounts, uploads, launches, posts and ads
+paused, play and payments go on); `lockdown` (shield + no new sign-ins). It switches to shield by itself for 30 minutes when
+25+ addresses get blocked in 10 minutes. In game (admins): `/guard`, `/guard shield`, `/guard lockdown`, `/guard normal`,
+`/guard log`, `/guard block <ip>`, `/guard unblock <ip>`. Payments already made on-chain are always checked and counted.
 
 ## Test it
 `node test.js`: starts a throwaway server and runs fake players through sign-up, saves, chat, positions and a full trade.
+`node test_guard.js`: attacks a throwaway server (floods, probes, password guessing, admin-key guessing, spoofed addresses, too many connections, devnet payments) and checks Sentinel stops each one.
 
 ## Turning it on (Render)
 1. render.com, sign in with GitHub, New, Blueprint, pick the `Memecapes` repo. It reads `render.yaml`: a $7/month Starter web service plus a 1 GB disk.

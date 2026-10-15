@@ -235,7 +235,12 @@
     $('#paygo').onclick = async () => {
       const b = $('#paygo'), err = $('#paye'); err.textContent = ''; b.disabled = true;
       try {
-        await needWallet(); const sig = await LPC.pay(q.to, q.sol, 'memecapes streamer pass', st => { b.textContent = st === 'wallet' ? 'Approve in your wallet…' : 'Confirming…'; });
+        // the pass is only ever paid to the MemeCapes wallet written in config.js, at about the price shown: if the server
+        // ever answered with another wallet or a strange amount, nothing is sent
+        const CF = window.MC_CONFIG && MC_CONFIG.launchpad || {}, want = CF.streamPassWallet || CF.partner;
+        if (!want || q.to !== want) throw new Error('The payment address did not match the official MemeCapes wallet, so nothing was sent. Please tell us on Telegram.');
+        if (!(q.sol > 0) || q.sol > (q.usd || CF.streamPassUsd || 20) / Math.max(1, q.solUsd || 1) * 1.25 || q.usd > (CF.streamPassUsd || 20) * 1.01) throw new Error('The price looked wrong, so nothing was sent. Reload the page and try again.');
+        const sig = await LPC.pay(q.to, q.sol, 'memecapes streamer pass', st => { b.textContent = st === 'wallet' ? 'Approve in your wallet…' : 'Confirming…'; });
         b.textContent = 'Checking the payment…'; const r = await apiA('/st/pass', { sig });
         toast('Streamer pass active until ' + new Date(r.until).toLocaleDateString() + '.'); stream();
       } catch (e) { b.disabled = false; b.textContent = 'Pay ' + q.sol + ' SOL from my wallet'; if (e.message !== 'closed') err.textContent = friendly(e); }
@@ -304,7 +309,8 @@
   // playing a stream: WebRTC (WHEP) for browser streams, Cloudflare's player for OBS streams
   function embed(st, el) {
     if (!el) return; if (!st.playUrl) { el.innerHTML = `<div class="player"><div class="off">${avatar(st.wallet, 'lg')}<div>Live, but the video is not available yet.</div></div></div>`; return; }
-    if (st.playKind === 'iframe') { el.innerHTML = `<div class="player"><iframe src="${esc(st.playUrl)}?autoplay=true&muted=true" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Live stream"></iframe></div>`; return; }
+    if (!/^https:\/\/[a-z0-9-]+\.cloudflarestream\.com\//i.test(String(st.playUrl))) { el.innerHTML = `<div class="player"><div class="off">${avatar(st.wallet, 'lg')}<div>Live, but the video is not available yet.</div></div></div>`; return; }
+    if (st.playKind === 'iframe') { el.innerHTML = `<div class="player"><iframe src="${esc(st.playUrl)}?autoplay=true&muted=true" sandbox="allow-scripts allow-same-origin allow-presentation" referrerpolicy="no-referrer" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Live stream"></iframe></div>`; return; }
     el.innerHTML = `<div class="player"><video autoplay playsinline muted controls></video><div class="over"><span class="badge live">LIVE</span></div></div>`;
     const v = $('video', el); const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.cloudflare.com:3478' }] });
     pc.addTransceiver('video', { direction: 'recvonly' }); pc.addTransceiver('audio', { direction: 'recvonly' });

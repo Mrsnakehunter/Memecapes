@@ -2,6 +2,24 @@
 
 _Last updated: October 14, 2026_
 
+## Oct 15, 2026: the stronghold (security)
+
+- **Sentinel, an always-on guard inside the game server.** It knows every visitor's real address and blocks floods, hacker probes and password or admin-key guessing on its own. An account name locks for 15 minutes after 8 wrong passwords. One address can hold at most 8 game connections. Every answer from the server carries security headers.
+- **Shield and lockdown modes.** In shield, new accounts, uploads, launches, posts and ads pause while play and payments go on. Lockdown also pauses new sign-ins. Sentinel switches to shield by itself during an attack, and admins can switch modes in game with `/guard`. Payments already made on the blockchain are always counted, in every mode.
+- **Alarms.** Sentinel raises an alarm if the wallet addresses in config.js ever change, and it pauses uploads before the server disk fills.
+- **Watchtower checks the site from outside every 15 minutes.** It confirms the domain still points at our host, that every page is byte-for-byte the one in this repo, that the live wallet addresses are the official ones, and that the server is up. Any problem opens an alert.
+- **Fixes:**
+  - Coin pages only use links that start with https://, and only read a coin's details from our own server.
+  - Fee splits show every full address before you approve.
+  - The streamer pass is only ever paid to the official wallet in config.js.
+  - Devnet test money can no longer buy a pass.
+  - Graduated coins now trade on jup.ag in a new tab, so no outside code runs inside memecapes.com.
+  - Other sites can't show our pages inside a frame.
+  - The launch page gets a strict content policy.
+  - Wallet sign-in messages name the site.
+  - Wallet sessions are stored as hashes.
+- **New FAQ entry:** "How does MemeCapes keep me safe?"
+
 ## Oct 15, 2026: tidier NPCs page
 
 On the NPCs page, characters with finished pictures come first and the ones whose pictures are still coming sit at the bottom of each section. Characters that share a look never sit side by side.
