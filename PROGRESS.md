@@ -2,6 +2,10 @@
 
 _Last updated: October 14, 2026_
 
+## Oct 15, 2026: tidier NPCs page
+
+On the NPCs page, characters with finished pictures come first and the ones whose pictures are still coming sit at the bottom of each section. Characters that share a look never sit side by side.
+
 ## Oct 15, 2026: a simpler menu
 
 The website menu now has five things: Play, Watch, Stream, Launch and AI Agent. All the game pages (story, NPCs, items, towns, quests, capes, roadmap, $CAPES, shop and FAQ) live inside Play.
