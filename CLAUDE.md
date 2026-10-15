@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 14 late: "make the bots look 100% like real characters (the site discloses them), a little spaced out". Gaps found:
+  bot names had spaces (real usernames can't), tags/chat names not clickable, capes skipped on the blocky body, no
+  render flag, 2.3 tiles/s (real: 1.67 walk, 3.33 run) - and real players looked WORSE (others drew them bare-handed in
+  bind pose). patch_wanderers: UNAME map (valid usernames, o.dn; o.n stays the lines key), 'ntag pn' tags + netName in
+  chat, same qMdl args, capes always, Running on long trips, wndFree keeps 3 tiles from other bots and their targets,
+  hidden if ignored or a real player online has the name. tools/patch_lookalike.py: pos carries a='clip|weapon|shield'
+  and c='cape:skin' (server now keeps 48 chars of each), others drawn with that clip, weapon, shield, cape skin; /trade
+  to a bot says "Trade request sent" and nothing follows. /who and the online count still list real players only.
+  online_e2e.py: A sees B as "Idle|sword|". Shipped.
+
 - Oct 14 evening: "too many bots at the start point walking the same spots; my coworker and I can't see each other, is the
   server live?". Server WAS live (health ok, socket opens). Cause: the start screen's offline buttons (Create Account,
   Guest, Random, Continue as) look like the online ones and nothing in game said offline. tools/patch_online.py: online
