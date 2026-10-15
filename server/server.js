@@ -776,7 +776,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, online: online.size, mode: G.mode() });
   if (url.pathname === '/guard/me') {   // your own address as the server sees it (and what the proxies sent), for checking the setup
     if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'X-Forwarded-For' }); return res.end(); }
-    return json({ ip: req.ip, hops: String(req.headers['x-forwarded-for'] || '').split(',').length });
+    return json({ ip: req.ip, hops: String(req.headers['x-forwarded-for'] || '').split(',').length, cf: !!req.headers['cf-connecting-ip'] && req.headers['cf-connecting-ip'] === req.ip });
   }
   if (url.pathname === '/partners') return json(partnersLive());
   const pm = /^\/partners\/(\d+)\.jpg$/.exec(url.pathname);

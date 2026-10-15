@@ -24,6 +24,16 @@ module.exports = function sentinel({ db, DATA, now }) {
   // proxies append to X-Forwarded-For after the visitor's own entry. By default the visitor is the right-most address that is
   // not a private/internal one (the proxies' own hops are internal); PROXY_HOPS on Render fixes the count instead.
   const HOPS = process.env.PROXY_HOPS != null && process.env.PROXY_HOPS !== '' ? +process.env.PROXY_HOPS : -1;
+  // Render sits behind Cloudflare: its edge addresses are proxies too, never the visitor (www.cloudflare.com/ips)
+  const CF4 = ['173.245.48.0/20', '103.21.244.0/22', '103.22.200.0/22', '103.31.4.0/22', '141.101.64.0/18', '108.162.192.0/18', '190.93.240.0/20', '188.114.96.0/20',
+    '197.234.240.0/22', '198.41.128.0/17', '162.158.0.0/15', '104.16.0.0/13', '104.24.0.0/14', '172.64.0.0/13', '131.0.72.0/22'].map(c => { const [a, n] = c.split('/'); return [v4(a), +n]; });
+  const CF6 = ['2400:cb00:', '2606:4700:', '2803:f800:', '2405:b500:', '2405:8100:', '2a06:98c', '2a06:98d', '2a06:98e', '2a06:98f', '2c0f:f248:'];
+  function v4(a) { const p = String(a).split('.'); return p.length === 4 && p.every(x => /^\d{1,3}$/.test(x)) ? ((+p[0] << 24) >>> 0) + (+p[1] << 16) + (+p[2] << 8) + +p[3] : -1; }
+  function isCF(ip) {
+    if (ip.includes(':')) return CF6.some(p => ip.toLowerCase().startsWith(p));
+    const x = v4(ip); if (x < 0) return false;
+    return CF4.some(([a, n]) => n === 0 || (x >>> (32 - n)) === (a >>> (32 - n)));
+  }
   const PRIVATE = /^(10\.|127\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.|::1$|f[cd][0-9a-f]{2}:|fe80:)/i;
   db.exec(`CREATE TABLE IF NOT EXISTS guard_events(id INTEGER PRIMARY KEY, t INT, kind TEXT, ip TEXT, detail TEXT);
 CREATE TABLE IF NOT EXISTS guard_state(k TEXT PRIMARY KEY, v TEXT);`);
@@ -44,7 +54,7 @@ CREATE TABLE IF NOT EXISTS guard_state(k TEXT PRIMARY KEY, v TEXT);`);
     if (!L.length) return sock.replace(/^::ffff:/, '');
     const C = L.map(x => x.replace(/^::ffff:/, ''));
     if (HOPS >= 0) return C[Math.max(0, C.length - 1 - HOPS)];
-    for (let i = C.length - 1; i >= 0; i--) if (!PRIVATE.test(C[i])) return C[i];
+    for (let i = C.length - 1; i >= 0; i--) if (!PRIVATE.test(C[i]) && !isCF(C[i])) return C[i];
     return C[0];
   }
 
