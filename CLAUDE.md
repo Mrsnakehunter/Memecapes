@@ -90,6 +90,25 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 15: "make the trees 1000% better but not so good it lags, variety". Trees are now Meshy models drawn with
+  instancing: models/trees.json (tools/treepack.py from t_<species>.glb: 3 detail levels ~1600/500/160 tris cut with
+  tools/decimate.cpp relax mode, one 512 px JPEG each, ~3.5 MB for 16 species) + tools/patch_trees.py (runs last in
+  build.sh). Engine: ANGLE_instanced_arrays, programs pgT/pgTS reuse the chunk fragment shaders (material 10 =
+  model texture on unit 4 + tint in vraw.z: brightness + 4*season), treeKind(o) picks the species from the region
+  (town 4 dead, 5 snow, 6 alien, 7 cypress/palm, 1 willow, 0/3 blossom; forests conifers) with the old tp/hv dice,
+  treeGather buckets trees (and pack bushes, TRB per chunk key) by species x LOD x frustum each frame, treeDraw
+  draws in the shadow pass and the main pass; stumps stay chunk geometry (chopping unchanged); old code trees stay
+  until the pack loads (then chunks rebuild) and when MC_CONFIG.trees===0 (website shots). Densest forest in view
+  ~200k tris, 15 draw calls. Species heights in TRH; fallbacks in TRFB. Hooks for tests: window.__TRP in mktest.sh.
+  Known gaps: decimate gets stuck on some Meshy remeshes (maple/willow mid LOD ~900 tris, bushes ~1600: fine);
+  alien tree reads odd from afar. Meshy lessons: text-to-3D = 20 credits mesh + 10 texture ("Texture" button, then
+  the panel's Texture; dispatched pointer events work there and for Remesh Confirm); the asset grid RE-SORTS as tasks
+  finish, so never work by index: search by name (__search) and check faces/prompt each time (I textured the alien
+  tree 11 times = 100 credits wasted); page downloads need a REAL click on the popup's Download (dispatched clicks
+  are blocked as "multiple downloads" after the first) and land as <uuid>.tmp (map them by triangle count);
+  the pane's screenshots were stale/scaled in emulated viewports: drive the page by JS + coordinates
+  (1280x800 emulation = screenshot frame 800x500, scale .625). Credits 1,850 -> 1,260.
+
 - Oct 15: "everything at a minimum of 7.5k triangles" (Meshy remesh is free: 0 credits). All 109 Meshy structures remeshed
   from their textured originals (Custom 8000, Triangle; redo at 9500 when Meshy lands under 7.5k, it often gives ~7-8% less)
   and converted with glb2mdl --tex 512 (bounds identical to the old 6k models). Models folder 28.5 MB -> ~40 MB.

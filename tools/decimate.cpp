@@ -2,7 +2,8 @@
 // Each collapse moves a vertex onto a neighbour, so every corner keeps a UV that already exists in
 // its own texture chart (a collapse that would need a new UV is skipped). Borders are weighted to stay.
 // build: g++ -O2 -o /tmp/decimate tools/decimate.cpp
-// io (little-endian, stdin -> stdout): int nv, float pos[nv*3], int nf, int idx[nf*3], float uv[nf*3*2], int target
+// io (little-endian, stdin -> stdout): int nv, float pos[nv*3], int nf, int idx[nf*3], float uv[nf*3*2], int target [, int relax]
+// relax=1: a corner whose texture chart does not reach the target keeps its own uv (small smears; fine for far detail levels)
 //                                      out: int nf, int idx[nf*3], float uv[nf*3*2]
 #include <cstdio>
 #include <cstdlib>
@@ -36,6 +37,7 @@ static void fnorm(int a, int b, int c, double* n) {
     double e1[3] = {B[0]-A[0], B[1]-A[1], B[2]-A[2]}, e2[3] = {C[0]-A[0], C[1]-A[1], C[2]-A[2]};
     n[0] = e1[1]*e2[2]-e1[2]*e2[1]; n[1] = e1[2]*e2[0]-e1[0]*e2[2]; n[2] = e1[0]*e2[1]-e1[1]*e2[0];
 }
+static int RELAX = 0;
 static bool sameuv(const float* a, const float* b) { return fabs(a[0]-b[0]) < 1e-6 && fabs(a[1]-b[1]) < 1e-6; }
 
 // can u move onto v?  fills the uv remap pairs (uv of u in a chart -> uv of v in that chart)
@@ -64,7 +66,7 @@ static bool valid(int u, int v, vector<float>& remap) {
         if (l0 > 1e-14 && (n0[0]*n1[0]+n0[1]*n1[1]+n0[2]*n1[2]) / (l0*l1) < 0.3) return false;  // no flips
         const float* a = &UV[(f*3+ku)*2]; bool ok = false;
         for (size_t i = 0; i < remap.size(); i += 4) if (sameuv(a, &remap[i])) { ok = true; break; }
-        if (!ok) return false;  // this chart does not reach v: the UV would have to be invented
+        if (!ok && !RELAX) return false;  // this chart does not reach v: the UV would have to be invented (relaxed: keep u's uv)
     }
     return true;
 }
@@ -85,7 +87,7 @@ template <class T> static void rd(T* p, size_t n) { if (fread(p, sizeof(T), n, s
 int main() {
     rd(&nv, 1); vector<float> pf(nv*3); rd(pf.data(), pf.size()); P.assign(pf.begin(), pf.end());
     rd(&nf, 1); F.resize(nf*3); rd(F.data(), F.size()); UV.resize(nf*6); rd(UV.data(), UV.size());
-    int target; rd(&target, 1);
+    int target; rd(&target, 1); if (fread(&RELAX, 4, 1, stdin) != 1) RELAX = 0;
     fdead.assign(nf, 0); vdead.assign(nv, 0); VF.resize(nv); VQ.resize(nv); stamp.assign(nv, 0);
     for (int f = 0; f < nf; f++) {
         int a = F[f*3], b = F[f*3+1], c = F[f*3+2];
