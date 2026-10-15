@@ -34,9 +34,9 @@ NPCS = [
     # ---- social: in town, chatty
     ('Bramblefoot', 0, 'social', 0, 'cs_laser_grid', 'sword'),
     ('Kettle Kate', 1, 'social', 0, 'cs_pond_lily', 'bstaff'),
-    ('Sir Hodlington', 0, 'social', 0, 'cape_at', 'isword'),
-    ('Pixel Pete', 0, 'social', 0, 'cs_shades_on', 'club'),
-    ('Mossy Meg', 1, 'social', 0, 'cs_jungle_leaves', 'axe'),
+    ('Sir Hodlington', 0, 'social', 5, 'cape_at', 'isword'),
+    ('Pixel Pete', 0, 'social', 3, 'cs_shades_on', 'club'),
+    ('Mossy Meg', 1, 'social', 6, 'cs_jungle_leaves', 'axe'),
     ('Wen Wally', 0, 'social', 1, 'cs_wen_lambo', 'sword'),
     ('Froggy Fran', 1, 'social', 2, 'cs_pond_lily', 'net'),
     ('Chartwell', 0, 'social', 3, 'cs_stonks_arrow', 'isword'),
@@ -49,7 +49,7 @@ NPCS = [
     ('Oakley', 1, 'chop', 1, '', 'axe'),
     ('Barky Bo', 0, 'chop', 2, 'cs_comfy_knit', 'axe'),
     ('Willow Wyn', 1, 'chop', 3, '', 'axe'),
-    ('Splinters', 0, 'chop', 0, 'cs_rug_fringe', 'axe'),
+    ('Splinters', 0, 'chop', 7, 'cs_rug_fringe', 'axe'),
     ('Pinecone Pam', 1, 'chop', 6, 'cs_hodl_frost', 'axe'),
     ('Captain Cast', 0, 'fish', 2, 'cape_fi', 'net'),
     ('Reel Rita', 1, 'fish', 0, 'cs_whale_waves', 'net'),
@@ -57,7 +57,7 @@ NPCS = [
     ('Nets Nora', 1, 'fish', 2, 'cs_pond_lily', 'net'),
     ('Bait Boris', 0, 'fish', 7, 'cs_rocket_trail', 'net'),
     ('Rocky Rae', 1, 'mine', 4, 'cs_copium_crystal', 'pick'),
-    ('Dusty Dan', 0, 'mine', 0, 'cape_mi', 'pick'),
+    ('Dusty Dan', 0, 'mine', 2, 'cape_mi', 'pick'),
     ('Pebble Pip', 1, 'mine', 3, '', 'pick'),
     ('Gravel Greg', 0, 'mine', 5, 'cs_bonk_stripes', 'pick'),
     ('Ore-ville', 0, 'mine', 1, 'cs_chad_marble', 'pick'),
@@ -90,7 +90,7 @@ const wndN=()=>{const c=window.MC_CONFIG&&MC_CONFIG.wanderers;return c==null?WND
 function wndRng(s){return()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff}}
 function wndHome(i){if(!i)return[(GT.x0+GT.x1)/2|0,(GT.y0+GT.y1)/2|0];const t=TW[(i-1)%TW.length];return[t.cx|0,t.cy|0]}
 function wndFree(x,y,r,R){for(let k=0;k<80;k++){const a=R()*6.283,d=R()*r,tx=Math.round(x+Math.cos(a)*d),ty=Math.round(y+Math.sin(a)*d);if(!solid(tx,ty))return[tx,ty]}return[x,y]}
-function wndInit(){WNDok=1;WNDD.forEach((d,i)=>{const R=wndRng(7919*(i+3)),hm=wndHome(d[3]),p=wndFree(hm[0],hm[1],d[2]=='social'?7:12,R);
+function wndInit(){WNDok=1;WNDD.forEach((d,i)=>{const R=wndRng(7919*(i+3)),hm=wndHome(d[3]),p=wndFree(hm[0],hm[1],d[2]=='social'?13:14,R);
  WND.push({i,id:'wnd'+i,lv:3+((R()*55)|0),n:d[0],g:d[1],role:d[2],home:d[3],hm,cape:d[4],w:d[5],lines:d[6],R,x:p[0],y:p[1],px:p[0],py:p[1],r:R()*6.283,path:[],st:'idle',until:0,emo:null,next:performance.now()+15000+Math.random()*75000,greet:-1e9,act:null})})}
 // a short walk: breadth-first search inside a box around the start (never far, never through walls or water)
 const WNDP=new Int32Array(W*H).fill(-1);
@@ -100,8 +100,9 @@ function wndPath(sx,sy,goal,box){const s=sy*W+sx,q=[s],seen=[s];WNDP[s]=s;let f=
 function wndNear(list,x,y,r){let b=null,bd=r*r;for(const o of list){if(o.gone||o.dead)continue;const d=(o.x-x)**2+(o.y-y)**2;if(d<bd){bd=d;b=o}}return b}
 const WNDA={chop:['Chop','axe',()=>trees],fish:['Fish','net',()=>fish],mine:['Mine','pick',()=>rocks]};
 function wndPlan(o,now){const R=o.R;o.act=null;o.emo=null;
- if(o.role=='social'){if(R()<.35){o.st='emote';o.emo={n:WNDE[(R()*WNDE.length)|0],t0:now};o.until=now+3500+R()*2500;return}
-  const t=wndFree(o.hm[0],o.hm[1],9,R);o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>x==t[0]&&y==t[1],16);o.st=o.path.length?'walk':'idle';o.until=now+4000+R()*9000;return}
+ if(o.role=='social'){if(R()<.3){o.st='emote';o.emo={n:WNDE[(R()*WNDE.length)|0],t0:now};o.until=now+3500+R()*2500;return}
+  if(R()<.35){o.st='idle';o.tr=R()*6.283;o.until=now+8000+R()*14000;return}
+  const t=wndFree(o.hm[0],o.hm[1],16,R);o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>x==t[0]&&y==t[1],30);o.st=o.path.length?'walk':'idle';o.until=now+9000+R()*16000;return}
  if(o.role=='travel'){const k=1+((R()*TW.length)|0),t=wndHome(R()<.25?0:k);const dx=t[0]-o.x,dy=t[1]-o.y,L=Math.hypot(dx,dy)||1,s=Math.min(40,L),gx=Math.round(o.x+dx/L*s),gy=Math.round(o.y+dy/L*s);
   o.path=wndPath(Math.round(o.x),Math.round(o.y),(x,y)=>Math.abs(x-gx)<=3&&Math.abs(y-gy)<=3,44);o.st=o.path.length?'walk':'idle';o.until=now+2000+R()*6000;if(!o.path.length)o.hm=wndHome(k);return}
  const A=WNDA[o.role],res=wndNear(A[2](),o.hm[0]+(R()-.5)*16,o.hm[1]+(R()-.5)*16,30);

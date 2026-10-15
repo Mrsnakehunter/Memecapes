@@ -30,6 +30,12 @@ _Last updated: October 14, 2026_
 - **Bigger bag:** 35 slots (5 across, 7 down), up from 28.
 - **All 13 weapons and tools in the character's hands:** bronze, iron and blue-steel swords, bronze and iron axes and pickaxes, bonk club, nail bat, swamp staff, cyber staff, the endless scroll, and the kite shield on the left arm. They follow the hands through the walk and run animations.
 
+## Shipped October 14, 2026 (evening): online first, a calmer town square (live)
+
+- **Online is now the way in.** The start screen leads with "Play Online: Create Account" and "Log in". The browser-only ways to play are folded under "Play offline instead (nobody else can see you)", so nobody ends up alone by accident. Already played offline? Create an account and tick "bring my progress".
+- **You always know if you're online.** A small sign at the top of the screen says "Online" with how many players are on, or "Offline: other players can't see you" with a button to go online.
+- **A calmer Gigachad Town.** Fewer bots hang around the starting town (5 instead of 10; the others moved to the meme towns), and the ones that stay wander the whole town and stop to chat and look around instead of pacing one spot.
+
 ## Shipped October 14, 2026: Play, Watch, Stream, Launch (live)
 
 - **The home page now opens on four words:** PLAY, WATCH, STREAM and LAUNCH, beside the floating Meme Cape. Each one is a door into a side of memecapes.com.
