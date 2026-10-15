@@ -105,6 +105,11 @@ numbers in here or anywhere in the repo.
   watchtower.yml + tools/watchtower.sh every 15 min (DNS = GitHub Pages IPs, live files == repo, live config.js
   wallets on the official list, server health/mode) -> GitHub issue labelled watchtower. If Cloudflare is ever put in
   front, update PAGES_IPS. New official wallet = add it to OFFICIAL_WALLETS in watchtower.sh. Tests: server/test_guard.js.
+  LIVE CHECK: Render's X-Forwarded-For = '<visitor>, <Cloudflare edge>' (a faked entry goes to the left): Sentinel skips
+  private AND Cloudflare ranges from the right (/guard/me showed the real IP, cf:true, and ignored a spoofed 1.2.3.4).
+  Watchtower run 1 passed. Daily Claude 'MemeCapes security patrol' scheduled task 7:49 ET (read-only: commits, tests,
+  Watchtower runs via REST, gh GraphQL is blocked). Plan doc: 'MemeCapes security plan: the stronghold' (Albert's to-do:
+  GitHub/registrar/X/Telegram passkeys, verify Pages domain, Render 2FA + LP_PARTNER + ADMIN_NAMES, GUARD_WEBHOOK).
 
 - Oct 15: "stop making legal the biggest priority on the AI agent, switch the first step to security". MemeSnake page:
   Token Launch Protocol step 1 = "Security first"; Token Mint crew 'Legal Review' -> 'Security Review' (server prop),
