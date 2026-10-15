@@ -90,6 +90,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 14 evening: "too many bots at the start point walking the same spots; my coworker and I can't see each other, is the
+  server live?". Server WAS live (health ok, socket opens). Cause: the start screen's offline buttons (Create Account,
+  Guest, Random, Continue as) look like the online ones and nothing in game said offline. tools/patch_online.py: online
+  buttons first, offline folded into <details class="onoff">; #onchip "Online · N players" / "Offline: … Play online" /
+  "Reconnecting". Bots: GT homes 10 -> 5 (moved to towns 2,3,5,6,7), social bots wander 16 tiles, idle 8-22 s.
+  Test: scratch/online_e2e.py (local server :18902, site_t/t.html = preview + window.__H hook, never pushed): two
+  players register and see each other (PASS). Shipped.
+
 - Oct 14, streamer pass: "charge them a flat 20 dollars a month for being able to stream". config.js launchpad.streamPassUsd 20,
   streamPassDays 30, streamPassWallet "" (= the launchpad fee wallet). Server (social.js): so_pass(wallet, until) +
   so_pass_pay(sig…); GET /st/pass quotes the SOL amount at the live coingecko price (held 15 min per wallet, fallback
