@@ -90,6 +90,11 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 15: "the game is drowning out the other stuff": site menu is now Play / Watch / Stream / Launch / AI Agent
+  (+ the gold Play free button). Play is a <details class="nvg"> dropdown holding all the game pages (Home, Story, NPCs,
+  Items, Towns, Quests, Meme Capes, Roadmap, $CAPES, Shop, FAQ). AI Agent = memesnake/. Phone: nav .in wraps (it didn't,
+  so the open menu sat beside the logo). Site tests: accept the age gate first (localStorage mc_gate_<termsVersion>='yes').
+
 - Oct 14 night: Albert sent two files with no message: the MemeSnake agent prompt (an AI "boss agent" he runs on
   StarNet; it writes feed.json for a public "MemeSnake Live" page at memecapes.com) and that page's HTML. The HTML
   arrived cut off at exactly 100,000 characters, inside the base64 logo: only the CSS and the top of the page made it,

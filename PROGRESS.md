@@ -2,6 +2,10 @@
 
 _Last updated: October 14, 2026_
 
+## Oct 15, 2026: a simpler menu
+
+The website menu now has five things: Play, Watch, Stream, Launch and AI Agent. All the game pages (story, NPCs, items, towns, quests, capes, roadmap, $CAPES, shop and FAQ) live inside Play.
+
 ## Where to look
 
 - **Website:** [memecapes.com](https://memecapes.com/), the game's own address (the old github.io link now sends you here).
