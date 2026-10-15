@@ -90,6 +90,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 14 night: Albert sent two files with no message: the MemeSnake agent prompt (an AI "boss agent" he runs on
+  StarNet; it writes feed.json for a public "MemeSnake Live" page at memecapes.com) and that page's HTML. The HTML
+  arrived cut off at exactly 100,000 characters, inside the base64 logo: only the CSS and the top of the page made it,
+  and the logo decodes to its top 2/3. Built memesnake.html with his CSS as is, my own body + script, and the logo top
+  faded to black (mix-blend screen hides black). Feed lives on the game server: server/memesnake.js, GET /ms/feed,
+  POST /ms/feed with Bearer MEMESNAKE_KEY (Render env, Albert makes it; we never see it). A whole feed.json replaces
+  the feed, {log:[...]} adds entries; parts/statuses whitelisted, newest 50, and anything with a money amount, a
+  base58/hex key-looking string or "seed phrase/private key/password" is dropped with a note (his own rules).
+  ?demo=1 shows clearly labelled sample entries. Waiting on: full logo as an image file, MEMESNAKE_KEY on Render,
+  whether to link the page from the site.
+
 - Oct 14 late: "make the bots look 100% like real characters (the site discloses them), a little spaced out". Gaps found:
   bot names had spaces (real usernames can't), tags/chat names not clickable, capes skipped on the blocky body, no
   render flag, 2.3 tiles/s (real: 1.67 walk, 3.33 run) - and real players looked WORSE (others drew them bare-handed in

@@ -748,12 +748,15 @@ setInterval(backup, 3600e3); setTimeout(backup, 5000);
 
 // ---------- Launchpad (server/launchpad.js): coin pictures, metadata and the list of coins launched on memecapes.com ----------
 const LP = require('./launchpad')({ db, DATA, now, tooMany, say, online, sigOk, base: process.env.RENDER_EXTERNAL_URL });
+// ---------- MemeSnake Live (server/memesnake.js): the AI agent's public activity feed ----------
+const MS = require('./memesnake')({ DATA });
 
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   const json = (o, s) => { res.writeHead(s || 200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }); res.end(JSON.stringify(o, null, 1)); };
   if (url.pathname.startsWith('/lp/') || url.pathname.startsWith('/so/') || url.pathname.startsWith('/st/')) { try { if (await LP.http(req, res, url, json) !== false) return; } catch (e) { console.error('lp', e); return json({ error: 'Server error.' }, 500); } }
+  if (url.pathname === '/ms/feed') { try { if (await MS.http(req, res, url, json) !== false) return; } catch (e) { console.error('ms', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname.startsWith('/burnad')) { try { if (await baHttp(req, res, url, json) !== false) return; } catch (e) { console.error('burnad', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, online: online.size });
   if (url.pathname === '/partners') return json(partnersLive());

@@ -35,6 +35,8 @@ services:
         value: "0"
       - key: LP_PARTNER         # launchpad fee wallet (public address); empty = the one in config.js
         sync: false
+      - key: MEMESNAKE_KEY      # the key the MemeSnake agent posts its live feed with (memesnake.html); you make it up
+        sync: false
       - key: CF_ACCOUNT_ID      # Cloudflare Stream, for live video on Watch/Stream; empty = video off, the rest works
         sync: false
       - key: CF_STREAM_TOKEN
