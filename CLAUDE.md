@@ -90,6 +90,22 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 15: "make the site almost impenetrable, a bunker, fail-safes, an AI bot protecting us at all times". Built:
+  server/sentinel.js (G): real IP = right-most public X-Forwarded-For entry (Render appends; visitors can spoof the left;
+  PROXY_HOPS overrides); per-IP GET/POST buckets, strikes -> blocks 10 min/1 h/6 h/1 day; TRAP regex for probe paths;
+  8 wrong passwords lock a name 15 min; constant-time admin key; 8 WS per IP; 2-min sign-in timeout; WS fragment cap;
+  modes normal/shield/lockdown (G.allow(kind); 'pay' always allowed), auto-shield at 25 blocks/10 min for 30 min;
+  disk guard (<12% free pauses uploads); config.js wallet-change alarm; alerts in game + GUARD_WEBHOOK/GUARD_TG_*.
+  /guard in game, /admin/guard, /guard/me (shows your IP + hop count: use it to check the proxy setup). Fixes from the
+  audit: devnet payments refused for pass/tips/subs (ALLOW_DEVNET_PAY=1 for testing), nonces per wallet (5),
+  so_sessions hashed, /lp/register requires our own metadata URI, javascript: links blocked, fee-split addresses
+  shown in full, pass recipient checked against config.js, Jupiter plugin replaced by a jup.ag link-out, iframes
+  sandboxed, frame-buster in gate.js, CSP meta on launch.html (no inline scripts there: keep it that way),
+  tools/patch_security.py (game esc() escapes quotes, chat colours must be #hex). Watchtower: .github/workflows/
+  watchtower.yml + tools/watchtower.sh every 15 min (DNS = GitHub Pages IPs, live files == repo, live config.js
+  wallets on the official list, server health/mode) -> GitHub issue labelled watchtower. If Cloudflare is ever put in
+  front, update PAGES_IPS. New official wallet = add it to OFFICIAL_WALLETS in watchtower.sh. Tests: server/test_guard.js.
+
 - Oct 15: "stop making legal the biggest priority on the AI agent, switch the first step to security". MemeSnake page:
   Token Launch Protocol step 1 = "Security first"; Token Mint crew 'Legal Review' -> 'Security Review' (server prop),
   room tag + demo samples say security; feed.json crew renamed. Albert's StarNet prompt must use 'Security Review' too

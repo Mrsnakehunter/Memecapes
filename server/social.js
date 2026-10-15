@@ -18,7 +18,10 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-module.exports = function social({ db, now, tooMany, sigOk, say, online, rpc, b58d, PUBLIC, IMG_DIR, coinGet, netOf }) {
+module.exports = function social({ db, now, tooMany, sigOk, say, online, rpc, b58d, PUBLIC, IMG_DIR, coinGet, netOf, G }) {
+  // money is only counted on mainnet: devnet SOL is free, so a devnet payment must never buy a pass or show as a real tip
+  const PAY_DEVNET = process.env.ALLOW_DEVNET_PAY === '1';
+  const tokHash = t => crypto.createHash('sha256').update(String(t)).digest('hex');
   const WHALE = +process.env.LP_WHALE_SOL || 1;                      // a buy this big (SOL) is a "whale buy" in the feed
   const CF = { acct: process.env.CF_ACCOUNT_ID || '', token: process.env.CF_STREAM_TOKEN || '', code: process.env.CF_CUSTOMER_CODE || '' };
   const STREAMING = !!(CF.acct && CF.token);
@@ -93,7 +96,7 @@ CREATE TABLE IF NOT EXISTS so_pass_pay(sig TEXT PRIMARY KEY, wallet TEXT, sol RE
   const isW = w => /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(w || '') && (b58d(w) || []).length === 32;
   const link = (s) => { s = String(s || '').trim(); return /^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(\/[^\s<>"']*)?$/i.test(s) ? s.slice(0, 200) : ''; };
   const body = (req, max) => new Promise((ok, no) => { let n = 0; const parts = []; req.on('data', d => { n += d.length; if (n > max) { no(new Error('too big')); req.destroy(); } else parts.push(d); }); req.on('end', () => { try { ok(JSON.parse(Buffer.concat(parts).toString('utf8') || '{}')); } catch (e) { no(e); } }); req.on('error', no); });
-  const who = (req) => { const m = /^Bearer ([a-f0-9]{48})$/.exec(req.headers.authorization || ''); const r = m && Q.sesGet.get(m[1], now() - 30 * 864e5); return r ? r.wallet : ''; };
+  const who = (req) => { const m = /^Bearer ([a-f0-9]{48})$/.exec(req.headers.authorization || ''); const r = m && Q.sesGet.get(tokHash(m[1]), now() - 30 * 864e5); return r ? r.wallet : ''; };   // sessions are kept as a hash: a copy of the database can't sign anyone in
   const prof = (w) => { const p = Q.profGet.get(w) || {}; return { wallet: w, name: p.name || '', about: p.about || '', x: p.x || '', avatar: p.avatar || '' }; };
   const chPub = (c) => c ? { wallet: c.wallet, name: c.name, about: c.about, category: c.category, subSol: c.subSol, live: !!c.live, title: c.title, mode: c.mode, playKind: c.playKind, playUrl: c.playUrl, mint: c.mint, startedAt: c.startedAt, viewers: viewersOf(c.wallet) } : null;
   const passUntil = (w) => { const r = Q.passGet.get(w); return r ? r.until : 0; };
@@ -125,7 +128,7 @@ CREATE TABLE IF NOT EXISTS so_pass_pay(sig TEXT PRIMARY KEY, wallet TEXT, sol RE
   }
 
   async function http(req, res, url, json) {
-    const p = url.pathname, ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    const p = url.pathname, ip = req.ip || G.ipOf(req);
     const net = url.searchParams.get('net') === 'devnet' ? 'devnet' : 'mainnet';
     if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' }); return res.end(); }
     let m; const me = who(req);
@@ -171,20 +174,24 @@ CREATE TABLE IF NOT EXISTS so_pass_pay(sig TEXT PRIMARY KEY, wallet TEXT, sol RE
     if (req.method !== 'POST') return false;
     let b; try { b = await body(req, 1.5 * 1024 * 1024); } catch (e) { return json({ error: 'Too big.' }, 400); }
     const bnet = b.net === 'devnet' ? 'devnet' : 'mainnet';
+    if (bnet === 'devnet' && !PAY_DEVNET && (p === '/st/tip' || p === '/st/sub' || p === '/st/pass')) return json({ error: 'Payments count on Solana mainnet only.' }, 400);
     // ---- sign in: sign a short message in your wallet (not a transaction; nothing moves)
     if (p === '/so/nonce') {
       const w = String(b.wallet || ''); if (!isW(w)) return json({ error: 'That is not a Solana wallet address.' }, 400);
+      if (!G.allow('wallet-login')) return json({ error: G.pausedMsg() }, 503);
       if (tooMany('son' + ip)) return json({ error: 'Too many tries. Wait a few minutes.' }, 429);
-      const msg = 'Sign in to MemeCapes\n\nWallet: ' + w + '\nCode: ' + crypto.randomBytes(8).toString('hex') + '\nTime: ' + new Date().toISOString() + '\n\nThis is not a transaction. Nothing leaves your wallet.';
-      nonces.set(w, { msg, t: now() }); return json({ msg });
+      const msg = 'Sign in to MemeCapes\n\nSite: memecapes.com\nWallet: ' + w + '\nCode: ' + crypto.randomBytes(8).toString('hex') + '\nTime: ' + new Date().toISOString() + '\n\nThis is not a transaction. Nothing leaves your wallet.';
+      // up to 5 open sign-in messages per wallet, so nobody can cancel someone else's sign-in by asking for a new one
+      if (nonces.size > 50000) nonces.clear();
+      const L = (nonces.get(w) || []).filter(n => now() - n.t < 10 * 60e3).slice(-4); L.push({ msg, t: now() }); nonces.set(w, L); return json({ msg });
     }
     if (p === '/so/login') {
-      const w = String(b.wallet || ''), n = nonces.get(w);
-      if (!n || now() - n.t > 10 * 60e3 || !sigOk(w, n.msg, b.sig)) return json({ error: 'The signature did not match. Try signing in again.' }, 400);
-      nonces.delete(w); const token = crypto.randomBytes(24).toString('hex'); Q.sesAdd.run(token, w, now());
+      const w = String(b.wallet || ''), L = (nonces.get(w) || []).filter(n => now() - n.t < 10 * 60e3), n = L.find(x => sigOk(w, x.msg, b.sig));
+      if (!n) { G.strike(ip, 'bad wallet signature', 2); return json({ error: 'The signature did not match. Try signing in again.' }, 400); }
+      nonces.delete(w); const token = crypto.randomBytes(24).toString('hex'); Q.sesAdd.run(tokHash(token), w, now());
       return json({ token, wallet: w, ...prof(w), channel: chPub(Q.chGet.get(w)) });
     }
-    if (p === '/st/watch') { const ch = String(b.channel || ''); if (!isW(ch)) return json({ error: 'bad channel' }, 400); if (!watchers.has(ch)) watchers.set(ch, new Map()); watchers.get(ch).set(ip, now()); return json({ viewers: viewersOf(ch) }); }
+    if (p === '/st/watch') { const ch = String(b.channel || ''); if (!isW(ch) || !Q.chGet.get(ch)) return json({ error: 'bad channel' }, 400); if (!watchers.has(ch)) watchers.set(ch, new Map()); watchers.get(ch).set(ip, now()); return json({ viewers: viewersOf(ch) }); }
     // ---- payments to a channel: checked on-chain, recorded, never routed through us
     if (p === '/st/tip' || p === '/st/sub') {
       const ch = Q.chGet.get(String(b.channel || '')); if (!ch) return json({ error: 'No such channel.' }, 404);
@@ -199,11 +206,14 @@ CREATE TABLE IF NOT EXISTS so_pass_pay(sig TEXT PRIMARY KEY, wallet TEXT, sol RE
     if (!me) return json({ error: 'Sign in with your wallet first.' }, 401);
     // ---- signed-in writes
     if (p === '/so/profile') {
+      if (!G.allow('profile')) return json({ error: G.pausedMsg() }, 503);
+      if (b.avatar && (tooMany('soa' + me) || !G.allow('upload'))) return json({ error: 'Too many picture changes. Wait a few minutes.' }, 429);
       let avatar = null; const mm = /^data:(image\/(?:png|jpeg|webp));base64,([A-Za-z0-9+/=]+)$/.exec(String(b.avatar || ''));
       if (mm) { const raw = Buffer.from(mm[2], 'base64'); if (raw.length > 600 * 1024) return json({ error: 'Picture too big (600 KB max).' }, 400); const ext = mm[1] === 'image/png' ? 'png' : mm[1] === 'image/webp' ? 'webp' : 'jpg', id = crypto.randomBytes(12).toString('hex'); fs.writeFileSync(path.join(IMG_DIR, id + '.' + ext), raw); avatar = PUBLIC + '/lp/img/' + id + '.' + ext; }
       Q.profSet.run(me, clean(b.name, 24), clean(b.about, 200), link(b.x), avatar, now()); return json(prof(me));
     }
     if (p === '/so/post') {
+      if (!G.allow('post')) return json({ error: G.pausedMsg() }, 503);
       if (tooMany('sop' + me) || Q.postsByIp.get(me, now() - 3600e3).n >= 30) return json({ error: 'Slow down: 30 posts an hour.' }, 429);
       const text = clean(b.text, 280); if (text.length < 1) return json({ error: 'Write something first.' }, 400);
       const mint = b.mint && coinGet.get(String(b.mint), bnet) ? String(b.mint) : '', reply = (+b.reply > 0 && Q.postGet.get(+b.reply)) ? +b.reply : 0;
@@ -230,6 +240,7 @@ CREATE TABLE IF NOT EXISTS so_pass_pay(sig TEXT PRIMARY KEY, wallet TEXT, sol RE
       return json({ ok: true, until, active: true });
     }
     if (p === '/st/golive') {
+      if (!G.allow('golive')) return json({ error: G.pausedMsg() }, 503);
       const c = Q.chGet.get(me); if (!c) return json({ error: 'Set up your channel first.' }, 400);
       if (!passOn(me)) return json({ error: 'You need a streamer pass to go live: $' + PASS.usd + ' for ' + PASS.days + ' days, paid from your wallet.', pass: true }, 402);
       if (!STREAMING) return json({ error: 'Live video is not switched on yet. Your channel is saved; you will be able to go live as soon as it is.' }, 503);
@@ -243,7 +254,8 @@ CREATE TABLE IF NOT EXISTS so_pass_pay(sig TEXT PRIMARY KEY, wallet TEXT, sol RE
     }
     if (p === '/st/end') { const c = Q.chGet.get(me); if (c && c.cfUid) cfDelete(c.cfUid); Q.chEnd.run(me); return json({ ok: true }); }
     if (p === '/st/chat') {
-      const ch = String(b.channel || ''), text = clean(b.text, 200); if (!isW(ch) || !text) return json({ error: 'bad' }, 400);
+      if (!G.allow('post')) return json({ error: G.pausedMsg() }, 503);
+      const ch = String(b.channel || ''), text = clean(b.text, 200); if (!isW(ch) || !text || !Q.chGet.get(ch)) return json({ error: 'bad' }, 400);
       if (tooMany('soc' + me)) return json({ error: 'Slow down.' }, 429);
       const r = Q.chatAdd.run(ch, me, text, now()); return json({ id: Number(r.lastInsertRowid) });
     }

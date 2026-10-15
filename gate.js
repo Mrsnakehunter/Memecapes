@@ -1,5 +1,8 @@
 /* The front door: 18+ and agreement to the Terms and Privacy Policy, before the website or the game opens.
    Remembered per browser; asked again whenever MC_CONFIG.termsVersion changes. */
+// No other website may show memecapes.com inside a frame (that is how click-tricks work): if it tries, the page hides
+// and opens on its own.
+(function () { try { if (window.top !== window.self) { document.documentElement.style.display = 'none'; window.top.location = window.self.location.href; } } catch (e) { } })();
 (function () {
   var C = window.MC_CONFIG || {}, V = 'mc_gate_' + (C.termsVersion || '1');
   var page = (location.hash || '').slice(1);

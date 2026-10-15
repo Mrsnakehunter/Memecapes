@@ -236,7 +236,7 @@
   }
   // a trade, with the coin's face and the trader's cape
   function tradeRow(t, withCoin, noWho) {
-    return `<div class="tr">${noWho ? '' : (LPSO ? LPSO.avatar(t.trader, 'av') : '')}<span class="${t.buy ? 'up' : 'dn'}">${t.buy ? 'Bought' : 'Sold'}</span> <b class="num">${sol(t.sol)}</b>${withCoin ? ` of <a class="cchip" href="#/coin/${esc(t.mint)}">${coinFace(t)}$${esc(t.symbol)}</a>` : ` <span class="mute">for ${Math.round(t.tokens).toLocaleString()}</span>`}${noWho ? '' : ` <a class="addr" href="#/u/${esc(t.trader)}">${LPSO && LPSO.nameOf(t.trader) || short(t.trader)}</a>`}<span class="t">${ago(t.t)}</span></div>`;
+    return `<div class="tr">${noWho ? '' : (LPSO ? LPSO.avatar(t.trader, 'av') : '')}<span class="${t.buy ? 'up' : 'dn'}">${t.buy ? 'Bought' : 'Sold'}</span> <b class="num">${sol(t.sol)}</b>${withCoin ? ` of <a class="cchip" href="#/coin/${esc(t.mint)}">${coinFace(t)}$${esc(t.symbol)}</a>` : ` <span class="mute">for ${Math.round(t.tokens).toLocaleString()}</span>`}${noWho ? '' : ` <a class="addr" href="#/u/${esc(t.trader)}">${esc(LPSO && LPSO.nameOf(t.trader) || short(t.trader))}</a>`}<span class="t">${ago(t.t)}</span></div>`;
   }
   let LPSO = null;   // set by lp/social.js
   // ---- one coin
@@ -246,25 +246,26 @@
     const client = LPC.dbc();
     const vp = await client.state.getPool(PK(c.pool)); if (!vp) throw new Error('This coin\'s pool was not found on Solana.');
     const cfg = await client.state.getPoolConfig(ps(vp).config);
-    let meta = {}; try { meta = await (await fetch(c.uri)).json(); } catch (e) { }
+    // the coin's details are read only from our own server (never from an address someone else controls)
+    let meta = {}; try { if (SRV && String(c.uri || '').startsWith(SRV + '/lp/meta/')) meta = await (await fetch(c.uri)).json(); } catch (e) { }
     const s = stats({ pool: vp, config: cfg }), plan = (meta.memecapes || {});
     const fees = feeInfo(cfg);
     const me = LPC.me(), isCreator = me && me.address === c.creator;
-    const links = [['website', 'Website'], ['twitter', 'X'], ['telegram', 'Telegram']].filter(([k]) => meta[k]).map(([k, t]) => `<a href="${esc(meta[k])}" target="_blank" rel="noopener nofollow">${t}</a>`).join(' · ');
+    const links = [['website', 'Website'], ['twitter', 'X'], ['telegram', 'Telegram']].filter(([k]) => /^https:\/\/[^\s"'<>]+$/i.test(String(meta[k] || ''))).map(([k, t]) => `<a href="${esc(meta[k])}" target="_blank" rel="noopener nofollow">${t}</a>`).join(' · ');
     const h = c.hour || {}, streams = c.streams || [];
     app.innerHTML = `<div class="cgrid"><div>
       <div class="chero"><div class="coin3d">${stamp(c, s.prog, { heat: s.migrated ? 0 : heatOf(c), grad: s.migrated })}</div><div><h1>${esc(c.name)}</h1><div class="sub"><b style="font-size:18px">$${esc(c.symbol)}</b> ${c.verified ? '<span class="badge v" title="Checked by the MemeCapes team">Verified</span>' : ''} ${s.migrated ? '<span class="badge g">Graduated</span>' : ''} ${c.reports > 2 ? '<span class="badge r">Reported</span>' : ''}${streams.length ? ' <a class="badge live" href="#/ch/' + esc(streams[0].wallet) + '" style="text-decoration:none">LIVE: ' + esc(streams[0].name) + '</a>' : ''}</div>
-        <div class="small mute">Launched ${ago(c.t)} by ${LPSO ? LPSO.avatar(c.creator, 'xs') : ''} <a href="#/u/${esc(c.creator)}" class="addr">${(LPSO && LPSO.nameOf(c.creator)) || short(c.creator)}</a>${links ? ' · ' + links : ''}</div>
+        <div class="small mute">Launched ${ago(c.t)} by ${LPSO ? LPSO.avatar(c.creator, 'xs') : ''} <a href="#/u/${esc(c.creator)}" class="addr">${esc((LPSO && LPSO.nameOf(c.creator)) || short(c.creator))}</a>${links ? ' · ' + links : ''}</div>
         <div class="small" style="margin-top:6px"><b class="num">${h.trades | 0}</b> trades and <b class="num">${sol(h.volume || 0)}</b> in the last hour · <b class="num">${c.traders | 0}</b> traders in all ${sparkline(c.spark, 120, 30).replace('class="spark"', 'class="spark" style="display:inline-block;vertical-align:middle;margin:0 0 0 8px"')}</div></div></div>
       ${streams.length ? streams.map(st => `<div class="panel cstream" style="margin-top:14px;padding:0;overflow:hidden"><div id="cstream-${esc(st.wallet)}"></div><div style="padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="badge live">LIVE</span><b>${esc(st.title || st.name)}</b><span class="mute small">${esc(st.name)} · ${st.viewers} watching</span><span class="sp"></span><a class="btn sm line" href="#/ch/${esc(st.wallet)}">Open the stream</a></div></div>`).join('') : ''}
       <div class="stats num"><div class="stat"><span>Market cap</span><b>${usd(s.mcapUsd)}</b></div><div class="stat"><span>Price</span><b>${s.price < 0.000001 ? s.price.toExponential(2) : s.price.toFixed(9)} SOL</b></div>
         <div class="stat"><span>Raised on the curve</span><b>${sol(s.raised)}</b></div><div class="stat"><span>Fees paid so far</span><b>${sol(s.volume)}</b></div></div>
       ${s.migrated ? '<div class="ok">This coin graduated: it trades in a Meteora pool with its liquidity locked for good.</div>' : `<div><b>${pct(s.prog * 100)}</b> of the way to graduation <span class="mute">(${sol(s.raised)} of ${sol(s.goal)})</span><div class="crucible"><i style="width:${(s.prog * 100).toFixed(1)}%"></i></div><span class="mute small">At ${sol(s.goal)} the coin moves to a Meteora pool and its liquidity is locked for good.</span></div>`}
       <div class="panel" id="early" style="margin-top:16px"><h3>Launch check</h3><div class="small mute">Checking who bought first…</div></div>
-      <div class="panel" style="padding:0;overflow:hidden"><iframe class="chart" title="Price chart" loading="lazy" src="https://dexscreener.com/solana/${esc(s.migrated ? c.mint : c.pool)}?embed=1&loadChartSettings=0&trades=0&tabs=0&info=0&chartLeftToolbar=0&chartTheme=dark&theme=dark&chartStyle=1&chartType=usd&interval=5"></iframe></div>
+      <div class="panel" style="padding:0;overflow:hidden"><iframe class="chart" title="Price chart" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups" referrerpolicy="no-referrer" src="https://dexscreener.com/solana/${esc(s.migrated ? c.mint : c.pool)}?embed=1&loadChartSettings=0&trades=0&tabs=0&info=0&chartLeftToolbar=0&chartTheme=dark&theme=dark&chartStyle=1&chartType=usd&interval=5"></iframe></div>
       ${meta.description ? `<div class="panel"><h3>About</h3><p style="white-space:pre-wrap;font-family:var(--serif)">${esc(meta.description)}</p></div>` : ''}
       <div class="panel"><h3>Fees on every trade</h3>${feeBar(fees)}<p class="small mute">${fees.sniper ? `Starts at ${pct(fees.sniper.startBps / 100)} for the first ${fees.sniper.seconds} seconds and falls to ${pct(fees.baseBps / 100)} (stops sniper bots). ` : ''}When trading is busy the fee can rise by up to a fifth to protect the price. After graduation the pool fee is ${pct(fees.postBps / 100)}.</p>
-        ${plan.routes && plan.routes.length ? `<p class="small"><b>The launcher's plan for their share:</b> ${plan.routes.map(r => esc(r.pct + '% to ' + (r.label || short(r.to)))).join(', ')}.</p>` : ''}
+        ${planRoutes(plan).length ? `<p class="small"><b>The launcher's plan for their share:</b> ${planRoutes(plan).map(r => esc(r.pct + '% to ') + `<span class="addr" style="overflow-wrap:anywhere">${esc(r.to)}</span>`).join(', ')}.</p>` : ''}
         ${fees.team ? `<p class="small"><b>Team tokens:</b> ${pct(fees.team.pct)} of the supply, locked, unlocking over ${fees.team.days} days after graduation.</p>` : ''}</div>
       <div class="panel"><h3>Recent trades</h3><div id="ctr" class="small mute">Loading…</div></div>
       <div class="panel" id="cposts"><h3>Talk about $${esc(c.symbol)}</h3><div class="small mute">Loading…</div></div>
@@ -329,8 +330,7 @@
   function tradeBox(c, vp, cfg, s) {
     const box = $('#tbox'); let side = 'buy';
     if (s.migrated) {
-      box.innerHTML = `<h3>Trade</h3><p class="small mute">This coin graduated and trades in its Meteora pool. Swaps below go through Jupiter, which finds the best price.</p><div id="jup" style="min-height:420px"></div><a class="small" href="https://jup.ag/swap/SOL-${esc(c.mint)}" target="_blank" rel="noopener">Open on jup.ag instead</a>`;
-      if (!DEV) jupiter(c.mint);
+      box.innerHTML = `<h3>Trade</h3><p class="small mute">This coin graduated and trades in its Meteora pool. Jupiter finds the best price for it. It opens in a new tab, so no outside code ever runs inside memecapes.com.</p><a class="btn gold" style="width:100%;display:block;text-align:center" href="https://jup.ag/swap/SOL-${esc(c.mint)}${C.jupReferral ? '?referrer=' + encodeURIComponent(C.jupReferral) + '&feeBps=' + (C.jupFeeBps || 50) : ''}" target="_blank" rel="noopener noreferrer">Trade $${esc(c.symbol)} on Jupiter ↗</a>`;
       return;
     }
     const draw = () => {
@@ -398,12 +398,18 @@
     return m.slice(0, 220);
   }
 
+  // a fee split is only used when every address is a real Solana address and the shares add up to 100% or less
+  function planRoutes(plan) {
+    const L = (Array.isArray(plan && plan.routes) ? plan.routes : []).slice(0, 10).map(r => ({ to: String(r.to || ''), pct: Math.floor(+r.pct || 0) }))
+      .filter(r => r.pct > 0 && r.pct <= 100 && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(r.to));
+    return L.reduce((a, r) => a + r.pct, 0) <= 100 ? L : [];
+  }
   // the launcher's own fee claim, paid out to their split in the same transaction
   function creatorBox(c, vp, cfg, plan) {
     const box = $('#cbox'); const s = stats({ pool: vp, config: cfg });
-    const routes = (plan.routes || []).filter(r => r.to && r.pct > 0);
+    const routes = planRoutes(plan);
     box.innerHTML = `<h3>Your fees</h3><p>Ready to claim: <b class="num">${sol(s.creatorFee)}</b></p>
-      ${routes.length ? `<p class="small mute">Claiming also pays your split in the same transaction: ${routes.map(r => esc(r.pct + '% to ' + (r.label || short(r.to)))).join(', ')}.</p>` : ''}
+      ${routes.length ? `<p class="small mute">Claiming also pays your split in the same transaction. Check every address before you approve: ${routes.map(r => esc(r.pct + '% to ') + `<span class="addr" style="overflow-wrap:anywhere">${esc(r.to)}</span>`).join(', ')}.</p>` : ''}
       <button class="btn gold" style="width:100%" id="claim" type="button" ${s.creatorFee > 0 ? '' : 'disabled'}>Claim ${sol(s.creatorFee)}</button><div class="err" id="cerr"></div>`;
     $('#claim').onclick = async () => {
       const b = $('#claim'); b.disabled = true; $('#cerr').textContent = '';

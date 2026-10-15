@@ -128,6 +128,8 @@ const Q = {
   walList: db.prepare('SELECT u.name,w.wallet,w.ok,w.pct,w.since,w.checked,w.claims,w.err FROM wallets w JOIN users u ON u.id=w.uid ORDER BY w.pct DESC'),
 };
 const now = () => Date.now();
+// ---------- Sentinel (server/sentinel.js): the always-on guard: real addresses, flood and guess blocking, modes, alerts ----------
+const G = require('./sentinel')({ db, DATA, now });
 
 // ---------- words ----------
 const BAD = (() => { try { return fs.readFileSync(path.join(__dirname, 'badwords.txt'), 'utf8').split(/\r?\n/).map(s => s.trim().toLowerCase()).filter(s => s && !s.startsWith('#')); } catch (e) { return []; } })();
@@ -151,6 +153,7 @@ function nameProblem(n) {
 // ---------- passwords and sessions ----------
 const hashPass = (p, salt) => crypto.scryptSync(p, salt, 32).toString('hex');
 const sha = s => crypto.createHash('sha256').update(s).digest('hex');
+const passOk = (p, u) => { const a = Buffer.from(hashPass(p, u.salt), 'hex'), b = Buffer.from(String(u.hash || ''), 'hex'); return a.length === b.length && crypto.timingSafeEqual(a, b); };
 function newSession(uid) { const tok = crypto.randomBytes(32).toString('hex'); Q.sesAdd.run(sha(tok), uid, now(), now()); return tok; }
 
 // ---------- save checks ----------
@@ -172,13 +175,14 @@ function flagGains(u, prev, next) {
 }
 
 // ---------- tiny WebSocket layer (RFC 6455, text frames) ----------
-function wsAccept(req, socket) {
+function wsAccept(req, socket, ip) {
   const key = req.headers['sec-websocket-key'];
-  if (!key) return socket.destroy();
+  if (!key) { G.wsClose(ip); return socket.destroy(); }
   const acc = crypto.createHash('sha1').update(key + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').digest('base64');
   socket.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acc + '\r\n\r\n');
   socket.setNoDelay(true);
-  const c = { socket, buf: Buffer.alloc(0), frag: [], alive: true, open: true, ip: (req.headers['x-forwarded-for'] || socket.remoteAddress || '').split(',')[0].trim(), bucket: 40, bt: now() };
+  const c = { socket, buf: Buffer.alloc(0), frag: [], fragN: 0, alive: true, open: true, ip, bucket: 40, bt: now() };
+  setTimeout(() => { if (c.open && !c.uid) c.close(); }, 120e3);   // sign in within two minutes or the connection closes
   c.send = obj => { if (!c.open) return; const d = Buffer.from(JSON.stringify(obj)); let h; if (d.length < 126) h = Buffer.from([0x81, d.length]); else if (d.length < 65536) { h = Buffer.alloc(4); h[0] = 0x81; h[1] = 126; h.writeUInt16BE(d.length, 2); } else { h = Buffer.alloc(10); h[0] = 0x81; h[1] = 127; h.writeBigUInt64BE(BigInt(d.length), 2); } socket.write(Buffer.concat([h, d])); };
   c.close = () => { if (!c.open) return; c.open = false; try { socket.write(Buffer.from([0x88, 0])); } catch (e) { } socket.end(); setTimeout(() => socket.destroy(), 1000); };
   c.ping = () => { try { socket.write(Buffer.from([0x89, 0])); } catch (e) { } };
@@ -189,7 +193,7 @@ function wsAccept(req, socket) {
       let len = b1 & 127, off = 2;
       if (len === 126) { if (c.buf.length < 4) return; len = c.buf.readUInt16BE(2); off = 4; }
       else if (len === 127) { if (c.buf.length < 10) return; len = Number(c.buf.readBigUInt64BE(2)); off = 10; }
-      if (len > MAX_FRAME || !masked) return c.close();
+      if (len > MAX_FRAME || !masked) { G.strike(c.ip, 'bad websocket frame', 5); return c.close(); }
       if (c.buf.length < off + 4 + len) return;
       const mask = c.buf.subarray(off, off + 4), data = Buffer.from(c.buf.subarray(off + 4, off + 4 + len));
       for (let i = 0; i < data.length; i++) data[i] ^= mask[i & 3];
@@ -198,12 +202,12 @@ function wsAccept(req, socket) {
       if (op === 9) { socket.write(Buffer.concat([Buffer.from([0x8a, data.length]), data])); continue; }
       if (op === 10) { c.alive = true; continue; }
       if (op === 1 || op === 0) {
-        c.frag.push(data);
-        if (fin) { const msg = Buffer.concat(c.frag).toString('utf8'); c.frag = []; if (msg.length > MAX_FRAME) return c.close(); onMessage(c, msg); }
+        c.frag.push(data); c.fragN += data.length; if (c.fragN > MAX_FRAME) { G.strike(c.ip, 'oversized websocket message', 5); return c.close(); }
+        if (fin) { const msg = Buffer.concat(c.frag).toString('utf8'); c.frag = []; c.fragN = 0; if (msg.length > MAX_FRAME) return c.close(); onMessage(c, msg); }
       }
     }
   });
-  socket.on('close', () => { c.open = false; onClose(c); });
+  socket.on('close', () => { c.open = false; G.wsClose(ip); onClose(c); });
   socket.on('error', () => { c.open = false; });
   onOpen(c);
 }
@@ -246,6 +250,7 @@ function signIn(c, u, tok) {
 const H = {
   register(c, m) {
     if (c.uid) return;
+    if (!G.allow('register')) return c.send({ t: 'err', text: G.pausedMsg() });
     if (tooMany(c.ip)) return c.send({ t: 'err', text: 'Too many tries. Wait a few minutes.' });
     const name = String(m.name || ''), pass = String(m.pass || '');
     const np = nameProblem(name); if (np) return c.send({ t: 'err', text: np });
@@ -258,10 +263,13 @@ const H = {
   },
   login(c, m) {
     if (c.uid) return;
+    if (!G.allow('login')) return c.send({ t: 'err', text: G.pausedMsg() });
     if (tooMany(c.ip)) return c.send({ t: 'err', text: 'Too many tries. Wait a few minutes.' });
-    const u = Q.byName.get(String(m.name || ''));
-    if (!u || hashPass(String(m.pass || ''), u.salt) !== u.hash) return c.send({ t: 'err', text: 'Wrong name or password.' });
-    signIn(c, u, newSession(u.id));
+    const name = String(m.name || '').slice(0, 40);
+    if (G.loginLocked(name)) return c.send({ t: 'err', text: 'Too many wrong passwords for this name. It is locked for 15 minutes.' });
+    const u = Q.byName.get(name);
+    if (!u || !passOk(String(m.pass || ''), u)) { G.loginFail(name, c.ip); return c.send({ t: 'err', text: 'Wrong name or password.' }); }
+    G.loginOk(name); signIn(c, u, newSession(u.id));
   },
   resume(c, m) {
     if (c.uid) return;
@@ -274,7 +282,8 @@ const H = {
   logout(c, m) { Q.sesDel.run(sha(String(m.token || ''))); c.close(); },
   deleteAccount(c, m) {
     const u = c.uid && Q.byId.get(c.uid); if (!u) return;
-    if (hashPass(String(m.pass || ''), u.salt) !== u.hash) return c.send({ t: 'err', text: 'Wrong password.' });
+    if (G.loginLocked(u.name)) return c.send({ t: 'err', text: 'Too many wrong passwords. Wait 15 minutes.' });
+    if (!passOk(String(m.pass || ''), u)) { G.loginFail(u.name, c.ip); return c.send({ t: 'err', text: 'Wrong password.' }); }
     Q.sesDelUser.run(u.id); Q.walDel.run(u.id); Q.ptDel.run(u.id); Q.del.run(u.id); partnersMaybeChanged(); c.send({ t: 'deleted' }); c.close();
   },
   save(c, m) {
@@ -552,6 +561,7 @@ const clean1 = (t, n) => cleanChat(String(t || '')).slice(0, n);
 function partnerSave(c, m) {
   if (!c.uid) return;
   if (!CAPES_MINT) return say(c, 'Partner ads open when $CAPES launches.', '#a60');
+  if (!G.allow('ad')) return c.send({ t: 'err', text: G.pausedMsg() });
   const S = partnerState(c.uid); if (!S.over) return c.send({ t: 'err', text: 'Partner ads need a linked wallet holding at least ' + PARTNER_PCT + '% of $CAPES.' });
   const brand = clean1(m.brand, 24), line = clean1(m.line, 80), link = String(m.link || '').trim().slice(0, 100), color = String(m.color || '');
   if (brand.length < 2) return c.send({ t: 'err', text: 'Give your project a name (2 to 24 letters).' });
@@ -640,7 +650,8 @@ async function baHttp(req, res, url, json) {
   if (!CAPES_MINT) return json({ error: 'Website ads open when $CAPES launches.' }, 400);
   let m; try { m = await baBody(req, 600 * 1024); } catch (e) { return json({ error: 'Bad request.' }, 400); }
   const w = String(m.wallet || ''); const pk = b58(w); if (!pk || pk.length !== 32) return json({ error: 'That is not a Solana wallet address.' }, 400);
-  const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  const ip = req.ip || G.ipOf(req);
+  if (url.pathname === '/burnad/submit' && !G.allow('ad')) return json({ error: G.pausedMsg() }, 503);
   if (url.pathname === '/burnad/nonce') { if (tooMany('ba' + ip)) return json({ error: 'Too many tries. Wait a few minutes.' }, 429); return json({ msg: baMsg(w) }); }
   if (url.pathname === '/burnad/status') {
     let need = ''; try { const n = await baNeed(), d = BigInt(supplyC.d || 0), q = 10n ** d; need = (n / q + (n % q ? 1n : 0n)).toLocaleString('en-US'); } catch (e) { }  // whole tokens, rounded up
@@ -709,14 +720,15 @@ function adminCmd(c, raw) {
     case 'burnad': return burnadCmd(c, name, arg, rest);
     case 'lp': return LP.cmd(c, name, arg);
     case 'watch': return LP.social.cmd(c, name, rest.split(' ').slice(1).join(' ').trim());
+    case 'guard': return G.cmd(say, c, name, rest.split(' ').slice(1).join(' ').trim());
     case 'mod': if (!u) break; Q.setRole.run(arg === 'off' ? '' : 'mod', u.id); return say(c, name + (arg === 'off' ? ' is no longer a mod.' : ' is now a mod.'));
   }
-  say(c, 'Commands: /announce text, /mute name minutes, /unmute name, /ban name, /unban name, /kick name, /rollback name, /partner list, /burnad list', '#a60');
+  say(c, 'Commands: /announce text, /mute name minutes, /unmute name, /ban name, /unban name, /kick name, /rollback name, /partner list, /burnad list, /guard', '#a60');
 }
 
 function onMessage(c, msg) {
   const t = now(); c.bucket = Math.min(40, c.bucket + (t - c.bt) / 1000 * 25); c.bt = t;
-  if (--c.bucket < 0) return c.close();
+  if (--c.bucket < 0) { G.strike(c.ip, 'websocket flood', 10); return c.close(); }
   let m; try { m = JSON.parse(msg); } catch (e) { return; }
   const f = m && H[m.t]; if (!f) return;
   try { const r = f(c, m); if (r && r.catch) r.catch(e => console.error('handler', m.t, e)); } catch (e) { console.error('handler', m.t, e); }
@@ -747,18 +759,25 @@ function backup() {
 setInterval(backup, 3600e3); setTimeout(backup, 5000);
 
 // ---------- Launchpad (server/launchpad.js): coin pictures, metadata and the list of coins launched on memecapes.com ----------
-const LP = require('./launchpad')({ db, DATA, now, tooMany, say, online, sigOk, base: process.env.RENDER_EXTERNAL_URL });
+const LP = require('./launchpad')({ db, DATA, now, tooMany, say, online, sigOk, base: process.env.RENDER_EXTERNAL_URL, G });
+G.setTellAdmins(text => { for (const o of online.values()) if (o.role === 'admin') say(o, text, '#c80'); });
 // ---------- MemeSnake Live (server/memesnake.js): the AI agent's public activity feed ----------
 const MS = require('./memesnake')({ DATA });
 
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------
 const server = http.createServer(async (req, res) => {
-  const url = new URL(req.url, 'http://x');
+  G.headers(res);
+  if (!G.http(req, res)) return;   // blocked, probing or flooding: Sentinel already answered
+  let url; try { url = new URL(req.url, 'http://x'); } catch (e) { res.writeHead(400); return res.end(); }
   const json = (o, s) => { res.writeHead(s || 200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }); res.end(JSON.stringify(o, null, 1)); };
   if (url.pathname.startsWith('/lp/') || url.pathname.startsWith('/so/') || url.pathname.startsWith('/st/')) { try { if (await LP.http(req, res, url, json) !== false) return; } catch (e) { console.error('lp', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/ms/feed') { try { if (await MS.http(req, res, url, json) !== false) return; } catch (e) { console.error('ms', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname.startsWith('/burnad')) { try { if (await baHttp(req, res, url, json) !== false) return; } catch (e) { console.error('burnad', e); return json({ error: 'Server error.' }, 500); } }
-  if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, online: online.size });
+  if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, online: online.size, mode: G.mode() });
+  if (url.pathname === '/guard/me') {   // your own address as the server sees it (and what the proxies sent), for checking the setup
+    if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'X-Forwarded-For' }); return res.end(); }
+    return json({ ip: req.ip, hops: String(req.headers['x-forwarded-for'] || '').split(',').length });
+  }
   if (url.pathname === '/partners') return json(partnersLive());
   const pm = /^\/partners\/(\d+)\.jpg$/.exec(url.pathname);
   if (pm) {
@@ -767,7 +786,9 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'image/jpeg', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=300' }); return res.end(Buffer.from(p.img, 'base64'));
   }
   if (url.pathname.startsWith('/admin/')) {
-    if (!ADMIN_KEY || req.headers.authorization !== 'Bearer ' + ADMIN_KEY) return json({ error: 'no' }, 403);
+    if (!G.adminKeyOk(req, ADMIN_KEY)) return json({ error: 'no' }, 403);
+    if (url.pathname === '/admin/guard') return json(G.status());
+    if (url.pathname === '/admin/guard/mode' && req.method === 'POST') return json({ ok: G.setMode(String(url.searchParams.get('to') || ''), 'admin key', 0), mode: G.mode() });
     if (url.pathname === '/admin/stats') return json({ online: online.size, accounts: Q.count.get().n, names: [...online.values()].map(o => o.name) });
     if (url.pathname === '/admin/flags') return json(Q.listFlags.all());
     if (url.pathname === '/admin/reports') return json(Q.listReports.all());
@@ -780,8 +801,10 @@ const server = http.createServer(async (req, res) => {
 });
 server.on('upgrade', (req, socket) => {
   const origin = req.headers.origin || '';
-  if (new URL(req.url, 'http://x').pathname !== '/ws' || (origin && !ORIGINS.includes(origin))) { socket.write('HTTP/1.1 403 Forbidden\r\n\r\n'); return socket.destroy(); }
-  wsAccept(req, socket);
+  let pth = ''; try { pth = new URL(req.url, 'http://x').pathname; } catch (e) { }
+  if (pth !== '/ws' || (origin && !ORIGINS.includes(origin))) { socket.write('HTTP/1.1 403 Forbidden\r\n\r\n'); return socket.destroy(); }
+  const ip = G.wsOpen(req); if (!ip) { socket.write('HTTP/1.1 429 Too Many Requests\r\n\r\n'); return socket.destroy(); }
+  wsAccept(req, socket, ip);
 });
 server.listen(PORT, () => console.log('MemeCapes server on port ' + PORT + ', data in ' + DATA));
 const stop = () => { try { db.close(); } catch (e) { } process.exit(0); };

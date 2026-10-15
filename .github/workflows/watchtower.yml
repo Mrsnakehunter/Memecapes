@@ -1,0 +1,26 @@
+# Watchtower: an outside check of memecapes.com every 15 minutes (domain, every page byte-for-byte, wallets, server).
+# Problems open a GitHub issue labelled "watchtower" (GitHub emails the owner). No outside actions are used.
+name: watchtower
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: watchtower
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Get the repo
+        run: git clone --depth 1 "https://github.com/${GITHUB_REPOSITORY}.git" repo
+      - name: Check the live site
+        working-directory: repo
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: bash tools/watchtower.sh
