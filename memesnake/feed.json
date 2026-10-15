@@ -1,0 +1,97 @@
+{
+  "updated": "2026-10-15T03:49:47Z",
+  "status": "offline",
+  "headline": "",
+  "parts": [
+    {
+      "id": "creator",
+      "status": "idle",
+      "task": "",
+      "crews": [
+        {
+          "name": "Persona",
+          "status": "idle"
+        },
+        {
+          "name": "Content Studio",
+          "status": "idle"
+        },
+        {
+          "name": "Growth",
+          "status": "idle"
+        },
+        {
+          "name": "Engagement",
+          "status": "idle"
+        },
+        {
+          "name": "Money",
+          "status": "idle"
+        }
+      ]
+    },
+    {
+      "id": "trading",
+      "status": "idle",
+      "task": "",
+      "crews": [
+        {
+          "name": "Market Scouts",
+          "status": "idle"
+        },
+        {
+          "name": "Strategy Lab",
+          "status": "idle"
+        },
+        {
+          "name": "Trading Bot Desk",
+          "status": "idle"
+        },
+        {
+          "name": "Risk Officer",
+          "status": "idle"
+        },
+        {
+          "name": "Review and Coach",
+          "status": "idle"
+        },
+        {
+          "name": "Prop Firm Scout",
+          "status": "idle"
+        }
+      ]
+    },
+    {
+      "id": "memecapes",
+      "status": "idle",
+      "task": "",
+      "crews": [
+        {
+          "name": "Game Build",
+          "status": "idle"
+        },
+        {
+          "name": "QA Testers",
+          "status": "idle"
+        },
+        {
+          "name": "Launch Marketing",
+          "status": "idle"
+        },
+        {
+          "name": "Community",
+          "status": "idle"
+        },
+        {
+          "name": "Token and Legal",
+          "status": "idle"
+        },
+        {
+          "name": "Launch-Day Ops",
+          "status": "idle"
+        }
+      ]
+    }
+  ],
+  "log": []
+}

@@ -98,8 +98,11 @@ numbers in here or anywhere in the repo.
   POST /ms/feed with Bearer MEMESNAKE_KEY (Render env, Albert makes it; we never see it). A whole feed.json replaces
   the feed, {log:[...]} adds entries; parts/statuses whitelisted, newest 50, and anything with a money amount, a
   base58/hex key-looking string or "seed phrase/private key/password" is dropped with a note (his own rules).
-  ?demo=1 shows clearly labelled sample entries. Waiting on: full logo as an image file, MEMESNAKE_KEY on Render,
-  whether to link the page from the site.
+  Then (same night) Albert asked for it at /memesnake with a menu link and a same-folder feed.json: now memesnake/index.html
+  reads memesnake/feed.json (starter: status offline, all crews idle, empty log); DEMO banner + labelled samples until
+  the log has entries; back link https://memecapes.com/; memesnake.html redirects; nav link 'MemeSnake' after
+  Launchpad. The agent prompt file stays OFF the site (it's for StarNet). His re-attached files did not arrive, so the
+  logo is still the faded top 2/3 until he sends the image. Server /ms/feed still exists but the page doesn't use it.
 
 - Oct 14 late: "make the bots look 100% like real characters (the site discloses them), a little spaced out". Gaps found:
   bot names had spaces (real usernames can't), tags/chat names not clickable, capes skipped on the blocky body, no
