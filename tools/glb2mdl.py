@@ -53,7 +53,7 @@ def mat4(node):
     return M
 
 
-def decimate(P, U, I, target):
+def decimate(P, U, I, target, relax=0):
     """weld the vertices Meshy splits at texture seams, collapse edges down to `target` faces, then
     split again where the UV or a hard edge (over 60 degrees) needs it"""
     import os, subprocess
@@ -65,7 +65,7 @@ def decimate(P, U, I, target):
     _, pid, inv = np.unique(key, axis=0, return_index=True, return_inverse=True)
     W = P[pid]; inv = inv.ravel(); T = inv[I.reshape(-1, 3)]; CU = U[I.reshape(-1, 3)].astype(np.float32)
     buf = (struct.pack('<i', len(W)) + W.astype(np.float32).tobytes() + struct.pack('<i', len(T)) +
-           T.astype(np.int32).tobytes() + CU.tobytes() + struct.pack('<i', target))
+           T.astype(np.int32).tobytes() + CU.tobytes() + struct.pack('<ii', target, relax))
     out = subprocess.run([exe], input=buf, capture_output=True, check=True)
     sys.stderr.write(out.stderr.decode())
     d = out.stdout; nf = struct.unpack('<i', d[:4])[0]

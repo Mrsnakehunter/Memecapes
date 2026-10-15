@@ -2,6 +2,12 @@
 
 _Last updated: October 15, 2026_
 
+## Oct 15, 2026: real trees
+
+The scribbly code-drawn trees are gone. Every one of the 4,300 trees in the world is now a proper 3D model with a painted texture, and there are 16 kinds: oak, beech, maple, birch, weeping willow, cherry blossom, dead tree, pine, spruce, fir, snow-covered spruce, Italian cypress, palm, a crystal alien tree, and two kinds of bush. Which kind grows where follows the land: conifers and oaks in the forests, dead trees around Rugpull Ridge, snow trees around HODL Heights, cypresses and palms on the Chad Falls hills, willows by Froggo's Pond, blossoms near Diamond Hands and Wow Landing, alien trees at Moon Landing. Each tree has its own size, turn and shade (some oaks and beeches turn orange, some birches yellow), leafy trees sway in the wind, and all of them cast shadows and darken in the rain like everything else. Chopping works as before: a chopped tree leaves its stump.
+
+It is built not to slow the game down: trees come in three detail levels (full detail up close, lighter further out, a simple shape in the distance) and are drawn in a handful of batches instead of one by one. The densest forest in view costs about 200,000 triangles, about what one town's buildings cost.
+
 ## Oct 15, 2026: sharper buildings
 
 Every building and prop in the world (109 of them: houses, banks, shops, chapels, towers, bridges, wells, rocks, stalls and more) now has a more detailed shape, with at least 7,500 triangles each, up from about 3,000 to 6,000. Round things like well rims, arches, barrels and fountains are smoother, and nothing moved: every model keeps the same size, place and textures.
