@@ -91,6 +91,37 @@
           "status": "idle"
         }
       ]
+    },
+    {
+      "id": "token",
+      "status": "idle",
+      "task": "",
+      "crews": [
+        {
+          "name": "Legal Review",
+          "status": "idle"
+        },
+        {
+          "name": "Tokenomics",
+          "status": "idle"
+        },
+        {
+          "name": "Contract Audit",
+          "status": "idle"
+        },
+        {
+          "name": "Launch Site",
+          "status": "idle"
+        },
+        {
+          "name": "Hype Crew",
+          "status": "idle"
+        },
+        {
+          "name": "Launch Control",
+          "status": "idle"
+        }
+      ]
     }
   ],
   "log": []
