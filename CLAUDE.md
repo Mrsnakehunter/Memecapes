@@ -108,6 +108,11 @@ numbers in here or anywhere in the repo.
   4 rooms + throne, one worker per crew walks a scroll to the throne per log entry, room panel, comms filters, Token Mint
   steps, money order, promises. feed.json + server/memesnake.js accept part 'token'. Draw small logos via a smoothed
   offscreen canvas (imageSmoothingEnabled=false turns them to noise). Never pkill -f a pattern that's in your own command.
+  Oct 15 later: Albert sent his complete v3 file (54 KB, logo as memesnake-logo.png beside it) with "use it exactly as
+  written, do not rewrite". memesnake/index.html is now his file byte for byte (back link '/' left as is); logo = his
+  1254 px PNG resized to 512 px. His page shows DEMO only when feed.json can't be loaded; with the starter feed it
+  shows Offline + "No activity here yet". It has a launch-day countdown (his choice; the no-dates rule is for posts).
+  Don't edit his MemeSnake page beyond what he asks.
 
 - Oct 14 late: "make the bots look 100% like real characters (the site discloses them), a little spaced out". Gaps found:
   bot names had spaces (real usernames can't), tags/chat names not clickable, capes skipped on the blocky body, no
