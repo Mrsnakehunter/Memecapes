@@ -1,6 +1,10 @@
 # MemeCapes progress
 
-_Last updated: October 14, 2026_
+_Last updated: October 15, 2026_
+
+## Oct 15, 2026: sharper buildings
+
+Every building and prop in the world (109 of them: houses, banks, shops, chapels, towers, bridges, wells, rocks, stalls and more) now has a more detailed shape, with at least 7,500 triangles each, up from about 3,000 to 6,000. Round things like well rims, arches, barrels and fountains are smoother, and nothing moved: every model keeps the same size, place and textures.
 
 ## Oct 15, 2026: the Security page
 
