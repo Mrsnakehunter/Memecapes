@@ -377,6 +377,10 @@ numbers in here or anywhere in the repo.
   LP_PARTNER + ADMIN_NAMES set on Render (log shows the fee wallet from env). Render login = Albert's GitHub, so GitHub's
   2FA protects Render too. Render's env editor: masked rows become editable when clicked and the page scrolls between
   actions: click by ref, never by coordinates, and check every row's key before saving.
+  Oct 15 (later): GitHub 2FA on (authenticator + GitHub Mobile); Albert signs into GitHub with Google (Google 2FA on);
+  domain at GoDaddy (locks on): added SPF '-all', DMARC p=reject, CAA letsencrypt.org + pki.goog (a new cert issuer for
+  Render/Cloudflare must be added to CAA first), GitHub Pages domain verified. GoDaddy asks Albert to verify every DNS
+  save; batch rows with 'Add More Records'. The safety layer may refuse DNS edits until Albert explicitly asks.
 - Shipped Oct 12 (build 20261012061129, "make it live"): trade v2, see-through, water edges, bridges, NPC
   weapons/attacks (npc-models branch merged), coin hit markers. Then build 20261012073101 (building facing +
   town signs) and fresh website pictures (Oct 12). Preview = live again.
