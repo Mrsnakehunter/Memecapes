@@ -90,6 +90,11 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 15: NPCs page order: "no-picture ones to the bottom, above them the T-pose ones, same character with different
+  names never back to back". tools/site/bestiary_order.py reorders each section of #pg-bestiary: natural-pose pictures
+  first (TPOSE_FREE list, judged by eye), then T-pose, then 'Picture coming' cards; same character = near-identical
+  picture (difference hash) or the SAME list. Re-run it after adding cards. Almost every portrait is a T-pose render.
+
 - Oct 15: "the game is drowning out the other stuff": site menu is now Play / Watch / Stream / Launch / AI Agent
   (+ the gold Play free button). Play is a <details class="nvg"> dropdown holding all the game pages (Home, Story, NPCs,
   Items, Towns, Quests, Meme Capes, Roadmap, $CAPES, Shop, FAQ). AI Agent = memesnake/. Phone: nav .in wraps (it didn't,
