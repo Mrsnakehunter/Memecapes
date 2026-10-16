@@ -113,8 +113,8 @@ numbers in here or anywhere in the repo.
 - Oct 15 night: Albert's phone (an in-app browser, http:// link) showed "Could not reach the game server". Server was
   fine (health ok, mode normal). Cause: GitHub Pages does NOT enforce HTTPS, so http://memecapes.com serves the game
   and the WebSocket origin is http://memecapes.com, which server.js rejects (403) -> that message. Fix: gate.js now
-  sends any http://*.memecapes.com page to https (live, checked in the pane). Albert should also turn on
-  "Enforce HTTPS" in GitHub -> Settings -> Pages. Also raised Sentinel's WS_PER_IP 8 -> 40 (phone carriers share one
+  sends any http://*.memecapes.com page to https (live, checked in the pane). "Enforce HTTPS" is now ON in GitHub ->
+  Settings -> Pages (ticked Oct 16 after the new certificate was issued; http:// now redirects at GitHub too). Also raised Sentinel's WS_PER_IP 8 -> 40 (phone carriers share one
   address; test_guard pins GUARD_WS_PER_IP=8). Check the server from the pane: fetch /health and /guard/me; a WS from
   another origin errors by design.
 
