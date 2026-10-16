@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 16: "the video evenly split between all the platform, plus good music". memecapes_ad_platform.mp4 (37 s):
+  intro + Play/Watch/Stream/Launch/AI Agent 3 bars each + $CAPES + end, every cut on a downbeat, gold flash +
+  punch-in, nav pills with the current part lit (scratch/ad/compose2.py, reuses compose.py by exec). Music: 'Royal
+  trap' by ShimaFM (Pixabay Content License: ads OK, no credit, NOT Content ID registered; downloaded with Albert's
+  OK into his Downloads, staged here), 142 BPM, window 69.58 s + 37.18 s, loudnorm -14 LUFS. Also added it to the
+  first ad (memecapes_ad_music.mp4). Pixabay track pages' server HTML carries the mp3 URL, duration and
+  "Content ID Registered" (filter on that); blob + a[download] + a REAL click downloads in the pane. Watch/Coins
+  scenes use the seeded example data (scratch/lp/test/seed.mjs, local server) with an EXAMPLE DATA chip: never show
+  fake trades as real. Research: 120-140 BPM for short ads, hook in 1-3 s, cuts on beats, plan for muted autoplay.
+
 - Oct 16: "NPCs and bots running around really fast, movements sped up" + "make the trees live" (shipped build
   20261015235521, then 20261016100238 with the fix). Measured with the virtual clock (/tmp/claude-0/ad/speed.py
   pattern: sample gobs px/py and __WND() bots every 50 ms for 20-40 game-s): monsters' follow() caught up at up to
