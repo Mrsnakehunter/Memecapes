@@ -2,6 +2,10 @@
 
 _Last updated: October 16, 2026_
 
+## Oct 16, 2026: calmer monsters and adventurers
+
+Monsters and the other adventurers were moving too fast. Monsters out for a stroll would stand still, then dash to catch up with where they were going, faster than a player walks, with their legs pumping almost twice as fast as a player's. Now a strolling monster ambles along at an easy, steady pace and its legs move at the same rate as yours for the ground it covers. A monster chasing you still keeps up. The adventurers walking around the world now walk like everyone else. On a really long trip one might break into a jog, but nobody sprints around town anymore.
+
 ## Oct 16, 2026: Support page
 
 The website has a Support page (the Support link at the top, next to AI Agent). Type a few words and it answers at once: 260 plain answers covering getting started, accounts and login, online play, every skill, combat, items and the bank, towns, quests, capes, Meme Coins and $CAPES, skins, trading, the shop, the launchpad, Watch and Stream, the AI Agent, safety and scams, technical trouble and the rules. Each answer knows the many ways people ask the same thing, 11,471 phrasings in all, so "forgot password", "can't log in" and "how do I recover my account" all land on the same answer. There are topic buttons for browsing, a Most asked list, and a Still stuck box that points to the official X account. The answers are honest about what the game can and cannot do (there is no password reset yet, bots are disclosed, $CAPES does not exist yet) and say nothing about how the servers are guarded.
