@@ -90,6 +90,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 15 night: Albert's phone (an in-app browser, http:// link) showed "Could not reach the game server". Server was
+  fine (health ok, mode normal). Cause: GitHub Pages does NOT enforce HTTPS, so http://memecapes.com serves the game
+  and the WebSocket origin is http://memecapes.com, which server.js rejects (403) -> that message. Fix: gate.js now
+  sends any http://*.memecapes.com page to https (live, checked in the pane). Albert should also turn on
+  "Enforce HTTPS" in GitHub -> Settings -> Pages. Also raised Sentinel's WS_PER_IP 8 -> 40 (phone carriers share one
+  address; test_guard pins GUARD_WS_PER_IP=8). Check the server from the pane: fetch /health and /guard/me; a WS from
+  another origin errors by design.
+
 - Oct 15: "make the trees 1000% better but not so good it lags, variety". Trees are now Meshy models drawn with
   instancing: models/trees.json (tools/treepack.py from t_<species>.glb: 3 detail levels ~1600/500/160 tris cut with
   tools/decimate.cpp relax mode, one 512 px JPEG each, ~3.5 MB for 16 species) + tools/patch_trees.py (runs last in
