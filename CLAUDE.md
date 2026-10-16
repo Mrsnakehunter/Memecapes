@@ -90,6 +90,19 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 16: "combine the launchpads: the new one (SnakePit's Hatch) like the old one, designed like the new one, that is
+  going to be the app". Delivered snakepit-launchpad.zip (the SnakePit codebase with the merge; LAUNCHPAD-MERGE.md
+  lists it): lib/launchpad.ts = our curveParams/presets/limits ported to TS on SDK 2.x (per-hatch config +
+  createConfigAndPoolWithFirstBuy, feeClaimer = MemeCapes fee wallet via NEXT_PUBLIC_FEE_CLAIMER, verifyHatched
+  checks feeClaimer + creator share on-chain, readFees, claim-with-split), lib/launchcheck.ts (bundlers/snipers via
+  RPC + Helius), app/hatch/page.tsx (presets, sliders, decay curve, split editor, graduation/pool fee/team tokens,
+  First Strike, Your hatches + Claim), TokenSheet fee rules + split + launch check, schema v0.4, docs. Type-checked
+  lib/*.ts against the vendored SDK 2.0 source (/tmp/claude-0/tc/tsconfig.json pattern: paths -> scratch/lp/vendor);
+  React files syntax-checked only (no react/next here). SDK 2.x names: getPoolQuoteTokenCurveProgress,
+  claimPartnerTradingFee needs payer, pool state is pool.poolState.*. memecapes.com: lp/app.js #/launch shows a
+  "Hatch it in the Pit" handoff and the Launchpad clerk opens pit/hatch when config.js pit is set; our own form stays
+  until then. Still open: coin floor/Watch index only our server's coins; migrate or retire once the Pit is live.
+
 - Oct 16: SnakePit (Albert's trading app, pit.memecapes.com, separate codebase from another chat: SNAKEPIT-BRIEF.md +
   snakepit.zip, Next.js/Privy/Jupiter/Meteora DBC, NOT built or deployed yet). Vocabulary: Strike=buy, Shed=sell, Venom=
   fee, Hatch=launch, segments=score (3 + realized SOL/0.05), Boss Snake=MemeSnake's wallet, Molt Season=weekly reset.
