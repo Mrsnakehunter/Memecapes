@@ -445,6 +445,16 @@
     custom: { t: 'Custom', d: 'Set every number' },
   };
   function launch() {
+    // one launchpad: once SnakePit is live (config.js `pit`), hatching happens there with these same rules
+    const pit = String(MC.pit || '').replace(/\/+$/, '');
+    if (/^https:\/\/pit\.memecapes\.com$/.test(pit)) {
+      app.innerHTML = `<div class="empty" style="margin:30px auto;max-width:620px;text-align:left;padding:26px">
+        <p class="kicker">Launch</p><h1 style="margin:4px 0 10px">Hatch it in the Pit.</h1>
+        <p>Launching now lives in SnakePit, the trading app next to the game. Same rules as here: you pick the trading fee and your share of it, snipers pay extra in the first seconds, split your fees with up to 10 wallets, lock team tokens on-chain, and the liquidity is locked for good when your coin graduates. Your coin is tradeable the second it exists and pinned to the top of the Pit.</p>
+        <p style="margin-top:16px"><a class="btn gold" href="${pit}/hatch" rel="noopener">Hatch a coin in the Pit</a> <a class="btn line" href="#/">See coins</a></p>
+        <p class="small mute" style="margin-top:14px">Self-custodial: your wallet signs, nobody holds your keys. Crypto can go to zero; nothing here is financial advice.</p></div>`;
+      return;
+    }
     const off = !PARTNER;
     app.innerHTML = `<div class="lgrid"><form id="lf" novalidate>
       <h1 style="margin-top:6px">Launch a coin</h1>

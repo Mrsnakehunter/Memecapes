@@ -26,7 +26,7 @@ function lpUI(){M.style.display='flex';MB.onclick=null;MB.className='';
   +(LPL==null?'<p>Loading...</p>':LPL.length?LPL.slice(0,12).map(row).join(''):'<p>No coins launched yet. Be the first.</p>')
   +'<div style="margin-top:10px"><button id="lpl">Launch a coin</button> <button id="lpa">See all coins</button> <button id="x">Close</button></div>';
   $('x').onclick=()=>M.style.display='none';
-  $('lpl').onclick=()=>window.open('launch.html#/launch','_blank','noopener');$('lpa').onclick=()=>window.open('launch.html#/','_blank','noopener');
+  $('lpl').onclick=()=>window.open((window.MC_CONFIG&&MC_CONFIG.pit?String(MC_CONFIG.pit).replace(/\/+$/,'')+'/hatch':'launch.html#/launch'),'_blank','noopener');$('lpa').onclick=()=>window.open('launch.html#/','_blank','noopener');
   MB.querySelectorAll('[data-lpc]').forEach(b=>b.onclick=()=>window.open('launch.html#/coin/'+encodeURIComponent(b.dataset.lpc),'_blank','noopener'))};
  draw();
  if(!SRV()){LPL=[];return draw()}

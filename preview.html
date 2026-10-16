@@ -355,7 +355,7 @@ body.pre #col{display:none!important}
 <div id="ctx"></div><div id="modal"><div id="mb"></div></div>
 <script>
 (()=>{
-const $=i=>document.getElementById(i);const BUILD='20261016201229';
+const $=i=>document.getElementById(i);const BUILD='20261016225603';
 let W=384,H=384;const CX=192,CY=192,W0=384,H0=384;
 let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:756,ck:0,sm:0,str:0,def:0},inv:[],hp:12,hp10:1,run:0,en:100,flow:[]};
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
@@ -1180,7 +1180,7 @@ function lpUI(){M.style.display='flex';MB.onclick=null;MB.className='';
   +(LPL==null?'<p>Loading...</p>':LPL.length?LPL.slice(0,12).map(row).join(''):'<p>No coins launched yet. Be the first.</p>')
   +'<div style="margin-top:10px"><button id="lpl">Launch a coin</button> <button id="lpa">See all coins</button> <button id="x">Close</button></div>';
   $('x').onclick=()=>M.style.display='none';
-  $('lpl').onclick=()=>window.open('launch.html#/launch','_blank','noopener');$('lpa').onclick=()=>window.open('launch.html#/','_blank','noopener');
+  $('lpl').onclick=()=>window.open((window.MC_CONFIG&&MC_CONFIG.pit?String(MC_CONFIG.pit).replace(/\/+$/,'')+'/hatch':'launch.html#/launch'),'_blank','noopener');$('lpa').onclick=()=>window.open('launch.html#/','_blank','noopener');
   MB.querySelectorAll('[data-lpc]').forEach(b=>b.onclick=()=>window.open('launch.html#/coin/'+encodeURIComponent(b.dataset.lpc),'_blank','noopener'))};
  draw();
  if(!SRV()){LPL=[];return draw()}
