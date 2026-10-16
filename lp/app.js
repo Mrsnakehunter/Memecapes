@@ -143,13 +143,15 @@
   const views = { home, coin, launch, me: mine, how, desk };
   let leaving = [];   // things a view wants stopped when the next view opens (timers, cameras)
   function onLeave(f) { leaving.push(f); }
+  let rseq = 0;   // a view that fails after the next view has opened must not overwrite it
   function route() {
+    const my = ++rseq;
     leaving.forEach(f => { try { f(); } catch (e) { } }); leaving = [];
     const h = location.hash.replace(/^#\/?/, ''), [v, arg] = h.split('/');
     const name = views[v] ? v : 'home';
     $$('[data-r]').forEach(a => a.classList.toggle('on', a.dataset.r === name));
     window.scrollTo(0, 0);
-    Promise.resolve(views[name](arg)).catch(e => { app.innerHTML = `<div class="empty" style="margin:30px 0">${esc(e.message || e)}</div>`; });
+    Promise.resolve(views[name](arg)).catch(e => { if (my !== rseq) return; app.innerHTML = `<div class="empty" style="margin:30px 0">${esc(e.message || e)}</div>`; });
   }
   window.addEventListener('hashchange', route);
   // tiny inline price chart from the last trades (SOL per token), green when up, red when down
@@ -182,7 +184,7 @@
   }
   async function loadBoard() {
     if (!$('#r-new')) return;
-    try { const r = await api('/lp/coins?limit=200'); boardCoins = r.coins; } catch (e) { if (boardFirst) $('#r-new').innerHTML = `<div class="empty" style="grid-column:1/-1">${esc(e.message)}</div>`; return; }
+    try { const r = await api('/lp/coins?limit=200'); boardCoins = r.coins; } catch (e) { if (boardFirst && $('#r-new')) $('#r-new').innerHTML = `<div class="empty" style="grid-column:1/-1">${esc(e.message)}</div>`; return; }
     nowStrip();
     drawBoard();
     boardCoins = await liveMany(boardCoins); drawBoard();
