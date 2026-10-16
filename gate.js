@@ -3,6 +3,9 @@
 // No other website may show memecapes.com inside a frame (that is how click-tricks work): if it tries, the page hides
 // and opens on its own.
 (function () { try { if (window.top !== window.self) { document.documentElement.style.display = 'none'; window.top.location = window.self.location.href; } } catch (e) { } })();
+// Plain http:// memecapes.com must become https://: the game server only talks to the https site, so a player who
+// opened an http link (some apps and shared links do that) saw "Could not reach the game server".
+(function () { try { if (location.protocol === 'http:' && /(^|\.)memecapes\.com$/.test(location.hostname)) location.replace('https://' + location.host + location.pathname + location.search + location.hash); } catch (e) {} })();
 (function () {
   var C = window.MC_CONFIG || {}, V = 'mc_gate_' + (C.termsVersion || '1');
   var page = (location.hash || '').slice(1);
