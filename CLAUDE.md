@@ -90,6 +90,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 16: "NPCs and bots running around really fast, movements sped up" + "make the trees live" (shipped build
+  20261015235521, then 20261016100238 with the fix). Measured with the virtual clock (/tmp/claude-0/ad/speed.py
+  pattern: sample gobs px/py and __WND() bots every 50 ms for 20-40 game-s): monsters' follow() caught up at up to
+  3x (2.7 tiles/s) and their walk clip ran 1 clip-s per tile (player's natural cycle = 0.6 s per tile); bots ran
+  3.33 t/s on 70% of trips > 10 tiles. tools/patch_pace.py (last in build.sh): follow(e,dt,br,lo,hi,dv), strolls
+  step every other tick (gb.rs marks a stroller), monsters 0.83 t/s strolling / 1.667 chasing, catch-up <= 1.4x,
+  walk clip t = ph/4*.6, bots run only on 25+ tile trips (1 in 3) and never in towns. After: mobs p90 1.2 t/s,
+  bots 1.67. The live game's internals are scoped (not reachable from page JS): measure on scratch test pages.
+
 - Oct 16: "create an ad video for X of using the site": 36 s, 1080x1080 MP4 (not posted; X posting waits for launch).
   Smooth game footage on this slow machine = a VIRTUAL CLOCK (scratch/ad/vclock.js: Date.now, performance.now,
   timers and rAF replaced; __vstep(ms) advances), frozen from page start, ~3 s per frame at 390x844 dpr 1.5 phone
