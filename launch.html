@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https: http://localhost:* http://127.0.0.1:*; media-src 'self' blob: https:; connect-src 'self' https: wss: http://localhost:* ws://localhost:* http://127.0.0.1:* ws://127.0.0.1:*; frame-src https://dexscreener.com https://*.cloudflarestream.com; object-src 'none'; base-uri 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://pit.memecapes.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https: http://localhost:* http://127.0.0.1:*; media-src 'self' blob: https:; connect-src 'self' https: wss: http://localhost:* ws://localhost:* http://127.0.0.1:* ws://127.0.0.1:*; frame-src https://dexscreener.com https://*.cloudflarestream.com; object-src 'none'; base-uri 'none'; form-action 'self'">
 <title>MemeCapes · Coins, Watch, Stream, Launch</title>
 <meta name="description" content="Launch a Solana coin with fees you choose, watch launches and traders live, stream your own, and trade new coins, all on memecapes.com.">
 <meta property="og:title" content="MemeCapes Launchpad"><meta property="og:description" content="Launch a Solana coin, watch launches and traders live, stream your own, and trade new coins.">
@@ -404,6 +404,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0 28px;colo
 @media(max-width:900px){.ugrid{grid-template-columns:1fr}}
 .uhead{display:flex;gap:16px;align-items:center;padding:18px 0 8px;flex-wrap:wrap}
 .uhead h1{margin:0}
+#pitwrap{display:grid;grid-template-columns:1fr 520px;gap:28px;align-items:center;padding:34px 16px}#pitwrap[hidden]{display:none}#pit-lead h2{margin:4px 0 8px;font-size:30px}@media(max-width:900px){#pitwrap{grid-template-columns:1fr}}
 </style>
 <script src="config.js"></script><script src="solpay.js"></script><script src="gate.js"></script>
 </head><body>
@@ -416,6 +417,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0 28px;colo
 </div></nav>
 <div class="tape" id="tape" aria-label="Live trades"><div class="track"><span class="ti empty">Loading live trades…</span></div></div>
 <main class="wrap" id="app" aria-live="polite"></main>
+<section class="wrap" id="pitwrap" hidden><div id="pit-lead"><p class="kicker">SnakePit</p><h2>Trade it in the Pit.</h2><p class="mute">The trading app next to the game: strike any Solana coin, launch your own, and grow your snake. Same wallet as the game.</p></div><div id="snakepit-widget"></div></section>
 <div class="mob"><a href="#/" data-r="home">Coins</a><a href="#/watch" data-r="watch">Watch<span class="lvn" hidden></span></a><a href="#/stream" data-r="stream">Stream</a><a href="#/launch" data-r="launch">Launch</a></div>
 <footer><div class="wrap">
   <p>The MemeCapes Launchpad runs on Meteora's audited bonding-curve program on Solana. Coins are made and owned by the people who launch them, not by MemeCapes. Anyone can launch a coin, so check who is behind one before you buy. Most new coins lose most of their value: only put in what you are happy to lose. Nothing here is investment advice. Streams, posts and chat are written by their authors, not by MemeCapes.</p>

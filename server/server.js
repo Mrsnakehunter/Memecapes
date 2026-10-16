@@ -763,6 +763,7 @@ const LP = require('./launchpad')({ db, DATA, now, tooMany, say, online, sigOk, 
 G.setTellAdmins(text => { for (const o of online.values()) if (o.role === 'admin') say(o, text, '#c80'); });
 // ---------- MemeSnake Live (server/memesnake.js): the AI agent's public activity feed ----------
 const MS = require('./memesnake')({ DATA });
+const PIT = require('./snakepit')({ tooMany });   // SnakePit: a player's snake + the Pit's public numbers, cached
 
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------
 const server = http.createServer(async (req, res) => {
@@ -771,6 +772,7 @@ const server = http.createServer(async (req, res) => {
   let url; try { url = new URL(req.url, 'http://x'); } catch (e) { res.writeHead(400); return res.end(); }
   const json = (o, s) => { res.writeHead(s || 200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }); res.end(JSON.stringify(o, null, 1)); };
   if (url.pathname.startsWith('/lp/') || url.pathname.startsWith('/so/') || url.pathname.startsWith('/st/')) { try { if (await LP.http(req, res, url, json) !== false) return; } catch (e) { console.error('lp', e); return json({ error: 'Server error.' }, 500); } }
+  if (url.pathname.startsWith('/pit/')) { try { if (await PIT.http(req, res, url, json, req.ip) !== false) return; } catch (e) { console.error('pit', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/ms/feed') { try { if (await MS.http(req, res, url, json) !== false) return; } catch (e) { console.error('ms', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname.startsWith('/burnad')) { try { if (await baHttp(req, res, url, json) !== false) return; } catch (e) { console.error('burnad', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, online: online.size, mode: G.mode() });
