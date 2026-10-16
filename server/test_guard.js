@@ -5,7 +5,7 @@ const { spawn } = require('child_process');
 const fs = require('fs'), os = require('os'), path = require('path'), crypto = require('crypto');
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mc-guard-'));
 const PORT = 19000 + Math.floor(Math.random() * 1000), B = 'http://127.0.0.1:' + PORT;
-const srv = spawn(process.execPath, [path.join(__dirname, 'server.js')], { env: { ...process.env, PORT, DATA_DIR: dir, ADMIN_NAMES: 'Albert', ADMIN_KEY: 'k'.repeat(40), LP_NO_INDEX: '1', PROXY_HOPS: '' }, stdio: ['ignore', 'pipe', 'pipe'] });
+const srv = spawn(process.execPath, [path.join(__dirname, 'server.js')], { env: { ...process.env, PORT, DATA_DIR: dir, ADMIN_NAMES: 'Albert', ADMIN_KEY: 'k'.repeat(40), LP_NO_INDEX: '1', PROXY_HOPS: '', GUARD_WS_PER_IP: '8' }, stdio: ['ignore', 'pipe', 'pipe'] });
 let fails = 0;
 const ok = (c, msg) => { console.log((c ? 'PASS ' : 'FAIL ') + msg); if (!c) fails++; };
 const wait = ms => new Promise(r => setTimeout(r, ms));
