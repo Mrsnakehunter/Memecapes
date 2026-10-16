@@ -140,8 +140,9 @@ CREATE TABLE IF NOT EXISTS guard_state(k TEXT PRIMARY KEY, v TEXT);`);
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
     res.setHeader('Content-Security-Policy', "default-src 'none'; img-src 'self'; frame-ancestors 'none'");
   }
-  // WebSocket connections: at most WS_PER_IP at once from one address
-  const WS_PER_IP = +process.env.GUARD_WS_PER_IP || 8;
+  // WebSocket connections: at most WS_PER_IP at once from one address. Phone carriers put thousands of people
+  // behind one address (carrier NAT), so this is generous; the rate buckets and strikes still catch floods.
+  const WS_PER_IP = +process.env.GUARD_WS_PER_IP || 40;
   function wsOpen(req) {
     const ip = ipOf(req);
     if (blocked(ip)) return null;
