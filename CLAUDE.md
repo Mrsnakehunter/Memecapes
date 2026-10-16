@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 16: "create an ad video for X of using the site": 36 s, 1080x1080 MP4 (not posted; X posting waits for launch).
+  Smooth game footage on this slow machine = a VIRTUAL CLOCK (scratch/ad/vclock.js: Date.now, performance.now,
+  timers and rAF replaced; __vstep(ms) advances), frozen from page start, ~3 s per frame at 390x844 dpr 1.5 phone
+  view (scratch/ad/gp.py, scratch/site/test9.html = test7 + window.__MK walk marker). Clips: walk (Wow Landing
+  fountain, tp 156,184 cam 3.75/.42/10), fight Bonk (pitch .55 or bushes block), chop a lone meadow tree (forest
+  trees block the camera), MemeCape orbit at the castle. Site scenes typed/scrolled per frame (scratch/ad/site.py),
+  compose.py = phone + browser mockups, Cinzel/Alegreya from a sparse clone of github.com/google/fonts. Hide dates in
+  ad footage: #cd + its date line, MemeSnake's countdown stat. Found + fixed: launch.html#/stream opened directly
+  showed "Cannot set properties of null" when the coins request failed (route token in lp/app.js).
+
 - Oct 16: "support page next to the AI Agent, think of 10,000 questions, answer them without giving away secrets".
   Website #support: tools/site/support_qa.py = the knowledge base (260 answers in 20 topics, each with alts + a verb
   phrase vp and/or noun phrase np; 'pl' marks plural nps) -> support/qa.json (96 KB, in Watchtower's FILES);
