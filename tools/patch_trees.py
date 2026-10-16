@@ -54,7 +54,7 @@ const im=new Image();im.onload=()=>{const t=gl.createTexture();gl.activeTexture(
 function treeStart(){if(!TRP.sp.oak||!TRP.sp.pine)return;TRP.keys=Object.keys(TRP.sp);TRP.on=1;for(const k in chunks)chunks[k].od=1}
 // which tree stands here: region first, then the old forest/field dice (so the world keeps its shape)
 const TRH={oak:3.6,beech:4.3,maple:3.4,birch:4.1,willow:3.7,blossom:3.0,dead:3.4,pine:5.0,spruce:4.6,fir:4.2,snowspruce:4.6,cypress:4.4,alien:3.6,palm:4.2},
-TRFB={beech:'oak',maple:'oak',birch:'oak',willow:'oak',blossom:'oak',dead:'oak',alien:'oak',palm:'oak',spruce:'pine',fir:'pine',snowspruce:'pine',cypress:'pine'};
+TRFB={fir:'spruce',beech:'oak',maple:'oak',birch:'oak',willow:'oak',blossom:'oak',dead:'oak',alien:'oak',palm:'oak',spruce:'pine',fir:'pine',snowspruce:'pine',cypress:'pine'};
 function treeKind(o){const q=hh(o.x*3+7,o.y*5+11),q2=hh(o.x+31,o.y+17),hv=HSH(o.x+77,o.y+3),h3=HSH(o.x+5,o.y+41),h4=HSH(o.x+19,o.y+23),forest=(o.x<175&&o.y<215)||(o.x>260&&o.y<60),tp=forest?(q2<.55?0:q2<.85?1:2):(q2<.15?0:q2<.75?1:2);
 const nt=(i,r)=>Math.hypot(o.x-TW[i].cx,o.y-TW[i].cy)<r;let sp,season=0;
 if(nt(4,42))sp=h3<.7?'dead':'spruce';else if(nt(5,44))sp=h3<.7?'snowspruce':'fir';else if(nt(6,38))sp=h3<.6?'alien':'dead';else if(nt(7,40))sp=h3<.6?'cypress':h3<.8?'palm':'oak';
@@ -62,7 +62,7 @@ else if(nt(1,34)&&h3<.5)sp='willow';else if(nt(3,30)&&h3<.4)sp='blossom';else if
 else if(tp==0)sp=h3<.5?'pine':h3<.8?'spruce':'fir';else{sp=h3<.45?'oak':h3<.65?'beech':h3<.8?'birch':h3<.9?'maple':'oak';if(tp==1&&hv<.08)sp='birch'}
 if(sp=='maple')season=3;else if(hv>.9&&(sp=='oak'||sp=='beech'))season=1;else if(sp=='birch'&&h4<.3)season=2;
 if(!TRP.sp[sp]){sp=TRFB[sp]||'oak';if(!TRP.sp[sp])sp='oak'}
-const e=TRP.sp[sp],big=tp==2&&!(sp=='pine'||sp=='spruce'||sp=='fir'||sp=='cypress')?1.22:1,sc=(TRH[sp]||3.6)/Math.max(.5,e.h)*(.85+.3*q)*big,sway=(sp=='pine'||sp=='spruce'||sp=='fir'||sp=='snowspruce'||sp=='cypress'||sp=='dead'||sp=='alien')?.35:1;
+const e=TRP.sp[sp],big=tp==2&&!(sp=='pine'||sp=='spruce'||sp=='fir'||sp=='cypress')?1.22:1,sc=Math.min((TRH[sp]||3.6)/Math.max(.5,e.h),3.1/1.9)*(.85+.3*q)*big,sway=(sp=='pine'||sp=='spruce'||sp=='fir'||sp=='snowspruce'||sp=='cypress'||sp=='dead'||sp=='alien')?.35:1;
 return{sp,yaw:q*6.283+h4*.7,sc,tint:(.84+.3*h4)+4*season,h:e.h*sc,sway}}
 const TRB={};function bushList(key){if(TRB[key])return TRB[key];const L=TRB[key]=[];if(!TRP.sp.bush)return L;const th=(x,y)=>{let h=(Math.imul(x,73856093)^Math.imul(y,19349663))>>>0;h=Math.imul(h^(h>>>15),2246822519)>>>0;h=Math.imul(h^(h>>>13),3266489917)>>>0;return((h^(h>>>16))>>>0)/4294967296};const x0=(key%CN)*CS,y0=Math.floor(key/CN)*CS;
 for(let y=y0;y<Math.min(H,y0+CS);y++)for(let x=x0;x<Math.min(W,x0+CS);x++){if(tile[y][x]!=0||ob[y][x])continue;const q=th(x,y);if(q<=.972||q>.985)continue;const px=x+.5+(th(x,y+99)-.5)*.6,pz=y+.5+(th(x+99,y)-.5)*.6,sd=x*977+y*13+3,s=.75+HSH(sd,sd*3)*.5,h3=HSH(sd+5,sd*7),sp=TRP.sp.bushflower&&h3<.3?'bushflower':'bush',e=TRP.sp[sp];
