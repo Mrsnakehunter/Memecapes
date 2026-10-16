@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 16: "support page next to the AI Agent, think of 10,000 questions, answer them without giving away secrets".
+  Website #support: tools/site/support_qa.py = the knowledge base (260 answers in 20 topics, each with alts + a verb
+  phrase vp and/or noun phrase np; 'pl' marks plural nps) -> support/qa.json (96 KB, in Watchtower's FILES);
+  tools/site/support_page.py splices CSS (sp-*), the page, the nav link after AI Agent and support:'Support' into
+  index.html (idempotent, run it after editing). The page expands vp/np through the VP/NP templates in the browser
+  (11,471 phrasings, real count shown), scores tokens (canonical q 4, alts 3, keywords 2.5, answer 1, prefix 1.5;
+  below 1.5 = no match), topic chips, Most asked (top:true), "Also asked as" samples, .mc-contact in Still stuck.
+  The generator asserts no years or $ prices in any answer. Add an answer = one q() line, rerun both scripts.
+  Testing: /tmp/claude-0/sp/shot.py pattern (serve the repo, localStorage mc_gate_<termsVersion>='yes', #support).
+
 - Oct 15 night: Albert's phone (an in-app browser, http:// link) showed "Could not reach the game server". Server was
   fine (health ok, mode normal). Cause: GitHub Pages does NOT enforce HTTPS, so http://memecapes.com serves the game
   and the WebSocket origin is http://memecapes.com, which server.js rejects (403) -> that message. Fix: gate.js now
