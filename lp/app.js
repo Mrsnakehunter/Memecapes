@@ -139,6 +139,14 @@
   LPC.onChange(() => { drawWallet(); route(); });
   LPC.onWallets(() => { });
 
+  // ---------- SnakePit widget on the launch page (config.js `pit`), loaded from the Pit itself so it is always current
+  (function () {
+    const pit = String(MC.pit || '').replace(/\/+$/, ''), wrap = document.getElementById('pitwrap'), el = document.getElementById('snakepit-widget');
+    if (!/^https:\/\/pit\.memecapes\.com$/.test(pit) || !wrap || !el) return;
+    el.setAttribute('data-app', pit); wrap.hidden = false;
+    const s = document.createElement('script'); s.src = pit + '/embed/snakepit-widget.js'; s.defer = true; s.onerror = () => { wrap.hidden = true; };
+    document.body.appendChild(s);
+  })();
   // ---------- views
   const views = { home, coin, launch, me: mine, how, desk };
   let leaving = [];   // things a view wants stopped when the next view opens (timers, cameras)
