@@ -90,6 +90,21 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 16: SnakePit (Albert's trading app, pit.memecapes.com, separate codebase from another chat: SNAKEPIT-BRIEF.md +
+  snakepit.zip, Next.js/Privy/Jupiter/Meteora DBC, NOT built or deployed yet). Vocabulary: Strike=buy, Shed=sell, Venom=
+  fee, Hatch=launch, segments=score (3 + realized SOL/0.05), Boss Snake=MemeSnake's wallet, Molt Season=weekly reset.
+  Section 7 built here: config.js `pit` ("" = off; set "https://pit.memecapes.com" when it is live); server/snakepit.js
+  proxies GET /pit/snake?wallet= and /pit/stats (PIT_URL env or config.js, 60 s cache, fields whitelisted, last good
+  answer kept when the Pit is down; test_pit.js 12 checks); tools/patch_snakepit.py (after patch_pace): PITS state,
+  pitRefresh (start, $CAPES tab, every minute, 5-min freshness), pitSnakeDraw = mint snake on the player's trail (lead
+  .9 tile, .23 spacing, up to 30 segments then thicker, tongue flick), $CAPES tab card "Your snake" + "Trade $CAPES in
+  the Pit" (pit/?q=<capesMint>, else /capes); launch.html #pitwrap + widget loaded by lp/app.js when pit is set (CSP
+  script-src allows pit.memecapes.com). Brand on our side: mint #58F0A6, red only for the tongue/Strike. On preview,
+  dormant until `pit` is set. Conflicts to settle with Albert/the other chat: two launchpads (ours on launch.html vs
+  Hatch), the brief calls $CAPES "the in-game currency" (ours: Meme Coins in game, $CAPES = the token), the brief's
+  "trading is the front door" vs our home page, venom -> prize pool must match the pot wallet on the $CAPES page.
+  Test: /tmp/claude-0/pittest.py (fake Pit :8799 + local server PIT_URL + test9 hooks __PITS/__pitRefresh).
+
 - Oct 16: "the video evenly split between all the platform, plus good music". memecapes_ad_platform.mp4 (37 s):
   intro + Play/Watch/Stream/Launch/AI Agent 3 bars each + $CAPES + end, every cut on a downbeat, gold flash +
   punch-in, nav pills with the current part lit (scratch/ad/compose2.py, reuses compose.py by exec). Music: 'Royal
