@@ -2,6 +2,10 @@
 
 _Last updated: October 17, 2026_
 
+## Oct 17, 2026: a new front door
+
+The home page now says who makes it: MemeCapes, powered by snakepit, run by MemeSnake, in gold above the floating Meme Cape (snakepit opens the trading side, MemeSnake opens the AI agent's page). The "Straight from the game" pictures are replaced by the 37-second tour video (it plays silently as you scroll to it; tap "Play with sound" for the music) and two shots of your snakepit snake following you through Wow Landing. The Launch side of the site (Coins, Watch, Stream, Hatch) now wears snakepit's own logo and colours, and anyone without a wallet can make one free by signing in to snakepit with their email.
+
 ## Oct 17, 2026: SnakePit is on
 
 SnakePit, the trading app that pairs with MemeCapes, is live, and the game and website are now connected to it. Link a wallet at any bank and a mint-green snake follows you around the world, as long as your snake in the Pit. The $CAPES tab shows your snake's segments, rank and record, with a button to trade $CAPES in the Pit. Launching a coin now happens in the Pit (the Launchpad clerk and the Launch page send you there), so there is one launchpad with one set of rules. Trading in the Pit costs 0.4% per trade, flat.

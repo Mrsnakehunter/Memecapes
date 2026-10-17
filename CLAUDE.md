@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 17 (night): home page: gold crest above the floating cape "MemeCapes / powered by snakepit (-> launch.html) · run by
+  MemeSnake (-> memesnake/)" (.crest, .cr-*); "Straight from the game" six screenshots replaced by the 37 s tour video
+  (media/memecapes-tour.mp4 = memecapes_ad_platform.mp4, muted autoplay when on screen, "Play with sound" button) + two
+  snake-pet shots (/tmp/claude-0/pitshots ang0/ang1 cropped 0,300,585,1000). Headless Chromium can't play H.264
+  (readyState 0): check the video on a real phone. Grid items holding a <video> need min-width:0 or they overflow.
+  Also "Link with snakepit" (one account): server /plink/msg + /plink (test_plink.js 8 checks), WS pitLinkStart with a
+  client-made 24-hex code; game patch tools/patch_pitlink.py (after patch_snakepit) puts a button on the $CAPES snake
+  card, opens PIT/link?code=..&srv=.. on the click; pitWallet() prefers NETS.holder.wallet. On PREVIEW only until the
+  Pit has its /link page (brief for the other chat given). Linking works before $CAPES launches (holderCheck skipped).
+
 - Oct 17 (night): "I thought snakepit would let you create your own wallet, it says connect wallet". The Pit does
   (Privy embeddedWallets createOnLogin users-without-wallets: email sign-in makes a Solana wallet). launch.html only
   connects browser wallets, so the picker now leads with "No wallet? Make one free" -> config pit (.mkw). Limit: a Pit
