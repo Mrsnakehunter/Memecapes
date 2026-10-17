@@ -1,6 +1,10 @@
 # MemeCapes progress
 
-_Last updated: October 16, 2026_
+_Last updated: October 17, 2026_
+
+## Oct 17, 2026: ready for the Pit
+
+The game now knows about SnakePit, the trading app that pairs with MemeCapes. Nothing shows until the Pit is switched on, and then: a small mint-green snake follows you around the world, one segment for every segment your snake has in the Pit, and the $CAPES tab at any bank gets a "Your snake" card (segments, rank, realized SOL, wins and losses, streak) with a "Trade $CAPES in the Pit" button. The Launch page gets a Pit panel and the Launchpad clerk sends you to the Pit to hatch a coin. The game server fetches your snake from the Pit once a minute and keeps the last good answer if the Pit is ever down.
 
 ## Oct 16, 2026: calmer monsters and adventurers
 
