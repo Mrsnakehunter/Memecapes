@@ -462,6 +462,37 @@ async function holderCheck(row) {
   } catch (e) { Q.walErr.run(now() + 3600e3, String(e.message || e).slice(0, 120), row.uid); }
   return Q.wal.get(row.uid);
 }
+const PLINK = new Map();   // one-time code -> { uid, name, exp }: a game account waiting to be linked from the Pit
+const plinkMsg = (name, w, code) => 'MemeCapes: link this wallet to your game account.\n\nAccount: ' + name + '\nWallet: ' + w + '\nCode: ' + code +
+  '\n\nSigning this is free. It is not a transaction and it does not move any tokens.';
+async function plinkHttp(req, res, url, json) {
+  if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET', 'Access-Control-Allow-Headers': 'Content-Type' }); return res.end(); }
+  const ip = req.ip || G.ipOf(req);
+  if (tooMany('plink' + ip)) return json({ error: 'Too many tries. Wait a few minutes.' }, 429);
+  const code = String((req.method === 'GET' ? url.searchParams.get('code') : '') || '');
+  if (url.pathname === '/plink/msg' && req.method === 'GET') {
+    const w = String(url.searchParams.get('wallet') || ''), pk = b58(w), L = PLINK.get(code);
+    if (!L || L.exp < now()) return json({ error: 'This link has expired. Tap "Link with snakepit" in the game again.' }, 404);
+    if (!pk || pk.length !== 32) return json({ error: 'That is not a Solana wallet address.' }, 400);
+    return json({ account: L.name, msg: plinkMsg(L.name, w, code) });
+  }
+  if (url.pathname !== '/plink' || req.method !== 'POST') return false;
+  let m; try { m = await baBody(req, 8 * 1024); } catch (e) { return json({ error: 'Bad request.' }, 400); }
+  const c2 = String(m.code || ''), w = String(m.wallet || ''), L = PLINK.get(c2), pk = b58(w);
+  if (!L || L.exp < now()) return json({ error: 'This link has expired. Tap "Link with snakepit" in the game again.' }, 404);
+  if (!pk || pk.length !== 32) return json({ error: 'That is not a Solana wallet address.' }, 400);
+  if (!sigOk(w, plinkMsg(L.name, w, c2), String(m.sig || ''))) return json({ error: 'The signature did not match that wallet. Nothing was linked.' }, 400);
+  const other = Q.walBy.get(w);
+  if (other && other.uid !== L.uid) return json({ error: 'That wallet is linked to another MemeCapes account. Unlink it there first.' }, 409);
+  PLINK.delete(c2);
+  const old = Q.wal.get(L.uid);
+  if (!(old && old.wallet === w)) Q.walSet.run(L.uid, w, now(), old ? old.claimed : 0, old ? old.claims : 0);
+  if (CAPES_MINT) await holderCheck(Q.wal.get(L.uid));
+  const o = online.get(L.uid);
+  if (o) { say(o, 'Linked with snakepit. Your snake follows you now.', '#0a0'); o.send(holderInfo(L.uid)); o.send(partnerInfo(L.uid)); }
+  return json({ ok: true, account: L.name });
+}
+
 function holderInfo(uid) {
   const w = Q.wal.get(uid), d = HOLD_DAYS * 864e5;
   const S = sotmNow(), md = SOTM_DAYS * 864e5, got = S.skin ? !!Q.sotmGet.get(uid, S.key) : false;
@@ -493,6 +524,16 @@ Object.assign(H, {
     if (!(old && old.wallet === w)) Q.walSet.run(c.uid, w, now(), old ? old.claimed : 0, old ? old.claims : 0);  // the skin timer belongs to the account
     say(c, 'Wallet linked. Checking your $CAPES...', '#0a0');
     await holderCheck(Q.wal.get(c.uid)); c.send(holderInfo(c.uid)); c.send(partnerInfo(c.uid));
+  },
+  // Link with snakepit: the game makes a one-time code, opens the Pit, and the player signs in there (email sign-in
+  // creates a wallet for anyone without one). The Pit signs a message with that wallet and posts it to /plink.
+  pitLinkStart(c, m) {
+    if (!c.uid) return;
+    const code = String(m.code || '');
+    if (!/^[a-f0-9]{24}$/.test(code)) return;
+    for (const [k, v] of PLINK) if (v.exp < now()) PLINK.delete(k);
+    if (PLINK.size > 5000) return;
+    PLINK.set(code, { uid: c.uid, name: c.name, exp: now() + 15 * 60e3 });
   },
   walletUnlink(c) { if (!c.uid) return; Q.walDel.run(c.uid); say(c, 'Wallet unlinked.', '#a60'); c.send(holderInfo(c.uid)); c.send(partnerInfo(c.uid)); partnersMaybeChanged(); },
   async holderClaim(c, m) {
@@ -774,6 +815,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname.startsWith('/lp/') || url.pathname.startsWith('/so/') || url.pathname.startsWith('/st/')) { try { if (await LP.http(req, res, url, json) !== false) return; } catch (e) { console.error('lp', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname.startsWith('/pit/')) { try { if (await PIT.http(req, res, url, json, req.ip) !== false) return; } catch (e) { console.error('pit', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/ms/feed') { try { if (await MS.http(req, res, url, json) !== false) return; } catch (e) { console.error('ms', e); return json({ error: 'Server error.' }, 500); } }
+  if (url.pathname === '/plink' || url.pathname === '/plink/msg') { try { if (await plinkHttp(req, res, url, json) !== false) return; } catch (e) { console.error('plink', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname.startsWith('/burnad')) { try { if (await baHttp(req, res, url, json) !== false) return; } catch (e) { console.error('burnad', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, online: online.size, mode: G.mode() });
   if (url.pathname === '/guard/me') {   // your own address as the server sees it (and what the proxies sent), for checking the setup
