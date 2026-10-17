@@ -509,6 +509,9 @@ numbers in here or anywhere in the repo.
 - Shipped Oct 13 (build 20261013182150): everything that was on preview. Preview = live again.
   Still to model in Meshy: the 11 weapon skins (Candle Blade first, Skin of the Month 2).
 - Shipped Oct 15 (build 20261015193853, "make it live"): 8k+ building models (hi-models branch merged).
+- Shipped Oct 17 (build 20261016225603, "make it live"): SnakePit integration (snake pet, $CAPES tab card, Pit panel,
+  Launchpad handoff), all dormant until config.js `pit` is set. Preview = live again. Pages deploy checked via gh
+  (the device bridge was offline, so version.json was read from the repo, not the live site).
 - Shipped Oct 14 (build 20261014090407, "make it live"): the whole `launchpad` branch merged to main: Play/Watch/
   Stream/Launch home, launch.html (forge floor, Watch, Stream, launchpad with launching ON), server launchpad.js +
   social.js, Launchpad clerk in the game. Fee wallet (public address, Albert): 3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg
