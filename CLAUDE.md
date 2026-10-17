@@ -101,6 +101,11 @@ numbers in here or anywhere in the repo.
   Capes page, Strike sheet ("Venom 3.2% comes off the top" + SOL amount), README, brief. Nothing on memecapes.com yet:
   when the Pit goes live, add a "The Pit" card under Burns on the $CAPES page with the same words. FOMO's exact fee
   was not verified. Lesson: when Albert says "the fees" ask which product before touching published economics.
+  Oct 17: FOMO checked (help centre via fomoappguide.com, Sept 2026): Solana = flat 0.10 USDC under 5, 2% from 5 to
+  47.50, flat 0.95 to 190, 0.5% above, 0.45% with a referral; FOMO pays gas. 3.2% would have been ~6x dearer on $200+.
+  Albert: "make it cheaper than fomo" -> Pit venom = flat 0.4%, no tiers, no minimums (NEXT_PUBLIC_VENOM_BPS=40),
+  under FOMO at every size incl. referral. Same 50/25/25 split and transfer mechanism. Re-check FOMO's schedule before
+  any public "cheaper than FOMO" claim; the Pit's own copy says "0.4%, flat, no tiers, no minimums" and names nobody.
 
 - Oct 16: "combine the launchpads: the new one (SnakePit's Hatch) like the old one, designed like the new one, that is
   going to be the app". Delivered snakepit-launchpad.zip (the SnakePit codebase with the merge; LAUNCHPAD-MERGE.md
