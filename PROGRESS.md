@@ -2,6 +2,10 @@
 
 _Last updated: October 17, 2026_
 
+## Oct 17, 2026: SnakePit is on
+
+SnakePit, the trading app that pairs with MemeCapes, is live, and the game and website are now connected to it. Link a wallet at any bank and a mint-green snake follows you around the world, as long as your snake in the Pit. The $CAPES tab shows your snake's segments, rank and record, with a button to trade $CAPES in the Pit. Launching a coin now happens in the Pit (the Launchpad clerk and the Launch page send you there), so there is one launchpad with one set of rules. Trading in the Pit costs 0.4% per trade, flat.
+
 ## Oct 17, 2026: ready for the Pit
 
 The game now knows about SnakePit, the trading app that pairs with MemeCapes. Nothing shows until the Pit is switched on, and then: a small mint-green snake follows you around the world, one segment for every segment your snake has in the Pit, and the $CAPES tab at any bank gets a "Your snake" card (segments, rank, realized SOL, wins and losses, streak) with a "Trade $CAPES in the Pit" button. The Launch page gets a Pit panel and the Launchpad clerk sends you to the Pit to hatch a coin. The game server fetches your snake from the Pit once a minute and keeps the last good answer if the Pit is ever down.

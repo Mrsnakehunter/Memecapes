@@ -90,6 +90,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 17 (evening): the Pit is LIVE at https://snakepit-mu.vercel.app (the other chat deployed it; Privy secret no longer
+  used: it verifies sign-ins with Privy's public keys). config.js pit = that address; lp/app.js and launch.html CSP accept
+  pit.memecapes.com OR snakepit-mu.vercel.app. When Albert adds the GoDaddy CNAME (pit -> the Vercel target the other
+  chat gave), switch config.js pit to https://pit.memecapes.com (both stay allowed). Render's server reads pit from
+  config.js at start (needs the redeploy that a push triggers). Signed-in test trade still to do by Albert (0.05 SOL
+  Strike + Shed; each should pay 0.0001 SOL to the fee wallet and 0.0001 to the income wallet).
+
 - Oct 17: Albert's "Weekly Agent Battle" (spec doc "Weekly Agent Battle — Build Spec" + design canvas "Weekly Agent
   Battle Screens", both his artifacts): 1.2 SOL entry (1 stack / 0.15 pot / 0.05 fee), AI agent Turtle/Snake/Wild + lucky
   coin from a board of 5, Advanced (bet/TP/SL), one BOOST a day, top 3 by % return split 95% (60/25/15), 5% rolls on.

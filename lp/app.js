@@ -142,7 +142,7 @@
   // ---------- SnakePit widget on the launch page (config.js `pit`), loaded from the Pit itself so it is always current
   (function () {
     const pit = String(MC.pit || '').replace(/\/+$/, ''), wrap = document.getElementById('pitwrap'), el = document.getElementById('snakepit-widget');
-    if (!/^https:\/\/pit\.memecapes\.com$/.test(pit) || !wrap || !el) return;
+    if (!/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pit) || !wrap || !el) return;
     el.setAttribute('data-app', pit); wrap.hidden = false;
     const s = document.createElement('script'); s.src = pit + '/embed/snakepit-widget.js'; s.defer = true; s.onerror = () => { wrap.hidden = true; };
     document.body.appendChild(s);
@@ -447,7 +447,7 @@
   function launch() {
     // one launchpad: once SnakePit is live (config.js `pit`), hatching happens there with these same rules
     const pit = String(MC.pit || '').replace(/\/+$/, '');
-    if (/^https:\/\/pit\.memecapes\.com$/.test(pit)) {
+    if (/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pit)) {
       app.innerHTML = `<div class="empty" style="margin:30px auto;max-width:620px;text-align:left;padding:26px">
         <p class="kicker">Launch</p><h1 style="margin:4px 0 10px">Hatch it in the Pit.</h1>
         <p>Launching now lives in SnakePit, the trading app next to the game. Same rules as here: you pick the trading fee and your share of it, snipers pay extra in the first seconds, split your fees with up to 10 wallets, lock team tokens on-chain, and the liquidity is locked for good when your coin graduates. Your coin is tradeable the second it exists and pinned to the top of the Pit.</p>
