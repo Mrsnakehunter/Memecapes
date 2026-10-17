@@ -121,9 +121,11 @@
     return new Promise((ok, no) => {
       const ws = LPC.wallets();
       const d = document.createElement('div'); d.className = 'modal';
-      d.innerHTML = `<div class="panel" role="dialog" aria-label="Connect a wallet"><h3>Connect a wallet</h3>
-        ${ws.length ? '<p class="mute small">Your wallet shows you every transaction before you approve it. MemeCapes never sees your keys.</p><div class="wl">' + ws.map(w => `<button type="button" data-w="${esc(w.name)}">${w.icon ? `<img src="${esc(w.icon)}" alt="">` : ''}${esc(w.name)}</button>`).join('') + '</div>'
-          : '<p>No Solana wallet found in this browser. Install <a href="https://phantom.com" target="_blank" rel="noopener">Phantom</a>, <a href="https://solflare.com" target="_blank" rel="noopener">Solflare</a> or <a href="https://backpack.app" target="_blank" rel="noopener">Backpack</a>, then reload. On a phone, open memecapes.com/launch.html inside your wallet app\'s browser.</p>'}
+      const pit = String(MC.pit || '').replace(/\/+$/, '');
+      const make = pit ? `<a class="btn gold mkw" href="${esc(pit)}" target="_blank" rel="noopener"><b>No wallet? Make one free</b><span>Sign in to snakepit with your email: a Solana wallet is created for you in seconds. No app, no seed phrase to write down.</span></a>` : '';
+      d.innerHTML = `<div class="panel" role="dialog" aria-label="Connect a wallet"><h3>${ws.length ? 'Connect a wallet' : 'Get a wallet'}</h3>
+        ${ws.length ? '<p class="mute small">Your wallet shows you every transaction before you approve it. MemeCapes never sees your keys.</p><div class="wl">' + ws.map(w => `<button type="button" data-w="${esc(w.name)}">${w.icon ? `<img src="${esc(w.icon)}" alt="">` : ''}${esc(w.name)}</button>`).join('') + '</div>' + (make ? '<p class="mute small" style="margin:14px 0 8px">Or</p>' + make : '')
+          : make + '<p class="mute small" style="margin-top:14px">Already have Phantom, Solflare or Backpack? Install it in this browser and reload, or on a phone open memecapes.com/launch.html inside your wallet app\'s browser.</p>'}
         <button class="btn quiet" type="button" data-x>Close</button></div>`;
       document.body.appendChild(d);
       d.onclick = async e => {

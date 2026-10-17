@@ -90,6 +90,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 17 (night): "I thought snakepit would let you create your own wallet, it says connect wallet". The Pit does
+  (Privy embeddedWallets createOnLogin users-without-wallets: email sign-in makes a Solana wallet). launch.html only
+  connects browser wallets, so the picker now leads with "No wallet? Make one free" -> config pit (.mkw). Limit: a Pit
+  (Privy) wallet lives in the Pit; memecapes.com's Stream/tips/pass still need a browser wallet (Privy can export the
+  key to Phantom). Real fix later = move Stream/Watch into the Pit or add Privy to launch.html (no npm here).
+
 - Oct 17 (night): "where's the snakepit logo and theme, that's gonna be the whole new launch page". launch.html (Coins/
   Watch/Stream/Hatch) is now SnakePit-skinned: the Pit's logo (Z-snake path, mint #58F0A6 on ink #0B0C0E) + "snake**pit**"
   wordmark, Outfit + JetBrains Mono, white headings, mint accents (red only for live/Strike), svg favicon; nav Coins /
