@@ -58,14 +58,10 @@ window.MC_CONFIG = {
     streamPassDays: 30,          // how long one payment lasts
     streamPassWallet: "",        // PUBLIC address the pass is paid to; empty = the launchpad fee wallet above
     rpcDevnet: "https://api.devnet.solana.com",
-    // MemeCapes' part of the launchpad fees (Albert, Oct 16): 25% buys $CAPES and burns it, 25% buys $CAPES for the
-    // game pot, 50% is MemeCapes' income. Every burn and every pot buy is posted.
-    burnShare: 25,               // % of MemeCapes' launchpad income that buys $CAPES and burns it
-    buybackShare: 25,            // % of MemeCapes' launchpad income that buys $CAPES for the game pot
-    // the fee rules are fixed (Albert, Oct 16): 3.2% on every trade; the launcher keeps 25% of what is left after
-    // Meteora's 20%, i.e. 0.64% of every trade. The server refuses coins outside these limits.
-    feeBps: { min: 320, max: 320, def: 320 },             // trading fee on the bonding curve, in basis points (320 = 3.2%)
-    creatorShare: { min: 25, max: 25, def: 25 },          // % of the fee left after Meteora's 20% that goes to the launcher
+    burnShare: 50,               // % of MemeCapes' launchpad income that buys $CAPES and burns it (every burn posted)
+    // what launchers can choose (the server refuses coins outside these limits)
+    feeBps: { min: 25, max: 200, def: 100 },              // trading fee on the bonding curve, in basis points (100 = 1%)
+    creatorShare: { min: 50, max: 80, def: 60 },          // % of the fee left after Meteora's 20% that goes to the launcher
     sniperFee: { maxBps: 5000, defBps: 2500, defSeconds: 60, maxSeconds: 600 },  // starting fee that falls to the normal fee
     graduation: [                                         // market cap in SOL when the coin moves to a real pool
       { id: "quick", name: "Quick", mcapSol: 200 },
