@@ -90,6 +90,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 16 (night): MISREAD, then fixed. Albert's "3.2% not 5% like FOMO, 50% fee wallet (25% burns, 25% buyback), I keep
+  50%" was about the PIT's trade fee (SnakePit Strike/Shed venom), NOT the launchpad. I had made the launchpad fee fixed
+  and removed the fee/share sliders: reverted (commit "Revert ..."; launchpad = fee 0.25-2%, share 50-80%, burnShare 50,
+  as before). Pit venom now: 3.2% on every Strike and Shed. Jupiter's own fee mechanism stops at 2.55% (255 bps, and
+  takes 20% of it), so lib/jupiter.ts uses /swap/v1/swap-instructions and adds plain SOL transfers in the same v0 tx
+  (Strike: venom off the SOL going in, the rest is swapped; Shed: venom on otherAmountThreshold after the unwrap).
+  Split at the transfer: half to NEXT_PUBLIC_VENOM_WALLET (fee wallet; a quarter of venom burns $CAPES, a quarter buys
+  $CAPES for the game pot), half to NEXT_PUBLIC_VENOM_INCOME_WALLET (empty = all to the fee wallet). Copy on the Pit's
+  Capes page, Strike sheet ("Venom 3.2% comes off the top" + SOL amount), README, brief. Nothing on memecapes.com yet:
+  when the Pit goes live, add a "The Pit" card under Burns on the $CAPES page with the same words. FOMO's exact fee
+  was not verified. Lesson: when Albert says "the fees" ask which product before touching published economics.
+
 - Oct 16 (evening): "I don't wanna give 60% to the whole game ... 3.2% not 5% like FOMO". Fee rules are now FIXED, the same
   for every launched coin: 3.2% on every curve trade; Meteora 20%; the launcher keeps 25% of the rest (0.64% of every
   trade; Albert: "they still get their part but not half"); MemeCapes' 75% is split in the open: 50% MemeCapes' income,
