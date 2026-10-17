@@ -41,11 +41,11 @@
     const ring = p > 0 ? `<circle class="ring" cx="50" cy="50" r="${R}" fill="none" stroke="url(#mlt)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(L2 * p).toFixed(1)} ${L2.toFixed(1)}" transform="rotate(-90 50 50)"/>` : '';
     const face = c && c.image ? `<img src="${esc(c.image)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="ph">${esc(((c && c.symbol) || '?').slice(0, 3))}</div>`;
     const heat = o.heat ? ` style="--heat:${o.heat.toFixed(2)}"` : '';
-    const laurel = o.grad ? `<path class="laurel" d="M22 72 q-10-14-4-30 q2 10 10 16 M78 72 q10-14 4-30 q-2 10-10 16" fill="none" stroke="#ffd23f" stroke-width="2.2" stroke-linecap="round"/>` : '';
-    return `<div class="stamp${o.grad ? ' grad' : ''}${o.heat ? ' hot' : ''}"${heat}><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="mlt" x1="0" x2="1"><stop offset="0" stop-color="#ff8a3d"/><stop offset="1" stop-color="#ffd23f"/></linearGradient><radialGradient id="gld" cx=".35" cy=".3"><stop offset="0" stop-color="#ffe58a"/><stop offset=".6" stop-color="#d9a520"/><stop offset="1" stop-color="#7a5310"/></radialGradient></defs>
-      <circle cx="50" cy="50" r="48" fill="#5a3a0c"/><circle cx="50" cy="50" r="48" fill="none" stroke="#2b1d05" stroke-width="1.2" stroke-dasharray="1.6 1.6" opacity=".7"/>
-      <circle cx="50" cy="50" r="46" fill="url(#gld)"/><circle cx="50" cy="50" r="46" fill="none" stroke="#2b1d05" stroke-opacity=".35" stroke-width="4"/>${ring}
-      <circle cx="50" cy="50" r="37.5" fill="none" stroke="#7a5310" stroke-width="1.2"/><circle cx="50" cy="50" r="39" fill="none" stroke="#fff3c4" stroke-opacity=".45" stroke-width=".8"/>${laurel}</svg>${face}<i class="sheen"></i></div>`;
+    const laurel = o.grad ? `<path class="laurel" d="M22 72 q-10-14-4-30 q2 10 10 16 M78 72 q10-14 4-30 q-2 10-10 16" fill="none" stroke="#58F0A6" stroke-width="2.2" stroke-linecap="round"/>` : '';
+    return `<div class="stamp${o.grad ? ' grad' : ''}${o.heat ? ' hot' : ''}"${heat}><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="mlt" x1="0" x2="1"><stop offset="0" stop-color="#3FC985"/><stop offset="1" stop-color="#58F0A6"/></linearGradient><radialGradient id="gld" cx=".35" cy=".3"><stop offset="0" stop-color="#A8F9D1"/><stop offset=".6" stop-color="#3FC985"/><stop offset="1" stop-color="#1E6B45"/></radialGradient></defs>
+      <circle cx="50" cy="50" r="48" fill="#16503A"/><circle cx="50" cy="50" r="48" fill="none" stroke="#0B0C0E" stroke-width="1.2" stroke-dasharray="1.6 1.6" opacity=".7"/>
+      <circle cx="50" cy="50" r="46" fill="url(#gld)"/><circle cx="50" cy="50" r="46" fill="none" stroke="#0B0C0E" stroke-opacity=".35" stroke-width="4"/>${ring}
+      <circle cx="50" cy="50" r="37.5" fill="none" stroke="#1E6B45" stroke-width="1.2"/><circle cx="50" cy="50" r="39" fill="none" stroke="#D9FCEA" stroke-opacity=".45" stroke-width=".8"/>${laurel}</svg>${face}<i class="sheen"></i></div>`;
   }
   // how hot a coin still is: 1 in its first minutes, 0 after a day
   const heatOf = c => Math.max(0, 1 - (Date.now() - c.t) / 864e5) ** 2;
@@ -64,7 +64,7 @@
         if (p.y < -10) Object.assign(p, mk(true));
         const f = Math.min(1, (H - p.y) / (H * 0.25));   // embers fade in near the bottom
         g.globalAlpha = p.a * (p.k ? 0.5 : 1) * Math.min(1, p.y / (H * 0.3) + 0.2) * f;
-        g.fillStyle = p.k ? '#ffd23f' : '#ff8a3d'; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.28); g.fill();
+        g.fillStyle = p.k ? '#58F0A6' : '#3FC985'; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.28); g.fill();
       }
       raf = requestAnimationFrame(tick);
     };
@@ -144,6 +144,7 @@
     const pit = String(MC.pit || '').replace(/\/+$/, ''), wrap = document.getElementById('pitwrap'), el = document.getElementById('snakepit-widget');
     if (!/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pit) || !wrap || !el) return;
     el.setAttribute('data-app', pit); wrap.hidden = false;
+    const tl = document.getElementById('tradeln'); if (tl) tl.href = pit;
     const s = document.createElement('script'); s.src = pit + '/embed/snakepit-widget.js'; s.defer = true; s.onerror = () => { wrap.hidden = true; };
     document.body.appendChild(s);
   })();
@@ -164,7 +165,7 @@
   window.addEventListener('hashchange', route);
   // tiny inline price chart from the last trades (SOL per token), green when up, red when down
   function sparkline(a, w, h) {
-    w = w || 84; h = h || 26; if (!a || a.length < 2) return `<svg class="spark" viewBox="0 0 ${w} ${h}"><line x1="0" y1="${h / 2}" x2="${w}" y2="${h / 2}" stroke="#4e3a22" stroke-dasharray="2 3"/></svg>`;
+    w = w || 84; h = h || 26; if (!a || a.length < 2) return `<svg class="spark" viewBox="0 0 ${w} ${h}"><line x1="0" y1="${h / 2}" x2="${w}" y2="${h / 2}" stroke="#2E353D" stroke-dasharray="2 3"/></svg>`;
     const mn = Math.min(...a), mx = Math.max(...a), r = mx - mn || mx || 1;
     const pts = a.map((v, i) => [(i / (a.length - 1)) * (w - 2) + 1, h - 2 - ((v - mn) / r) * (h - 4)]);
     const up = a[a.length - 1] >= a[0], col = up ? '#5fd3a8' : '#e0533d';
@@ -177,15 +178,15 @@
   let boardQ = '', boardCoins = [], seen = new Set(), boardFirst = true;
   async function home() {
     boardFirst = true;
-    app.innerHTML = `<section class="phero"><div><p class="kicker">The MemeCapes forge</p><h1>Every coin struck here, live</h1>
+    app.innerHTML = `<section class="phero"><div><p class="kicker">snakepit · coins</p><h1>Every coin hatched here, live</h1>
         <p class="lead">New coins land on the floor the second they are made. Pick one up to trade it, watch its launch stream, or talk about it. Launch your own in a minute, with fees you choose.</p>
         <div class="now" id="now"></div></div>
       <div class="spot" id="spot"></div></section>
-      <div class="boardhead"><input class="search" id="q" placeholder="Search name, ticker or address" value="${esc(boardQ)}" aria-label="Search coins"><span class="sp"></span><a class="btn gold" href="#/launch">Launch a coin</a></div>
+      <div class="boardhead"><input class="search" id="q" placeholder="Search name, ticker or address" value="${esc(boardQ)}" aria-label="Search coins"><span class="sp"></span><a class="btn gold" href="#/launch">Hatch a coin</a></div>
       <section class="wall" id="w-hot"><h2><span class="flame"></span>Hot right now <span class="cnt" id="n-hot"></span></h2><div class="rail" id="r-hot"></div></section>
-      <section class="wall" id="w-new"><h2><span class="pulse"></span>Fresh from the forge <span class="cnt" id="n-new"></span><span class="sub">newest first; the glow fades as a coin ages</span></h2><div class="tiles" id="r-new"></div></section>
-      <section class="wall" id="w-up"><h2>🔥 Heating up <span class="cnt" id="n-up"></span><span class="sub">20%+ of the way to graduation, or busy this hour</span></h2><div class="tiles" id="r-up"></div></section>
-      <section class="wall" id="w-grad"><h2>🏛 In the vault <span class="cnt" id="n-grad"></span><span class="sub">graduated: liquidity locked for good, trading on Jupiter</span></h2><div class="tiles" id="r-grad"></div></section>`;
+      <section class="wall" id="w-new"><h2><span class="pulse"></span>Just hatched <span class="cnt" id="n-new"></span><span class="sub">newest first; the glow fades as a coin ages</span></h2><div class="tiles" id="r-new"></div></section>
+      <section class="wall" id="w-up"><h2>Getting hot <span class="cnt" id="n-up"></span><span class="sub">20%+ of the way to graduation, or busy this hour</span></h2><div class="tiles" id="r-up"></div></section>
+      <section class="wall" id="w-grad"><h2>Graduated <span class="cnt" id="n-grad"></span><span class="sub">graduated: liquidity locked for good, trading on Jupiter</span></h2><div class="tiles" id="r-grad"></div></section>`;
     $('#q').oninput = e => { boardQ = e.target.value; drawBoard(); };
     await loadBoard();
     const t = setInterval(loadBoard, 12000); onLeave(() => clearInterval(t));
@@ -201,7 +202,7 @@
   async function nowStrip() {
     const el = $('#now'); if (!el) return;
     try { const r = await api('/so/trending'); const n = r.now;
-      el.innerHTML = `<div class="hot"><b class="num">${n.tradesHour}</b>trades this hour</div><div><b class="num">${sol(n.volumeHour)}</b>traded</div><div><b class="num">${n.tradersHour}</b>wallets trading</div><div><b class="num">${n.launchesDay}</b>struck today</div>${n.live ? `<div class="lv"><b class="num">${n.live}</b><span class="badge live">LIVE</span> streaming</div>` : ''}`;
+      el.innerHTML = `<div class="hot"><b class="num">${n.tradesHour}</b>trades this hour</div><div><b class="num">${sol(n.volumeHour)}</b>traded</div><div><b class="num">${n.tradersHour}</b>wallets trading</div><div><b class="num">${n.launchesDay}</b>hatched today</div>${n.live ? `<div class="lv"><b class="num">${n.live}</b><span class="badge live">LIVE</span> streaming</div>` : ''}`;
     } catch (e) { el.innerHTML = ''; }
   }
   function drawBoard() {
@@ -215,8 +216,8 @@
     const hot = L2.filter(c => c.hour.volume > 0).sort((a, b) => b.hour.volume - a.hour.volume).slice(0, 8);
     const fill = (k, L3, empty, big) => { const el = $('#r-' + k); el.innerHTML = L3.length ? L3.map(c => ctile(c, big)).join('') : `<div class="empty" style="grid-column:1/-1">${empty}</div>`; $('#n-' + k).textContent = L3.length || ''; $('#w-' + k).classList.toggle('none', !L3.length && k === 'hot'); };
     fill('hot', hot, '', 1);
-    fill('new', fresh, boardCoins.length ? 'Everything here has moved on to the next wall.' : 'No coins yet. <a href="#/launch">Be the first to strike one.</a>');
-    fill('up', up, 'Nothing is heating up right now. Coins land here at 20% to graduation, or when they get busy.');
+    fill('new', fresh, boardCoins.length ? 'Everything here has moved on to the next wall.' : 'No coins yet. <a href="#/launch">Be the first to hatch one.</a>');
+    fill('up', up, 'Nothing is getting hot right now. Coins land here at 20% to graduation, or when they get busy.');
     fill('grad', grad, 'No graduates yet. A coin graduates when its curve raises its goal; then its liquidity is locked for good.');
     spotlight(L2.slice().sort((a, b) => b.t - a.t)[0]);
     L2.forEach(c => seen.add(c.mint));
@@ -228,9 +229,9 @@
     if (el.dataset.mint === c.mint && !c.live) return;
     const s = c.live, h = c.hour || {}, isNew = el.dataset.mint && el.dataset.mint !== c.mint; el.dataset.mint = c.mint;
     el.innerHTML = `<a class="spotc coin3d${isNew ? ' struck' : ''}" href="#/coin/${esc(c.mint)}">${stamp(c, s && s.prog, { heat: heatOf(c), grad: !!(c.grad || (s && s.migrated)) })}</a>
-      <div class="spott"><span class="kicker">Latest strike · ${ago(c.t)}</span><a class="nm" href="#/coin/${esc(c.mint)}">${esc(c.name)}</a><span class="sy">$${esc(c.symbol)}${c.streaming ? ' <span class="badge live">LIVE</span>' : ''}</span>
+      <div class="spott"><span class="kicker">Latest hatch · ${ago(c.t)}</span><a class="nm" href="#/coin/${esc(c.mint)}">${esc(c.name)}</a><span class="sy">$${esc(c.symbol)}${c.streaming ? ' <span class="badge live">LIVE</span>' : ''}</span>
         <div class="spotn num"><div><b>${s ? usd(s.mcapUsd) : '…'}</b>market cap</div><div><b>${h.trades | 0}</b>trades · 1h</div><div><b>${c.traders | 0}</b>traders</div></div>
-        <div class="small mute">Struck by ${LPSO ? LPSO.avatar(c.creator, 'xs') : ''} <a class="addr" href="#/u/${esc(c.creator)}">${esc((LPSO && LPSO.nameOf(c.creator)) || short(c.creator))}</a></div></div>`;
+        <div class="small mute">Hatched by ${LPSO ? LPSO.avatar(c.creator, 'xs') : ''} <a class="addr" href="#/u/${esc(c.creator)}">${esc((LPSO && LPSO.nameOf(c.creator)) || short(c.creator))}</a></div></div>`;
   }
   // one coin tile. big = the rail (larger coin, fewer words)
   function ctile(c, big) {
@@ -306,9 +307,9 @@
     const w = v => (v / tot * 100).toFixed(2) + '%', lab = (v, t) => v / tot > 0.17 ? t : '';   // a label only where it fits
     return `<div class="feebar" role="img" aria-label="Where each trade fee goes"><div class="fb-c" style="width:${w(cr)}">${lab(cr, 'Launcher')}</div><div class="fb-p" style="width:${w(mc - burn)}">${lab(mc - burn, 'MemeCapes')}</div><div class="fb-b" style="width:${w(burn)}">${lab(burn, 'Burn')}</div><div class="fb-m" style="width:${w(met)}">${lab(met, 'Meteora')}</div></div>
       <div class="legend num"><i style="background:var(--gold)"></i><span>The launcher</span><b>${tot ? (cr).toFixed(3) : 0}%</b>
-      <i style="background:#c9822b"></i><span>MemeCapes</span><b>${(mc - burn).toFixed(3)}%</b>
+      <i style="background:#7C8590"></i><span>MemeCapes</span><b>${(mc - burn).toFixed(3)}%</b>
       <i class="fb-b"></i><span>Buys $CAPES and burns it</span><b>${burn.toFixed(3)}%</b>
-      <i style="background:#6b5a44"></i><span>Meteora (runs the pool program)</span><b>${met.toFixed(3)}%</b>
+      <i style="background:#4A535C"></i><span>Meteora (runs the pool program)</span><b>${met.toFixed(3)}%</b>
       <span></span><span><b>Total fee on each trade</b></span><b>${tot.toFixed(2)}%</b></div>`;
   }
   // who bought in the launch block itself (bundled with the launch) and in the next 3 blocks (snipers), and what they still hold
@@ -457,7 +458,7 @@
     }
     const off = !PARTNER;
     app.innerHTML = `<div class="lgrid"><form id="lf" novalidate>
-      <h1 style="margin-top:6px">Launch a coin</h1>
+      <h1 style="margin-top:6px">Hatch a coin</h1>
       ${off ? '<div class="warn" style="margin-bottom:14px">Launching opens soon. You can try every setting now; the Launch button switches on when the launchpad goes live.</div>' : ''}
       ${DEV ? '<div class="warn" style="margin-bottom:14px">You are on Solana\'s test network. Coins and SOL here have no value. <button type="button" class="btn quiet" id="air" style="padding:4px 10px;font-size:13px;margin-left:6px">Get 1 free test SOL</button></div>' : ''}
       <fieldset><legend>Your coin</legend>
@@ -523,7 +524,7 @@
     const svg = $('#decay'); if (svg) {
       const st = Math.max(F.sniperBps, F.feeBps), en = F.feeBps, pts = [];
       for (let i = 0; i <= 60; i++) { const t = i / 60, v = st > en ? en + (st - en) * Math.pow(0.02, t) : en; pts.push([10 + t * 280, 60 - (v / Math.max(st, 1)) * 50]); }
-      svg.innerHTML = `<polyline points="${pts.map(p => p.map(x => x.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="#ff8a3d" stroke-width="2.5"/><line x1="10" y1="60" x2="290" y2="60" stroke="#4e3a22"/><text x="10" y="70" fill="#b89a6a" font-size="9">launch</text><text x="290" y="70" fill="#b89a6a" font-size="9" text-anchor="end">${F.sniperSec}s</text><text x="14" y="${(pts[0][1] - 3).toFixed(0)}" fill="#ff8a3d" font-size="10">${pct(st / 100)}</text><text x="290" y="${(pts[60][1] - 4).toFixed(0)}" fill="#ffd23f" font-size="10" text-anchor="end">${pct(en / 100)}</text>`;
+      svg.innerHTML = `<polyline points="${pts.map(p => p.map(x => x.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="#3FC985" stroke-width="2.5"/><line x1="10" y1="60" x2="290" y2="60" stroke="#2E353D"/><text x="10" y="70" fill="#9AA3AD" font-size="9">launch</text><text x="290" y="70" fill="#9AA3AD" font-size="9" text-anchor="end">${F.sniperSec}s</text><text x="14" y="${(pts[0][1] - 3).toFixed(0)}" fill="#3FC985" font-size="10">${pct(st / 100)}</text><text x="290" y="${(pts[60][1] - 4).toFixed(0)}" fill="#58F0A6" font-size="10" text-anchor="end">${pct(en / 100)}</text>`;
       svg.style.opacity = F.sniperBps > F.feeBps ? 1 : .35;
     }
     const routed = F.routes.reduce((a, r) => a + (r.pct || 0), 0);
@@ -614,7 +615,7 @@
       <h2>Splitting your fees</h2><p>Add up to 10 wallets and a share for each. When you claim, the same transaction pays each of them. Your split is shown on your coin's page so buyers can see it.</p>
       <h2>Team tokens</h2><p>If you set some of the supply aside for a team, it is locked on-chain and unlocks bit by bit after graduation. Buyers can check it, so they know you can't dump it on them.</p>
       <h2>Safety</h2><p>Anyone can launch, so anyone can launch a bad coin. "Verified" means the MemeCapes team looked at the coin and the people behind it; it is not a promise about its price. Use "Report this coin" for scams or stolen pictures, and we hide coins that break the rules. Most new coins lose most of their value. Only put in what you are happy to lose.</p>
-      <p><a class="btn gold" href="#/launch">Launch a coin</a></p></div>`;
+      <p><a class="btn gold" href="#/launch">Hatch a coin</a></p></div>`;
   }
 
   // ---- MemeCapes fee desk: claim the launchpad's fees (only the fee wallet can)

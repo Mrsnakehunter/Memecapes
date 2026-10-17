@@ -90,6 +90,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 17 (night): "where's the snakepit logo and theme, that's gonna be the whole new launch page". launch.html (Coins/
+  Watch/Stream/Hatch) is now SnakePit-skinned: the Pit's logo (Z-snake path, mint #58F0A6 on ink #0B0C0E) + "snake**pit**"
+  wordmark, Outfit + JetBrains Mono, white headings, mint accents (red only for live/Strike), svg favicon; nav Coins /
+  Watch / Stream / Hatch / Trade (Trade -> config pit). All brown/gold hexes mapped in launch.html + lp/app.js (one
+  python mapping pass); forge wording -> "Just hatched / Getting hot / Graduated", "Latest hatch", "Hatched by" (in
+  the Pit "Strike" means BUY, so never say "struck" for a launch). Shots: scratch/lp/test/shoot.py sp_theme.json.
+
 - Oct 17 (evening): the Pit is LIVE at https://snakepit-mu.vercel.app (the other chat deployed it; Privy secret no longer
   used: it verifies sign-ins with Privy's public keys). config.js pit = that address; lp/app.js and launch.html CSP accept
   pit.memecapes.com OR snakepit-mu.vercel.app. When Albert adds the GoDaddy CNAME (pit -> the Vercel target the other
