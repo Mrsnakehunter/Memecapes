@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 16 (evening): "I don't wanna give 60% to the whole game ... 3.2% not 5% like FOMO". Fee rules are now FIXED, the same
+  for every launched coin: 3.2% on every curve trade; Meteora 20%; the launcher keeps 25% of the rest (0.64% of every
+  trade; Albert: "they still get their part but not half"); MemeCapes' 75% is split in the open: 50% MemeCapes' income,
+  25% buys $CAPES and burns it, 25% buys $CAPES for the game pot. config.js feeBps/creatorShare min=max=def (320/25),
+  burnShare 25 + buybackShare 25; server LP_CREATOR_MAX default 25; lp/app.js fee bar has a green "Pot" segment
+  (.fb-g), the fee/share sliders are a fixed-rules box, presets are sniper-only, fee desk says burn + pot; copy on the
+  Launch page, $CAPES page (new "The launchpad" burn card), FAQ, Support. SnakePit zip rebuilt with the same rules
+  (LAUNCH fixed, components/FeeBar.tsx shared by Hatch + TokenSheet, verifyHatched also checks the ending fee ==
+  320 bps via readFeeInfo). Never bring back fee/share choice without Albert; the Pit's 0.5% swap venom is unchanged.
+
 - Oct 16: "combine the launchpads: the new one (SnakePit's Hatch) like the old one, designed like the new one, that is
   going to be the app". Delivered snakepit-launchpad.zip (the SnakePit codebase with the merge; LAUNCHPAD-MERGE.md
   lists it): lib/launchpad.ts = our curveParams/presets/limits ported to TS on SDK 2.x (per-hatch config +

@@ -2,6 +2,10 @@
 
 _Last updated: October 16, 2026_
 
+## Oct 16, 2026: one fee rule for every launched coin
+
+The launchpad no longer asks launchers to pick a trading fee or a share. Every coin launched through MemeCapes pays the same 3.2% on every buy and sell. Meteora, who runs the pool program, takes 20% of that; the launcher keeps a quarter of the rest, which is 0.64% of every trade; and MemeCapes' part is split in the open: half is MemeCapes' income, a quarter buys $CAPES and burns it, a quarter buys $CAPES for the game pot that pays players. Every burn and every pot buy is posted. Launchers still choose the sniper fee, the graduation size, the pool fee after graduation, team tokens and a fee split with up to 10 wallets. The Launch page, the $CAPES page, the FAQ and Support all say the same thing.
+
 ## Oct 16, 2026: calmer monsters and adventurers
 
 Monsters and the other adventurers were moving too fast. Monsters out for a stroll would stand still, then dash to catch up with where they were going, faster than a player walks, with their legs pumping almost twice as fast as a player's. Now a strolling monster ambles along at an easy, steady pace and its legs move at the same rate as yours for the ground it covers. A monster chasing you still keeps up. The adventurers walking around the world now walk like everyone else. On a really long trip one might break into a jog, but nobody sprints around town anymore.

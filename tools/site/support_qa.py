@@ -537,7 +537,7 @@ q('coins', 'How is $CAPES distributed?',
   'On a public bonding curve, with nothing allocated in advance. The creator buys at most 4% in the same transaction that creates the coin and keeps it in a public wallet; the player pot is funded over time in a public ecosystem wallet with every addition posted; marketing and payments wallets hold no tokens. The $CAPES page has the table.',
   ['What is the tokenomics?', 'Is there a presale?', 'How much does the team hold?'], np='the tokenomics', k='tokenomics supply allocation presale team')
 q('coins', 'What burns $CAPES?',
-  'Play, not promises: limited cosmetics bought with $CAPES (60% burned), a small tax on player trades once they open, sponsored monsters (half burned), and the launchpad (half of what MemeCapes earns buys $CAPES and burns it). Burns are posted on-chain.',
+  'Play, not promises: limited cosmetics bought with $CAPES (60% burned), a small tax on player trades once they open, sponsored monsters (half burned), and the launchpad (a quarter of what MemeCapes earns buys $CAPES and burns it, a quarter buys $CAPES for the game pot). Burns are posted on-chain.',
   ['Is $CAPES deflationary?', 'How do burns work?'], np='burns', k='burn deflation')
 q('coins', 'Can I withdraw Meme Coins as real money?',
   'No. Meme Coins are game content with no cash value and cannot be redeemed for money from us. The only bridge is the in-game exchange to $CAPES, after the token launches, within the daily cap.',
@@ -629,10 +629,10 @@ q('shop', 'Is there a partner ad for holders?',
 
 # ---------------------------------------------------------------- launchpad
 q('launch', 'What is the launchpad?',
-  'Anyone can launch a Solana coin from memecapes.com. You choose the trading fee and how much of it you keep, bots that buy in the first seconds pay a sniper fee, you can split your share with up to 10 wallets, and the coin\'s liquidity is locked for good when it graduates. Your wallet signs everything; MemeCapes never holds your keys or your money.',
+  'Anyone can launch a Solana coin from memecapes.com. Every coin pays the same 3.2% trading fee: after Meteora\'s 20%, the launcher keeps a quarter (0.64% of every trade) and MemeCapes\' part is split in the open (half MemeCapes\' income, a quarter buys $CAPES and burns it, a quarter buys $CAPES for the game pot). Bots that buy in the first seconds pay a sniper fee, you can split your share with up to 10 wallets, and the coin\'s liquidity is locked for good when it graduates. Your wallet signs everything; MemeCapes never holds your keys or your money.',
   ['How do I launch a coin?', 'Can I create a token on MemeCapes?'], np='the launchpad', k='launchpad launch coin token create', top=True)
 q('launch', 'What does it cost to launch a coin?',
-  'The network fees of creating the coin on Solana, paid from your wallet, plus the trading fee you choose for your coin. The Launch page shows every fee before you sign.',
+  'The network fees of creating the coin on Solana, paid from your wallet, plus the 3.2% trading fee every coin pays on each buy and sell (you keep 0.64% of every trade). The Launch page shows every fee before you sign.',
   ['Launch fees'], np='launch fees', k='launch cost fee')
 q('launch', 'What is the sniper fee?',
   'Buyers in the first seconds after a launch pay a higher fee that fades quickly. It makes sniping with bots expensive and leaves more of the early supply for real people.',
