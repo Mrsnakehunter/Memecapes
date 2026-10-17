@@ -27,7 +27,7 @@ module.exports = function launchpad({ db, DATA, now, tooMany, say, online, sigOk
   const PARTNER = process.env.LP_PARTNER || fromCfg('partner');
   const PARTNER_DEV = process.env.LP_PARTNER_DEVNET || fromCfg('partnerDevnet') || PARTNER;
   console.log('launchpad fee wallet: ' + (PARTNER || 'not set (launch registrations off)'));
-  const CREATOR_MAX = +process.env.LP_CREATOR_MAX || 80;      // most a launcher can keep, in % of the fee after Meteora's cut (same as config.js)
+  const CREATOR_MAX = +process.env.LP_CREATOR_MAX || 25;      // most a launcher can keep, in % of the fee after Meteora's cut (same as config.js creatorShare)
   const RPCS = { mainnet: process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com', devnet: process.env.SOLANA_RPC_DEVNET || 'https://api.devnet.solana.com' };
   const PUBLIC = (process.env.PUBLIC_URL || base || 'https://memecapes-server.onrender.com').replace(/\/$/, '');
   const IMG_DIR = path.join(DATA, 'lp');
