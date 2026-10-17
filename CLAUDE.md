@@ -90,6 +90,19 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 17: Albert's "Weekly Agent Battle" (spec doc "Weekly Agent Battle — Build Spec" + design canvas "Weekly Agent
+  Battle Screens", both his artifacts): 1.2 SOL entry (1 stack / 0.15 pot / 0.05 fee), AI agent Turtle/Snake/Wild + lucky
+  coin from a board of 5, Advanced (bet/TP/SL), one BOOST a day, top 3 by % return split 95% (60/25/15), 5% rolls on.
+  Told him the real-money blockers: someone must sign trades while the player sleeps (custodial server keys vs a custom
+  audited vault program), same picks would trade identically (fixed with a per-player personality seed), legal (pooled
+  prizes + automated trading). He OK'd PAPER MODE "named snakepit, looks like the design". Built as an add-on for the
+  SnakePit codebase (snakepit-battle-addon.zip, ADD-TO-SNAKEPIT.md lists 3 hand edits: nav, vercel cron, env):
+  lib/battle/{config,time,engine,store,draft}.ts, app/api/battle/{board,enter,boost,tick}, app/battle (+ board), supabase/
+  battle.sql, BATTLE.md, scripts/battle-sim.ts. Engine is pure code (no LLM): 10-min ticks, prices from Jupiter price v3/
+  v2 + DexScreener, rails (limits, cooldown, $250k liquidity, 0.4% fee + 0.3% slippage). Tuned in sims: Wild first lost
+  ~60% every week from churn; now cooldown 60 / 12 a day. Real mode returns 403 until the vault exists. Not rendered
+  here (no npm, no React): the other chat must screenshot the screens on first build.
+
 - Oct 17: Albert sent the Pit's wallets (public addresses): fee wallet 3rDg...uCjg (= launchpad partner, also Pit
   NEXT_PUBLIC_FEE_CLAIMER + VENOM_WALLET), Pit income 3UYB...XQij (NEXT_PUBLIC_VENOM_INCOME_WALLET), MemeSnake agent
   FNxq...z9Ns (NEXT_PUBLIC_BOSS_WALLET, pays Molt prizes). $CAPES page (#token) now has an "Official wallets" section
