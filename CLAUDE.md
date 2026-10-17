@@ -90,6 +90,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 17: Albert sent the Pit's wallets (public addresses): fee wallet 3rDg...uCjg (= launchpad partner, also Pit
+  NEXT_PUBLIC_FEE_CLAIMER + VENOM_WALLET), Pit income 3UYB...XQij (NEXT_PUBLIC_VENOM_INCOME_WALLET), MemeSnake agent
+  FNxq...z9Ns (NEXT_PUBLIC_BOSS_WALLET, pays Molt prizes). $CAPES page (#token) now has an "Official wallets" section
+  (#official-wallets, Solscan links) and all three are in watchtower.sh OFFICIAL_WALLETS. Add creator + pot wallets
+  there when they exist.
+
 - Oct 16 (night): MISREAD, then fixed. Albert's "3.2% not 5% like FOMO, 50% fee wallet (25% burns, 25% buyback), I keep
   50%" was about the PIT's trade fee (SnakePit Strike/Shed venom), NOT the launchpad. I had made the launchpad fee fixed
   and removed the fee/share sliders: reverted (commit "Revert ..."; launchpad = fee 0.25-2%, share 50-80%, burnShare 50,
