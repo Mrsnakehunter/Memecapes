@@ -9,7 +9,7 @@ config.js `pit` at load, so moving the Pit to pit.memecapes.com needs no edit he
 import os, re
 
 ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
-PIT0 = 'https://snakepit-mu.vercel.app'
+PIT0 = 'https://pit.memecapes.com'
 MARK = '<!--battle-->'
 
 
@@ -95,10 +95,10 @@ wr('index.html', s)
 
 # ------------------------------------------------------------------ launch.html (CSP: no inline scripts; lp/app.js fixes links)
 L = rd('launch.html')
-L = once(L, '<a href="#/launch" data-r="launch">Hatch</a><a href="https://snakepit-mu.vercel.app" id="tradeln">Trade</a>',
-         '<a href="#/launch" data-r="launch">Hatch</a><a href="' + PIT0 + '/battle" data-pit="/battle">Battle</a><a href="https://snakepit-mu.vercel.app" id="tradeln">Trade</a>', 'lnav')
+L = once(L, '<a href="#/launch" data-r="launch">Hatch</a><a href="https://pit.memecapes.com" id="tradeln">Trade</a>',
+         '<a href="#/launch" data-r="launch">Hatch</a><a href="' + PIT0 + '/battle?from=memecapes" data-pit="/battle?from=memecapes">Battle</a><a href="https://pit.memecapes.com" id="tradeln">Trade</a>', 'lnav')
 L = once(L, '<a href="#/launch" data-r="launch">Hatch</a></div>',
-         '<a href="#/launch" data-r="launch">Hatch</a><a href="' + PIT0 + '/battle" data-pit="/battle">Battle</a></div>', 'lmob')
+         '<a href="#/launch" data-r="launch">Hatch</a><a href="' + PIT0 + '/battle?from=memecapes" data-pit="/battle?from=memecapes">Battle</a></div>', 'lmob')
 wr('launch.html', L)
 
 A = rd('lp/app.js')

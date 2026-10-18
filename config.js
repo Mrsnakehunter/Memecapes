@@ -22,7 +22,7 @@ window.MC_CONFIG = {
   usdcMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",  // USDC on Solana (official, do not change)
   capesMint: "",                 // the $CAPES token mint address, once the token exists
   capesWallet: "",               // PUBLIC address that receives $CAPES deposits from players
-  pit: "https://snakepit-mu.vercel.app",   // SnakePit, the trading app next to the game (switch to "https://pit.memecapes.com" once its DNS is set). Empty = the game shows nothing about it
+  pit: "https://pit.memecapes.com",   // SnakePit, the trading app next to the game (snakepit-mu.vercel.app also still works). Empty = the game shows nothing about it
   solUsdFallback: 150,           // used only if the live SOL price can't be fetched
 
   // ---- shop (prices in US dollars; SOL is worked out at the live price, $CAPES at capesUsd)
