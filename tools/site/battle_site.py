@@ -56,9 +56,9 @@ SEC = MARK + '''<section class="bt rev" id="battle"><style>
 </style><div class="bt-in"><div><div class="bt-k">WEEKLY AGENT BATTLE · IN THE PIT</div><h2>Your AI trades.<br>You call the shots.</h2>
 <p>Pick an agent, pick a lucky coin from the week's board of five, and it trades for you all week. The best % return by Sunday 8pm ET wins. One BOOST a day is your move.</p>
 <div class="bt-ag"><span>Turtle · plays it safe</span><span>Snake · balanced</span><span>Wild · huge swings</span></div>
-<a class="bt-go" href="''' + PIT0 + '''/battle" data-pit="/battle">Join free (practice)</a><a class="bt-w" href="''' + PIT0 + '''/battle/board" data-pit="/battle/board">Watch the leaderboard &rarr;</a>
-<div class="bt-f">Practice weeks: live prices, practice SOL. Nothing is paid in or out. Not financial advice.</div></div>
-<div class="bt-card" id="bt-live" aria-live="polite"><div class="bt-row"><div><div class="bt-s">Practice pot</div><div class="bt-v" id="bt-pot">…</div></div><div style="text-align:right"><div class="bt-s" id="bt-tl">This week</div><div class="bt-v w" id="bt-t">…</div></div></div>
+<a class="bt-go" id="bt-go" href="''' + PIT0 + '''/battle" data-pit="/battle">Join free (practice)</a><a class="bt-w" href="''' + PIT0 + '''/battle/board" data-pit="/battle/board">Watch the leaderboard &rarr;</a>
+<div class="bt-f" id="bt-f">Practice weeks: live prices, practice SOL. Nothing is paid in or out. Not financial advice.</div></div>
+<div class="bt-card" id="bt-live" aria-live="polite"><div class="bt-row"><div><div class="bt-s" id="bt-pl">Practice pot</div><div class="bt-v" id="bt-pot">…</div></div><div style="text-align:right"><div class="bt-s" id="bt-tl">This week</div><div class="bt-v w" id="bt-t">…</div></div></div>
 <div class="bt-top" id="bt-top"></div><div class="bt-e" id="bt-e">Loading the leaderboard…</div></div></div>
 <script>(function(){
 var P=((window.MC_CONFIG||{}).pit||"''' + PIT0 + '''").replace(/\\/+$/,"");if(!/^https:\\/\\/[a-z0-9.-]+$/.test(P))return;
@@ -68,6 +68,7 @@ var NM={turtle:"Turtle",snake:"Snake",wild:"Wild"};
 function load(){fetch(P+"/api/battle/board",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){
  if(!d||!d.configured||!d.week){$("bt-pot").textContent="Free";$("bt-t").textContent="Soon";$("bt-e").textContent="The first practice week is being set up.";return}
  var w=d.week,now=Date.now(),live=w.status==="running"&&now<w.endsAt,closed=w.status==="closed"||now>=w.endsAt;
+ if(d.mode==="ticket"){$("bt-pl").textContent="This week's pot";$("bt-go").textContent="Enter for 0.2 SOL";$("bt-f").textContent="0.2 SOL ticket: 0.15 to the public pot wallet, 0.05 platform fee. Agents trade a practice stack, so nobody holds your SOL. Top 3 split 95% of the pot. 18+. Not financial advice."}
  $("bt-pot").textContent=(+w.pot||0).toFixed(2)+" SOL";
  $("bt-tl").textContent=closed?"Players":live?"Ends in":"Starts in";$("bt-t").textContent=closed?w.entrants:left((live?w.endsAt:w.startsAt)-now);
  var rows=(d.rows||[]).slice(0,3);

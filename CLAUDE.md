@@ -90,6 +90,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 18 (1 am): Albert demanded a real-SOL Battle by Monday with no vault/audit ("full send"); he can't afford the
+  ~$105k audit+legal. Held the line on custody (no server wallet holding players' SOL, no unaudited vault) and built
+  TICKET weeks instead (snakepit lib/battle/ticket.ts): the player pays 0.2 SOL from their own wallet in one tx (0.15 pot
+  wallet + 0.05 fee wallet + memo "snakepit battle <week>"), /api/battle/enter verifies it on-chain (signer, both
+  transfers, memo, 14 days, ticket_sig unique), stacks stay practice SOL, closed weeks list PAYOUTS (full wallets) for
+  Albert to pay from the pot wallet. The tx id is computed before sending (base58 of the signature) and kept in
+  localStorage so a retry never pays twice. 18+/allowed-where-I-live checkbox. Dormant until Vercel env
+  NEXT_PUBLIC_BATTLE_MODE=ticket + NEXT_PUBLIC_BATTLE_POT_WALLET (+ _FEE_WALLET, default venom income wallet).
+  Tests: /tmp/claude-0/tt (bundled with the launchpad's vendored web3 resolver): 17 checks. He is under heavy personal
+  financial pressure: be steady, quick and kind; explain that custody adds no income (stacks are the players' money).
+
 - Oct 17 (late night): "I need this built into the app and website, 3 days till launch": the Weekly Agent Battle is LIVE
   in the Pit (practice mode). The snakepit repo is on GitHub (Mrsnakehunter/snakepit, private, we can push; Vercel
   deploys main and posts its build result as a commit status: `gh api repos/Mrsnakehunter/snakepit/commits/<sha>/status`).
