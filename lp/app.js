@@ -650,3 +650,6 @@
   LPC.autoConnect().then(drawWallet);
   route();
 })();
+
+// Battle links (data-pit) follow config.js pit
+(() => { const p = String((window.MC_CONFIG || {}).pit || "").replace(/\/+$/, ""); if (/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(p)) document.querySelectorAll("a[data-pit]").forEach((a) => { a.href = p + a.getAttribute("data-pit"); }); })();

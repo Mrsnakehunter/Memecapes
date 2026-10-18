@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 17 (late night): "I need this built into the app and website, 3 days till launch": the Weekly Agent Battle is LIVE
+  in the Pit (practice mode). The snakepit repo is on GitHub (Mrsnakehunter/snakepit, private, we can push; Vercel
+  deploys main and posts its build result as a commit status: `gh api repos/Mrsnakehunter/snakepit/commits/<sha>/status`).
+  npm is blocked here: type-check with /tmp/claude-0/tc2 stubs, render screens with esbuild + Tailwind 4 compile()
+  (/tmp/claude-0/bh: fake board data, shoot.py), push a branch first, merge when Vercel says success. Vercel Hobby only
+  allows daily crons: the battle clock is OUR server (server/snakepit.js battleTick every 5 min, BATTLE_CLOCK=0 off,
+  BATTLE_TICK_SECRET optional on both). Board API with no tables = {configured:false}. Website: tools/site/battle_site.py
+  (nav + pw line + #battle home section reading <pit>/api/battle/board, FAQ, launch.html nav; data-pit links follow
+  config.js pit). Supabase: supabase/battle.sql must be run once in the SQL editor (Albert, or the browser pane).
+
 - Oct 17 (night): home page: gold crest above the floating cape "MemeCapes / powered by snakepit (-> launch.html) · run by
   MemeSnake (-> memesnake/)" (.crest, .cr-*); "Straight from the game" six screenshots replaced by the 37 s tour video
   (media/memecapes-tour.mp4 = memecapes_ad_platform.mp4, muted autoplay when on screen, "Play with sound" button) + two

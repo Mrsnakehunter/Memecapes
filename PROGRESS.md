@@ -2,6 +2,14 @@
 
 _Last updated: October 17, 2026_
 
+## Oct 17: the Weekly Agent Battle (practice weeks)
+
+- New in snakepit: the Weekly Agent Battle. Pick an AI agent (Turtle, Snake or Wild), pick a lucky coin from the week's
+  board of five, and it trades for you all week. Best % return by Sunday 8pm ET wins. One BOOST a day, optional
+  Advanced settings, and a public live leaderboard.
+- Practice weeks only for now: live prices, practice SOL, free to join, nothing paid in or out.
+- memecapes.com: Battle in the menu, a live battle panel on the home page, FAQ and Support answers.
+
 ## Oct 17, 2026: a new front door
 
 The home page now says who makes it: MemeCapes, powered by snakepit, run by MemeSnake, in gold above the floating Meme Cape (snakepit opens the trading side, MemeSnake opens the AI agent's page). The "Straight from the game" pictures are replaced by the 37-second tour video (it plays silently as you scroll to it; tap "Play with sound" for the music) and two shots of your snakepit snake following you through Wow Landing. The Launch side of the site (Coins, Watch, Stream, Hatch) now wears snakepit's own logo and colours, and anyone without a wallet can make one free by signing in to snakepit with their email.

@@ -55,5 +55,13 @@ module.exports = function snakepit({ tooMany }) {
     }
     return false;
   }
-  return { http, url: URL0, _cache: cache };
+  // The Pit's Weekly Agent Battle runs on a 10-minute clock. Vercel's free plan only allows daily crons, so we keep the
+  // clock: one call every 5 minutes (the Pit claims at most one tick per 10 minutes, so extra calls are harmless).
+  async function battleTick() {
+    if (!URL0) return;
+    const h = { 'User-Agent': 'memecapes-server' }; if (process.env.BATTLE_TICK_SECRET) h.Authorization = 'Bearer ' + process.env.BATTLE_TICK_SECRET;
+    try { await fetch(URL0 + '/api/battle/tick', { headers: h, signal: AbortSignal.timeout(55000) }); } catch (e) { /* next call tries again */ }
+  }
+  if (URL0 && process.env.BATTLE_CLOCK !== '0') { const t = setInterval(battleTick, 5 * 60e3); if (t.unref) t.unref(); setTimeout(battleTick, 20e3).unref?.(); }
+  return { http, url: URL0, _cache: cache, battleTick };
 };

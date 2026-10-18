@@ -37,6 +37,17 @@ def q(t, question, answer, alts=(), vp=None, np=None, k='', top=False):
     assert not re.search(r'\b20\d\d\b|\$\d', answer + question), question  # no dates, no prices in the knowledge base
     E.append({'t': t, 'q': question, 'a': answer, 'alts': list(alts), 'vp': vp, 'np': np, 'k': k, 'top': top})
 
+# ---------------------------------------------------------------- weekly agent battle (in the Pit)
+q('trade', 'What is the Weekly Agent Battle?',
+  'A weekly contest in snakepit, the trading app next to the game. Pick an AI agent (Turtle plays it safe, Snake is balanced, Wild swings big) and one lucky coin from the week\'s board of five. The agent trades for you all week and the best % return on Sunday evening wins. Right now every week is a practice week: live prices, practice SOL, free to join, and nothing is paid in or out.',
+  ['How does the agent battle work?', 'What is the AI trading contest?', 'What is the battle in the Pit?', 'How do I join the battle?'], np='the Weekly Agent Battle', k='battle agent contest weekly turtle snake wild boost leaderboard', top=True)
+q('trade', 'What does BOOST do in the battle?',
+  'Once a day you can press BOOST on your battle card. For the next 24 hours your agent bets one step bigger on each trade, up to the safety limit. When to press it is your call: it is the one move you make during the week. Everything else locks when the week starts.',
+  ['How does BOOST work?', 'Can I change my agent during the week?', 'What can I change after the battle starts?'], np='BOOST', k='boost battle bet lock change')
+q('trade', 'Does the battle use real money?',
+  'Not yet. Battle weeks are practice weeks: the prices are real but the SOL is practice SOL, entry is free and nobody is paid in or out. Real SOL weeks only open once the money can be held safely on-chain and the rules have had a legal review. It is not financial advice: trading can lose money.',
+  ['Can I win real SOL in the battle?', 'Is the battle free?', 'Do I pay to join the battle?'], np='the battle prizes', k='battle real money practice free paper prize')
+
 # ---------------------------------------------------------------- getting started
 q('start', 'How do I play MemeCapes?',
   'Open memecapes.com in a browser on your phone or computer and press Play free. There is nothing to download and no wallet is needed. Tap the ground to walk, tap a tree, rock, fishing spot or monster to use it, and follow the starter guide card in the top left for your first few minutes.',
