@@ -90,6 +90,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 18 (afternoon): Pit fixes from Albert's real test. Browser Solana calls 403'd (public RPC blocks web pages):
+  the Pit now proxies them through /api/rpc (method allow-list, upstream fallbacks incl. publicnode) and confirms by
+  polling (lib/confirm.ts). Jupiter price v2 is gone: getPrices uses v3 (+ $1 for USDC/USDT); the total shows a
+  breakdown (SOL · USDC · ...). Tapping the wallet chip used to SIGN OUT: it now opens ReceiveSheet (plain-address QR,
+  Nayuki qrcodegen MIT in lib/qrcodegen.ts, copy fallback, share). Privy's "Fund your snake" QR is rejected by FOMO's
+  scanner: + Add SOL opens our sheet instead. FOMO's withdraw sends USDC, not SOL: GetSol card (Jupiter Ultra gasless,
+  lite-api.jup.ag/ultra/v1 order+execute, needs < 0.01 SOL and ~$10+) turns USDC into SOL with no SOL in the wallet.
+  HostNav (launch-site menu inside the Pit, from the other chat's Oct 18 2 am task) is switched OFF because Albert
+  complained the menu changed ("back to these words at the bottom"): ask him before switching it back on.
+  launch.html: with no wallet app (phones) the top button says "Sign in" and opens the Pit.
+
 - Oct 18 (2 am): "when you click Battle (launch.html) all the symbols change". Battle is a link out to the Pit's
   /battle, which showed the Pit's own icon tab bar (Pit/Hatch/Arena/Slither/Capes). Fix: launch.html Battle links are
   now <pit>/battle?from=memecapes; the Pit (snakepit commit a305ea9) remembers that in sessionStorage, hides its own

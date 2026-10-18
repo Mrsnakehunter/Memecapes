@@ -114,7 +114,9 @@
   // ---------- wallet button + picker
   function drawWallet() {
     const m = LPC.me(), b = $('#wbtn');
-    b.innerHTML = m ? (LPSO ? LPSO.avatar(m.address) : (m.icon ? `<img src="${esc(m.icon)}" alt="">` : '')) + esc((LPSO && LPSO.nameOf(m.address)) || short(m.address)) : 'Connect wallet';
+    // no wallet app in this browser (most phones): the button signs you in to the snakepit app, where email makes a wallet
+    const noApp = !m && !LPC.wallets().length && String(MC.pit || '');
+    b.innerHTML = m ? (LPSO ? LPSO.avatar(m.address) : (m.icon ? `<img src="${esc(m.icon)}" alt="">` : '')) + esc((LPSO && LPSO.nameOf(m.address)) || short(m.address)) : noApp ? 'Sign in' : 'Connect wallet';
     $('#net').innerHTML = DEV ? '<span class="netpill" title="Solana test network: coins and SOL here have no value">Test network</span>' : '';
   }
   function pickWallet() {
@@ -136,7 +138,12 @@
     });
   }
   async function needWallet() { return LPC.me() || await pickWallet(); }
-  $('#wbtn').onclick = async () => { if (LPC.me()) { if (confirmQuiet('Disconnect ' + short(LPC.me().address) + '?')) await LPC.disconnect(); } else pickWallet().catch(() => { }); };
+  $('#wbtn').onclick = async () => {
+    if (LPC.me()) { if (confirmQuiet('Disconnect ' + short(LPC.me().address) + '?')) await LPC.disconnect(); return; }
+    const pit = String(MC.pit || '').replace(/\/+$/, '');
+    if (!LPC.wallets().length && /^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pit)) { location.href = pit + '/'; return; }
+    pickWallet().catch(() => { });
+  };
   function confirmQuiet(t) { return window.confirm(t); }
   LPC.onChange(() => { drawWallet(); route(); });
   LPC.onWallets(() => { });
