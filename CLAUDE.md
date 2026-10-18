@@ -90,6 +90,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 18 (2 am): "when you click Battle (launch.html) all the symbols change". Battle is a link out to the Pit's
+  /battle, which showed the Pit's own icon tab bar (Pit/Hatch/Arena/Slither/Capes). Fix: launch.html Battle links are
+  now <pit>/battle?from=memecapes; the Pit (snakepit commit a305ea9) remembers that in sessionStorage, hides its own
+  nav (.pit-chrome) and shows a copy of the launch site's Coins / Watch / Stream / Hatch / Battle bar (components/
+  HostNav.tsx). An iframe was rejected: Privy sign-in and signing break in a cross-site iframe. ?from=pit resets it.
+  Any new launch.html link into a Pit page should carry ?from=memecapes too.
+
 - Oct 18 (1 am): Albert demanded a real-SOL Battle by Monday with no vault/audit ("full send"); he can't afford the
   ~$105k audit+legal. Held the line on custody (no server wallet holding players' SOL, no unaudited vault) and built
   TICKET weeks instead (snakepit lib/battle/ticket.ts): the player pays 0.2 SOL from their own wallet in one tx (0.15 pot
