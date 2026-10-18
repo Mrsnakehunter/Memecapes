@@ -90,6 +90,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 18 (night): "follow wallets, profile picture, comments under their buys if they're a holder" -> holder = holds THAT
+  coin. Pit (snakepit main c5e1fd3): supabase/social.sql (run in the pane: users.avatar/avatar_at, comments,
+  comment_reports, banned; Supabase calls it "destructive" only for the drop-policy line), /api/avatar/<wallet> (always an
+  image: upload as small data URL in users.avatar, or preset:n, or a snake from the address hash), /api/profile,
+  /api/comments (POST: signed in, getTokenAccountsByOwner > 0 for that mint, 1 per 15 s + 20/h per wallet, no links/
+  addresses/scam phrases/slurs, banned table), /api/comments/<id> report (3 = hidden) / delete (own or mod) / ban (mod).
+  Mods = PIT_ADMIN_WALLETS env, default Albert's Pit wallet (TEAM badge). UI: "Holders talk" under STRIKE in TokenSheet
+  with HOLDS/BOUGHT badges, ProfileSheet (upload crops to 192 px webp, 12 snake presets, username), pictures in the top
+  bar chip, desktop side nav, Slither rows, /s/<wallet>. Following already existed (+ Nest / Slither). Local render
+  harness: /tmp/claude-0/bh/soc (zustand + BossPanel stubs, fake fetch, avatar route stub in shoot.py).
+
 - Oct 18 (evening): pit.memecapes.com is LIVE (GoDaddy CNAME pit -> 0b7b7a5e2c5ea15e.vercel-dns-017.com saved by Albert
   on his phone; Vercel cert issued in minutes; Privy allowed origins already had it). config.js pit + all links switched;
   snakepit-mu.vercel.app still works and stays allowed. Albert's real test passed: gasless USDC->SOL swap, 0.2 SOL ticket
