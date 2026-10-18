@@ -90,6 +90,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 18 (evening): pit.memecapes.com is LIVE (GoDaddy CNAME pit -> 0b7b7a5e2c5ea15e.vercel-dns-017.com saved by Albert
+  on his phone; Vercel cert issued in minutes; Privy allowed origins already had it). config.js pit + all links switched;
+  snakepit-mu.vercel.app still works and stays allowed. Albert's real test passed: gasless USDC->SOL swap, 0.2 SOL ticket
+  (pot 0.15 SOL, #1 of 1). Fixed from his screenshots: total dropped SOL when Jupiter price v3 answered 429 (prices now
+  merge with the last known + CoinGecko backup for SOL), chart axis "$0.0NaNNaN" (negative ticks), "User exited the
+  modal" now reads as cancelled. Vercel: a ff-merge's commit status shows the PREVIEW's success; wait for the Production
+  row on /deployments before checking live. Privy app is still in DEVELOPMENT mode: Albert must press "Upgrade to
+  production" himself before launch (I may not).
+
 - Oct 18 (afternoon): Pit fixes from Albert's real test. Browser Solana calls 403'd (public RPC blocks web pages):
   the Pit now proxies them through /api/rpc (method allow-list, upstream fallbacks incl. publicnode) and confirms by
   polling (lib/confirm.ts). Jupiter price v2 is gone: getPrices uses v3 (+ $1 for USDC/USDT); the total shows a
