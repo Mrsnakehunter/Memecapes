@@ -90,6 +90,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 19 (2 am): "are the AI slaves working for the big boss? free AI for the lower bots". server/crews.js: 7 crews as
+  plain code on the game server (no model, no paid API), each on a timer, reporting through MS.apply() (memesnake.js
+  now exposes apply/get): QA Testers 30 min (site, game, launch page, Pit, Battle board), Community 60 (real online
+  count; skips 0), Game Build 60 (GitHub commits, skips Notes/merge/revert), Security Review 60 (G.status mode/blocked,
+  no thresholds), Launch Site 120 (Pit hatched), Market Scouts 120 (Pit /api/trending, % only), Trading Bot Desk 120
+  (Battle entrants). Logs only on change or every 6 h; a failed check shows the crew as blocked. CREWS=0 = off.
+  test_crews.js (15). LIVE: 5 crews reported within 3 min of the deploy. Albert may upgrade Claude for AI-written crews.
+
 - Oct 19 (1 am): "get the AI agent (MemeSnake) ready for an update in 5 days, start now". Its page had never received
   anything (StarNet can't write the site's feed.json). Now memesnake/index.html reads LIVE_URL = the game server's
   /ms/feed first, feed.json as fallback (minimal edit to Albert's page: FEED_URL line + load()). server/memesnake.js:
