@@ -169,8 +169,8 @@
     const name = views[v] ? v : 'home';
     // Coins, a coin, Hatch and my coins are the Pit's pages now (pit.memecapes.com); Watch and Stream stay here
     const pitU = String(MC.pit || '').replace(/\/+$/, '');
-    if (/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pitU) && (name === 'home' || name === 'launch' || name === 'coin' || name === 'me')) {
-      location.replace(pitU + (name === 'coin' && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(arg || '') ? '/?q=' + arg : name === 'home' ? '/' : '/hatch'));
+    if (/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pitU) && (v === '' || v === 'launch' || v === 'coin' || v === 'me')) {
+      location.replace(pitU + (v === 'coin' && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(arg || '') ? '/?q=' + arg : v === '' ? '/' : '/hatch'));
       return;
     }
     $$('[data-r]').forEach(a => a.classList.toggle('on', a.dataset.r === name));
