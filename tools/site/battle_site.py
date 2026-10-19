@@ -37,9 +37,9 @@ FIX = ('<script>(function(){var p=((window.MC_CONFIG||{}).pit||"' + PIT0 + '").r
 # ------------------------------------------------------------------ index.html
 s = rd('index.html')
 s = once(s, '<a href="launch.html">Launch</a><a href="memesnake/">AI Agent</a>',
-         '<a href="launch.html">Launch</a><a href="' + PIT0 + '/battle" data-pit="/battle">Battle</a><a href="memesnake/">AI Agent</a>', 'nav')
+         '<a href="https://pit.memecapes.com/" data-pit="/">Launch</a><a href="' + PIT0 + '/battle" data-pit="/battle">Battle</a><a href="memesnake/">AI Agent</a>', 'nav')
 s = once(s, '<a class="pw" href="launch.html"><b>Launch</b><span>Launch a Solana coin with fees you choose, and trade new coins.</span></a>\n',
-         '<a class="pw" href="launch.html"><b>Launch</b><span>Launch a Solana coin with fees you choose, and trade new coins.</span></a>\n'
+         '<a class="pw" href="https://pit.memecapes.com/" data-pit="/"><b>Launch</b><span>Launch a Solana coin with fees you choose, and trade new coins.</span></a>\n'
          '<a class="pw" href="' + PIT0 + '/battle" data-pit="/battle"><b>Battle</b><span>Pick an AI agent and a lucky coin. It trades all week; the best % return wins. Practice weeks are free.</span></a>\n', 'pw')
 
 SEC = MARK + '''<section class="bt rev" id="battle"><style>
@@ -95,10 +95,10 @@ wr('index.html', s)
 
 # ------------------------------------------------------------------ launch.html (CSP: no inline scripts; lp/app.js fixes links)
 L = rd('launch.html')
-L = once(L, '<a href="#/launch" data-r="launch">Hatch</a><a href="https://pit.memecapes.com" id="tradeln">Trade</a>',
-         '<a href="#/launch" data-r="launch">Hatch</a><a href="' + PIT0 + '/battle?from=memecapes" data-pit="/battle?from=memecapes">Battle</a><a href="https://pit.memecapes.com" id="tradeln">Trade</a>', 'lnav')
-L = once(L, '<a href="#/launch" data-r="launch">Hatch</a></div>',
-         '<a href="#/launch" data-r="launch">Hatch</a><a href="' + PIT0 + '/battle?from=memecapes" data-pit="/battle?from=memecapes">Battle</a></div>', 'lmob')
+L = once(L, '<a href="https://pit.memecapes.com/hatch" data-pit="/hatch">Hatch</a><a href="https://pit.memecapes.com" id="tradeln">Trade</a>',
+         '<a href="https://pit.memecapes.com/hatch" data-pit="/hatch">Hatch</a><a href="' + PIT0 + '/battle?from=memecapes" data-pit="/battle?from=memecapes">Battle</a><a href="https://pit.memecapes.com" id="tradeln">Trade</a>', 'lnav')
+L = once(L, '<a href="https://pit.memecapes.com/hatch" data-pit="/hatch">Hatch</a></div>',
+         '<a href="https://pit.memecapes.com/hatch" data-pit="/hatch">Hatch</a><a href="' + PIT0 + '/battle?from=memecapes" data-pit="/battle?from=memecapes">Battle</a></div>', 'lmob')
 wr('launch.html', L)
 
 A = rd('lp/app.js')

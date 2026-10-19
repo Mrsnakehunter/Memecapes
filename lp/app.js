@@ -167,6 +167,12 @@
     leaving.forEach(f => { try { f(); } catch (e) { } }); leaving = [];
     const h = location.hash.replace(/^#\/?/, ''), [v, arg] = h.split('/');
     const name = views[v] ? v : 'home';
+    // Coins, a coin, Hatch and my coins are the Pit's pages now (pit.memecapes.com); Watch and Stream stay here
+    const pitU = String(MC.pit || '').replace(/\/+$/, '');
+    if (/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pitU) && (name === 'home' || name === 'launch' || name === 'coin' || name === 'me')) {
+      location.replace(pitU + (name === 'coin' && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(arg || '') ? '/?q=' + arg : name === 'home' ? '/' : '/hatch'));
+      return;
+    }
     $$('[data-r]').forEach(a => a.classList.toggle('on', a.dataset.r === name));
     window.scrollTo(0, 0);
     Promise.resolve(views[name](arg)).catch(e => { if (my !== rseq) return; app.innerHTML = `<div class="empty" style="margin:30px 0">${esc(e.message || e)}</div>`; });
