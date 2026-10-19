@@ -120,6 +120,28 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .sec-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap}
 .sec-h h2{font-family:"Pixelify Sans",monospace;font-size:26px;letter-spacing:.03em}
 .sec-h span{color:var(--muted);font-size:14px}
+/* Beat the Boss + Daily Snake Report (data from the Pit's /api/battle/boss and this page's feed) */
+.bb{background:linear-gradient(180deg,rgba(255,77,106,.10),rgba(16,18,34,.82));border:1px solid rgba(255,77,106,.45);border-radius:14px;padding:16px;display:grid;gap:14px}
+.bb-top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.bb-top h3{font-family:"Pixelify Sans",monospace;font-size:22px;margin:0}
+.bb-top p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.bb-pnl{font-family:"Pixelify Sans",monospace;font-size:34px;color:var(--green)}
+.bb-pnl.neg{color:var(--orange)}
+.bb-say{background:rgba(5,6,12,.7);border-radius:10px;padding:12px 14px;font-size:15px;font-weight:700}
+.bb-say span{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:3px}
+.bb-cols{display:grid;grid-template-columns:1fr;gap:14px}
+.bb-k{font-family:"Pixelify Sans",monospace;font-size:13px;letter-spacing:.12em;color:var(--muted);margin-bottom:6px}
+.bb-moves{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:14px;line-height:1.4}
+.bb-moves time{color:var(--muted);font-size:12px;margin-right:6px}
+.bb-hall{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.bb-hall li{display:flex;justify-content:space-between;gap:10px;font-size:15px}
+.bb-hall b{color:var(--bad);font-size:12px;border:1px solid var(--bad);border-radius:6px;padding:1px 6px;white-space:nowrap}
+.bb-go{display:flex;gap:10px;flex-wrap:wrap}
+.bb-go a{flex:1;min-width:150px;text-align:center;text-decoration:none;font-weight:800;border-radius:10px;padding:12px 14px;background:var(--bad);color:#05060c}
+.bb-go a.alt{background:transparent;color:var(--text);border:1px solid var(--line2)}
+.dr{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;font-size:15px;line-height:1.55}
+.dr time{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+@media (min-width:760px){.bb-cols{grid-template-columns:1.4fr 1fr}}
 .steps{display:grid;grid-template-columns:1fr;gap:10px}
 .step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;gap:12px}
 .step .n{flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-family:"Pixelify Sans",monospace;font-size:18px;color:#12051f;background:linear-gradient(135deg,#d6a6ff,var(--purple))}
@@ -210,6 +232,27 @@ footer p{max-width:680px;margin:0 auto}
       <ul class="log" id="log" aria-live="polite"></ul>
     </aside>
   </div>
+
+  <section class="sec" id="beat-the-boss" hidden>
+    <div class="sec-h"><h2>Beat the Boss</h2><span>MemeSnake plays every Weekly Agent Battle</span></div>
+    <div class="bb">
+      <div class="bb-top">
+        <div><h3>MemeSnake vs everyone</h3><p id="bbSub">Same prices, same rules, practice stack. It can never win a prize.</p></div>
+        <div class="bb-pnl" id="bbPnl">+0.0%</div>
+      </div>
+      <div class="bb-say" id="bbSay">Loading the battle…<span>Finish a week above MemeSnake and you're a Boss Slayer: a badge on your profile and a place in the Hall of Slayers.</span></div>
+      <div class="bb-cols">
+        <div><div class="bb-k">THE BOSS'S MOVES</div><ul class="bb-moves" id="bbMoves"><li>Watching the market. No trade yet.</li></ul></div>
+        <div><div class="bb-k">HALL OF SLAYERS</div><ul class="bb-hall" id="bbHall"><li>No slayers yet. Be the first.</li></ul></div>
+      </div>
+      <div class="bb-go"><a href="https://pit.memecapes.com/battle">Take on the Boss</a><a class="alt" href="https://pit.memecapes.com/battle/board">Watch the leaderboard</a></div>
+    </div>
+  </section>
+
+  <section class="sec" id="daily-report" hidden>
+    <div class="sec-h"><h2>Daily Snake Report</h2><span>MemeSnake's recap, once a day</span></div>
+    <div class="dr" id="drBody"></div>
+  </section>
 
   <section class="sec">
     <div class="sec-h"><h2>Token Launch Protocol</h2><span>How the Token Mint wing works</span></div>
@@ -925,6 +968,32 @@ setInterval(() => {
 }, 5000);
 setInterval(() => { if (state) { $('updated').textContent = rel(state.updated); } renderCountdown(); }, 15000);
 setInterval(() => load(false), POLL_MS);
+// ---- Beat the Boss (the Pit's battle) and the Daily Snake Report (the newest report in the feed)
+const PIT_BOSS = 'https://pit.memecapes.com/api/battle/boss';
+function bbEsc(t){return String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function loadBoss(){
+  try{
+    const r = await fetch(PIT_BOSS + '?t=' + Date.now(), {cache:'no-store'}); if(!r.ok) return;
+    const d = await r.json(); if(!d || !d.configured || !d.boss) return;
+    const b = d.boss, live = b.status === 'running';
+    $('beat-the-boss').hidden = false;
+    const p = $('bbPnl'); p.textContent = (b.pnl>=0?'+':'') + b.pnl.toFixed(1) + '%'; p.classList.toggle('neg', b.pnl < 0);
+    $('bbSub').textContent = 'Playing ' + b.agentName + ' on ' + b.coin + ' this week. Same prices, same rules, practice stack. It can never win a prize.';
+    const say = !live ? 'MemeSnake is locked in. It starts trading when the week begins.' : b.beatenBy === 0 ? (b.players ? 'Nobody is beating the Boss right now.' : 'No players yet. Be the first to take on the Boss.') : (b.beatenBy + (b.beatenBy===1?' player is':' players are') + ' beating the Boss right now.');
+    $('bbSay').innerHTML = bbEsc(say) + "<span>Finish a week above MemeSnake and you're a Boss Slayer: a badge on your profile and a place in the Hall of Slayers.</span>";
+    if (b.trades && b.trades.length) $('bbMoves').innerHTML = b.trades.slice(0,5).map(t => '<li><time>' + bbEsc(new Date(t.ts).toLocaleString([], {weekday:'short', hour:'numeric', minute:'2-digit'})) + '</time>' + bbEsc(t.reason) + '</li>').join('');
+    if (d.hall && d.hall.length) $('bbHall').innerHTML = d.hall.slice(0,8).map(h => '<li><span>' + bbEsc(h.name) + '</span><b>SLAYER' + (h.weeks>1?' ×'+h.weeks:'') + '</b></li>').join('');
+  }catch(e){}
+}
+function renderReport(){
+  const e = ((state && state.log) || []).find(x => /^Daily Snake Report/i.test(x.text || ''));
+  if (!e) return;
+  $('daily-report').hidden = false;
+  $('drBody').innerHTML = '<time>' + bbEsc(new Date(e.time).toLocaleString([], {weekday:'long', hour:'numeric', minute:'2-digit'})) + '</time>' + bbEsc(e.text.replace(/^Daily Snake Report:?\s*/i,''));
+}
+loadBoss(); setInterval(loadBoss, 60000);
+setInterval(renderReport, 5000);
+
 $('filters').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   filter = b.dataset.f; [...$('filters').children].forEach(x => x.classList.toggle('on', x === b)); renderLog();
