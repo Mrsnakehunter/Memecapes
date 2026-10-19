@@ -804,6 +804,7 @@ const LP = require('./launchpad')({ db, DATA, now, tooMany, say, online, sigOk, 
 G.setTellAdmins(text => { for (const o of online.values()) if (o.role === 'admin') say(o, text, '#c80'); });
 // ---------- MemeSnake Live (server/memesnake.js): the AI agent's public activity feed ----------
 const MS = require('./memesnake')({ DATA });
+require('./crews')({ MS, online, G, now });   // MemeSnake's crews on autopilot: free checks that report to its page (CREWS=0 = off)
 const PIT = require('./snakepit')({ tooMany });   // SnakePit: a player's snake + the Pit's public numbers, cached
 
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------

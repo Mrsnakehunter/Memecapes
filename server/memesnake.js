@@ -48,6 +48,10 @@ module.exports = function memesnake({ DATA }) {
     const m = /^Bearer (.+)$/.exec(req.headers.authorization || '');
     if (!KEY || !m || m[1].length !== KEY.length || !crypto.timingSafeEqual(Buffer.from(m[1]), Buffer.from(KEY))) return json({ error: 'Not allowed.' }, 401);
     let b; try { b = await new Promise((ok, no) => { let n = 0; const ps = []; req.on('data', d => { n += d.length; if (n > 200e3) { no(new Error('too big')); req.destroy(); } else ps.push(d); }); req.on('end', () => { try { ok(JSON.parse(Buffer.concat(ps).toString('utf8') || '{}')); } catch (e) { no(e); } }); req.on('error', no); }); } catch (e) { return json({ error: 'Send JSON, under 200 KB.' }, 400); }
+    return json(apply(b));
+  }
+  // one update: {status, headline, parts, log, replace}. Used by POST /ms/feed (MemeSnake on StarNet) and the server's own crews.
+  function apply(b) {
     const why = [], next = { ...feed };
     if (b.status !== undefined) next.status = TOP.includes(b.status) ? b.status : 'offline';
     if (b.headline !== undefined) { const h = clean(b.headline, 120); if (check(h)) next.headline = h; else why.push('hid the headline (money amount or key)'); }
@@ -66,7 +70,7 @@ module.exports = function memesnake({ DATA }) {
     }
     next.updated = new Date().toISOString();
     feed = next; try { fs.writeFileSync(FILE, JSON.stringify(feed)); } catch (e) { }
-    return json({ ok: true, kept: feed.log.length, notes: why });
+    return { ok: true, kept: feed.log.length, notes: why };
   }
-  return { http };
+  return { http, apply, get: () => feed };
 };
