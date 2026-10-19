@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 19: "a new X ad video, more updated than the last one, top of the line, no big selling point left out, music
+  that makes people excited". 1080x1080, ~56 s, 33 bars at 142 BPM ('Royal trap', the already-licensed track, a later
+  section than ad 1): hook words PLAY/TRADE/HATCH/BATTLE on the beats, crest, game (walk/fight/chop/cape), Pit (0.4%
+  flat venom, holders-only comments, profiles, gasless USDC->SOL), Hatch (sniper fee, split, locked liquidity),
+  Weekly Agent Battle, Beat the Boss, Watch, Stream, MemeSnake, montage, end card (memecapes.com + pit.memecapes.com,
+  "Not financial advice" line). Pit screens = studio renders of the real components with example data (EXAMPLE DATA
+  chip on every one). Dates/countdowns painted out of the battle shots before use (ad3/prep.py). Composer: ad3/make.py
+  + scenes.py (scenes in bars, music.json = bpm/start). Not posted (X waits for launch). Beat the Boss is on the
+  `beat-the-boss` branches of both repos (not merged): Albert is keeping it for the Friday update.
+
 - Oct 19 (2 am): "are the AI slaves working for the big boss? free AI for the lower bots". server/crews.js: 7 crews as
   plain code on the game server (no model, no paid API), each on a timer, reporting through MS.apply() (memesnake.js
   now exposes apply/get): QA Testers 30 min (site, game, launch page, Pit, Battle board), Community 60 (real online
