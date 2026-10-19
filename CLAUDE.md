@@ -90,6 +90,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 18 (night): "Launch still says memecapes.com, every link into snakepit must go to pit.memecapes.com, proper page".
+  index.html: Launch / Launch card / "powered by snakepit" / See new coins -> pit /, Launch a coin -> pit /hatch, a coin
+  tile -> pit /?q=<mint> (all data-pit, rewritten from config.js pit). launch.html nav: Coins -> pit /, Hatch -> pit
+  /hatch; lp/app.js route() forwards the old addresses ('' / launch / coin / me) to the Pit by the RAW hash (views.watch
+  and views.stream register after the first route(), so checking `name` forwarded Watch too). Watch + Stream stay on
+  memecapes.com/launch.html (the Pit has no Watch/Stream). battle_site.py anchors updated to match.
+
 - Oct 18 (night): "follow wallets, profile picture, comments under their buys if they're a holder" -> holder = holds THAT
   coin. Pit (snakepit main c5e1fd3): supabase/social.sql (run in the pane: users.avatar/avatar_at, comments,
   comment_reports, banned; Supabase calls it "destructive" only for the drop-policy line), /api/avatar/<wallet> (always an
