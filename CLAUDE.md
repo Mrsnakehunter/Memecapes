@@ -99,6 +99,11 @@ numbers in here or anywhere in the repo.
   chip on every one). Dates/countdowns painted out of the battle shots before use (ad3/prep.py). Composer: ad3/make.py
   + scenes.py (scenes in bars, music.json = bpm/start). Not posted (X waits for launch). Beat the Boss is on the
   `beat-the-boss` branches of both repos (not merged): Albert is keeping it for the Friday update.
+  Then "slow it down to ~105 s and put it in the old video's spot on the home page": LONG=1 gives every part more bars
+  (62 bars, music from 69.59 s, not a slowed-down file); BOSS_KICK='COMING SOON · BEAT THE BOSS' until Friday (re-render
+  with the default 'NEW' kicker after the merge). Home: media/memecapes-tour-2.mp4 (crf 25, 15 MB), new poster, caption
+  "Game footage is real; app screens show example data" (the old "Real gameplay, no renders" was no longer true).
+  Lost frames when a background render was stopped: re-render missing ones by number before encoding.
 
 - Oct 19 (2 am): "are the AI slaves working for the big boss? free AI for the lower bots". server/crews.js: 7 crews as
   plain code on the game server (no model, no paid API), each on a timer, reporting through MS.apply() (memesnake.js
