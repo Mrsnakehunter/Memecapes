@@ -90,6 +90,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 19 (1 am): "get the AI agent (MemeSnake) ready for an update in 5 days, start now". Its page had never received
+  anything (StarNet can't write the site's feed.json). Now memesnake/index.html reads LIVE_URL = the game server's
+  /ms/feed first, feed.json as fallback (minimal edit to Albert's page: FEED_URL line + load()). server/memesnake.js:
+  starter rooms come from memesnake/feed.json, log entries are ADDED (replace:true starts over; before, any post with
+  status/parts wiped the log), rooms merge by id. test_memesnake.js (9 checks). Albert must set MEMESNAKE_KEY on Render
+  and paste the "Live page updates" section (scratchpad memesnake-live-feed-prompt.md) into StarNet. Still unknown: what
+  the update itself contains, and whether StarNet can make HTTP POSTs with a header.
+
 - Oct 18 (night): "Launch still says memecapes.com, every link into snakepit must go to pit.memecapes.com, proper page".
   index.html: Launch / Launch card / "powered by snakepit" / See new coins -> pit /, Launch a coin -> pit /hatch, a coin
   tile -> pit /?q=<mint> (all data-pit, rewritten from config.js pit). launch.html nav: Coins -> pit /, Hatch -> pit
