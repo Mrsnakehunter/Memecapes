@@ -1,7 +1,7 @@
 'use strict';
 // MemeSnake Live (memesnake.html): the public activity feed of MemeSnake, the AI agent that runs Mr Snake's crews.
 //   GET  /ms/feed                 -> the current feed (public)
-//   POST /ms/feed  (Authorization: Bearer <MEMESNAKE_KEY>)  body = the whole feed.json, or {log:[...]} to add entries
+//   POST /ms/feed  (Authorization: Bearer <MEMESNAKE_KEY>)  body = any of {status, headline, parts, log}; log entries are added (replace:true starts over)
 // The feed is checked against MemeSnake's own rules before it is kept: only the known parts and statuses, short text,
 // no dollar amounts, nothing that looks like a wallet key or secret, the newest 50 log entries. Set MEMESNAKE_KEY on
 // Render; without it nobody can post and the page shows "offline".
@@ -14,8 +14,11 @@ module.exports = function memesnake({ DATA }) {
   const FILE = path.join(DATA, 'memesnake_feed.json');
   const PARTS = ['creator', 'trading', 'memecapes', 'token'], PST = ['idle', 'working', 'done', 'blocked'], TOP = ['online', 'paused', 'offline'];
   const AGENT = ['hq', ...PARTS];
-  const empty = () => ({ updated: new Date().toISOString(), status: 'offline', headline: '', parts: [], log: [] });
+  // the crew list starts as the site's own memesnake/feed.json, so the page shows every room before the agent posts one
+  let starter = []; try { starter = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'memesnake', 'feed.json'), 'utf8')).parts || []; } catch (e) { }
+  const empty = () => ({ updated: new Date().toISOString(), status: 'offline', headline: '', parts: starter, log: [] });
   let feed = empty(); try { feed = JSON.parse(fs.readFileSync(FILE, 'utf8')); } catch (e) { }
+  if (!Array.isArray(feed.parts) || !feed.parts.length) feed.parts = starter;
 
   // text that must never go on the public page: money amounts, keys, seed phrases, long secrets
   const BAD = [/[$€£]\s?\d/, /\b\d[\d,.]*\s?(usd|usdc|usdt|sol|eth|btc|dollars?)\b/i, /\b[1-9A-HJ-NP-Za-km-z]{32,}\b/, /\b[0-9a-f]{40,}\b/i, /seed phrase|private key|mnemonic|password/i];
@@ -48,11 +51,16 @@ module.exports = function memesnake({ DATA }) {
     const why = [], next = { ...feed };
     if (b.status !== undefined) next.status = TOP.includes(b.status) ? b.status : 'offline';
     if (b.headline !== undefined) { const h = clean(b.headline, 120); if (check(h)) next.headline = h; else why.push('hid the headline (money amount or key)'); }
-    if (b.parts !== undefined) next.parts = parts(b.parts, why);
+    if (b.parts !== undefined) {
+      // rooms sent are updated; rooms not sent keep their last state
+      const got = parts(b.parts, why), ids = new Set(got.map(p => p.id));
+      next.parts = PARTS.map(id => got.find(p => p.id === id) || (feed.parts || []).find(p => p.id === id)).filter(Boolean);
+      if (!ids.size && Array.isArray(b.parts) && !b.parts.length) next.parts = starter;
+    }
     if (Array.isArray(b.log)) {
       const add = b.log.slice(0, 50).map(e => entry(e, why)).filter(Boolean);
-      // a whole feed.json replaces the log; {log:[...]} alone adds to it
-      const base = b.parts !== undefined || b.status !== undefined ? [] : feed.log;
+      // new entries are added to the log (repeats are dropped); send "replace": true to start the log over
+      const base = b.replace === true ? [] : feed.log;
       const seen = new Set(), all = [...add, ...base].filter(e => { const k = e.time + e.text; if (seen.has(k)) return false; seen.add(k); return true; });
       next.log = all.sort((x, y) => y.time.localeCompare(x.time)).slice(0, 50);
     }

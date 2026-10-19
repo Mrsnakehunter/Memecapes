@@ -250,6 +250,7 @@ footer p{max-width:680px;margin:0 auto}
 'use strict';
 // ===== CONFIG =====
 const FEED_URL = 'feed.json';      // MemeSnake writes this file next to the page
+const LIVE_URL = 'https://memecapes-server.onrender.com/ms/feed';   // MemeSnake posts its live updates here
 const POLL_MS = 30000;
 const LAUNCH_DATE = new Date('2026-11-02T00:00:00');
 
@@ -892,9 +893,17 @@ function ingest(data, initial) {
 }
 async function load(initial) {
   try {
-    const r = await fetch(FEED_URL + '?t=' + Date.now(), {cache: 'no-store'});
-    if (!r.ok) throw new Error(r.status);
-    const data = await r.json();
+    // live feed first (MemeSnake posts it to the game server); the file next to the page if the server is unreachable or still empty
+    let data = null;
+    try {
+      const live = await fetch(LIVE_URL + '?t=' + Date.now(), {cache: 'no-store'});
+      if (live.ok) { const j = await live.json(); if (j && Array.isArray(j.log) && (j.log.length || (j.parts || []).length)) data = j; }
+    } catch (e) {}
+    if (!data) {
+      const r = await fetch(FEED_URL + '?t=' + Date.now(), {cache: 'no-store'});
+      if (!r.ok) throw new Error(r.status);
+      data = await r.json();
+    }
     if (!data || !Array.isArray(data.log)) throw new Error('bad feed');
     if (demo) { demo = false; seen.clear(); initial = true; }
     $('demo').classList.remove('show');
