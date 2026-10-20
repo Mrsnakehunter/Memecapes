@@ -90,6 +90,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 20: Albert's Battle trial run (1 player) -> "does it auto refund? I can't pay manually" then "just run it no
+  matter what, even with one person". Nothing auto-sends by design (pot wallet key is his; a server hot wallet = custody
+  + hack risk). Pit main 9886ada (+ cherry-picked onto beat-the-boss, conflict in closeWeek resolved keeping
+  settleBoss): BATTLE.minEntrants 1, every week pays; prize places nobody filled roll into next week's pot. Live check:
+  week 2026-10-19, 1 entrant, prize 0.0855 SOL (60% of 95% of 0.15). Payouts are still sent by Albert from the pot wallet;
+  offered a one-tap "Pay out" button (one batched transfer tx he signs), not built yet.
+
 - Oct 20: "don't let anyone snipe the coin; the real ticker is new; on 'make it live' the real ticker is on everything".
   The NEW TICKER IS PRIVATE: never write it in this public repo (code, notes, branches, commit messages) before launch;
   it is in Albert's Oct 20 chat (ask him if unsure). Launch day: get the coin address and creator wallet from Albert
