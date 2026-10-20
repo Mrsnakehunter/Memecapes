@@ -90,6 +90,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 20: "yes build it" (one-tap Battle payout), then "make this part of the Friday update": it lives ONLY on the
+  Pit's `beat-the-boss` branch (7ad50d9, Vercel preview success), not main. lib/battle/payout.ts (payLines: prize > 0,
+  never the pot wallet itself, whole lamports rounded down; buildPayoutTx: one transfer per winner + memo "snakepit
+  battle payout <week>"; verifyPayout), /api/battle/payout (no sign-in: the on-chain payment is the proof; saves paid_sig
+  once), supabase/payout.sql (paid_sig, paid_at: RUN IT on Friday's merge, before that the owner sees a note instead of
+  the button). Board: button shows only when a connected wallet = pot wallet (useWallet now exposes addresses +
+  signTxAs, external wallets sign with their own signTransaction), "Last week's winners are waiting" card, "Last week's
+  results" link, Paid + Solscan for everyone. Retry safety: signed bytes + lastValidBlockHeight in localStorage; retry
+  re-sends while still valid, rebuilds only after expiry. Tests: /tmp/claude-0/tt/test_payout.ts (22, run build3.mjs from
+  the memecapes root); screens: /tmp/claude-0/bh/build_pay.mjs + out/pay.html + shoot_pay.py. Still to check on Friday:
+  Albert signs into the Pit with the pot wallet connected (if it's in Phantom, Privy's "wallet" login).
+
 - Oct 20: Albert's Battle trial run (1 player) -> "does it auto refund? I can't pay manually" then "just run it no
   matter what, even with one person". Nothing auto-sends by design (pot wallet key is his; a server hot wallet = custody
   + hack risk). Pit main 9886ada (+ cherry-picked onto beat-the-boss, conflict in closeWeek resolved keeping
