@@ -90,32 +90,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
-- Oct 20 (2 pm): "remove the CA off everything, we have to relaunch". Rolled back to the PRE-LAUNCH state: memecapes 3c34dd8
-  (git revert of 62563f2 minus CLAUDE.md: $CAPES + "no token exists yet" lines back, so tools/token_launch.py runs again
-  unchanged on the relaunch) + one added note on the $CAPES page: 9otG...Dpump "was an earlier launch and is no longer
-  the official MemeCapes token" (token_launch's site_lines still match: the note sits after the old sentence). Kept the
-  gold #official-wallets link colour. Pit: main revert of 791aa97 (Vercel success), beat-the-boss e4c976b. Live check:
-  site/game/config have no mint, ticker CAPES, Pit /capes on $CAPES. Relaunch: rerun token_launch.py with the new mint +
-  creator; the site again says "at most 4%" for the creator buy (fix the numbers if the dev buy is bigger, as on Oct 20);
-  the logo/banner say CAPEZ (new art needed if the ticker changes).
-
-- Oct 20 (1 pm): $CAPEZ LAUNCHED (the ticker is public now). Mint [removed] (pump.fun,
-  Token-2022 metadata name MemeCapes / CAPEZ, mint + freeze authority null), creator [removed]
-  (CreateV2 at 17:02 UTC, dev buy 47,276,160 = 4.73%; funded from 9XJN...kbRg, his first pick). Checked on-chain from the
-  pane through pit /api/rpc (getTransaction needs maxSupportedTransactionVersion 1 for pump.fun's v1 txs; WebFetch
-  refuses pump.fun/solscan URLs Albert didn't send; the shell can't reach any RPC). Ran tools/token_launch.py (--check
-  first, --logo capez_coin_logo.png): 324 site/game mentions + 22 Pit. Then fixed by hand: the site promised "at most
-  4%" (now 4.73% everywhere: supply text, bar, table, roadmap, support answer), support_page.py's footer line and 4
-  support answers still said "not yet / after the token launches", the game's exchange fallbacks (patch_holder,
-  patch_launch) said "Opens when the token launches". Wallet links on #official-wallets were dark blue: now gold.
-  Pit lib/config.ts CAPES_MINT defaults to the mint (no Vercel env needed). Telegram is now public: https://t.me/memecapes.
-  pump.fun kit: banner /tmp/claude-0/banner/banner.py (1500x500, key art s02 from index.html, can't be changed after
-  creation). Next: add the game pot wallet card when it exists; re-check the Pit's Capes page and Trade $CAPEZ links live.
-  Sniped by generic pump.fun bots: 6 wallets took ~7.1% in slots +2/+3 and had all sold within ~7 min (one more bot spammed
-  ~20 failed buys). Albert considered relaunching, then kept this CA ("nevermind, get everything live"). Live check in the
-  pane: site 47 $CAPEZ / 0 $CAPES, mint 14x, creator + 4.73% shown; config.js mint + ticker; play.html 49 $CAPEZ; Pit /capes
-  on $CAPEZ; server health ok. Pit main 791aa97, beat-the-boss a982e40 (cherry-pick). The memecapes beat-the-boss branch
-  does NOT have the switch yet: merge main into it before Friday's merge.
+- Oct 20: a first token launch was abandoned for a relaunch. Albert: take EVERYTHING about that contract down (no address,
+  no notes, nothing in this public repo). The site, game and Pit are back to the pre-launch state, so tools/token_launch.py
+  runs unchanged on the relaunch. Lessons: read the coin on-chain from the pane via pit /api/rpc (getTransaction needs
+  maxSupportedTransactionVersion 1 for pump.fun txs; the shell can't reach any RPC); pump.fun launches are sniped in
+  the first blocks by generic bots whatever the ticker; the site says "at most 4%" for the creator buy, so fix the
+  numbers after launch if the dev buy is bigger; support_page.py's footer and the game's exchange fallbacks (patch_holder,
+  patch_launch) carry "not live yet" text that token_launch.py does not touch; Telegram is public at t.me/memecapes.
+  Never write a launch's mint or creator wallet in this repo's notes again: keep them in the chat only.
 
 - Oct 20: "yes build it" (one-tap Battle payout), then "make this part of the Friday update": it lives ONLY on the
   Pit's `beat-the-boss` branch (7ad50d9, Vercel preview success), not main. lib/battle/payout.ts (payLines: prize > 0,
