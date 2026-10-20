@@ -1,4 +1,4 @@
-/* The MemeCapes shop: ads, sponsored monsters, custom capes and items, paid in SOL, USDC or $CAPEZ.
+/* The MemeCapes shop: ads, sponsored monsters, custom capes and items, paid in SOL, USDC or $CAPES.
    The buyer pays from their own wallet; this page only checks the payment on the blockchain (read-only)
    and builds the order message to send to MemeCapes. */
 (function () {
@@ -8,12 +8,12 @@
   var open = P.isAddr(C.shopWallet), sol = 0, cur = null;
   var coins = function () {
     var c = [['SOL', null], ['USDC', C.usdcMint]];
-    if (P.isAddr(C.capesMint) && C.capesUsd > 0) c.push(['$CAPEZ', C.capesMint]);
+    if (P.isAddr(C.capesMint) && C.capesUsd > 0) c.push(['$CAPES', C.capesMint]);
     return c;
   };
   var amountFor = function (it, ccy) {
     if (ccy === 'USDC') return +it.usd.toFixed(2);
-    if (ccy === '$CAPEZ') return Math.ceil(it.usd / C.capesUsd);
+    if (ccy === '$CAPES') return Math.ceil(it.usd / C.capesUsd);
     return +(it.usd / (sol || C.solUsdFallback || 150)).toFixed(4);
   };
   var contact = function () {

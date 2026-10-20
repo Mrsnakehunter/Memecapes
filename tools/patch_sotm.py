@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Skin of the Month: one new skin each month, free for $CAPEZ holders of 0.1% (1,000,000 $CAPEZ) after 30 days.
+"""Skin of the Month: one new skin each month, free for $CAPES holders of 0.1% (1,000,000 $CAPES) after 30 days.
 
 Rules (agreed with Albert, Oct 13): a skin changes how a cape or a weapon type looks, never stats. Holders whose linked
-wallet keeps 0.1% of all $CAPEZ for 30 days take that month's skin free at any bank or in the Wardrobe; everyone else
+wallet keeps 0.1% of all $CAPES for 30 days take that month's skin free at any bank or in the Wardrobe; everyone else
 buys it in the skin store for $2.99 and it stays in the store after its month. Once taken it is yours for good. Skins
 are tied to the account: not tradable. One free monthly skin per account per month (the server decides and keeps
 the claims; server/server.js "Skin of the Month"). 1% holders keep Cape Club and a free pick every 14 days.
@@ -42,7 +42,7 @@ function sotmHTML(){const S=sotmNow();if(!S.skin)return '';const s=skById(S.skin
  if(own)h+='<span style="color:#7dff9a">You own it.</span>';
  else if(!S.soon&&H&&H.canSotm)h+='<button data-sm="1">Take it free (holder gift)</button>';
  else if(!S.soon&&H&&H.sotmGot)h+='<span style="color:#7dff9a">You took this month\'s skin.</span>';
- else h+='Free for holders of 0.1% of $CAPEZ (1,000,000) after 30 days of holding. Everyone else: $2.99 in the store.';
+ else h+='Free for holders of 0.1% of $CAPES (1,000,000) after 30 days of holding. Everyone else: $2.99 in the store.';
  return h+'</div>'}
 function sotmWire(){MB.querySelectorAll('[data-sm]').forEach(b=>b.onclick=()=>{netSaveNow();netSend({t:'holderSotm'});b.disabled=true;b.textContent='...'})}
 """
@@ -52,7 +52,7 @@ rep("h+='<h2 style=\"margin-top:14px\">Skin store</h2>", "h+=sotmHTML();h+='<h2 
 rep("MB.querySelectorAll('[data-hc]').forEach(b=>b.onclick=", "sotmWire();MB.querySelectorAll('[data-hc]').forEach(b=>b.onclick=")
 # the bank's holder box: the 0.1% tier and its claim
 rep("one free skin from the skin store every '+days+' days.</span><br>';",
-    "one free skin from the skin store every '+days+' days.<br>Hold at least '+(H?H.sotmNeed:0.1)+'% (1,000,000 $CAPEZ) for '+(H?H.sotmDays:30)+' days: the Skin of the Month free.</span><br>';")
+    "one free skin from the skin store every '+days+' days.<br>Hold at least '+(H?H.sotmNeed:0.1)+'% (1,000,000 $CAPES) for '+(H?H.sotmDays:30)+' days: the Skin of the Month free.</span><br>';")
 rep("Below '+need+'%: no perks right now. Perks start", "Below '+need+'%: no Cape Club right now. Cape Club starts")
 rep(" return h+'<button class=\"ghost\" data-hp=\"unlink\">Unlink wallet</button>",
     " if(H.sotm){const sn=skById(H.sotm);h+=H.sotmGot?'<span style=\"font-size:12px;color:#7dff9a\">Skin of the Month ('+sn.n+'): taken.</span><br>':H.canSotm?'<span style=\"font-size:12px;color:#ffd23f\">Skin of the Month ('+sn.n+') is ready for you.</span> <button data-hp=\"sotm\">Take it free</button><br>':H.sotmOk?'<span style=\"font-size:12px\">Skin of the Month ('+sn.n+'): free on '+hpkDate(H.sotmAt)+' if you keep '+H.sotmNeed+'%.</span><br>':'<span style=\"font-size:12px;color:#ccc\">Below '+H.sotmNeed+'%: the Skin of the Month is $2.99 in the store.</span><br>'}\n"

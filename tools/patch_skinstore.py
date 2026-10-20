@@ -70,7 +70,7 @@ function skWire(){MB.querySelectorAll('[data-sd]').forEach(b=>b.onclick=()=>skDe
 function wardrobeUI(){M.style.display='flex';MB.onclick=null;MB.className='skx';const W=st.wear||{},HC=HPK()&&HPK().canClaim,S=sotmNow();
  let h='<div id="skxroot"><h2 id="wrd">Wardrobe</h2><p class="skxh">Skins change how your cape or a weapon type looks. They never change stats. Tap any skin to see it big and try it on.</p>';
  if(HC)h+='<div class="skxh" style="padding:8px;border:1px solid #ffd23f;border-radius:6px;color:#ffd23f">Holder gift: pick any one skin below and take it free.</div>';
- if(S.skin){const s=skById(S.skin);h+='<div class="skxs">'+(S.soon?'Coming soon':'Skin of the Month')+'</div><div class="skxm1" data-sd="'+s.id+'"><img alt="'+s.n+'" src="'+skImg(s.id)+'"><div><div class="k">'+(S.soon?'The first Skin of the Month':'This month')+'</div><div class="n">'+s.n+'</div><div class="d">'+s.d+'</div><div class="d" style="margin-top:6px;color:#ffd23f">'+(skOwn(s.id)?'You own it.':'Free for holders of 0.1% of $CAPEZ after 30 days of holding. Everyone else: $2.99.')+'</div></div></div>'}
+ if(S.skin){const s=skById(S.skin);h+='<div class="skxs">'+(S.soon?'Coming soon':'Skin of the Month')+'</div><div class="skxm1" data-sd="'+s.id+'"><img alt="'+s.n+'" src="'+skImg(s.id)+'"><div><div class="k">'+(S.soon?'The first Skin of the Month':'This month')+'</div><div class="n">'+s.n+'</div><div class="d">'+s.d+'</div><div class="d" style="margin-top:6px;color:#ffd23f">'+(skOwn(s.id)?'You own it.':'Free for holders of 0.1% of $CAPES after 30 days of holding. Everyone else: $2.99.')+'</div></div></div>'}
  const own=SKN.filter(s=>skOwn(s.id));
  if(own.length)h+='<div class="skxs">Your skins</div><div class="skxg">'+own.map(s=>skCard(s)).join('')+'</div>';
  {const me=NETS.partner;if(me&&me.live){const on=W.cape==='ptc';h+='<div class="row" style="margin-top:8px"><span><b style="color:#ffd23f">Partner cape</b> <small>(while you hold 3%)</small></span><button data-pw="1">'+(on?'Take off':'Wear')+'</button></div>'}}
@@ -89,7 +89,7 @@ function skDetail(id){const s=skById(id);if(!s)return wardrobeUI();M.style.displ
  else if(HC)act+='<button data-hc="'+id+'">Take it free (holder gift)</button>';
  else act+='<span class="p">$2.99</span>';
  let h='<div id="skxroot" class="skxd"><img alt="'+s.n+'" src="'+skImg(id)+'"><h2>'+s.n+'</h2><div class="t">'+SKGN[s.g]+(isM?' · Skin of the Month':'')+'</div><p>'+s.d+'</p><div class="skxa">'+act+'</div>'+
-  '<p class="skxq">Looks only: it never changes stats.'+(s.g=='cape'?' Works on every cape except the MemeCape.':' Shows on every '+SKGN[s.g].toLowerCase()+' you hold.')+' Tied to your account, not tradable.'+(own?'':isM?' Free for holders of 0.1% of $CAPEZ after 30 days of holding.':'')+'</p>'+
+  '<p class="skxq">Looks only: it never changes stats.'+(s.g=='cape'?' Works on every cape except the MemeCape.':' Shows on every '+SKGN[s.g].toLowerCase()+' you hold.')+' Tied to your account, not tradable.'+(own?'':isM?' Free for holders of 0.1% of $CAPES after 30 days of holding.':'')+'</p>'+
   (own||HC?'':'<p class="skxq">Card payments open with the game servers; until then skins come as redeem codes from the shop on memecapes.com.</p>')+'<button class="ghost" id="skxbk">Back to the Wardrobe</button></div>';
  MB.innerHTML=h;MB.scrollTop=0;$('skxbk').onclick=()=>wardrobeUI();sotmWire();
  MB.querySelectorAll('[data-try]').forEach(b=>b.onclick=()=>skTry(b.dataset.try));

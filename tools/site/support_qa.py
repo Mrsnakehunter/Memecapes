@@ -19,7 +19,7 @@ topic('items', 'Items, bag and bank')
 topic('world', 'Towns and travel')
 topic('quests', 'Quests')
 topic('capes', 'Capes')
-topic('coins', 'Meme Coins and $CAPEZ')
+topic('coins', 'Meme Coins and $CAPES')
 topic('skins', 'Skins and the Wardrobe')
 topic('trade', 'Trading and the Stock Market')
 topic('shop', 'The Shop')
@@ -498,10 +498,10 @@ q('capes', 'What kinds of capes are there?',
   'Vibe Capes (12 colours, bought with Meme Coins), Skill Capes at level 100, Diary and Collection capes, War Capes, the Burn Cape, the Rug Pit Cape, Quest Capes, the seven OG story capes, Genesis Capes and Sponsor Capes. Only the Burn and Rug Pit capes have combat stats, so a bought cape never beats an earned one in a fight.',
   ['List of capes', 'Which capes have stats?'], np='the cape types', k='capes list types stats')
 q('capes', 'Can I buy a cape with real money?',
-  'The capes that mean something are earned or bought with Meme Coins inside the game. A custom cape with your own design can be ordered in the Shop, but it is cosmetic only and marked as a custom. Genesis Capes come with $CAPEZ after the token and are cosmetic too.',
+  'The capes that mean something are earned or bought with Meme Coins inside the game. A custom cape with your own design can be ordered in the Shop, but it is cosmetic only and marked as a custom. Genesis Capes come with $CAPES after the token and are cosmetic too.',
   ['Can I pay for the MemeCape?'], vp='buy a cape', k='buy cape real money')
 q('capes', 'What are Genesis Capes?',
-  'Limited runs of 100 per design, minted on Solana as cosmetics only, bought with $CAPEZ (60% of each purchase is burned) or earned free by the top 10 on each monthly hiscore. They arrive after the token, not before.',
+  'Limited runs of 100 per design, minted on Solana as cosmetics only, bought with $CAPES (60% of each purchase is burned) or earned free by the top 10 on each monthly hiscore. They arrive after the token, not before.',
   ['What are the NFT capes?'], np='Genesis Capes', k='genesis capes nft limited')
 q('capes', 'What is the Cape Rack?',
   'Your collection of capes, shown on your profile and in the game. Every cape you have earned or bought hangs there.',
@@ -519,18 +519,18 @@ q('capes', 'Where is the Cape merchant?',
   'In the Castle Gigachad courtyard, with a very full cape rack. He sells skill capes at level 100, the Quest cape, and the MemeCape itself.',
   [], np='the Cape merchant', k='cape merchant courtyard')
 
-# ---------------------------------------------------------------- Meme Coins and $CAPEZ
+# ---------------------------------------------------------------- Meme Coins and $CAPES
 q('coins', 'What are Meme Coins?',
   'The in-game money. You earn them from drops, quests, skilling and selling to shops, and spend them at shops, the Cape merchant and the Stock Market. They are not a token and have no cash value.',
   ['Are Meme Coins real money?'], np='Meme Coins', k='meme coins currency money', top=True)
-q('coins', 'Is there a $CAPEZ token?',
-  'Yes: $CAPEZ is live on Solana. The only official contract address is [removed], posted on memecapes.com and on @Mrsnakebaby on X. Any other token using the name is fake: do not buy it.',
-  ['Where do I buy $CAPEZ?', 'What is the contract address?', 'Is $CAPEZ out?'], np='the $CAPEZ token', k='token capes contract address buy fake', top=True)
-q('coins', 'How does the $CAPEZ exchange work?',
-  'At any bank you will be able to exchange Meme Coins for $CAPEZ, starting at 100 Meme Coins per $CAPEZ, at most 100 $CAPEZ a day per player. The rate steepens as the player pot drains so it lasts for years. The exchange opens once the public pot wallet is funded.',
-  ['How do I turn Meme Coins into $CAPEZ?', 'What is the exchange rate?', 'What is the daily cap?'], np='the exchange', k='exchange rate cap 100 day pot')
-q('coins', 'What do $CAPEZ holders get?',
-  'In-game perks only. Link a wallet at any bank by signing a free message (nothing moves, no seed phrase). Hold 1% of all $CAPEZ and you get Cape Club free plus a free skin every 14 days; hold 0.1% for 30 days and you can take each month\'s Skin of the Month free; hold 3% for 14 days and your project can run a free partner ad in the towns. Holding pays no money and no tokens, and it is not an investment.',
+q('coins', 'Is there a $CAPES token?',
+  'Not yet. MemeCapes launches as a free game first. When the token exists, the contract address will be posted only on memecapes.com and on @Mrsnakebaby on X. Anything using the name before that is fake: do not buy it.',
+  ['Where do I buy $CAPES?', 'What is the contract address?', 'Is $CAPES out?'], np='the $CAPES token', k='token capes contract address buy fake', top=True)
+q('coins', 'How does the $CAPES exchange work?',
+  'At any bank you will be able to exchange Meme Coins for $CAPES, starting at 100 Meme Coins per $CAPES, at most 100 $CAPES a day per player. The rate steepens as the player pot drains so it lasts for years. The exchange opens once the public pot wallet is funded, after the token launches.',
+  ['How do I turn Meme Coins into $CAPES?', 'What is the exchange rate?', 'What is the daily cap?'], np='the exchange', k='exchange rate cap 100 day pot')
+q('coins', 'What do $CAPES holders get?',
+  'In-game perks only. Link a wallet at any bank by signing a free message (nothing moves, no seed phrase). Hold 1% of all $CAPES and you get Cape Club free plus a free skin every 14 days; hold 0.1% for 30 days and you can take each month\'s Skin of the Month free; hold 3% for 14 days and your project can run a free partner ad in the towns. Holding pays no money and no tokens, and it is not an investment.',
   ['What are the holder perks?', 'What is Cape Club?', 'Do holders earn anything?'], np='holder perks', k='holders perks cape club skin partner ad link wallet')
 q('coins', 'How do I link my wallet?',
   'Talk to any banker and choose link wallet. Your wallet app asks you to sign a short message that proves the wallet is yours. It is not a transaction: nothing is sent, nothing is approved, and we never ask for your seed phrase. The game checks the balance on the blockchain every day.',
@@ -538,23 +538,23 @@ q('coins', 'How do I link my wallet?',
 q('coins', 'Does MemeCapes hold my crypto?',
   'Never. Every payment goes straight from your wallet to the address shown, and you see the exact transfer in your wallet before you approve it. MemeCapes has no access to your wallet, keys or funds.',
   ['Is my wallet safe with MemeCapes?', 'Do you have custody of my funds?'], np='custody', k='custody hold crypto wallet safe')
-q('coins', 'Will $CAPEZ go up?',
-  'Nobody knows, and we will not guess. $CAPEZ is a fun token for use with the game, not an investment, and crypto can go to zero. Only ever spend what you are happy to lose. Nothing on this site is financial advice.',
-  ['Is $CAPEZ a good investment?', 'Price prediction', 'Should I buy $CAPEZ?'], np='the $CAPEZ price', k='price investment prediction moon')
+q('coins', 'Will $CAPES go up?',
+  'Nobody knows, and we will not guess. $CAPES is a fun token for use with the game, not an investment, and crypto can go to zero. Only ever spend what you are happy to lose. Nothing on this site is financial advice.',
+  ['Is $CAPES a good investment?', 'Price prediction', 'Should I buy $CAPES?'], np='the $CAPES price', k='price investment prediction moon')
 q('coins', 'Is there staking or revenue share?',
   'No staking yield and no revenue share. The launchpad\'s creator fees go to the creator, not to holders. The token is a cape you can trade, not a security.',
-  ['Do holders get a cut of revenue?', 'Can I stake $CAPEZ?'], np='staking', k='staking yield revenue share')
-q('coins', 'How is $CAPEZ distributed?',
-  'On a public bonding curve, with nothing allocated in advance. The creator bought 4.73% in the same transaction that created the coin and keeps it in a public wallet; the player pot is funded over time in a public ecosystem wallet with every addition posted; marketing and payments wallets hold no tokens. The $CAPEZ page has the table.',
+  ['Do holders get a cut of revenue?', 'Can I stake $CAPES?'], np='staking', k='staking yield revenue share')
+q('coins', 'How is $CAPES distributed?',
+  'On a public bonding curve, with nothing allocated in advance. The creator buys at most 4% in the same transaction that creates the coin and keeps it in a public wallet; the player pot is funded over time in a public ecosystem wallet with every addition posted; marketing and payments wallets hold no tokens. The $CAPES page has the table.',
   ['What is the tokenomics?', 'Is there a presale?', 'How much does the team hold?'], np='the tokenomics', k='tokenomics supply allocation presale team')
-q('coins', 'What burns $CAPEZ?',
-  'Play, not promises: limited cosmetics bought with $CAPEZ (60% burned), a small tax on player trades once they open, sponsored monsters (half burned), and the launchpad (half of what MemeCapes earns buys $CAPEZ and burns it). Burns are posted on-chain.',
-  ['Is $CAPEZ deflationary?', 'How do burns work?'], np='burns', k='burn deflation')
+q('coins', 'What burns $CAPES?',
+  'Play, not promises: limited cosmetics bought with $CAPES (60% burned), a small tax on player trades once they open, sponsored monsters (half burned), and the launchpad (half of what MemeCapes earns buys $CAPES and burns it). Burns are posted on-chain.',
+  ['Is $CAPES deflationary?', 'How do burns work?'], np='burns', k='burn deflation')
 q('coins', 'Can I withdraw Meme Coins as real money?',
-  'No. Meme Coins are game content with no cash value and cannot be redeemed for money from us. The only bridge is the in-game exchange to $CAPEZ, within the daily cap, once it opens.',
+  'No. Meme Coins are game content with no cash value and cannot be redeemed for money from us. The only bridge is the in-game exchange to $CAPES, after the token launches, within the daily cap.',
   ['Can I cash out?', 'Sell Meme Coins for cash'], vp='cash out', k='cash out withdraw real money')
 q('coins', 'Why is the exchange closed?',
-  'It opens once the public player pot wallet is funded. Until then the banker shows the note and your Meme Coins keep piling up.',
+  'It opens once the token has launched and the public player pot wallet is funded. Until then the banker shows the note and your Meme Coins keep piling up.',
   ['When does the exchange open?'], np='the closed exchange', k='exchange closed open')
 q('coins', 'Can I buy Meme Coins with real money?',
   'No. Meme Coins are earned in play only. Buying or selling them for real money outside the game is against the rules.',
@@ -565,7 +565,7 @@ q('skins', 'What are skins?',
   'New looks for a cape pattern or a weapon type. They only change how things look, never stats. Open the Wardrobe in the game to see every skin with a picture and try it on for 30 seconds before you decide.',
   ['What is the Wardrobe?', 'Do skins give bonuses?'], np='skins', k='skins wardrobe cosmetic', top=True)
 q('skins', 'What is the Skin of the Month?',
-  'Each month a new skin comes out. A wallet linked to your account that has held at least 0.1% of all $CAPEZ for 30 days can take it free at any bank or in the Wardrobe, once per account. Everyone else can buy it in the skin store, and it stays in the store after its month. Once you have a skin it is yours for good.',
+  'Each month a new skin comes out. A wallet linked to your account that has held at least 0.1% of all $CAPES for 30 days can take it free at any bank or in the Wardrobe, once per account. Everyone else can buy it in the skin store, and it stays in the store after its month. Once you have a skin it is yours for good.',
   ['How do I get the monthly skin?', 'Is the Skin of the Month free?'], np='the Skin of the Month', k='skin of the month monthly free')
 q('skins', 'How do I buy a skin?',
   'Open the Wardrobe, tap the skin to see the big picture, try it on, then choose Buy. Skins are paid from your wallet and belong to your account from then on.',
@@ -614,7 +614,7 @@ q('trade', 'Can I sell items to other players for real money?',
 
 # ---------------------------------------------------------------- the shop
 q('shop', 'What does the Shop sell?',
-  'Town billboards (your banner in a meme town for a week), sponsored monsters (your community\'s mascot roams the world for a month) and custom capes and items (one of a kind, your design, worn in 3D, cosmetic only). Paid with SOL, USDC or $CAPEZ from your own wallet.',
+  'Town billboards (your banner in a meme town for a week), sponsored monsters (your community\'s mascot roams the world for a month) and custom capes and items (one of a kind, your design, worn in 3D, cosmetic only). Paid with SOL, USDC or $CAPES from your own wallet.',
   ['What can I buy in the shop?', 'How do I put my project in the game?'], np='the Shop', k='shop billboard sponsored monster custom cape', top=True)
 q('shop', 'How does buying in the Shop work?',
   'Send the exact amount from your wallet to the MemeCapes address shown on the Shop page, paste the transaction so the page can confirm it on the blockchain, then send your order and design. Capes and items come as a code you redeem at any bank in the game.',
@@ -629,13 +629,13 @@ q('shop', 'What are the rules for ads and designs?',
   'Your design must be your own work or something you have the right to use, and it must follow the rules: nothing illegal, hateful, sexual, violent or infringing. Every design is reviewed by hand and we can refuse any order.',
   ['Can I advertise my token?'], np='ad rules', k='ad rules design review refuse')
 q('shop', 'What is a burn ad?',
-  'A website ad for projects that burn $CAPEZ: send the ad first, and only after it is approved do you burn the amount shown with a real burn. Approved ads share the ad spot on the home page, with odds based on how much each project burned. Burns are final.',
+  'A website ad for projects that burn $CAPES: send the ad first, and only after it is approved do you burn the amount shown with a real burn. Approved ads share the ad spot on the home page, with odds based on how much each project burned. Burns are final.',
   ['How do I get an ad on the home page?'], np='burn ads', k='burn ad home page')
 q('shop', 'What happens if the game is down during my ad?',
   'If the game is down for more than 48 hours in a row during your ad or sponsored monster, we extend it by the same amount.',
   [], np='ad downtime', k='ad down extend')
 q('shop', 'Is there a partner ad for holders?',
-  'A wallet that has held at least 3% of all $CAPEZ for 14 days can run a free partner ad: a billboard and an NPC in every meme town plus a cape colour. It is approved by hand and comes down as soon as a check finds the wallet under 3%.',
+  'A wallet that has held at least 3% of all $CAPES for 14 days can run a free partner ad: a billboard and an NPC in every meme town plus a cape colour. It is approved by hand and comes down as soon as a check finds the wallet under 3%.',
   [], np='partner ads', k='partner ad holder free')
 
 # ---------------------------------------------------------------- launchpad
@@ -718,11 +718,11 @@ q('safety', 'Will MemeCapes ever ask for my seed phrase?',
   'Never. Nobody from MemeCapes will ever ask for your seed phrase, private key or password, and we never message you first to send money or to "verify" a wallet. Anyone who does is a scammer. Never type a seed phrase into any website.',
   ['Is it safe to give my seed phrase?', 'Someone from MemeCapes asked for my private key'], np='seed phrase requests', k='seed phrase private key never ask scam', top=True)
 q('safety', 'How do I know a link or address is official?',
-  'Official addresses and links are only posted on memecapes.com and by @Mrsnakebaby on X. Anything else using the MemeCapes name, logo or $CAPEZ is fake. When in doubt, type memecapes.com yourself.',
+  'Official addresses and links are only posted on memecapes.com and by @Mrsnakebaby on X. Anything else using the MemeCapes name, logo or $CAPES is fake. When in doubt, type memecapes.com yourself.',
   ['Is this the real MemeCapes site?', 'Fake MemeCapes websites'], np='official links', k='official link fake site address')
-q('safety', 'I found a fake $CAPEZ token',
-  'Do not buy it. No $CAPEZ exists until it is announced on memecapes.com and @Mrsnakebaby, and when it does the address is posted there only. Report the fake to the platform where you saw it.',
-  ['Someone is selling $CAPEZ'], np='fake tokens', k='fake token scam capes')
+q('safety', 'I found a fake $CAPES token',
+  'Do not buy it. No $CAPES exists until it is announced on memecapes.com and @Mrsnakebaby, and when it does the address is posted there only. Report the fake to the platform where you saw it.',
+  ['Someone is selling $CAPES'], np='fake tokens', k='fake token scam capes')
 q('safety', 'How does MemeCapes keep me safe?',
   'We never hold your wallet, keys or money; every payment goes straight from your wallet and you see the exact transfer before you approve it. The game server has an always-on guard that blocks attacks, password guessing and floods, and an outside watcher checks that every page you load is exactly the one we published. See the Security page.',
   ['Is MemeCapes secure?', 'What protects my account?'], np='security', k='secure safe guard sentinel watchtower')
@@ -743,10 +743,10 @@ q('safety', 'Does MemeCapes use trackers or ads?',
   ['Do you track me?'], np='tracking', k='tracker analytics privacy ads')
 q('safety', 'Can a custom link or QR code be a scam?',
   'Yes. Links sent in chat, DMs or by "support" that ask you to connect a wallet or sign something are the classic scam. MemeCapes never asks you to sign anything outside the game\'s own bank link and the shop\'s own pages on memecapes.com.',
-  ['Wallet drainer', 'Someone sent me a link to claim $CAPEZ'], np='scam links', k='drainer link claim airdrop scam')
+  ['Wallet drainer', 'Someone sent me a link to claim $CAPES'], np='scam links', k='drainer link claim airdrop scam')
 q('safety', 'Is there an airdrop?',
-  'No. Anything offering a MemeCapes or $CAPEZ airdrop is a scam. The only free things are earned in the game and the holder perks described on the $CAPEZ page.',
-  ['Free $CAPEZ airdrop'], np='airdrops', k='airdrop free scam')
+  'No. Anything offering a MemeCapes or $CAPES airdrop is a scam. The only free things are earned in the game and the holder perks described on the $CAPES page.',
+  ['Free $CAPES airdrop'], np='airdrops', k='airdrop free scam')
 
 # ---------------------------------------------------------------- technical problems
 q('tech', 'The game is slow or laggy',
@@ -818,7 +818,7 @@ q('rules', 'What data does the game store about me?',
   'With an account: your username, a protected form of your password, your character and its progress, and a linked wallet address if you choose to link one. Nothing else: no email, no phone, no name. Guest play stores everything in your own browser.',
   ['Do you store my personal information?'], np='stored data', k='data stored personal information')
 q('rules', 'Are the memes licensed?',
-  'MemeCapes is a parody. Its characters are original interpretations inspired by internet culture; some well-known memes may be redesigned after legal review. MemeCapes and $CAPEZ are not affiliated with or endorsed by the creators of any meme shown.',
+  'MemeCapes is a parody. Its characters are original interpretations inspired by internet culture; some well-known memes may be redesigned after legal review. MemeCapes and $CAPES are not affiliated with or endorsed by the creators of any meme shown.',
   ['Is this official Doge or Pepe?'], np='meme licensing', k='licensed parody affiliated endorsed')
 q('rules', 'Is MemeCapes connected to any other game?',
   'No. It is an original game made by one person, inspired by the classic MMOs of the 2000s. It is not affiliated with or endorsed by any other game or company.',

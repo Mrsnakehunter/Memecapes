@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Partners: players holding at least 3% of $CAPEZ for 14 days get, free for as long as they keep it,
+"""Partners: players holding at least 3% of $CAPES for 14 days get, free for as long as they keep it,
   - a billboard with their picture in every meme town (8 billboards; with more than 8 partners they take turns),
   - an NPC beside each billboard with their name, their line and their link, in a cape of their colour,
   - that cape colour for their own character (Wardrobe).
@@ -48,7 +48,7 @@ function ptDraw(vis){const S=window.PTS;if(!S||!ptList().length)return;const tn=
   if(s.npc){s.npc.nm=p.brand;if(vis(s.npc.x+.5,s.npc.y+.5,45)){const base=p.g?'playerf':'player';needMdl(base);const cb=capeBody(base,'ptc_'+p.id+'_'+p.v),m=cb||(MDL[base]&&MDL[base].ok?MDL[base]:null);
    if(m){YO=hgt(s.npc.x+.5,s.npc.y+.5);qMdl(m,s.npc.x+.5,0,s.npc.y+.5,s.npc.ry,MDLSC.player,'Idle',tn+i);YO=0}}}})}
 function ptTalk(o){const p=ptAt(o.pi);if(!p)return;M.style.display='flex';MB.onclick=null;
- MB.innerHTML='<h2>'+esc(p.brand)+'</h2>'+(p.line?'<p style="font-size:15px">"'+esc(p.line)+'"</p>':'')+'<p style="font-size:12px;color:#ccc">A MemeCapes partner: holds 3% or more of $CAPEZ.</p>'
+ MB.innerHTML='<h2>'+esc(p.brand)+'</h2>'+(p.line?'<p style="font-size:15px">"'+esc(p.line)+'"</p>':'')+'<p style="font-size:12px;color:#ccc">A MemeCapes partner: holds 3% or more of $CAPES.</p>'
   +(p.link?'<button id="ptv">Visit '+esc(p.link.replace(/^https:\/\//,'').split('/')[0])+'</button> ':'')+'<button id="x">Close</button><div id="ptw" style="font-size:12px;margin-top:8px"></div>';
  $('x').onclick=()=>M.style.display='none';
  if(p.link)$('ptv').onclick=()=>{$('ptw').innerHTML='This opens <b>'+esc(p.link)+'</b> outside MemeCapes. Partner sites are run by the partner, not by us. Never enter your seed phrase or private key anywhere.<br><button id="ptgo" style="margin-top:6px">Open it</button>';$('ptgo').onclick=()=>{window.open(p.link,'_blank','noopener,noreferrer');M.style.display='none'}}}
@@ -59,7 +59,7 @@ function baReview(m){M.style.display='flex';MB.onclick=null;
  $('prr').onclick=()=>{netSend({t:'chat',text:'/burnad reject '+m.id+' '+($('prn').value||'')});M.style.display='none'}}
 // the bank box
 function partnerHTML(){const P=NETS.partner,H=HPK();if(!SRV()||!NETS.on||!H||!H.on)return '';const need=P?P.need:3,days=P?P.days:14;
- let h='<div id="ptk" style="margin-top:12px;padding-top:10px;border-top:1px dashed #fff4"><b style="color:#ffd23f">Partners</b><br><span style="font-size:12px">Hold '+need+'% or more of all $CAPEZ for '+days+' days: your project gets a billboard and an NPC in every meme town, and a cape in your colour, free for as long as you keep '+need+'%. Under '+need+'% they come down.</span><br>';
+ let h='<div id="ptk" style="margin-top:12px;padding-top:10px;border-top:1px dashed #fff4"><b style="color:#ffd23f">Partners</b><br><span style="font-size:12px">Hold '+need+'% or more of all $CAPES for '+days+' days: your project gets a billboard and an NPC in every meme town, and a cape in your colour, free for as long as you keep '+need+'%. Under '+need+'% they come down.</span><br>';
  if(!P||!P.over)return h+'</div>';const A=P.ad;
  if(P.live)h+='<span style="color:#7dff9a;font-size:12px">Your ad is live in all 8 towns.</span><br>';
  else if(A&&A.status=='approved')h+='<span style="font-size:12px">Approved. It goes live on '+hpkDate(P.liveAt)+', after '+days+' days at '+need+'%.</span><br>';

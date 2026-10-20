@@ -2,7 +2,7 @@
 """Bots: a few dozen characters who live in the world so it never feels empty, and look like players.
 
 Albert (Oct 13): no label on them in the game; the website says plainly that the game has bots that look like
-players (FAQ "Are there bots in the game?" and the $CAPEZ page), and bots are never counted as players anywhere
+players (FAQ "Are there bots in the game?" and the $CAPES page), and bots are never counted as players anywhere
 (posts, player numbers, screenshots sold as "players online").
   - 12 social bots hang around the towns: stroll, wave, dance, cheer, chat, and greet you by name.
   - 24 working bots chop trees, fish and mine near their home town, and a few walk the roads between towns.

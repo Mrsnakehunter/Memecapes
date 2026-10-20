@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """SnakePit in the game (section 7 of the SnakePit brief): the player's snake from the Pit slithers behind them in
-the world, the $CAPEZ tab shows that snake and a "Trade $CAPEZ in the Pit" button.
+the world, the $CAPES tab shows that snake and a "Trade $CAPES in the Pit" button.
 
 * MC_CONFIG.pit = "https://pit.memecapes.com" switches it on ("" = nothing shows). The game asks its own server
   (GET /pit/snake?wallet=...), never the Pit directly; the server caches a minute per wallet (server/snakepit.js).
 * The snake needs a linked wallet (the same wallet is the key on both sides). It follows the player's trail: a mint
   head plus one body segment per Pit segment (drawn up to 30, thicker beyond that), rank and segments in the tab.
-* "Trade $CAPEZ" opens pit/?q=<capesMint> when the mint is set, otherwise the Pit's $CAPEZ hub. New tab, noopener.
+* "Trade $CAPES" opens pit/?q=<capesMint> when the mint is set, otherwise the Pit's $CAPES hub. New tab, noopener.
 Run late in the build (after patch_pace):  python3 tools/patch_snakepit.py
 """
 PATH = 'play.html'
@@ -38,7 +38,7 @@ function pitSnakeHTML(){const C=window.MC_CONFIG||{};if(!PITC())return'';const w
  else{const k=d.snake;s+='<div style="margin-top:4px;font-family:ui-monospace,monospace"><b style="font-size:15px">'+k.segments+'</b> segment'+(k.segments==1?'':'s')+(d.rank?' · Pit rank <b>#'+d.rank+'</b>':'')+'<br><span style="color:'+(k.realized_pnl_sol>=0?'#58f0a6':'#ff6b7a')+'">'+(k.realized_pnl_sol>=0?'+':'')+k.realized_pnl_sol+' SOL</span> realized · '+k.wins+'W '+k.losses+'L'+(k.streak?' · '+(k.streak>0?'+':'')+k.streak+' streak':'')+(k.segments<=1?'<br><span style="color:#ff6b7a">Ate its own tail.</span>':'')+'</div>'
   +'<a href="'+esc(d.url)+'" target="_blank" rel="noopener" style="color:#58f0a6;font-size:10px">See your snake in the Pit →</a>'}
  s+='</div>';
- if(u)s+='<a href="'+esc(u)+'" target="_blank" rel="noopener" style="display:block;text-align:center;margin:6px 0;padding:8px;border-radius:6px;background:#58f0a6;color:#0b0c0e;font-weight:800;text-decoration:none">Trade $CAPEZ in the Pit</a><div style="color:#7c8590;font-size:10px;margin:0 0 4px">SnakePit is the trading app next to the game: self-custodial, your wallet, your keys. Crypto can go to zero; nothing here is financial advice.</div>';
+ if(u)s+='<a href="'+esc(u)+'" target="_blank" rel="noopener" style="display:block;text-align:center;margin:6px 0;padding:8px;border-radius:6px;background:#58f0a6;color:#0b0c0e;font-weight:800;text-decoration:none">Trade $CAPES in the Pit</a><div style="color:#7c8590;font-size:10px;margin:0 0 4px">SnakePit is the trading app next to the game: self-custodial, your wallet, your keys. Crypto can go to zero; nothing here is financial advice.</div>';
  return s}
 // the snake: a trail of the player's recent positions, the head about a tile behind, a body segment every third of a tile
 function pitSnakeDraw(dt,now){if(!PITS.d||!PITS.d.snake)return;const seg=PITS.d.snake.segments,T=PITS.tr,px=P.px+.5,pz=P.py+.5,L=PITS.last;
@@ -62,11 +62,11 @@ rep("const angD=(a,b)=>{const d=b-a;return isFinite(d)?((d+Math.PI)%6.283185307+
 # draw it where the pets are drawn
 rep("if(st.pet){const fp=follow(PT,dt,1.667);", "pitSnakeDraw(dt,now);if(st.pet){const fp=follow(PT,dt,1.667);")
 
-# the $CAPEZ tab: the snake card + the trade button, under the exchange lines
+# the $CAPES tab: the snake card + the trade button, under the exchange lines
 rep("""<br><span style="color:#ccc">Exchange at any bank.</span><br><button disabled style="opacity:.55;margin:6px 0">Withdraw to wallet (soon)</button>""",
     """<br><span style="color:#ccc">Exchange at any bank.</span><br><button disabled style="opacity:.55;margin:6px 0">Withdraw to wallet (soon)</button>'+pitSnakeHTML()+'""")
 
-# ask for the snake: at start (after the saved game loads), when the $CAPEZ tab opens, and every 5 minutes
+# ask for the snake: at start (after the saved game loads), when the $CAPES tab opens, and every 5 minutes
 rep("function renderPanel(){if(!pOpen)return;let h='';", "function renderPanel(){if(!pOpen)return;let h='';if(tab=='pot')pitRefresh();")
 rep("setInterval(tick,600);", "setInterval(tick,600);setInterval(()=>pitRefresh(),60000);setTimeout(()=>pitRefresh(),4000);")
 

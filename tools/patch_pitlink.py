@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Link with snakepit: one account for the game and the Pit.
 
-The $CAPEZ tab's snake card gets a "Link with snakepit" button for players with no wallet linked. It makes a one-time
+The $CAPES tab's snake card gets a "Link with snakepit" button for players with no wallet linked. It makes a one-time
 code, tells the game server (pitLinkStart) and opens the Pit's /link page with that code in a new tab. There the
 player signs in with email (the Pit creates a Solana wallet for anyone without one) or with Phantom, and the Pit
 signs a short message with that wallet and posts it to the game server (/plink). The server links the wallet to the

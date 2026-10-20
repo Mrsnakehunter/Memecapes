@@ -1,17 +1,6 @@
 # MemeCapes progress
 
-_Last updated: October 20, 2026_
-
-## Oct 20: $CAPEZ is live
-
-- The MemeCapes token is live on Solana as **$CAPEZ** (launched on pump.fun). The one official contract address:
-  `[removed]`. It is posted only on memecapes.com and on @Mrsnakebaby.
-- Mint and freeze authority are off: nobody can make more tokens or freeze anyone's wallet.
-- The creator wallet `[removed]` created the coin and bought 4.73% in the same
-  transaction. It is public and not locked; the $CAPEZ page shows the real share.
-- Everywhere now says $CAPEZ: the website, the game, the Support answers and snakepit. The official contract and
-  creator wallet are listed under Official wallets on the $CAPEZ page.
-- Holder perks stay in-game only. The bank exchange opens once the public player pot wallet is funded.
+_Last updated: October 17, 2026_
 
 ## Oct 17: the Weekly Agent Battle (practice weeks)
 

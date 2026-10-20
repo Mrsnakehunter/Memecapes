@@ -103,7 +103,7 @@ function trBag(T){const used=trCnt(T.mine.items),seen={};let s='',n=0;
  return '<section class="trp trbag"><header><h4>Your bag</h4><span>'+(35-(st.coins>0?1:0)-st.inv.length)+' free</span></header><div class="trgrid">'+s+'</div><div class="tre issmall">Tap to offer one. Right-click or hold for more.</div></section>'}
 function trInsp(T){const s=T&&T.sel;if(!s)return '';
  const k=s.k,n=s.n||1;
- if(k=='coin')return '<div class="tri" style="--rc:#ffd23f"><div class="trbig"><svg viewBox="0 0 24 24">'+COINI(n)+'</svg></div><div class="trtxt"><h5>'+fmt(n)+' Meme Coins</h5><div class="trty">Currency'+(trWords(n)?' · '+trWords(n):'')+'</div><p>'+(s.s=='g'?'Taken out of '+esc(T.p.name)+"'s offer.":'Meme Coins. Trade them, spend them, swap them for $CAPEZ at any bank.')+'</p></div></div>';
+ if(k=='coin')return '<div class="tri" style="--rc:#ffd23f"><div class="trbig"><svg viewBox="0 0 24 24">'+COINI(n)+'</svg></div><div class="trtxt"><h5>'+fmt(n)+' Meme Coins</h5><div class="trty">Currency'+(trWords(n)?' · '+trWords(n):'')+'</div><p>'+(s.s=='g'?'Taken out of '+esc(T.p.name)+"'s offer.":'Meme Coins. Trade them, spend them, swap them for $CAPES at any bank.')+'</p></div></div>';
  const r=trRar(k),inf=trInfo(k),have=st.inv.filter(x=>x==k).length;
  return '<div class="tri" style="--rc:'+RC[r]+'"><div class="trbig"><svg viewBox="0 0 24 24">'+IC[k]+'</svg></div><div class="trtxt"><h5>'+IN[k]+(n>1?' <span>x'+n+'</span>':'')+'</h5><div class="trty">'+TRRN[r]+' · '+inf.ty+'</div>'
   +(inf.L.length?'<div class="trst">'+inf.L.map(x=>'<span>'+x+'</span>').join('')+'</div>':'')+'<p>'+(EX[k]||'')+'</p>'

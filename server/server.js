@@ -20,7 +20,7 @@ const MAX_FRAME = 1024 * 1024;        // biggest WebSocket message accepted
 const VIEW = 48;                      // tiles: you see players this close
 const BAG = 35;
 const TRADE_LOCK_MS = +(process.env.TRADE_LOCK_MS || 2500);   // no accepting for this long after the OTHER player changes their offer                       // bag slots (the coin stack takes one)
-// holder perks: hold at least HOLDER_PCT % of all $CAPEZ in a wallet you own = free Cape Club, and one free shop skin every HOLDER_DAYS days
+// holder perks: hold at least HOLDER_PCT % of all $CAPES in a wallet you own = free Cape Club, and one free shop skin every HOLDER_DAYS days
 const CAPES_MINT = process.env.CAPES_MINT || (() => { try { return (/capesMint:\s*"([1-9A-HJ-NP-Za-km-z]{32,44})"/.exec(require('fs').readFileSync(require('path').join(__dirname, '..', 'config.js'), 'utf8')) || [])[1] || ''; } catch (e) { return ''; } })();  // Render env, else config.js; empty = holder perks off
 const RPC = process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
 const HOLD_PCT = +process.env.HOLDER_PCT || 1;
@@ -31,13 +31,13 @@ const PARTNER_PCT = +process.env.PARTNER_PCT || 3;
 const PARTNER_DAYS = +process.env.PARTNER_DAYS || 14;
 const PARTNER_CHECK = +process.env.PARTNER_CHECK_MS || 15 * 60e3;   // how often partners' wallets are checked
 const SWEEP = +process.env.SWEEP_MS || 60e3;
-// burn ads: burn at least BURN_PCT % of all $CAPEZ (after the ad is approved) = an ad on memecapes.com for BURN_AD_DAYS days (0 = for good)
+// burn ads: burn at least BURN_PCT % of all $CAPES (after the ad is approved) = an ad on memecapes.com for BURN_AD_DAYS days (0 = for good)
 const BURN_PCT = +process.env.BURN_PCT || 1;
 const BURN_AD_DAYS = process.env.BURN_AD_DAYS != null ? +process.env.BURN_AD_DAYS : 0;
 const SKIN_IDS = ['sk_laser', 'sk_upaxe', 'sk_dpick', 'sk_rocket', 'sk_rug', 'sk_moon',
   'cs_green_candles', 'cs_red_candles', 'cs_laser_eyes', 'cs_diamond_hands', 'cs_moon_night', 'cs_coin_gold',
   'cs_pond_lily', 'cs_wow_plaid', 'cs_stonks_arrow', 'cs_bonk_stripes', 'cs_rug_fringe', 'cs_hodl_frost', 'cs_moon_phases', 'cs_chad_marble', 'cs_laser_grid', 'cs_shades_on', 'cs_whale_waves', 'cs_rocket_trail', 'cs_the_burn', 'cs_copium_crystal', 'cs_wen_lambo', 'cs_jungle_leaves', 'cs_up_only_rainbow', 'cs_comfy_knit', 'cs_royal_ermine'];  // same list as tools/patch_skins.py
-// Skin of the Month: a wallet holding at least SOTM_PCT % of all $CAPEZ for SOTM_DAYS days gets that month's skin free,
+// Skin of the Month: a wallet holding at least SOTM_PCT % of all $CAPES for SOTM_DAYS days gets that month's skin free,
 // one per account per month. Month 1 of the line-up is SOTM_START (UTC). Same line-up as tools/patch_sotm.py.
 const SOTM_PCT = +process.env.SOTM_PCT || 0.1;
 const SOTM_DAYS = +process.env.SOTM_DAYS || 30;
@@ -409,7 +409,7 @@ function tradeFinish(T) {
 
 // ---------- holder perks ----------
 // The player proves the wallet is theirs by signing a short message in their wallet app (free: no transaction, nothing moves).
-// The server then reads the wallet's $CAPEZ balance from the blockchain itself, at link time, at every login and once a day
+// The server then reads the wallet's $CAPES balance from the blockchain itself, at link time, at every login and once a day
 // at a random hour. Perks need the balance to stay at HOLDER_PCT % or more at every check:
 //   Cape Club membership: while the last check passed.
 //   One free shop skin: after HOLDER_DAYS days of holding without a failed check, then again every HOLDER_DAYS days.
@@ -508,7 +508,7 @@ Object.assign(H, {
   holderInfo(c) { if (c.uid) c.send(holderInfo(c.uid)); },
   walletNonce(c, m) {
     if (!c.uid) return;
-    if (!CAPES_MINT) return say(c, 'Holder perks open when $CAPEZ launches.', '#a60');
+    if (!CAPES_MINT) return say(c, 'Holder perks open when $CAPES launches.', '#a60');
     const w = String(m.wallet || ''); const pk = b58(w); if (!pk || pk.length !== 32) return c.send({ t: 'err', text: 'That is not a Solana wallet address.' });
     c.walletMsg = { w, msg: 'MemeCapes: prove this wallet is yours.\n\nAccount: ' + c.name + '\nWallet: ' + w + '\nCode: ' + crypto.randomBytes(8).toString('hex') +
       '\n\nSigning this is free. It is not a transaction and it does not move any tokens.' };
@@ -522,7 +522,7 @@ Object.assign(H, {
     if (other && other.uid !== c.uid) return c.send({ t: 'err', text: 'That wallet is linked to another MemeCapes account. Unlink it there first.' });
     const old = Q.wal.get(c.uid);
     if (!(old && old.wallet === w)) Q.walSet.run(c.uid, w, now(), old ? old.claimed : 0, old ? old.claims : 0);  // the skin timer belongs to the account
-    say(c, 'Wallet linked. Checking your $CAPEZ...', '#0a0');
+    say(c, 'Wallet linked. Checking your $CAPES...', '#0a0');
     await holderCheck(Q.wal.get(c.uid)); c.send(holderInfo(c.uid)); c.send(partnerInfo(c.uid));
   },
   // Link with snakepit: the game makes a one-time code, opens the Pit, and the player signs in there (email sign-in
@@ -543,7 +543,7 @@ Object.assign(H, {
     c.claiming = 1;
     try {
       await holderCheck(Q.wal.get(c.uid)); info = holderInfo(c.uid);  // one fresh look at the balance right now
-      if (!info.canClaim) { c.send(info); return say(c, 'Your wallet is below ' + HOLD_PCT + '% of $CAPEZ now, so the free skin is on hold.', '#c00'); }
+      if (!info.canClaim) { c.send(info); return say(c, 'Your wallet is below ' + HOLD_PCT + '% of $CAPES now, so the free skin is on hold.', '#c00'); }
       const { u, st } = loadSave(c.uid); if (!st) return say(c, 'Your progress has not reached the server yet. Try again in a few seconds.', '#c00');
       st.skins = Array.isArray(st.skins) ? st.skins : []; if (st.skins.includes(skin)) return say(c, 'You already own that skin. Pick another.', '#c00');
       st.skins.push(skin);
@@ -561,7 +561,7 @@ Object.assign(H, {
     c.claiming = 1;
     try {
       await holderCheck(Q.wal.get(c.uid)); info = holderInfo(c.uid);  // one fresh look at the balance right now
-      if (!info.canSotm) { c.send(info); return say(c, 'Your wallet is below ' + SOTM_PCT + "% of $CAPEZ now, so this month's skin is on hold.", '#c00'); }
+      if (!info.canSotm) { c.send(info); return say(c, 'Your wallet is below ' + SOTM_PCT + "% of $CAPES now, so this month's skin is on hold.", '#c00'); }
       const { u, st } = loadSave(c.uid); if (!st) return say(c, 'Your progress has not reached the server yet. Try again in a few seconds.', '#c00');
       st.skins = Array.isArray(st.skins) ? st.skins : []; if (st.skins.includes(info.sotm)) return say(c, 'You already own this skin.', '#c00');
       st.skins.push(info.sotm);
@@ -601,9 +601,9 @@ function partnersMaybeChanged() {
 const clean1 = (t, n) => cleanChat(String(t || '')).slice(0, n);
 function partnerSave(c, m) {
   if (!c.uid) return;
-  if (!CAPES_MINT) return say(c, 'Partner ads open when $CAPEZ launches.', '#a60');
+  if (!CAPES_MINT) return say(c, 'Partner ads open when $CAPES launches.', '#a60');
   if (!G.allow('ad')) return c.send({ t: 'err', text: G.pausedMsg() });
-  const S = partnerState(c.uid); if (!S.over) return c.send({ t: 'err', text: 'Partner ads need a linked wallet holding at least ' + PARTNER_PCT + '% of $CAPEZ.' });
+  const S = partnerState(c.uid); if (!S.over) return c.send({ t: 'err', text: 'Partner ads need a linked wallet holding at least ' + PARTNER_PCT + '% of $CAPES.' });
   const brand = clean1(m.brand, 24), line = clean1(m.line, 80), link = String(m.link || '').trim().slice(0, 100), color = String(m.color || '');
   if (brand.length < 2) return c.send({ t: 'err', text: 'Give your project a name (2 to 24 letters).' });
   if (link && !/^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(\/[^\s<>"']*)?$/i.test(link)) return c.send({ t: 'err', text: 'The link must start with https:// and be a normal web address.' });
@@ -641,8 +641,8 @@ Object.assign(H, {
 // ---------- burn ads (website) ----------
 // 1. On memecapes.com the buyer connects their wallet and signs a free message (proves the wallet is theirs), and sends the ad.
 // 2. An admin approves it in game (/burnad view 7, /burnad approve 7). Nothing is burned before that, so a refused ad costs nothing.
-// 3. The buyer burns BURN_PCT % of all $CAPEZ from that same wallet and pastes the transaction. The server reads it from the
-//    blockchain: a real burn (supply goes down) of the $CAPEZ mint, signed by that wallet, big enough, never used before. Then it's live.
+// 3. The buyer burns BURN_PCT % of all $CAPES from that same wallet and pastes the transaction. The server reads it from the
+//    blockchain: a real burn (supply goes down) of the $CAPES mint, signed by that wallet, big enough, never used before. Then it's live.
 const baNonce = new Map();  // wallet -> { msg, t }
 function baMsg(w) {
   const m = 'MemeCapes: prove this wallet is yours to send a website ad.\n\nWallet: ' + w + '\nCode: ' + crypto.randomBytes(8).toString('hex') +
@@ -669,9 +669,9 @@ async function baCheckBurn(w, sig) {
     if (info.mint !== CAPES_MINT || info.authority !== w) continue;
     burned += BigInt(t === 'burnChecked' ? info.tokenAmount.amount : info.amount);
   }
-  if (!burned) return { err: 'That transaction does not burn $CAPEZ from your wallet. Use your wallet app\'s Burn option (not a send).' };
+  if (!burned) return { err: 'That transaction does not burn $CAPES from your wallet. Use your wallet app\'s Burn option (not a send).' };
   const s = await capesSupply(true), before = s + burned;  // supply now has the burn taken out
-  if (burned * 1000000n < before * BigInt(Math.round(BURN_PCT * 10000))) return { err: 'That burn is under ' + BURN_PCT + '% of all $CAPEZ.' };
+  if (burned * 1000000n < before * BigInt(Math.round(BURN_PCT * 10000))) return { err: 'That burn is under ' + BURN_PCT + '% of all $CAPES.' };
   const shares = Number(burned * 1000000n / (before * BigInt(Math.round(BURN_PCT * 10000))));  // whole BURN_PCT %s burned
   return { burned, shares: Math.max(1, shares) };
 }
@@ -688,7 +688,7 @@ async function baHttp(req, res, url, json) {
   }
   if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, GET', 'Access-Control-Allow-Headers': 'Content-Type' }); return res.end(); }
   if (req.method !== 'POST' || !url.pathname.startsWith('/burnad/')) return false;
-  if (!CAPES_MINT) return json({ error: 'Website ads open when $CAPEZ launches.' }, 400);
+  if (!CAPES_MINT) return json({ error: 'Website ads open when $CAPES launches.' }, 400);
   let m; try { m = await baBody(req, 600 * 1024); } catch (e) { return json({ error: 'Bad request.' }, 400); }
   const w = String(m.wallet || ''); const pk = b58(w); if (!pk || pk.length !== 32) return json({ error: 'That is not a Solana wallet address.' }, 400);
   const ip = req.ip || G.ipOf(req);
