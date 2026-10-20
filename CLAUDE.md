@@ -136,6 +136,10 @@ numbers in here or anywhere in the repo.
   with the default 'NEW' kicker after the merge). Home: media/memecapes-tour-2.mp4 (crf 25, 15 MB), new poster, caption
   "Game footage is real; app screens show example data" (the old "Real gameplay, no renders" was no longer true).
   Lost frames when a background render was stopped: re-render missing ones by number before encoding.
+  Oct 20: Albert wanted the 56 s cut back on the home page: media/memecapes-tour-3.mp4 (BOSS_KICK coming soon, crf 25,
+  9 MB). Re-render with the default 'NEW' kicker after Friday's merge. Also made new-ticker versions of the coin logo
+  and of the medallion-ring badge (Albert's art, not used on the site yet) with a chamfered Z built from the E's real
+  gold face (/tmp/claude-0/logo2/z3.py, logo3/z4.py); sent in chat, kept out of the repo until launch.
 
 - Oct 19 (2 am): "are the AI slaves working for the big boss? free AI for the lower bots". server/crews.js: 7 crews as
   plain code on the game server (no model, no paid API), each on a timer, reporting through MS.apply() (memesnake.js
