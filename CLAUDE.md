@@ -90,6 +90,22 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 20: "don't let anyone snipe the coin; the real ticker is new; on 'make it live' the real ticker is on everything".
+  The NEW TICKER IS PRIVATE: never write it in this public repo (code, notes, branches, commit messages) before launch;
+  it is in Albert's Oct 20 chat (ask him if unsure). Launch day: get the coin address and creator wallet from Albert
+  (public addresses), then `python3 tools/token_launch.py --ticker T --mint M --creator W --pit /home/claude/snakepit
+  [--logo new.png]` (run with --check first: it works on git worktree copies, prune them after): every readable $CAPES
+  (site, game play/preview, server messages, support, patches, Pit app/components/lib/public + battle symbol), the 11
+  "no token yet" site lines -> official contract address (Solscan link), token + creator cards in Official wallets,
+  config.js capesMint + ticker, Watchtower OFFICIAL_WALLETS (+mint, else it alarms). Then node --check, server tests,
+  commit + push both repos, set NEXT_PUBLIC_CAPES_MINT on Vercel (Pit), add a PROGRESS.md section. patch_ticker.py
+  (last in build.sh) keeps later rebuilds on the new ticker (the base has 24 $CAPES). Server reads capesMint from
+  config.js when Render has no CAPES_MINT. The coin logo has "$CAPES" engraved: my programmatic letter swap looked
+  pasted on; Albert should regenerate the logo in his own image tool (pass it as --logo; also the pump.fun image).
+  Anti-snipe advice given: keep the ticker and creator wallet unknown until launch, dev buy in the create tx, no
+  announced time, post the CA everywhere at once, no multi-wallet bundles (hidden wallets). pump.fun has no
+  anti-snipe; Hatch has the sniper fee (trade-offs given, not advice).
+
 - Oct 19 (night): "raid big communities on X (streamers, launchpad users, MMO players, BONK/FLOKI), make categories and a
   video for each, better music for each". Doc "MemeCapes X raid playbook" (Albert's Claude Doc): rules from X's platform
   manipulation policy (real people, one account each, on-topic replies, no copypasta/mass tags/like trains), six
