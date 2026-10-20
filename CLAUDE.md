@@ -90,6 +90,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 20 (2 pm): "remove the CA off everything, we have to relaunch". Rolled back to the PRE-LAUNCH state: memecapes 3c34dd8
+  (git revert of 62563f2 minus CLAUDE.md: $CAPES + "no token exists yet" lines back, so tools/token_launch.py runs again
+  unchanged on the relaunch) + one added note on the $CAPES page: 9otG...Dpump "was an earlier launch and is no longer
+  the official MemeCapes token" (token_launch's site_lines still match: the note sits after the old sentence). Kept the
+  gold #official-wallets link colour. Pit: main revert of 791aa97 (Vercel success), beat-the-boss e4c976b. Live check:
+  site/game/config have no mint, ticker CAPES, Pit /capes on $CAPES. Relaunch: rerun token_launch.py with the new mint +
+  creator; the site again says "at most 4%" for the creator buy (fix the numbers if the dev buy is bigger, as on Oct 20);
+  the logo/banner say CAPEZ (new art needed if the ticker changes).
+
 - Oct 20 (1 pm): $CAPEZ LAUNCHED (the ticker is public now). Mint [removed] (pump.fun,
   Token-2022 metadata name MemeCapes / CAPEZ, mint + freeze authority null), creator [removed]
   (CreateV2 at 17:02 UTC, dev buy 47,276,160 = 4.73%; funded from 9XJN...kbRg, his first pick). Checked on-chain from the
