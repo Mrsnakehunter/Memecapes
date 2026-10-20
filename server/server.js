@@ -21,7 +21,7 @@ const VIEW = 48;                      // tiles: you see players this close
 const BAG = 35;
 const TRADE_LOCK_MS = +(process.env.TRADE_LOCK_MS || 2500);   // no accepting for this long after the OTHER player changes their offer                       // bag slots (the coin stack takes one)
 // holder perks: hold at least HOLDER_PCT % of all $CAPES in a wallet you own = free Cape Club, and one free shop skin every HOLDER_DAYS days
-const CAPES_MINT = process.env.CAPES_MINT || '';                 // empty = holder perks switched off
+const CAPES_MINT = process.env.CAPES_MINT || (() => { try { return (/capesMint:\s*"([1-9A-HJ-NP-Za-km-z]{32,44})"/.exec(require('fs').readFileSync(require('path').join(__dirname, '..', 'config.js'), 'utf8')) || [])[1] || ''; } catch (e) { return ''; } })();  // Render env, else config.js; empty = holder perks off
 const RPC = process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
 const HOLD_PCT = +process.env.HOLDER_PCT || 1;
 const HOLD_DAYS = +process.env.HOLDER_DAYS || 14;
