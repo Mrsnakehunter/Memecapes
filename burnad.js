@@ -1,4 +1,4 @@
-/* Website ads for burning $CAPES (the rules live on the game server, server/server.js "burn ads").
+/* Website ads for burning $CAPEZ (the rules live on the game server, server/server.js "burn ads").
    Home page: one ad card in the page flow, styled like the site's own cards. Not sticky, no pop-up, no motion.
    Each visit shows one live ad, picked with odds = how much that project burned (1% = 1 share), so the spot
    is split between everyone who burned. The card is not shown at all when there are no ads.
@@ -18,9 +18,9 @@
       for (var i = 0; i < L.length; i++) { pick -= (L[i].w || 1); if (pick < 0) { ad = L[i]; break; } }
       var h = host(ad.link);
       slot.innerHTML = '<div class="card adcard"><a class="adimg"' + (ad.link ? ' href="' + esc(ad.link) + '" target="_blank" rel="sponsored noopener noreferrer nofollow"' : '') + '><img alt="' + esc(ad.brand) + '" loading="lazy" src="' + esc(API + '/burnads/' + ad.id + '.jpg?v=' + ad.v) + '"></a>'
-        + '<div class="adtxt"><span class="adlab">Sponsored · burned ' + esc(C.burnPct || 1) + '% of $CAPES</span><h3>' + esc(ad.brand) + '</h3>' + (ad.line ? '<p class="mute">' + esc(ad.line) + '</p>' : '')
+        + '<div class="adtxt"><span class="adlab">Sponsored · burned ' + esc(C.burnPct || 1) + '% of $CAPEZ</span><h3>' + esc(ad.brand) + '</h3>' + (ad.line ? '<p class="mute">' + esc(ad.line) + '</p>' : '')
         + (ad.link ? '<a class="btn ghost" href="' + esc(ad.link) + '" target="_blank" rel="sponsored noopener noreferrer nofollow">Visit ' + esc(h) + ' ↗</a><span class="adnote">Their site, not ours. Never enter your seed phrase anywhere.</span>' : '')
-        + '<a class="adwhy" href="#shop">Your project here? Burn ' + esc(C.burnPct || 1) + '% of $CAPES</a></div></div>';
+        + '<a class="adwhy" href="#shop">Your project here? Burn ' + esc(C.burnPct || 1) + '% of $CAPEZ</a></div></div>';
       slot.hidden = false;
     }).catch(function () { });
   }
@@ -29,9 +29,9 @@
   var root = document.getElementById('burnapp');
   if (!root) return;
   var head = '<h2 style="margin-top:34px">Burn ' + esc(C.burnPct || 1) + '% for a website ad</h2>'
-    + '<p class="mute">Burn ' + esc(C.burnPct || 1) + '% of all $CAPES and your project gets the ad spot on the memecapes.com home page, for good. The spot is shared: each visit shows one ad, and your odds follow how much you burned (1% = 1 share, 2% = 2 shares). Burned tokens are destroyed, not sent to us.</p>'
+    + '<p class="mute">Burn ' + esc(C.burnPct || 1) + '% of all $CAPEZ and your project gets the ad spot on the memecapes.com home page, for good. The spot is shared: each visit shows one ad, and your odds follow how much you burned (1% = 1 share, 2% = 2 shares). Burned tokens are destroyed, not sent to us.</p>'
     + '<ol class="mute burnsteps"><li>Connect your wallet and send your ad. Signing is free: it is not a transaction.</li><li>We check the ad by hand. <b>Do not burn anything yet.</b></li><li>When it says Approved, burn the amount shown with your wallet app\'s Burn option, from the same wallet.</li><li>Paste the burn\'s transaction signature here. The blockchain is checked and your ad goes up.</li></ol>';
-  if (!API || !C.capesMint) { root.innerHTML = head + '<div class="warn">Opens when $CAPES launches. Never burn or send tokens for an ad anywhere else.</div>'; return; }
+  if (!API || !C.capesMint) { root.innerHTML = head + '<div class="warn">Opens when $CAPEZ launches. Never burn or send tokens for an ad anywhere else.</div>'; return; }
   var W = null, img = '';
   var app = function () { var w = window; return (w.phantom && w.phantom.solana) || (w.solana && w.solana.isPhantom && w.solana) || w.solflare || w.solana || null; };
   var post = function (p, b) { return fetch(API + p, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }).then(function (r) { return r.json(); }); };
@@ -39,13 +39,13 @@
   function draw() {
     if (!W) { root.innerHTML = head + '<button class="btn gold" id="bconn">Connect my wallet</button><div id="bres"></div>'; document.getElementById('bconn').onclick = connect; return; }
     post('/burnad/status', { wallet: W }).then(function (S) {
-      var h = head + '<p class="mute">Wallet <b>' + esc(W.slice(0, 4) + '...' + W.slice(-4)) + '</b>. Right now ' + (S.live ? S.live + ' ad' + (S.live > 1 ? 's share' : ' has') + ' the spot (' + S.shares + ' share' + (S.shares > 1 ? 's' : '') + ')' : 'the spot is free') + '. ' + (S.need ? esc(C.burnPct || 1) + '% of all $CAPES is <b>' + esc(S.need) + ' $CAPES</b>.' : '') + '</p>';
+      var h = head + '<p class="mute">Wallet <b>' + esc(W.slice(0, 4) + '...' + W.slice(-4)) + '</b>. Right now ' + (S.live ? S.live + ' ad' + (S.live > 1 ? 's share' : ' has') + ' the spot (' + S.shares + ' share' + (S.shares > 1 ? 's' : '') + ')' : 'the spot is free') + '. ' + (S.need ? esc(C.burnPct || 1) + '% of all $CAPEZ is <b>' + esc(S.need) + ' $CAPEZ</b>.' : '') + '</p>';
       (S.ads || []).forEach(function (a) {
         h += '<div class="card" style="margin:10px 0"><b>#' + a.id + ' ' + esc(a.brand) + '</b> <span class="pill">' + esc(a.status) + '</span><br>';
         if (a.status === 'pending') h += '<span class="mute">Waiting for us to check it. Do not burn anything yet.</span>';
         else if (a.status === 'rejected') h += '<span class="mute">Not approved: ' + esc(a.note) + ' Nothing was burned.</span>';
         else if (a.status === 'live') h += '<span class="mute">Live on the home page with ' + a.shares + ' share' + (a.shares > 1 ? 's' : '') + ' of the spot.</span>';
-        else if (a.status === 'approved') h += '<span>Approved. Now burn at least <b>' + esc(S.need) + ' $CAPES</b> from this wallet with your wallet app\'s <b>Burn</b> option (not Send). Burning is permanent and can\'t be undone or refunded.</span><label class="fld" style="margin-top:8px">Burn transaction signature<input id="bsig' + a.id + '" placeholder="e.g. 5h3k...9Qz"></label><button class="btn gold" data-burn="' + a.id + '">Check my burn</button>';
+        else if (a.status === 'approved') h += '<span>Approved. Now burn at least <b>' + esc(S.need) + ' $CAPEZ</b> from this wallet with your wallet app\'s <b>Burn</b> option (not Send). Burning is permanent and can\'t be undone or refunded.</span><label class="fld" style="margin-top:8px">Burn transaction signature<input id="bsig' + a.id + '" placeholder="e.g. 5h3k...9Qz"></label><button class="btn gold" data-burn="' + a.id + '">Check my burn</button>';
         h += '</div>';
       });
       if (!(S.ads || []).some(function (a) { return a.status === 'pending' || a.status === 'approved'; }))

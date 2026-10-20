@@ -68,7 +68,7 @@ PAGE = r"""<main class="pg" id="pg-support" hidden>
 <svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" fill="none" stroke="#ffd23f" stroke-width="2.5"/><path d="M15 20 h22 v14 h-12 l-6 5 v-5 h-4 z" fill="none" stroke="#ffd23f" stroke-width="2.5" stroke-linejoin="round"/></svg>
 <div><b style="font-size:18px;color:var(--gold)">Still stuck?</b><p class="mute"><span class="mc-contact"></span> In the game, <b>/report name reason</b> reports a player. We never message you first, and we never ask for passwords or seed phrases.</p></div>
 </div>
-<p class="sp-honest">Nothing here is financial or legal advice. Meme Coins are play money, $CAPES does not exist yet, and crypto can go to zero.</p>
+<p class="sp-honest">Nothing here is financial or legal advice. Meme Coins are play money, and crypto can go to zero.</p>
 <p style="text-align:center;margin-top:18px"><a class="btn gold" href="play.html">Play free</a> <a class="btn ghost" href="#faq">Read the FAQ</a></p></section>
 </main>
 """
@@ -78,7 +78,7 @@ var topic='',loading=false,X=[],TN={};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function stem(w){return w.replace(/'s$/,'').replace(/(ing|ers|ed|es|s)$/,function(m){return w.length-m.length>=3?'':m})}
 var STOP={'the':1,'a':1,'an':1,'i':1,'to':1,'is':1,'it':1,'in':1,'my':1,'do':1,'how':1,'what':1,'can':1,'of':1,'and':1,'on':1,'me':1,'for':1,'are':1,'does':1,'you':1,'be':1,'with':1,'there':1,'this':1,'that':1,'if':1,'or':1,'at':1,'get':1,'about':1,'why':1,'when':1,'where':1,'should':1,'any':1,'have':1,'has':1,'was':1,'will':1,'from':1,'please':1,'help':1,'know':1,'want':1,'need':1,'game':1,'memecapes':1,'capes':0};
-function toks(s){return (s.toLowerCase().replace(/\$capes/g,'capestoken').replace(/[^a-z0-9\s]/g,' ').split(/\s+/)).filter(function(w){return w&&!STOP[w]}).map(stem)}
+function toks(s){return (s.toLowerCase().replace(/\$capez/g,'capestoken').replace(/[^a-z0-9\s]/g,' ').split(/\s+/)).filter(function(w){return w&&!STOP[w]}).map(stem)}
 function fill(t,p,pl){return t.replace('{is}',pl?'are':'is').replace('{does}',pl?'do':'does').replace('{}',p)}
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
 function ways(e){var o=[];if(e.vp)D.vp.forEach(function(t){o.push(cap(fill(t,e.vp,0)))});if(e.np)D.np.forEach(function(t){o.push(cap(fill(t,e.np,e.pl)))});return o}

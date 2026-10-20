@@ -28,9 +28,9 @@ ICON = {
     'pot': f'<svg viewBox="0 0 24 24" {G}><circle cx="12" cy="12" r="8.5"/><path d="M14.5 9.2c-.6-.8-1.5-1.2-2.5-1.2-1.4 0-2.5.8-2.5 2s1.1 1.6 2.5 2 2.5.8 2.5 2-1.1 2-2.5 2c-1 0-1.9-.4-2.5-1.2M12 6.5v11"/></svg>',
     'more': f'<svg viewBox="0 0 24 24" {G}><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/><path d="M3 5h18M3 19h18"/></svg>',
 }
-NAMES = {'inv': 'Bag', 'sk': 'Skills', 'eq': 'Gear', 'qs': 'Quests', 'pot': '$CAPES', 'more': 'More'}
+NAMES = {'inv': 'Bag', 'sk': 'Skills', 'eq': 'Gear', 'qs': 'Quests', 'pot': '$CAPEZ', 'more': 'More'}
 old_tabs = ('<div id="tabs"><div data-t="inv" class="on">Bag</div><div data-t="sk">Skills</div><div data-t="eq">Gear</div>'
-            '<div data-t="qs">Quests</div><div data-t="pot">$CAPES</div><div data-t="more">More</div></div>')
+            '<div data-t="qs">Quests</div><div data-t="pot">$CAPEZ</div><div data-t="more">More</div></div>')
 new_tabs = '<div id="tabs">' + ''.join(
     f'<div data-t="{k}"{" class=\"on\"" if k == "inv" else ""} title="{NAMES[k]}">{ICON[k]}<span>{NAMES[k]}</span></div>' for k in NAMES) + '</div>'
 rep(old_tabs, new_tabs)

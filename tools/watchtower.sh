@@ -11,7 +11,7 @@ SITE=https://memecapes.com
 SERVER=https://memecapes-server.onrender.com
 FILES="index.html support/qa.json launch.html play.html config.js gate.js solpay.js shop.js burnad.js lp/app.js lp/social.js lp/chain.js lp/lpcore.js memesnake/index.html"
 # the official public wallets. Changing one here is a deliberate act and shows in the repo history.
-OFFICIAL_WALLETS="FWNJzSxfRLitohM3UdgMhQaP3nzyroTNhT73VNTThady 3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg 3UYBxD3MHBtG2bJahUw3LiFYGYMxZzERMaNM6h5YXQij FNxqFAcSVnfyLdB57yoRnwjdPesKWAtnU9dGNjNMz9Ns EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"   # fee wallet; Pit income; MemeSnake agent; USDC mint
+OFFICIAL_WALLETS="FWNJzSxfRLitohM3UdgMhQaP3nzyroTNhT73VNTThady 3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg 3UYBxD3MHBtG2bJahUw3LiFYGYMxZzERMaNM6h5YXQij FNxqFAcSVnfyLdB57yoRnwjdPesKWAtnU9dGNjNMz9Ns EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v [removed] [removed]"   # fee wallet; Pit income; MemeSnake agent; USDC mint
 PAGES_IPS="185.199.108.153 185.199.109.153 185.199.110.153 185.199.111.153"
 problems=()
 

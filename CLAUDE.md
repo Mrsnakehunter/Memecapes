@@ -90,6 +90,19 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 20 (1 pm): $CAPEZ LAUNCHED (the ticker is public now). Mint [removed] (pump.fun,
+  Token-2022 metadata name MemeCapes / CAPEZ, mint + freeze authority null), creator [removed]
+  (CreateV2 at 17:02 UTC, dev buy 47,276,160 = 4.73%; funded from 9XJN...kbRg, his first pick). Checked on-chain from the
+  pane through pit /api/rpc (getTransaction needs maxSupportedTransactionVersion 1 for pump.fun's v1 txs; WebFetch
+  refuses pump.fun/solscan URLs Albert didn't send; the shell can't reach any RPC). Ran tools/token_launch.py (--check
+  first, --logo capez_coin_logo.png): 324 site/game mentions + 22 Pit. Then fixed by hand: the site promised "at most
+  4%" (now 4.73% everywhere: supply text, bar, table, roadmap, support answer), support_page.py's footer line and 4
+  support answers still said "not yet / after the token launches", the game's exchange fallbacks (patch_holder,
+  patch_launch) said "Opens when the token launches". Wallet links on #official-wallets were dark blue: now gold.
+  Pit lib/config.ts CAPES_MINT defaults to the mint (no Vercel env needed). Telegram is now public: https://t.me/memecapes.
+  pump.fun kit: banner /tmp/claude-0/banner/banner.py (1500x500, key art s02 from index.html, can't be changed after
+  creation). Next: add the game pot wallet card when it exists; re-check the Pit's Capes page and Trade $CAPEZ links live.
+
 - Oct 20: "yes build it" (one-tap Battle payout), then "make this part of the Friday update": it lives ONLY on the
   Pit's `beat-the-boss` branch (7ad50d9, Vercel preview success), not main. lib/battle/payout.ts (payLines: prize > 0,
   never the pot wallet itself, whole lamports rounded down; buildPayoutTx: one transfer per winner + memo "snakepit
