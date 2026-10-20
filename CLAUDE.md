@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 19 (night): "raid big communities on X (streamers, launchpad users, MMO players, BONK/FLOKI), make categories and a
+  video for each, better music for each". Doc "MemeCapes X raid playbook" (Albert's Claude Doc): rules from X's platform
+  manipulation policy (real people, one account each, on-topic replies, no copypasta/mass tags/like trains), six
+  communities (traders, launchpad, streamers, MMO gamers, memecoin communities, AI agent fans), videos, how a raid runs,
+  reply lines, tracking/stop rules. Videos: ad3/vids.py (VIDEO=traders|launch|stream|mmo|memes|ai, music_<v>.json,
+  frames_<v>), new scenes: hook_scene, full_scene (square gameplay), bignum_scene, curve_scene (sniper fee), tips_scene,
+  end_card; downbeat punch. Square desktop game clips (720x720 dpr 1.5, full UI) in /tmp/claude-0/ad4/gp via gp4.py.
+  Gamers' video has no crypto; FLOKI is on other chains (never say it trades in the Pit); memecoin video ends with
+  "not affiliated with or endorsed by any meme or coin shown"; AI video waits for Friday (Beat the Boss).
+
 - Oct 19: "a new X ad video, more updated than the last one, top of the line, no big selling point left out, music
   that makes people excited". 1080x1080, ~56 s, 33 bars at 142 BPM ('Royal trap', the already-licensed track, a later
   section than ad 1): hook words PLAY/TRADE/HATCH/BATTLE on the beats, crest, game (walk/fight/chop/cape), Pit (0.4%
