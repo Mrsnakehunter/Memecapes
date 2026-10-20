@@ -102,6 +102,11 @@ numbers in here or anywhere in the repo.
   Pit lib/config.ts CAPES_MINT defaults to the mint (no Vercel env needed). Telegram is now public: https://t.me/memecapes.
   pump.fun kit: banner /tmp/claude-0/banner/banner.py (1500x500, key art s02 from index.html, can't be changed after
   creation). Next: add the game pot wallet card when it exists; re-check the Pit's Capes page and Trade $CAPEZ links live.
+  Sniped by generic pump.fun bots: 6 wallets took ~7.1% in slots +2/+3 and had all sold within ~7 min (one more bot spammed
+  ~20 failed buys). Albert considered relaunching, then kept this CA ("nevermind, get everything live"). Live check in the
+  pane: site 47 $CAPEZ / 0 $CAPES, mint 14x, creator + 4.73% shown; config.js mint + ticker; play.html 49 $CAPEZ; Pit /capes
+  on $CAPEZ; server health ok. Pit main 791aa97, beat-the-boss a982e40 (cherry-pick). The memecapes beat-the-boss branch
+  does NOT have the switch yet: merge main into it before Friday's merge.
 
 - Oct 20: "yes build it" (one-tap Battle payout), then "make this part of the Friday update": it lives ONLY on the
   Pit's `beat-the-boss` branch (7ad50d9, Vercel preview success), not main. lib/battle/payout.ts (payLines: prize > 0,
