@@ -99,6 +99,12 @@ numbers in here or anywhere in the repo.
   end_card; downbeat punch. Square desktop game clips (720x720 dpr 1.5, full UI) in /tmp/claude-0/ad4/gp via gp4.py.
   Gamers' video has no crypto; FLOKI is on other chains (never say it trades in the Pit); memecoin video ends with
   "not affiliated with or endorsed by any meme or coin shown"; AI video waits for Friday (Beat the Boss).
+  Music (Pixabay, no Content ID, downloaded with Albert's yes; staged copies in ad3/mus): traders Golden Empire Entrance
+  150 BPM, launch Swag Drop (detected 80 = half time, use 160), stream We Are Made Of Win 122, mmo Epic Trailer 118
+  (bars 60-75: climax then ring-out under the end card), memes Upbeat Funk (Kulakovka) 110, ai Carbon Shadows 111.5.
+  Hard Cyberpunk, Evasion and most cyberpunk/funk picks ARE Content ID registered: check each page's HTML first (fetch
+  from a pixabay.com tab; cdn mp3s fetch fine there as blobs -> a[download] + real clicks). beat2.py picks the loudest
+  window per video; render_all.sh renders + encodes all six to outputs/memecapes_<v>.mp4 (~25-35 s each).
 
 - Oct 19: "a new X ad video, more updated than the last one, top of the line, no big selling point left out, music
   that makes people excited". 1080x1080, ~56 s, 33 bars at 142 BPM ('Royal trap', the already-licensed track, a later
