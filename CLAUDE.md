@@ -90,6 +90,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 21 (3 pm): "option to lock 1 million tokens for free trading fees on their account" + "locked for a year minimum".
+  Pit main (capes-lock), dormant until NEXT_PUBLIC_CAPES_MINT: components/LockCard.tsx on /capes (min 1,000,000, 1/2/3
+  years, can't-be-undone confirm, your locks + Claim), lib/lock.ts = Jupiter Lock (LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn)
+  create_vesting_escrow_v2 / claim_v2 built by hand: recipient = holder, cancel 0, update 0, start = cliff = unlock,
+  freq 60, per 0, periods 1 (exactly what lock.jup.ag sends; our data is byte-identical to a real mainnet lock).
+  jup-ag/jup-lock is NOT reachable by git here: the oraichain/jup-lock fork has the same layout (different declare_id);
+  everything was checked against real LocpQ txs/accounts via pit /api/rpc. Tests /tmp/claude-0/bite/lk.ts (29, blk.mjs).
+  /api/lock?wallet= = getProgramAccounts (dataSize 296, memcmp 8 recipient, 40 mint), lock dated by the escrow's first
+  tx; counts only if cliff - created >= 365 d, not cancellable/redirectable, not open. LockWatch (layout) sets
+  jupiter.ts setVenomWaived -> venomOn() = 0 (client-side, like all venom). Open: game holder perks read the wallet
+  balance, so locked $CAPES don't count for in-game perks yet (Skin of the Month is the same 1M); say so before launch.
+
 - Oct 21 (afternoon): "the snake's curves show your account's daily/weekly/monthly/all-time growth, down if down, up if
   up". Pit main (growth-snake): components/GrowthSnake.tsx (24H/7D/30D/ALL tabs, remembered; body = account value over
   time, mint + climbing when up, red + sinking when down, dashed start line, "▲ +x% · 7D"; head = live total; plates
