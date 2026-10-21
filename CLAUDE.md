@@ -104,6 +104,13 @@ numbers in here or anywhere in the repo.
   Before merging: one real tiny test hatch (1% bite) on mainnet; the config tx is sent before the pool tx, so a pool tx
   that fails preflight leaves an orphan config (rent lost, nothing else). Default plan prices: 1% 0.29, 2% 0.59,
   5% 1.51, 10% 3.18, 20% 7.09 SOL.
+  Then (Oct 21, 3:40 am) MERGED to Pit main 0aa6fa8 and live (Albert: "make it so I can do another test run"), with:
+  Claim fix (MyHatches called .serialize() on signTx's bytes -> "u.serialize is not a function"; send the bytes as is) and
+  First Strike "other" = any amount (supplyPctForSol: inverse curve walk, matches the SDK's exact-in quote; capped at 95%
+  of the raise minus the bite so one buy can't graduate the coin; 25 SOL ≈ 48% of supply). Albert's first real Hatch
+  coin: "im a snake" $SNAKE ...5pit, 1.51% fee / 80% share / 50% sniper fee over 120 s; DexScreener listed it pre-grad
+  as meteoradbc; no buys in the first 3 blocks, four same-block buys at +90 s (one operator, ~13.8%). Vercel posts two
+  statuses per main push: wait for the SECOND (production) success before checking live.
 
 - Oct 20: a first token launch was abandoned for a relaunch. Albert: take EVERYTHING about that contract down (no address,
   no notes, nothing in this public repo). The site, game and Pit are back to the pre-launch state, so tools/token_launch.py
