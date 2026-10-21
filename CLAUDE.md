@@ -111,6 +111,12 @@ numbers in here or anywhere in the repo.
   coin: "im a snake" $SNAKE ...5pit, 1.51% fee / 80% share / 50% sniper fee over 120 s; DexScreener listed it pre-grad
   as meteoradbc; no buys in the first 3 blocks, four same-block buys at +90 s (one operator, ~13.8%). Vercel posts two
   statuses per main push: wait for the SECOND (production) success before checking live.
+  Same night: Shed got a Custom token-amount box (StrikeSheet sellText, capped at the bag, "% of your bag"), and Albert
+  hit Jupiter's free-tier 429 ("swap build failed: 429 Too many requests") selling then buying again: the browser calls
+  lite-api.jup.ag directly. lib/jupiter.ts jupFetch retries 429s (Retry-After or 0.6/1.5/3 s), getQuote shares quotes for
+  8 s (the preview quotes the exact Strike amount, gross - venomOn(gross), so the Strike reuses it), preview debounce
+  600 ms, plain "Jupiter is busy" message. Real fix if it keeps happening: a Jupiter API key (portal.jup.ag, Albert) used
+  server-side through a Pit proxy route.
 
 - Oct 20: a first token launch was abandoned for a relaunch. Albert: take EVERYTHING about that contract down (no address,
   no notes, nothing in this public repo). The site, game and Pit are back to the pre-launch state, so tools/token_launch.py
