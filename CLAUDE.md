@@ -90,6 +90,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 21 (afternoon): "the snake's curves show your account's daily/weekly/monthly/all-time growth, down if down, up if
+  up". Pit main (growth-snake): components/GrowthSnake.tsx (24H/7D/30D/ALL tabs, remembered; body = account value over
+  time, mint + climbing when up, red + sinking when down, dashed start line, "▲ +x% · 7D"; head = live total; plates
+  still = segments; also on /s/<wallet>), lib/snake.ts growthGeom (averages into ~16 slices or a 10 px body crumples;
+  flat = gentle wiggle), lib/growth.ts (server values the wallet on-chain + getPrices: nobody can post a fake curve; a
+  snap with more unpriced coins than the last is skipped for 2 h = price-feed dropout guard), POST /api/snake/value
+  (<=1 per 15 min, client throttles 10 min), GET /api/snake/history. Supabase value_snaps created from the pane (SQL
+  editor: monaco.editor.getModels()[0].setValue + Run; "destructive" warning = the drop-policy line). History only
+  starts when a wallet first opens the app (no backfill); deposits/withdrawals move the curve too.
+  Also today: Hatch price on the button + Privy confirm screens (uiOptions description/buttonText), pct() label bug
+  (/\.?0+$/ turned 50% into 5%).
+
 - Oct 21 (4 am): Albert's Snake Bite test hatch (2% fee, sniper 50%/120 s, bite 1%) went through on-chain (burn in the
   launch tx, supply 990M) but listing failed: "pool not found, or not hatched through this launchpad". Cause: the SDK
   lands an exponential sniper fee's END at or just above the target (whole reduction-factor steps): 120 steps -> 2.017%,
