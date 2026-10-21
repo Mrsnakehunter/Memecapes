@@ -90,6 +90,21 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 21: "Snake Bite" for Hatch (Albert: a % you pick gets burnt automatically; dead wallet). Built on the Pit's
+  `snake-bite` branch (NOT merged; Vercel preview success): lib/launchpad.ts snakeBiteQuote (walks the curve segments:
+  base = L*(b-a)/(a*b), quote = L*(b-a)/2^128; + normal fee, the launch tx's first swap pays the min fee; + 2% headroom;
+  matches the SDK's getQuoteFromOutputAmount to the lamport), burnIx (hand-built BurnChecked, no spl-token import),
+  buildHatchTxs adds the bite to the first buy (minimumAmountOut = burn amount) and appends the burn (pool tx 929 bytes
+  with it, limit 1232). LAUNCH.snakeBite options 0/1/2/5/10/20, max 20. launchcheck biteInLaunch() reads the burn from
+  the launch tx; TokenSheet badge "Snake Bite · X% burned" -> Solscan. A real burn, not a dead wallet (a dead wallet keeps
+  the supply and shows as a holder; Solana's keyless one is 1nc1nerator11111111111111111111111111111111). Declined an
+  automatic recurring burn (needs a server hot wallet = custody); offered a creator-signed "Burn now" instead.
+  Tests: /tmp/claude-0/bite (t.ts + pre.ts fetch stub loaded BEFORE web3; 60 checks; run build.mjs from the memecapes
+  root). Shots: /tmp/claude-0/studio build_bite.mjs + lpshim.ts (real curve prices, the studio stubs the SDK).
+  Before merging: one real tiny test hatch (1% bite) on mainnet; the config tx is sent before the pool tx, so a pool tx
+  that fails preflight leaves an orphan config (rent lost, nothing else). Default plan prices: 1% 0.29, 2% 0.59,
+  5% 1.51, 10% 3.18, 20% 7.09 SOL.
+
 - Oct 20: a first token launch was abandoned for a relaunch. Albert: take EVERYTHING about that contract down (no address,
   no notes, nothing in this public repo). The site, game and Pit are back to the pre-launch state, so tools/token_launch.py
   runs unchanged on the relaunch. Lessons: read the coin on-chain from the pane via pit /api/rpc (getTransaction needs
