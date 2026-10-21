@@ -90,6 +90,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 21 (4 am): Albert's Snake Bite test hatch (2% fee, sniper 50%/120 s, bite 1%) went through on-chain (burn in the
+  launch tx, supply 990M) but listing failed: "pool not found, or not hatched through this launchpad". Cause: the SDK
+  lands an exponential sniper fee's END at or just above the target (whole reduction-factor steps): 120 steps -> 2.017%,
+  over the 2% limit in verifyHatched. Pit main (hatch-finish): sniperPeriods() picks the step count dividing the time
+  that ends on target (288 combos exact vs the SDK), verify allows 2% rounding, failed listings keep a "Finish listing"
+  card (no tx) in place of the Hatch button, "Hatched a coin that isn't listed?" rebuilds the listing from the coin's
+  first tx (DBC init ix: accounts config 0, creator 2, mint 3, pool 5; data = 8-byte disc + borsh name/symbol/uri),
+  stored fee fields now come from the chain. Lesson: any check on fee limits must allow the SDK's step rounding.
+
 - Oct 21: "Snake Bite" for Hatch (Albert: a % you pick gets burnt automatically; dead wallet). Built on the Pit's
   `snake-bite` branch (NOT merged; Vercel preview success): lib/launchpad.ts snakeBiteQuote (walks the curve segments:
   base = L*(b-a)/(a*b), quote = L*(b-a)/2^128; + normal fee, the launch tx's first swap pays the min fee; + 2% headroom;
