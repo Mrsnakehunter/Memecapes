@@ -678,10 +678,10 @@ q('stream', 'What is the Watch page?',
   'Every trade, launch and stream as it happens: the wallets winning, the coins they are in, and the people streaming. Watching is free.',
   ['Where can I see live trades?', 'Where do I watch streams?'], np='the Watch page', k='watch live trades streams', top=True)
 q('stream', 'How do I stream on MemeCapes?',
-  'Buy a streamer pass on the Stream page (a flat monthly fee paid in SOL from your wallet at the live price), then go live from your browser (camera or screen) or from OBS with your stream key. You can attach a coin you launched so viewers can buy it under your video.',
+  'Buy a streamer pass on the Stream page (a monthly fee paid in SOL from your wallet at the live price), then go live from your browser (camera or screen) or from OBS with your stream key. You can attach a coin you launched so viewers can buy it under your video.',
   ['How do I go live?', 'Can I stream with OBS?'], vp='stream', np='streaming', k='stream go live obs pass', top=True)
 q('stream', 'What does streaming cost?',
-  'A streamer pass is a flat fee for 30 days, shown on the Stream page, paid in SOL from your wallet. That is the only charge: MemeCapes takes nothing from your tips or subscriptions.',
+  'A streamer pass is a fee for 30 days, shown on the Stream page, paid in SOL from your wallet. MemeCapes takes nothing from your tips or subscriptions: 100% goes to you. Small print: the pass covers a set amount of streaming; if your streaming uses more than that, the price may vary.',
   ['How much is the streamer pass?'], np='the streamer pass', k='streamer pass cost month')
 q('stream', 'Who gets my tips?',
   'You, all of it. Tips and subscriptions go straight from the viewer\'s wallet to the streamer\'s wallet. MemeCapes never holds them and takes no cut, which also means we cannot refund them: ask the streamer.',
