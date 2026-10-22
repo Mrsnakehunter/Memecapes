@@ -90,6 +90,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (2 am): "quote failed: 400 NO_ROUTES_FOUND when I try to sell SITELOG from my launch". Jupiter had never
+  picked up that Hatch pool (8 h after the hatch, no route either way) while $SNAKE/$FANGS routed within 30 min; no
+  difference found in their configs. Pit main c5f0c1b: lib/dbcswap.ts, getQuote falls back on NO_ROUTES_FOUND to the
+  coin's own DBC pool when /api/token/<mint> has hatched.pool (SDK swapQuote takes getPool()'s { poolState } wrapper
+  AS IS, not the inner state), buildSwapTx builds client.pool.swap + the same venom transfers + compute budget, one v0
+  tx. Tested: node bundle with recorded accounts (/tmp/claude-0/dbcs: pre.ts stub, acc.json from the pane, buildn.mjs)
+  -> simulateTransaction via pit /api/rpc (sigVerify false, replaceRecentBlockhash): sell + buy both succeed; live
+  Strike/Shed sheets quote SITELOG. Launch risk: if Jupiter doesn't index the real coin, outside wallets can't trade it.
+  Same night: launch game plan Doc + DexScreener description (Albert's docs, private); streaming left out of the
+  description until Cloudflare Stream keys are on Render.
+
 - Oct 21 (10 pm): launch plan changed (Albert): 20% creator buy on snakepit Hatch = 10% Snake Bite (burned in the launch
   tx, supply 900M) + 10% First Strike locked in Jupiter Lock, 1/24 a month over 24 months (nothing in month 1). Website
   $CAPES page (roadmap card, Planned supply text, bar 80/10/10, table rows Public 80% / Creator locked 10% / Burned 10%)
