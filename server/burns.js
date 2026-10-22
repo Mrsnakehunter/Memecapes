@@ -54,11 +54,11 @@ function ata(owner, mint, prog) {
   return '';
 }
 
-module.exports = function burns({ DATA, now }) {
+module.exports = function burns({ DATA, now, off }) {
   const cfgText = () => { try { return fs.readFileSync(path.join(__dirname, '..', 'config.js'), 'utf8'); } catch (e) { return ''; } };
   const cfg = cfgText();
   const fromCfg = (k) => { const m = new RegExp('\\b' + k + ':\\s*"([1-9A-HJ-NP-Za-km-z]{32,44})"').exec(cfg); return m ? m[1] : ''; };
-  const MINT = process.env.CAPES_MINT || fromCfg('capesMint');
+  const MINT = off ? '' : process.env.CAPES_MINT || fromCfg('capesMint');
   const RPC = process.env.SOLANA_RPC || 'https://api.mainnet-beta.solana.com';
   const SUPPLY0 = BigInt(Math.round(+(process.env.CAPES_SUPPLY0 || (/\bcapesSupply0:\s*([0-9_]+)/.exec(cfg) || [])[1]?.replace(/_/g, '') || 1e9)));
   const EVERY = +(process.env.BURNS_MS || 10 * 60e3);

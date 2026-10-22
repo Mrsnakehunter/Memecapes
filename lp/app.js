@@ -317,14 +317,14 @@
     const team = n(cfg.lockedVestingConfig.amountPerPeriod) ? { pct: (n(cfg.lockedVestingConfig.amountPerPeriod) * n(cfg.lockedVestingConfig.numberOfPeriod) + n(cfg.lockedVestingConfig.cliffUnlockAmount)) / 10 ** cfg.tokenDecimal / SUPPLY * 100, days: Math.round((n(cfg.lockedVestingConfig.cliffDurationFromMigrationTime) + n(cfg.lockedVestingConfig.frequency) * n(cfg.lockedVestingConfig.numberOfPeriod)) / 86400) } : null;
     return { baseBps, sniper, creatorShare: cs, postBps: cfg.migratedPoolFeeBps || 0, team };
   }
-  // where every trade fee goes: Meteora 20%, then the launcher's share, then MemeCapes (half of which burns $CAPES)
+  // where every trade fee goes: Meteora 20%, then the launcher's share, then MemeCapes (half of which burns $PIT)
   function feeBar(f) {
     const tot = f.baseBps / 100, met = tot * 0.2, rest = tot - met, cr = rest * f.creatorShare / 100, mc = rest - cr, burn = mc * (C.burnShare || 50) / 100;
     const w = v => (v / tot * 100).toFixed(2) + '%', lab = (v, t) => v / tot > 0.17 ? t : '';   // a label only where it fits
     return `<div class="feebar" role="img" aria-label="Where each trade fee goes"><div class="fb-c" style="width:${w(cr)}">${lab(cr, 'Launcher')}</div><div class="fb-p" style="width:${w(mc - burn)}">${lab(mc - burn, 'MemeCapes')}</div><div class="fb-b" style="width:${w(burn)}">${lab(burn, 'Burn')}</div><div class="fb-m" style="width:${w(met)}">${lab(met, 'Meteora')}</div></div>
       <div class="legend num"><i style="background:var(--gold)"></i><span>The launcher</span><b>${tot ? (cr).toFixed(3) : 0}%</b>
       <i style="background:#7C8590"></i><span>MemeCapes</span><b>${(mc - burn).toFixed(3)}%</b>
-      <i class="fb-b"></i><span>Buys $CAPES and burns it</span><b>${burn.toFixed(3)}%</b>
+      <i class="fb-b"></i><span>Buys $PIT and burns it</span><b>${burn.toFixed(3)}%</b>
       <i style="background:#4A535C"></i><span>Meteora (runs the pool program)</span><b>${met.toFixed(3)}%</b>
       <span></span><span><b>Total fee on each trade</b></span><b>${tot.toFixed(2)}%</b></div>`;
   }
@@ -489,7 +489,7 @@
       <fieldset><legend>Fees</legend>
         <div class="presets">${Object.entries(PRESETS).map(([k, p]) => `<button type="button" class="preset${F.preset === k ? ' on' : ''}" data-p="${k}"><b>${p.t}</b><span>${p.d}</span></button>`).join('')}</div>
         <div class="field"><label for="fee">Trading fee on every buy and sell</label><div class="range"><input type="range" id="fee" min="${(C.feeBps || {}).min || 25}" max="${(C.feeBps || {}).max || 200}" step="5" value="${F.feeBps}"><output id="feeo"></output></div><div class="hint">Higher earns you more per trade; lower is friendlier to traders.</div></div>
-        <div class="field"><label for="sh">Your share of the fee, after Meteora's 20%</label><div class="range"><input type="range" id="sh" min="${(C.creatorShare || {}).min || 50}" max="${(C.creatorShare || {}).max || 80}" step="1" value="${F.share}"><output id="sho"></output></div><div class="hint">The rest goes to MemeCapes, and half of that buys $CAPES and burns it.</div></div>
+        <div class="field"><label for="sh">Your share of the fee, after Meteora's 20%</label><div class="range"><input type="range" id="sh" min="${(C.creatorShare || {}).min || 50}" max="${(C.creatorShare || {}).max || 80}" step="1" value="${F.share}"><output id="sho"></output></div><div class="hint">The rest goes to MemeCapes, and half of that buys $PIT and burns it.</div></div>
         <div class="field"><label for="sn">Sniper fee at the start</label><div class="range"><input type="range" id="sn" min="0" max="${(C.sniperFee || {}).maxBps || 5000}" step="250" value="${F.sniperBps}"><output id="sno"></output></div>
           <div class="range" style="margin-top:6px"><input type="range" id="ss" min="10" max="${(C.sniperFee || {}).maxSeconds || 600}" step="10" value="${F.sniperSec}" aria-label="How long the sniper fee lasts"><output id="sso"></output></div>
           <div class="hint">Bots that buy in the first seconds pay this fee, and it falls smoothly to your normal fee. Your own first buy pays the normal fee.</div><svg id="decay" viewBox="0 0 300 74" style="width:100%;height:auto;max-height:110px;margin-top:6px" aria-hidden="true"></svg></div>
@@ -626,7 +626,7 @@
       <h1>How the launchpad works</h1>
       <h2>Launching</h2><p>You pick a name, ticker and picture, then your fees. Your wallet approves two transactions: one stores your coin's rules on Solana, the other creates the coin and, if you want, makes your first buy in the same moment, so nobody can buy before you. There are always exactly 1,000,000,000 coins and nobody can make more.</p>
       <h2>The bonding curve</h2><p>Every coin starts on a bonding curve: the price rises as people buy and falls as they sell, and there is always someone to trade with. When enough SOL is raised, the coin graduates to a Meteora pool. All of its liquidity is locked there forever. Nobody, not you and not MemeCapes, can pull it.</p>
-      <h2>Fees</h2><p>Each trade pays the fee you chose. Meteora, who wrote and runs the pool program, takes 20% of it. Of the rest, you choose how much you keep (${(C.creatorShare || {}).min || 50} to ${(C.creatorShare || {}).max || 80}%). MemeCapes keeps the remainder, and half of what MemeCapes earns buys $CAPES and burns it. Every burn is posted. After graduation you keep earning your share of the pool's fees from the locked liquidity.</p>
+      <h2>Fees</h2><p>Each trade pays the fee you chose. Meteora, who wrote and runs the pool program, takes 20% of it. Of the rest, you choose how much you keep (${(C.creatorShare || {}).min || 50} to ${(C.creatorShare || {}).max || 80}%). MemeCapes keeps the remainder, and half of what MemeCapes earns buys $PIT and burns it. Every burn is posted. After graduation you keep earning your share of the pool's fees from the locked liquidity.</p>
       <h2>Snipers</h2><p>Bots love to buy a new coin in its first second. Here, the first seconds or minutes cost them a high fee that falls smoothly to your normal fee. Those fees are shared the same way, so snipers pay you.</p>
       <h2>Splitting your fees</h2><p>Add up to 10 wallets and a share for each. When you claim, the same transaction pays each of them. Your split is shown on your coin's page so buyers can see it.</p>
       <h2>Team tokens</h2><p>If you set some of the supply aside for a team, it is locked on-chain and unlocks bit by bit after graduation. Buyers can check it, so they know you can't dump it on them.</p>
@@ -641,9 +641,9 @@
     app.innerHTML = '<h1 style="margin-top:22px">MemeCapes fee desk</h1><div id="dk" class="panel">Loading…</div>';
     let coins = await liveMany((await api('/lp/coins?limit=200')).coins);
     const owed = coins.filter(c => c.live && c.live.partnerFee > 0), tot = owed.reduce((a, c) => a + c.live.partnerFee, 0);
-    $('#dk').innerHTML = `<p>Ready to claim from ${owed.length} coins: <b class="num">${sol(tot)}</b>. Of that, ${C.burnShare || 50}% (${sol(tot * (C.burnShare || 50) / 100)}) is for buying and burning $CAPES.</p>
+    $('#dk').innerHTML = `<p>Ready to claim from ${owed.length} coins: <b class="num">${sol(tot)}</b>. Of that, ${C.burnShare || 50}% (${sol(tot * (C.burnShare || 50) / 100)}) is for buying and burning $PIT.</p>
       <button class="btn gold" id="cl" type="button" ${owed.length ? '' : 'disabled'}>Claim all</button><div class="err" id="derr"></div>
-      <p class="small mute" style="margin-top:12px">After claiming: buy $CAPES with the burn share and burn it from this wallet, then post the burn transaction.</p>`;
+      <p class="small mute" style="margin-top:12px">After claiming: buy $PIT with the burn share and burn it from this wallet, then post the burn transaction.</p>`;
     $('#cl').onclick = async () => {
       const b = $('#cl'); b.disabled = true;
       try {

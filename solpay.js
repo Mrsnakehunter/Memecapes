@@ -1,4 +1,4 @@
-/* Read-only Solana helpers for the shop and the $CAPES deposit.
+/* Read-only Solana helpers for the shop and the $PIT deposit.
    This file never creates, signs or sends a transaction and never touches a wallet.
    It only asks a public Solana node "did this transaction happen, and what did it move?" */
 window.MCPAY = (function () {
@@ -15,7 +15,7 @@ window.MCPAY = (function () {
       .then(function (r) { return r.json(); }).then(function (j) { return (j.solana && j.solana.usd) || C().solUsdFallback || 150; })
       .catch(function () { return C().solUsdFallback || 150; });
   }
-  /* Did transaction `sig` pay at least `min` to `to`?  mint = null for SOL, or a token mint (USDC, $CAPES).
+  /* Did transaction `sig` pay at least `min` to `to`?  mint = null for SOL, or a token mint (USDC, $PIT).
      Resolves {ok, amount, from, when, err}. */
   function verify(o) {
     var sig = String(o.sig || '').trim();

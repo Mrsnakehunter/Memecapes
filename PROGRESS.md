@@ -2,6 +2,10 @@
 
 _Last updated: October 22, 2026_
 
+## Oct 22, 2026: $PIT is live
+
+The token is out, launched from the snakepit account through Hatch. Contract address: [removed] (also on the $PIT page with a Solscan link; anything else using the name is fake). In the launch transaction the creator bought 18.45% of the supply: 10% was burned on the spot (the supply is 900,000,000) and 8.45% went straight into a Jupiter Lock that opens 1/24 a month over 24 months, nothing in the first month. The website, the game, the server and snakepit now say $PIT everywhere; the burn log on the $PIT page reads the chain from the launch's first block.
+
 ## Oct 22, 2026: withdrawals, with a 30-day wait
 
 The bank's demo exchange is gone. In its place: Withdraw to your wallet. Turn banked Meme Coins into real $CAPES (100 Meme Coins = 1 $CAPES to start), paid to the wallet linked to your account from the public pot wallet. Every withdrawal waits 30 days, and you can cancel it for your coins back until then. At most 100 $CAPES a day per player, and the game never accepts more withdrawals than the pot wallet holds, so every request is covered. Payouts are real transactions, signed by the pot wallet's owner and shown in your list with a link; nothing is paid by a bot and no server holds a key. It switches on with the token.

@@ -1,14 +1,14 @@
 'use strict';
-// Withdrawals: Meme Coins out of the game as real $CAPES, with a waiting period.
+// Withdrawals: Meme Coins out of the game as real $PIT, with a waiting period.
 //
-// A signed-in player asks at any bank to withdraw N $CAPES (whole tokens). The Meme Coins (N x rate) leave their
+// A signed-in player asks at any bank to withdraw N $PIT (whole tokens). The Meme Coins (N x rate) leave their
 // bank at once, and the request waits WITHDRAW_DAYS (30) days. During the wait the player can cancel and gets the
 // coins back, and a moderator can hold or refuse a request (refused = coins back). When the wait is over the
 // request is "ready" and is paid from the public pot wallet to the wallet linked to the account (proven by a
 // signature, holder perks). The owner of the pot wallet signs the payouts himself: this server holds no keys and
 // sends nothing. A payout is recorded only after the server has read it on-chain (`/withdraw paid <id> <tx>`).
 //
-// Limits: at most WITHDRAW_DAY_MAX $CAPES per account in any 24 hours, at least WITHDRAW_MIN, and never more in
+// Limits: at most WITHDRAW_DAY_MAX $PIT per account in any 24 hours, at least WITHDRAW_MIN, and never more in
 // total waiting than the pot wallet holds right now (read from Solana), so every request is covered.
 // Settings: WITHDRAW_DAYS, WITHDRAW_DAY_MAX, WITHDRAW_MIN, POT_WALLET (else config.js potWallet), withdrawalsOpen
 // and capesToMemeCoins in config.js. Off (with the reason) while the token, the pot wallet or the switch is missing.
@@ -42,7 +42,7 @@ module.exports = function withdraw({ db, now, say, loadSave, setSave, walOf, rpc
     stats: db.prepare("SELECT status, COUNT(*) n, COALESCE(SUM(capes),0) capes FROM withdrawals GROUP BY status"),
   };
 
-  // the pot wallet's $CAPES (whole tokens), read from Solana, cached 5 minutes
+  // the pot wallet's $PIT (whole tokens), read from Solana, cached 5 minutes
   let pot = { t: 0, v: null };
   async function potNow(fresh) {
     if (!fresh && pot.v != null && now() - pot.t < 5 * 60e3) return pot.v;
@@ -72,22 +72,22 @@ module.exports = function withdraw({ db, now, say, loadSave, setSave, walOf, rpc
       try {
         const off = why(); if (off) return say(c, off, '#a60');
         const n = Math.floor(+m.capes);
-        if (!(n >= MIN)) return say(c, 'Withdraw at least ' + MIN + ' $CAPES.', '#c00');
+        if (!(n >= MIN)) return say(c, 'Withdraw at least ' + MIN + ' $PIT.', '#c00');
         const w = walOf(c.uid); if (!w) return say(c, 'Link your wallet first (Holder perks, just above). Withdrawals are paid to that wallet.', '#c00');
         const used = Q.day.get(c.uid, now() - DAY).n;
-        if (used + n > DAY_MAX) return say(c, 'You can withdraw ' + DAY_MAX + ' $CAPES in any 24 hours. ' + Math.max(0, DAY_MAX - used) + ' left right now.', '#c00');
+        if (used + n > DAY_MAX) return say(c, 'You can withdraw ' + DAY_MAX + ' $PIT in any 24 hours. ' + Math.max(0, DAY_MAX - used) + ' left right now.', '#c00');
         let room; try { room = (await potNow(true)) - Q.owed.get().n; } catch (e) { return say(c, 'Could not read the pot wallet right now. Nothing changed. Try again in a minute.', '#c00'); }
-        if (n > room) return say(c, room > 0 ? 'The pot can cover ' + room + ' more $CAPES right now. Try a smaller amount.' : 'The pot is fully booked right now. Nothing changed. Try again later.', '#c00');
+        if (n > room) return say(c, room > 0 ? 'The pot can cover ' + room + ' more $PIT right now. Try a smaller amount.' : 'The pot is fully booked right now. Nothing changed. Try again later.', '#c00');
         const { u, st } = loadSave(c.uid); if (!st) return say(c, 'Your progress has not reached the server yet. Try again in a few seconds.', '#c00');
         const coins = n * RATE, bank = Math.floor(+st.bank || 0);
-        if (bank < coins) return say(c, 'You need ' + coins.toLocaleString() + ' Meme Coins in your bank for ' + n + ' $CAPES.', '#c00');
+        if (bank < coins) return say(c, 'You need ' + coins.toLocaleString() + ' Meme Coins in your bank for ' + n + ' $PIT.', '#c00');
         st.bank = bank - coins;
         let id;
         db.exec('BEGIN');
         try { setSave(JSON.stringify(st), u.rev + 1, now(), u.id); id = Q.add.run(c.uid, w.wallet, coins, n, now(), now() + DAYS * DAY).lastInsertRowid; db.exec('COMMIT'); }
         catch (e) { db.exec('ROLLBACK'); return say(c, 'That did not work. Nothing changed.', '#c00'); }
         c.send({ t: 'wdBank', delta: -coins, rev: u.rev + 1 });
-        say(c, 'Withdrawal #' + id + ': ' + n + ' $CAPES to ' + w.wallet.slice(0, 4) + '...' + w.wallet.slice(-4) + ', paid from the pot wallet after ' + DAYS + ' days. You can cancel until then.', '#0a0');
+        say(c, 'Withdrawal #' + id + ': ' + n + ' $PIT to ' + w.wallet.slice(0, 4) + '...' + w.wallet.slice(-4) + ', paid from the pot wallet after ' + DAYS + ' days. You can cancel until then.', '#0a0');
         c.send(await info(c.uid));
       } finally { busy.delete(c.uid); }
     },
@@ -110,13 +110,13 @@ module.exports = function withdraw({ db, now, say, loadSave, setSave, walOf, rpc
     },
   };
 
-  // a payout counts only when the transaction on Solana moved at least that many $CAPES into the player's wallet
+  // a payout counts only when the transaction on Solana moved at least that many $PIT into the player's wallet
   async function checkPaid(r, sig) {
     const tx = await rpc('getTransaction', [sig, { encoding: 'jsonParsed', maxSupportedTransactionVersion: 0, commitment: 'confirmed' }]);
     if (!tx || tx.meta?.err) return 'That transaction was not found on Solana, or it failed.';
     const bal = (L) => (L || []).filter(b => b.mint === CAPES_MINT && b.owner === r.wallet).reduce((a, b) => a + (+b.uiTokenAmount.uiAmount || 0), 0);
     const got = bal(tx.meta.postTokenBalances) - bal(tx.meta.preTokenBalances);
-    if (got + 1e-9 < r.capes) return 'That transaction gave ' + r.wallet.slice(0, 4) + '... ' + got + ' $CAPES, not ' + r.capes + '.';
+    if (got + 1e-9 < r.capes) return 'That transaction gave ' + r.wallet.slice(0, 4) + '... ' + got + ' $PIT, not ' + r.capes + '.';
     const keys = (tx.transaction?.message?.accountKeys || []).filter(k => k.signer).map(k => k.pubkey);
     if (POT && !keys.includes(POT)) return 'That transaction was not signed by the pot wallet.';
     return '';
@@ -135,7 +135,7 @@ module.exports = function withdraw({ db, now, say, loadSave, setSave, walOf, rpc
     };
     if (sub === 'list' || !sub) {
       const L = Q.list.all(); if (!L.length) return say(c, 'No withdrawals waiting.');
-      return say(c, L.slice(0, 25).map(x => '#' + x.id + ' ' + x.name + ' ' + x.capes + ' $CAPES ' + (x.status === 'held' ? 'HELD' : x.due <= now() ? 'READY' : 'in ' + Math.ceil((x.due - now()) / DAY) + 'd') + (flagCount(x.uid) ? ' (' + flagCount(x.uid) + ' flags)' : '')).join(' | '));
+      return say(c, L.slice(0, 25).map(x => '#' + x.id + ' ' + x.name + ' ' + x.capes + ' $PIT ' + (x.status === 'held' ? 'HELD' : x.due <= now() ? 'READY' : 'in ' + Math.ceil((x.due - now()) / DAY) + 'd') + (flagCount(x.uid) ? ' (' + flagCount(x.uid) + ' flags)' : '')).join(' | '));
     }
     if (!r) return say(c, 'No withdrawal #' + a + '.', '#c00');
     if (sub === 'hold') { if (r.status !== 'waiting') return say(c, 'Only a waiting one can be held.', '#c00'); Q.set.run('held', note || 'under review', r.id); return say(c, '#' + r.id + ' held.'); }
@@ -149,7 +149,7 @@ module.exports = function withdraw({ db, now, say, loadSave, setSave, walOf, rpc
       let bad; try { bad = await checkPaid(r, sig); } catch (e) { bad = 'Could not read Solana right now. Try again.'; }
       if (bad) return say(c, bad, '#c00');
       Q.paid.run(sig, now(), r.id);
-      const o = online.get(r.uid); if (o) say(o, 'Withdrawal #' + r.id + ' is paid: ' + r.capes + ' $CAPES are in your wallet.', '#0a0');
+      const o = online.get(r.uid); if (o) say(o, 'Withdrawal #' + r.id + ' is paid: ' + r.capes + ' $PIT are in your wallet.', '#0a0');
       return say(c, '#' + r.id + ' recorded as paid.');
     }
     return say(c, 'Usage: /withdraw list | hold <id> <why> | release <id> | refuse <id> <why> | paid <id> <tx>', '#c00');

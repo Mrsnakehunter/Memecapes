@@ -19,7 +19,7 @@ services:
         generateValue: true
       - key: ADMIN_NAMES
         sync: false
-      - key: CAPES_MINT          # the $CAPES mint address once the token exists; empty = holder perks off
+      - key: CAPES_MINT          # the $PIT mint address once the token exists; empty = holder perks off
         sync: false
       - key: HOLDER_PCT
         value: "1"
