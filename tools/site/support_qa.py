@@ -640,7 +640,7 @@ q('shop', 'Is there a partner ad for holders?',
 
 # ---------------------------------------------------------------- launchpad
 q('launch', 'What is the launchpad?',
-  'Anyone can launch a Solana coin from memecapes.com. You choose the trading fee and how much of it you keep, bots that buy in the first seconds pay a sniper fee, you can split your share with up to 10 wallets, and the coin\'s liquidity is locked for good when it graduates. Your wallet signs everything; MemeCapes never holds your keys or your money.',
+  'Anyone can launch a Solana coin in snakepit (Hatch), the trading app next to the game. You choose the trading fee and how much of it you keep, bots that buy in the first seconds pay a sniper fee, you can split your share with up to 10 wallets, and the coin\'s liquidity is locked for good when it graduates. Your wallet signs everything; MemeCapes never holds your keys or your money.',
   ['How do I launch a coin?', 'Can I create a token on MemeCapes?'], np='the launchpad', k='launchpad launch coin token create', top=True)
 q('launch', 'What does it cost to launch a coin?',
   'The network fees of creating the coin on Solana, paid from your wallet, plus the trading fee you choose for your coin. The Launch page shows every fee before you sign.',

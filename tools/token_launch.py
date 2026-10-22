@@ -126,6 +126,12 @@ def main():
     s, n3 = re.subn(r'capesCreator:\s*""', 'capesCreator: "%s"' % a.creator, s)
     if n1 != 1 or n2 != 1 or n3 != 1: sys.exit('config.js: capesMint, capesCreator or ticker line not found (or mint already set)')
     open(p, 'w').write(s)
+    # 2b) README: the contract address in the token section (repo scanners compare it with the chain)
+    p = os.path.join(mc, 'README.md'); s = open(p).read()
+    old = "The project's token, its official contract address and every official wallet are listed on the token page of\n[memecapes.com](https://memecapes.com)."
+    if s.count(old) != 1: sys.exit('README.md: token paragraph not found')
+    s = s.replace(old, "The project's token is $%s on Solana. Official contract address: [`%s`](https://solscan.io/token/%s), launched by the\ncreator wallet [`%s`](https://solscan.io/account/%s). Every official wallet is listed on the token page of\n[memecapes.com](https://memecapes.com), and every burn is in its burn log." % (t, a.mint, a.mint, a.creator, a.creator))
+    open(p, 'w').write(s)
     # 3) Watchtower's official list
     p = os.path.join(mc, 'tools/watchtower.sh'); s = open(p).read()
     s, n = re.subn(r'OFFICIAL_WALLETS="([^"]*)"', lambda m: 'OFFICIAL_WALLETS="%s %s %s"' % (m.group(1), a.creator, a.mint), s, count=1)
