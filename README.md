@@ -33,6 +33,7 @@ has no npm dependencies.
 | Watch (live trades on coins hatched in snakepit) | Live |
 | Launchpad | Live in snakepit (Hatch); the launch links on this site open it |
 | Burn log: every $CAPES burn read from Solana, with its transaction (`server/burns.js`, `burnlog.js`) | Live from the token's first block (reads the chain once the token address is set) |
+| Withdrawals: Meme Coins out as $CAPES, 30-day wait, paid from the public pot wallet (`server/withdraw.js`, `tools/patch_withdraw.py`) | Live from the token's first block (needs the token address and the pot wallet) |
 | Holder perks, cosmetic only (`server/test_holder.js`) | Live from the token's first block (reads wallets once the token address is set) |
 
 The game world has computer-controlled adventurers that look like players, to keep quiet areas alive. They are never
@@ -64,6 +65,7 @@ node test_plink.js        # linking a game account with snakepit
 node test_memesnake.js    # the MemeSnake live feed
 node test_crews.js        # MemeSnake's automated crews
 node test_burns.js        # the public burn log against a fake blockchain
+node test_withdraw.js     # withdrawals: wait, caps, cancel, payouts read from the chain
 ```
 
 ## Building the game

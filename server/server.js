@@ -758,6 +758,7 @@ function adminCmd(c, raw) {
     case 'kick': if (!o) break; o.send({ t: 'kicked', text: 'A moderator removed you from the game.' }); o.close(); return say(c, name + ' kicked.');
     case 'rollback': if (!u) break; Q.rollback.run(u.id); if (o) { o.send({ t: 'kicked', text: 'Your progress was restored by a moderator. Log in again.' }); o.close(); } return say(c, name + ' rolled back one save.');
     case 'partner': return partnerCmd(c, name, arg, rest);
+    case 'withdraw': return WD.cmd(c, name, rest, online);
     case 'burnad': return burnadCmd(c, name, arg, rest);
     case 'lp': return LP.cmd(c, name, arg);
     case 'watch': return LP.social.cmd(c, name, rest.split(' ').slice(1).join(' ').trim());
@@ -806,7 +807,12 @@ G.setTellAdmins(text => { for (const o of online.values()) if (o.role === 'admin
 const MS = require('./memesnake')({ DATA });
 require('./crews')({ MS, online, G, now });   // MemeSnake's crews on autopilot: free checks that report to its page (CREWS=0 = off)
 const PIT = require('./snakepit')({ tooMany });   // SnakePit: a player's snake + the Pit's public numbers, cached
-const BURNS = require('./burns')({ DATA, now });   // the public burn log: every burn of the coin, read from Solana
+const BURNS = require('./burns')({ DATA, now });
+// withdrawals: Meme Coins out as real $CAPES after a 30-day wait, paid from the public pot wallet (server/withdraw.js)
+const flagsN = db.prepare('SELECT COUNT(*) n FROM flags WHERE uid=? AND t>?');
+const WD = require('./withdraw')({ db, now, say, loadSave, setSave: (...a) => Q.setSave.run(...a), walOf: (uid) => Q.wal.get(uid), rpc, CAPES_MINT,
+  flagCount: (uid) => flagsN.get(uid, now() - 30 * 864e5).n });
+Object.assign(H, WD.H);   // the public burn log: every burn of the coin, read from Solana
 
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------
 const server = http.createServer(async (req, res) => {
@@ -816,6 +822,7 @@ const server = http.createServer(async (req, res) => {
   const json = (o, s) => { res.writeHead(s || 200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }); res.end(JSON.stringify(o, null, 1)); };
   if (url.pathname.startsWith('/lp/') || url.pathname.startsWith('/so/') || url.pathname.startsWith('/st/')) { try { if (await LP.http(req, res, url, json) !== false) return; } catch (e) { console.error('lp', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname.startsWith('/pit/')) { try { if (await PIT.http(req, res, url, json, req.ip) !== false) return; } catch (e) { console.error('pit', e); return json({ error: 'Server error.' }, 500); } }
+  if (url.pathname === '/withdrawals') { try { if (await WD.http(req, res, url, json) !== false) return; } catch (e) { console.error('wd', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/burns') { try { if (await BURNS.http(req, res, url, json) !== false) return; } catch (e) { console.error('burns', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/ms/feed') { try { if (await MS.http(req, res, url, json) !== false) return; } catch (e) { console.error('ms', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/plink' || url.pathname === '/plink/msg') { try { if (await plinkHttp(req, res, url, json) !== false) return; } catch (e) { console.error('plink', e); return json({ error: 'Server error.' }, 500); } }

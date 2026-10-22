@@ -2,6 +2,10 @@
 
 _Last updated: October 22, 2026_
 
+## Oct 22, 2026: withdrawals, with a 30-day wait
+
+The bank's demo exchange is gone. In its place: Withdraw to your wallet. Turn banked Meme Coins into real $CAPES (100 Meme Coins = 1 $CAPES to start), paid to the wallet linked to your account from the public pot wallet. Every withdrawal waits 30 days, and you can cancel it for your coins back until then. At most 100 $CAPES a day per player, and the game never accepts more withdrawals than the pot wallet holds, so every request is covered. Payouts are real transactions, signed by the pot wallet's owner and shown in your list with a link; nothing is paid by a bot and no server holds a key. It switches on with the token.
+
 ## Oct 22, 2026: burns you can check
 
 The $CAPES page has a public burn log. It reads the blockchain directly: the total burned is the starting supply minus the supply Solana reports now (so it counts every burn by anyone), and each burn signed by an official wallet is listed with its transaction on Solscan. The first line will be the Snake Bite, the 10% burned inside the launch transaction itself. The fee wallet's buy-and-burns are signed by its owner (no server holds a key to it) and appear there as they happen. The page now says plainly which burns happen today and which are still planned.
