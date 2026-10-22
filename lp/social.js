@@ -219,7 +219,8 @@
     ['#s1', '#s1b'].forEach(s => { if ($(s)) $(s).onclick = s1; });
     ['#s2', '#s2b'].forEach(s => { if ($(s)) $(s).onclick = () => channelForm(null); });
     if ($('#s3')) $('#s3').onclick = () => { goLivePanel(me); $('#sbody').scrollIntoView({ behavior: 'smooth' }); };
-    if ($('#golink')) $('#golink').onclick = () => goLivePanel(me);
+    if ($('#golink')) $('#golink').onclick = (e) => { e.preventDefault(); goLivePanel(me); const b = $('#sbody'); if (b) b.scrollIntoView({ behavior: 'smooth' }); };
+    $$('a[href="#sbody"]').forEach(a => { if (a.id !== 'golink') a.onclick = (e) => { e.preventDefault(); const b = $('#sbody'); if (b) b.scrollIntoView({ behavior: 'smooth' }); }; });
     if (step2) {
       const c = me.channel;
       $('#sbody').innerHTML = `<div class="panel chpanel"><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">${avatar(m.address, 'lg')}<div><h3 style="margin:0">${esc(c.name)} ${c.live ? '<span class="badge live">LIVE</span>' : ''}</h3><div class="mute small">${esc(c.category)} · ${c.subSol} SOL a month to subscribe · <a href="#/ch/${esc(m.address)}">your channel page</a></div></div><span class="sp"></span><button class="btn quiet sm" id="edit" type="button">Edit channel</button>${c.live ? '<button class="btn quiet sm" id="end" type="button">End stream</button>' : ''}</div>
