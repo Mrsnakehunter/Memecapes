@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS so_pass_pay(sig TEXT PRIMARY KEY, wallet TEXT, sol RE
 
   async function cfCreate(name) {
     const r = await fetch(`https://api.cloudflare.com/client/v4/accounts/${CF.acct}/stream/live_inputs`, { method: 'POST', headers: { Authorization: 'Bearer ' + CF.token, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ meta: { name }, recording: { mode: 'automatic', timeoutSeconds: 30 }, deleteRecordingAfterDays: 7 }), signal: AbortSignal.timeout(15000) });
+      body: JSON.stringify({ meta: { name }, recording: { mode: 'automatic', timeoutSeconds: 30 }, deleteRecordingAfterDays: 30 }), signal: AbortSignal.timeout(15000) });
     const j = await r.json(); if (!j.success) throw new Error((j.errors && j.errors[0] && j.errors[0].message) || 'Cloudflare said no');
     return j.result;
   }
