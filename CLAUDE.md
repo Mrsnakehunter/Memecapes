@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 21 (10 pm): launch plan changed (Albert): 20% creator buy on snakepit Hatch = 10% Snake Bite (burned in the launch
+  tx, supply 900M) + 10% First Strike locked in Jupiter Lock, 1/24 a month over 24 months (nothing in month 1). Website
+  $CAPES page (roadmap card, Planned supply text, bar 80/10/10, table rows Public 80% / Creator locked 10% / Burned 10%)
+  + support answer updated, replacing "at most 4%". Pit main (strike-lock): Hatch "Lock your First Strike" (6/12/24
+  months, a 3rd approval right after the listing; "Lock it now" retry), 2/5/10% supply buttons for the First Strike,
+  coin sheet "🔒 Creator lock · X% locked" (hatcher's non-cancellable escrows of the mint, gPA memcmp 40 mint + 72
+  creator). lib/lock.ts buildVestTx: start now, cliff +30 d, freq 30 d, cliff = amount - per*(N-1), per = amount/N,
+  periods N-1 (tests vk.ts 10). Cost at SOL $106: 20% ≈ 6.95 SOL. DexScreener shows burned supply by itself; for the
+  lock, list the escrow address in the Enhanced Token Info form's locked-supply field (and lock.jup.ag shows it).
+
 - Oct 21 (8 pm): brand kit for the relaunch ticker (private: in the chat, NOT here): "MemeCapes logo with snakepit,
   new ticker, for Telegram, X, the launch, and a DexScreener header, video + picture". /tmp/claude-0/pit: coin.py (the
   cape coin scaled 0.9 on a 1500 canvas, a rendered snake on the rim: KD-tree tube shading, staggered scales, dorsal

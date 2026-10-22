@@ -545,7 +545,7 @@ q('coins', 'Is there staking or revenue share?',
   'No staking yield and no revenue share. The launchpad\'s creator fees go to the creator, not to holders. The token is a cape you can trade, not a security.',
   ['Do holders get a cut of revenue?', 'Can I stake $CAPES?'], np='staking', k='staking yield revenue share')
 q('coins', 'How is $CAPES distributed?',
-  'On a public bonding curve, with nothing allocated in advance. The creator buys at most 4% in the same transaction that creates the coin and keeps it in a public wallet; the player pot is funded over time in a public ecosystem wallet with every addition posted; marketing and payments wallets hold no tokens. The $CAPES page has the table.',
+  'On a public bonding curve, with nothing allocated in advance. In the transaction that creates the coin the creator buys 20%: half is burned on the spot (the supply drops to 900 million) and half goes into Jupiter Lock right after, opening 1/24 a month for 24 months, with no way to cancel it; the player pot is funded over time in a public ecosystem wallet with every addition posted; marketing and payments wallets hold no tokens. The $CAPES page has the table.',
   ['What is the tokenomics?', 'Is there a presale?', 'How much does the team hold?'], np='the tokenomics', k='tokenomics supply allocation presale team')
 q('coins', 'What burns $CAPES?',
   'Play, not promises: limited cosmetics bought with $CAPES (60% burned), a small tax on player trades once they open, sponsored monsters (half burned), and the launchpad (half of what MemeCapes earns buys $CAPES and burns it). Burns are posted on-chain.',
