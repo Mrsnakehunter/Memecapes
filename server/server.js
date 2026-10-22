@@ -806,6 +806,7 @@ G.setTellAdmins(text => { for (const o of online.values()) if (o.role === 'admin
 const MS = require('./memesnake')({ DATA });
 require('./crews')({ MS, online, G, now });   // MemeSnake's crews on autopilot: free checks that report to its page (CREWS=0 = off)
 const PIT = require('./snakepit')({ tooMany });   // SnakePit: a player's snake + the Pit's public numbers, cached
+const BURNS = require('./burns')({ DATA, now });   // the public burn log: every burn of the coin, read from Solana
 
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------
 const server = http.createServer(async (req, res) => {
@@ -815,6 +816,7 @@ const server = http.createServer(async (req, res) => {
   const json = (o, s) => { res.writeHead(s || 200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }); res.end(JSON.stringify(o, null, 1)); };
   if (url.pathname.startsWith('/lp/') || url.pathname.startsWith('/so/') || url.pathname.startsWith('/st/')) { try { if (await LP.http(req, res, url, json) !== false) return; } catch (e) { console.error('lp', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname.startsWith('/pit/')) { try { if (await PIT.http(req, res, url, json, req.ip) !== false) return; } catch (e) { console.error('pit', e); return json({ error: 'Server error.' }, 500); } }
+  if (url.pathname === '/burns') { try { if (await BURNS.http(req, res, url, json) !== false) return; } catch (e) { console.error('burns', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/ms/feed') { try { if (await MS.http(req, res, url, json) !== false) return; } catch (e) { console.error('ms', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/plink' || url.pathname === '/plink/msg') { try { if (await plinkHttp(req, res, url, json) !== false) return; } catch (e) { console.error('plink', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname.startsWith('/burnad')) { try { if (await baHttp(req, res, url, json) !== false) return; } catch (e) { console.error('burnad', e); return json({ error: 'Server error.' }, 500); } }

@@ -119,11 +119,12 @@ def main():
                        '<img src="data:image/webp;base64,%s" alt="$CAPES logo"' % base64.b64encode(buf.getvalue()).decode(), s)
         if n != 1: sys.exit('index.html: logo picture not found')
     open(p, 'w').write(s)
-    # 2) config.js: mint + ticker
+    # 2) config.js: mint + ticker + creator (the burn log reads the creator's Snake Bite)
     p = os.path.join(mc, 'config.js'); s = open(p).read()
     s, n1 = re.subn(r'capesMint:\s*""', 'capesMint: "%s"' % a.mint, s)
     s, n2 = re.subn(r'ticker:\s*"[A-Z0-9]*"', 'ticker: "%s"' % t, s)
-    if n1 != 1 or n2 != 1: sys.exit('config.js: capesMint or ticker line not found (or mint already set)')
+    s, n3 = re.subn(r'capesCreator:\s*""', 'capesCreator: "%s"' % a.creator, s)
+    if n1 != 1 or n2 != 1 or n3 != 1: sys.exit('config.js: capesMint, capesCreator or ticker line not found (or mint already set)')
     open(p, 'w').write(s)
     # 3) Watchtower's official list
     p = os.path.join(mc, 'tools/watchtower.sh'); s = open(p).read()

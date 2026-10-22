@@ -21,6 +21,8 @@ window.MC_CONFIG = {
   shopWallet: "",                // your PUBLIC Solana address that receives shop payments (SOL and USDC both arrive here)
   usdcMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",  // USDC on Solana (official, do not change)
   capesMint: "",                 // the $CAPES token mint address, once the token exists
+  capesCreator: "",              // PUBLIC address of the wallet that launched the coin (its Snake Bite burn shows in the burn log)
+  capesSupply0: 1000000000,      // whole tokens the coin started with, before any burn (the burn log counts down from this)
   ticker: "CAPES",               // the token ticker shown to players as $TICKER (tools/token_launch.py sets it on launch day)
   capesWallet: "",               // PUBLIC address that receives $CAPES deposits from players
   pit: "https://pit.memecapes.com",   // SnakePit, the trading app next to the game (snakepit-mu.vercel.app also still works). Empty = the game shows nothing about it

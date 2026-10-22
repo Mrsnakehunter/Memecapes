@@ -1,6 +1,10 @@
 # MemeCapes progress
 
-_Last updated: October 17, 2026_
+_Last updated: October 22, 2026_
+
+## Oct 22, 2026: burns you can check
+
+The $CAPES page has a public burn log. It reads the blockchain directly: the total burned is the starting supply minus the supply Solana reports now (so it counts every burn by anyone), and each burn signed by an official wallet is listed with its transaction on Solscan. The first line will be the Snake Bite, the 10% burned inside the launch transaction itself. The fee wallet's buy-and-burns are signed by its owner (no server holds a key to it) and appear there as they happen. The page now says plainly which burns happen today and which are still planned.
 
 ## Oct 17: the Weekly Agent Battle (practice weeks)
 

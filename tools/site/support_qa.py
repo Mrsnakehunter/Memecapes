@@ -548,8 +548,8 @@ q('coins', 'How is $CAPES distributed?',
   'On a public bonding curve, with nothing allocated in advance. In the transaction that creates the coin the creator buys 20%: half is burned on the spot (the supply drops to 900 million) and half goes into Jupiter Lock right after, opening 1/24 a month for 24 months, with no way to cancel it; the player pot is funded over time in a public ecosystem wallet with every addition posted; marketing and payments wallets hold no tokens. The $CAPES page has the table.',
   ['What is the tokenomics?', 'Is there a presale?', 'How much does the team hold?'], np='the tokenomics', k='tokenomics supply allocation presale team')
 q('coins', 'What burns $CAPES?',
-  'Play, not promises: limited cosmetics bought with $CAPES (60% burned), a small tax on player trades once they open, sponsored monsters (half burned), and the launchpad (half of what MemeCapes earns buys $CAPES and burns it). Burns are posted on-chain.',
-  ['Is $CAPES deflationary?', 'How do burns work?'], np='burns', k='burn deflation')
+  'Today: the Snake Bite (10% of the supply burned inside the launch transaction itself), the fee wallet (half of what MemeCapes earns from the launchpad and a quarter of every snakepit trade fee buy $CAPES and burn it, in transactions its owner signs) and anyone who burns their own, including website ad burns. Planned: cosmetics bought with $CAPES (60% burned), a small tax on player trades, sponsored monsters (half burned). The burn log on the $CAPES page reads every burn straight from Solana, with its transaction.',
+  ['Is $CAPES deflationary?', 'How do burns work?', 'Where can I see the burns?', 'Is there a burn log?', 'Are the burns automatic?'], np='burns', k='burn deflation burn log snake bite')
 q('coins', 'Can I withdraw Meme Coins as real money?',
   'No. Meme Coins are game content with no cash value and cannot be redeemed for money from us. The only bridge is the in-game exchange to $CAPES, after the token launches, within the daily cap.',
   ['Can I cash out?', 'Sell Meme Coins for cash'], vp='cash out', k='cash out withdraw real money')
@@ -843,6 +843,9 @@ q('about', 'Who makes MemeCapes?',
 q('about', 'How do I contact support?',
   'Search this page first; most answers are here. For anything else, message @Mrsnakebaby on X. In game, /report handles player reports. We never message you first and never ask for passwords or seed phrases.',
   ['How do I reach the team?', 'Contact', 'Is there a support email?'], vp='contact support', np='support', k='contact support help email', top=True)
+q('about', 'Is there a Telegram?',
+  'Yes: the official group is MemeCapes x snakepit at t.me/memecapesXsnakepit, linked at the bottom of every page here. Admins there never message you first and never ask for passwords, seed phrases or money.',
+  ['Where is the Telegram group?', 'Is there a community chat?', 'Telegram link'], np='the Telegram group', k='telegram group community chat tg')
 q('about', 'When is the next update?',
   'The Roadmap page lists what is coming and in what order. Updates ship when they are fun; follow @Mrsnakebaby for the announcement.',
   ['What is coming next?', 'When does the game launch?'], np='the next update', k='next update launch when roadmap')

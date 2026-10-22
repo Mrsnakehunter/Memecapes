@@ -92,6 +92,43 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (4:30 am): LARP CHECK (larpcheck.live) scores the public GITHUB repo (code authenticity, commit timing, dev
+  identity, consistency, README claims vs code, contract alignment), not the website. README.md was just a title:
+  rewritten (what is here, Live/Built status, run/test/build). Repo description/topics: GitHub settings writes are
+  blocked by the proxy (Albert sets the About box). Its burn finding on the old coin: "page says half of launchpad
+  income buys and burns, no burn instructions, ad-burn list empty". Answer: Snake Bite = real burn in the launch tx;
+  ongoing burns stay creator-signed (automatic = a server key = custody, against the rules); offered a one-tap
+  claim + buy + burn for the fee wallet and a public burn log. Telegram: group t.me/memecapesXsnakepit (supergroup
+  peer -4445161618 = Bot API -1004445161618; old basic group -5106298088 migrated into it). Done in the pane: new
+  description, welcome/rules post pinned; site + launch.html footers + support answer link it. Adding the bots /
+  admin rights was DENIED by the safety classifier (permission grant): Albert adds MrSnake (admin: delete, ban,
+  restrict, pin) + MemeSnake himself. Bots repo Mrsnakehunter/memesnake-bots (Railway "divine-courtesy"): /links now
+  lists SnakePit + Telegram (PIT_URL, TELEGRAM_URL), knowledge.md facts updated (no RuneScape-style line, no old
+  "legal review" line). ALERT_CHAT_IDS on Railway must change to the new group's id.
+
+- Oct 22 (4:15 am): photo of the coin sheet, "too much going on with the scroll: 3 buttons under the chart: Strike,
+  Info, Comment". Pit branch `coin-tabs` (preview success; merged into `friday`, AcidTally lands in Info): TokenSheet
+  `top` slot passed into LiveChart (slot + showTrades props): tab bar right under the chart; Strike = STRIKE button +
+  MC/Liq/Vol/1h + 5m flow + trades (12 rows, "Show more", no inner scrollbar); Info = curve, Snake Bite, lock, fees,
+  launch check, Pit activity, Solscan/Copy CA; Comments = Holders talk. Studio chart stub (studio/chart.tsx) now takes
+  slot/showTrades. His photo still showed Price selected: taken at 4:09, before the 4:10 MC deploy (refresh).
+- Oct 22 (4 am): "MC auto showing, not the price, on the chart". Pit LiveChart: opens on MC (state `pick`, default
+  "mc", localStorage pit_chart_mode remembers a Price pick; mode falls back to price while supply is unknown). On
+  `buy-green` + `friday`. LIVE Oct 22 4:10 am (Albert "done now"): Pit main 1e36b86 = buy-green (green Strike, red
+  Shed, chart on MC); checked on pit.memecapes.com (STRIKE rgb(88,240,166), MC selected).
+- Oct 22 (3:50 am): "Strike red / Shed green is backwards (buys make green candles)". Pit branch `buy-green`
+  (Vercel preview success; also merged into `friday`): Strike = mint (green) everywhere, Shed = red (bg-strike token,
+  now meaning red/sell), incl. % picks, activity labels, BOUGHT badges; SNAKEPIT-BRIEF palette line updated. The old
+  "red only for Strike" brand rule is gone. Also asked "does any platform offer buy-and-burn?": searched; found burns
+  only as a separate cleanup action (Phantom burns NFTs/spam, Sol Incinerator burns held tokens) and no app with a
+  one-tap buy+burn; don't claim "first" publicly without a fuller check.
+
+- Oct 22 (3:35 am): "I need it [Acid Pit] ready for Friday". FRIDAY = one merge per repo, already combined and
+  conflict-free: Pit branch `friday` (main + beat-the-boss + acid-pit; store.ts closeWeek conflict resolved keeping
+  settleBoss; Vercel preview success) and memecapes branch `friday` (main + beat-the-boss + friday-stream; crews tests
+  19/19). On Friday: re-merge main into each `friday` if main moved, ff main to it, run supabase/payout.sql + boss.sql +
+  acid.sql in Supabase, Cloudflare Stream keys on Render (Albert), re-render the home video with the NEW kicker.
+
 - Oct 22 (3:30 am): "acid pit with a caution sign next to Strike and Shed: what you buy gets burned, never goes into
   your wallet". Pit branch `acid-pit` (5ac6141, Vercel preview success, NOT merged): ☣ Acid tab in StrikeSheet (hazard
   stripes, two-tap confirm), lib/acid.ts (BurnChecked for SPL/2022 + memo "snakepit acid"), buildSwapTx(..., after)
