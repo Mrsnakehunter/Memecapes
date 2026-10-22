@@ -92,6 +92,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (1 pm): LAUNCH PULLED. $PIT was hatched at 11:44 (CA + lock escrow are in the chat, NOT here), the site/game/
+  Pit were switched over (token_launch.py; lesson: it also rewrites tools/patch_*.py anchors -> `git checkout -- tools/
+  patch_*.py` before build.sh, patch_ticker.py does the ticker), then a CA-history tool showed the X account's deleted
+  Oct 20 launch, buyers backed out, and Albert ordered everything down. Done: memecapes revert of 12415aa (site, game
+  build back, server), Pit revert of the ticker switch, NEXT_PUBLIC_CAPES_MINT deleted on Vercel. REFUSED: a new X
+  account / covering up the previous launch (deceiving buyers). Then "I want to see the Pit but nobody on the site":
+  config.js pit "" (pitWas keeps the address) = game/server dormant; index.html hides a[data-pit], .cr-by, #battle,
+  section.lpshow, details.pitfaq when pit is empty; launch.html hides data-pit links + Trade and sends '' /launch/
+  coin/me to #/watch. Side effect: Stream/Watch sign-in with the Pit wallet (stream-link) is off too; only browser
+  wallets until pit is set again. Build 20261022170554. His Pit wallet [removed] has 84.5M $PIT locked 24 months.
+  He was under heavy stress ("6k of transactions fell through"): be steady, no lectures.
+
 - Oct 22 (10:40 am): STREAMING IS LIVE. Cloudflare: Albert paid the Starter Bundle ($5/mo: 1,000 min stored, 5,000
   delivered) in the pane; account 118037479472c2d9ca477b31831516cc, customer code 85i7n9jjy7zldqtc (both public, in
   Render env); API token "memecapes-stream" (Stream: Edit, no expiry) made in the pane, value pasted by Albert himself

@@ -152,7 +152,8 @@
   // ---------- SnakePit widget on the launch page (config.js `pit`), loaded from the Pit itself so it is always current
   (function () {
     const pit = String(MC.pit || '').replace(/\/+$/, ''), wrap = document.getElementById('pitwrap'), el = document.getElementById('snakepit-widget');
-    if (!/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pit) || !wrap || !el) return;
+    if (!/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pit)) { const tl = document.getElementById('tradeln'); if (tl) tl.hidden = true; return; }
+    if (!wrap || !el) return;
     el.setAttribute('data-app', pit); wrap.hidden = false;
     const tl = document.getElementById('tradeln'); if (tl) tl.href = pit;
     const s = document.createElement('script'); s.src = pit + '/embed/snakepit-widget.js'; s.defer = true; s.onerror = () => { wrap.hidden = true; };
@@ -174,6 +175,8 @@
       location.replace(pitU + (v === 'coin' && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(arg || '') ? '/?q=' + arg : v === '' ? '/' : '/hatch'));
       return;
     }
+    // with the Pit switched off, this site is Watch and Stream only
+    if (!pitU && (v === '' || v === 'launch' || v === 'coin' || v === 'me')) { location.replace('#/watch'); return; }
     $$('[data-r]').forEach(a => a.classList.toggle('on', a.dataset.r === name));
     window.scrollTo(0, 0);
     Promise.resolve(views[name](arg)).catch(e => { if (my !== rseq) return; app.innerHTML = `<div class="empty" style="margin:30px 0">${esc(e.message || e)}</div>`; });
@@ -666,4 +669,4 @@
 })();
 
 // Battle links (data-pit) follow config.js pit
-(() => { const p = String((window.MC_CONFIG || {}).pit || "").replace(/\/+$/, ""); if (/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(p)) document.querySelectorAll("a[data-pit]").forEach((a) => { a.href = p + a.getAttribute("data-pit"); }); })();
+(() => { const p = String((window.MC_CONFIG || {}).pit || "").replace(/\/+$/, ""); if (/^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(p)) document.querySelectorAll("a[data-pit]").forEach((a) => { a.href = p + a.getAttribute("data-pit"); }); else document.querySelectorAll("a[data-pit]").forEach((a) => { a.hidden = true; a.style.display = "none"; }); })();
