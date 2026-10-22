@@ -113,7 +113,7 @@
 
   // ---------- wallet button + picker
   function drawWallet() {
-    const m = LPC.me(), b = $('#wbtn');
+    const m = LPC.me() || (LPSO && LPSO.me()), b = $('#wbtn');
     // no wallet app in this browser (most phones): the button signs you in to the snakepit app, where email makes a wallet
     const noApp = !m && !LPC.wallets().length && String(MC.pit || '');
     b.innerHTML = m ? (LPSO ? LPSO.avatar(m.address) : (m.icon ? `<img src="${esc(m.icon)}" alt="">` : '')) + esc((LPSO && LPSO.nameOf(m.address)) || short(m.address)) : noApp ? 'Sign in' : 'Connect wallet';
@@ -124,7 +124,7 @@
       const ws = LPC.wallets();
       const d = document.createElement('div'); d.className = 'modal';
       const pit = String(MC.pit || '').replace(/\/+$/, '');
-      const make = pit ? `<a class="btn gold mkw" href="${esc(pit)}" target="_blank" rel="noopener"><b>No wallet? Make one free</b><span>Sign in to snakepit with your email: a Solana wallet is created for you in seconds. No app, no seed phrase to write down.</span></a>` : '';
+      const make = (pit && LPSO && /^#\/(stream|watch|ch|u)/.test(location.hash) ? `<a class="btn gold mkw" href="${esc(LPSO.pitLink())}"><b>Sign in with your snakepit wallet</b><span>The wallet you use in the Pit signs you in here too: one tap, no extension needed.</span></a>` : '') + (pit ? `<a class="btn ${LPSO ? 'quiet' : 'gold'} mkw" href="${esc(pit)}" target="_blank" rel="noopener"><b>No wallet? Make one free</b><span>Sign in to snakepit with your email: a Solana wallet is created for you in seconds. No app, no seed phrase to write down.</span></a>` : '');
       d.innerHTML = `<div class="panel" role="dialog" aria-label="Connect a wallet"><h3>${ws.length ? 'Connect a wallet' : 'Get a wallet'}</h3>
         ${ws.length ? '<p class="mute small">Your wallet shows you every transaction before you approve it. MemeCapes never sees your keys.</p><div class="wl">' + ws.map(w => `<button type="button" data-w="${esc(w.name)}">${w.icon ? `<img src="${esc(w.icon)}" alt="">` : ''}${esc(w.name)}</button>`).join('') + '</div>' + (make ? '<p class="mute small" style="margin:14px 0 8px">Or</p>' + make : '')
           : make + '<p class="mute small" style="margin-top:14px">Already have Phantom, Solflare or Backpack? Install it in this browser and reload, or on a phone open memecapes.com/launch.html inside your wallet app\'s browser.</p>'}
@@ -141,7 +141,8 @@
   $('#wbtn').onclick = async () => {
     if (LPC.me()) { if (confirmQuiet('Disconnect ' + short(LPC.me().address) + '?')) await LPC.disconnect(); return; }
     const pit = String(MC.pit || '').replace(/\/+$/, '');
-    if (!LPC.wallets().length && /^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pit)) { location.href = pit + '/'; return; }
+    if (LPSO && LPSO.me() && LPSO.me().pit) { if (confirmQuiet('Sign out of ' + short(LPSO.me().address) + '?')) { LPSO.pitSignOut(); drawWallet(); route(); } return; }
+    if (!LPC.wallets().length && /^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(pit)) { location.href = /^#\/(stream|watch|ch|u)/.test(location.hash) && LPSO ? LPSO.pitLink() : pit + '/'; return; }
     pickWallet().catch(() => { });
   };
   function confirmQuiet(t) { return window.confirm(t); }
@@ -658,7 +659,7 @@
     };
   }
 
-  window.LPAPP = { $, $$, esc, short, api, toast, usd, sol, pct, ago, stamp, coinFace, sparkline, liveMany, stats, needWallet, pickWallet, friendly, PK, cache, views, route, onLeave, SRV, NET, DEV, C, app, tradeRow, setSocial: o => { LPSO = o; } };
+  window.LPAPP = { $, $$, esc, short, api, toast, usd, sol, pct, ago, stamp, coinFace, sparkline, liveMany, stats, needWallet, pickWallet, friendly, PK, cache, views, route, onLeave, SRV, NET, DEV, C, app, tradeRow, setSocial: o => { LPSO = o; drawWallet(); } };
   drawWallet();
   LPC.autoConnect().then(drawWallet);
   route();
