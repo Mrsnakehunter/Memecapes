@@ -90,6 +90,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 21 (8 pm): brand kit for the relaunch ticker (private: in the chat, NOT here): "MemeCapes logo with snakepit,
+  new ticker, for Telegram, X, the launch, and a DexScreener header, video + picture". /tmp/claude-0/pit: coin.py (the
+  cape coin scaled 0.9 on a 1500 canvas, a rendered snake on the rim: KD-tree tube shading, staggered scales, dorsal
+  diamonds, warm bounce light, grain, contact shadow; head = wedge ellipse + eyes + red forked tongue; an emerald
+  ribbon with gold edges over the old name, ticker in Cinzel 900 with a chamfer bevel along the arc) and banners.py
+  (3:1 header still + 4 s MP4 + light GIF: sparks, shine sweep, glow pulse; the GIF has no camera move or it is 14 MB;
+  X header keeps words centre-right because the avatar covers the bottom-left; avatars 1000/640/400; 1280x720 card).
+  Outputs in outputs/pit (kept out of the repo). Wrap-behind-the-coin cuts looked like a bug: snake lies on the rim.
+  DexScreener's header is 3:1 (600 px wide min); whether it takes animated files is unconfirmed.
+
 - Oct 21 (3 pm): "option to lock 1 million tokens for free trading fees on their account" + "locked for a year minimum".
   Pit main (capes-lock), dormant until NEXT_PUBLIC_CAPES_MINT: components/LockCard.tsx on /capes (min 1,000,000, 1/2/3
   years, can't-be-undone confirm, your locks + Claim), lib/lock.ts = Jupiter Lock (LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn)
