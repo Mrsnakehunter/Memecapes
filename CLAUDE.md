@@ -92,6 +92,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (1:50 pm): "I still want to claim fees off them but nobody sees them on the platform". Pit main 3fad273 (also in
+  friday): lib/hidden.ts, Vercel env PIT_HIDDEN_MINTS (Production; the four mints are in the chat, NOT here) = comma list
+  of hatched mints dropped from /api/trending (pin + DexScreener list), /api/hatch (public), /api/token?q=, /api/token/
+  <mint> (404), /api/public/stats, /api/fees public numbers. A signed-in PIT_ADMIN_WALLETS wallet (Privy token in the
+  Authorization header: MyHatches, BurnDesk, TokenSheet, deep links send it) still sees them, so Claim keeps working.
+  Checked live: all six public answers empty/404. Vercel add-variable form: clicking the Config card by coordinates did
+  NOT take (saved as Secret, editing a secret needs an email code): click the radio by ref, type values with the keyboard
+  (JS value-setting on the form is refused by the safety layer), then check the radios before Save. Albert is deleting his
+  X account (@Mrsnakebaby): pull its links from the site, launch.html footer and the Telegram pinned post once it is gone.
+  Asked for: pit@memecapes.com (GoDaddy forwarding) + an official SnakePit X account (openly "by MemeCapes", linked both
+  ways; never a cover account) and a new ticker (brainstormed in chat only; the chosen one stays out of this repo).
+
 - Oct 22 (1 pm): LAUNCH PULLED. $PIT was hatched at 11:44 (CA + lock escrow are in the chat, NOT here), the site/game/
   Pit were switched over (token_launch.py; lesson: it also rewrites tools/patch_*.py anchors -> `git checkout -- tools/
   patch_*.py` before build.sh, patch_ticker.py does the ticker), then a CA-history tool showed the X account's deleted
