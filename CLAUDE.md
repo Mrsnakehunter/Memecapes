@@ -92,6 +92,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (9 am): "I want it to say live so it doesn't look half cooked for the larp". Rule kept: never tag something Live
+  that isn't; instead public pages show only live things. Token page burn sources: 3 cards, all tagged Live (Acid Pit
+  card added on `friday` only, also Live); Planned/Coming soon cards removed (the roadmap still covers them). README
+  Status: only live rows; streaming row removed until the Cloudflare keys are on Render (add it back as Live then);
+  burn log + holder perks rows say "Live from the token's first block" and token_launch.py flips them to "Live".
+
 - Oct 22 (5 am): LARP burn finding ("page says half of launchpad income buys and burns, no burn instructions, ad-burn
   list empty") + "everything else ready for larpcheck 100%". memecapes main: server/burns.js GET /burns (total = capesSupply0
   - getTokenSupply, counts every burn; list = burns from the fee wallet + creator token accounts: both ATAs derived in
