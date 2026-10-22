@@ -92,6 +92,20 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (4:30 am): LARP CHECK (larpcheck.live) scores the public GITHUB repo (code authenticity, commit timing, dev
+  identity, consistency, README claims vs code, contract alignment), not the website. README.md was just a title:
+  rewritten (what is here, Live/Built status, run/test/build). Repo description/topics: GitHub settings writes are
+  blocked by the proxy (Albert sets the About box). Its burn finding on the old coin: "page says half of launchpad
+  income buys and burns, no burn instructions, ad-burn list empty". Answer: Snake Bite = real burn in the launch tx;
+  ongoing burns stay creator-signed (automatic = a server key = custody, against the rules); offered a one-tap
+  claim + buy + burn for the fee wallet and a public burn log. Telegram: group t.me/memecapesXsnakepit (supergroup
+  peer -4445161618 = Bot API -1004445161618; old basic group -5106298088 migrated into it). Done in the pane: new
+  description, welcome/rules post pinned; site + launch.html footers + support answer link it. Adding the bots /
+  admin rights was DENIED by the safety classifier (permission grant): Albert adds MrSnake (admin: delete, ban,
+  restrict, pin) + MemeSnake himself. Bots repo Mrsnakehunter/memesnake-bots (Railway "divine-courtesy"): /links now
+  lists SnakePit + Telegram (PIT_URL, TELEGRAM_URL), knowledge.md facts updated (no RuneScape-style line, no old
+  "legal review" line). ALERT_CHAT_IDS on Railway must change to the new group's id.
+
 - Oct 22 (4:15 am): photo of the coin sheet, "too much going on with the scroll: 3 buttons under the chart: Strike,
   Info, Comment". Pit branch `coin-tabs` (preview success; merged into `friday`, AcidTally lands in Info): TokenSheet
   `top` slot passed into LiveChart (slot + showTrades props): tab bar right under the chart; Strike = STRIKE button +
