@@ -100,7 +100,8 @@ CREATE TABLE IF NOT EXISTS so_pass_pay(sig TEXT PRIMARY KEY, wallet TEXT, sol RE
   const prof = (w) => { const p = Q.profGet.get(w) || {}; return { wallet: w, name: p.name || '', about: p.about || '', x: p.x || '', avatar: p.avatar || '' }; };
   const chPub = (c) => c ? { wallet: c.wallet, name: c.name, about: c.about, category: c.category, subSol: c.subSol, live: !!c.live, title: c.title, mode: c.mode, playKind: c.playKind, playUrl: c.playUrl, mint: c.mint, startedAt: c.startedAt, viewers: viewersOf(c.wallet) } : null;
   const passUntil = (w) => { const r = Q.passGet.get(w); return r ? r.until : 0; };
-  const passOn = (w) => !PASS.to || PASS.usd <= 0 || passUntil(w) > now();   // no wallet or $0 = streaming is free
+  const FREE_PASS = new Set(String(process.env.STREAM_PASS_FREE || '').split(/[\s,]+/).filter(Boolean));   // wallets that never need a pass (the team)
+  const passOn = (w) => !PASS.to || PASS.usd <= 0 || FREE_PASS.has(w) || passUntil(w) > now();   // no wallet or $0 = streaming is free
   function viewersOf(ch) { const m = watchers.get(ch); if (!m) return 0; const cut = now() - 70e3; for (const [k, t] of m) if (t < cut) m.delete(k); return m.size; }
   function coinOf(mint, net) { const c = mint && coinGet.get(mint, net); return c ? { mint: c.mint, name: c.name, symbol: c.symbol, image: c.image } : null; }
 

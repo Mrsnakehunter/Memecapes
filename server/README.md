@@ -42,6 +42,7 @@ Plain Node.js 22 with no packages to install (built-in SQLite, crypto and a smal
 | `POT_WALLET` | the public player pot wallet, paying withdrawals. Default: `potWallet` in config.js |
 | `WITHDRAWALS` | `1`/`0` overrides `withdrawalsOpen` in config.js |
 | `WITHDRAW_DAYS`, `WITHDRAW_DAY_MAX`, `WITHDRAW_MIN` | the wait (30 days), the per-account 24-hour cap (100), the smallest withdrawal (1) |
+| `STREAM_PASS_FREE` | wallets that can stream without paying the pass (the team), space separated |
 | `TRADE_LOCK_MS` | no accepting for this long after the other player changes their offer. Default 2500 |
 | `ALLOWED_ORIGINS` | websites allowed to connect. Default: memecapes.com and localhost |
 | `GUARD_WEBHOOK` | Sentinel alerts: a Discord (or Slack) webhook URL. Empty = alerts only in game and in the server log |
