@@ -76,6 +76,13 @@ sh tools/ship.sh          # copies preview.html to play.html and writes version.
 
 Each patch is an exact-text replacement with an assertion, so a patch fails loudly if the code it expects has moved.
 
+## Who builds it
+
+One builder, Albert ([@Mrsnakebaby](https://x.com/Mrsnakebaby) on X, [Mrsnakehunter](https://github.com/Mrsnakehunter) on
+GitHub), with AI coding tools, in public. Every change lands here as a commit; [PROGRESS.md](PROGRESS.md) says what shipped
+in plain words. Larger features are built on branches and merged when they ship, so a branch can hold work that is not
+live yet.
+
 ## The token
 
 The project's token, its official contract address and every official wallet are listed on the token page of
