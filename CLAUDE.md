@@ -92,6 +92,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (3:30 pm): "people need to pay with cash". Privy dashboard (app cmvc7cdca00mc0fl4kmd9paoo, /funding): Card
+  onramps ON with Stripe + MoonPay, BUT without a KYB Privy's card providers only take USD via Stripe (needs react-auth
+  3.33+; we are on 2.25 and v3 drops @solana/web3.js = a big migration) and AUD/BRL via MoonPay. So Pit main 523fa92
+  (+ friday): lib/useFunding.ts cashUrl/openCash/cash() = MoonPay's PUBLIC checkout (buy.moonpay.com, no API key,
+  currencyCode sol + walletAddress + USD amount, min $20) in a new tab; EmptyWallet $25/$50/$100 buttons, ReceiveSheet
+  "Pay with cash" button. Checked in the pane: the link opens MoonPay's sign-in (Google/Apple/email) then card. Privy's
+  own fund() modal stays for exchange transfers. Privy app is STILL in development mode: Albert presses Upgrade to
+  production himself. Later option: complete Meld KYB in Privy for in-app USD cards.
+
 - Oct 22 (2:40 pm): Albert's screenshot "you took down the whole launch site": hiding the Pit from the site (pit "") had
   removed the home LAUNCH block too. Now that coins are hidden inside the Pit, config.js pit = https://pit.memecapes.com
   again (pitWas removed; one-line switch, no rebuild: site, game and launch.html read it at runtime; live check ok).
