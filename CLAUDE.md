@@ -92,6 +92,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (3:30 am): "acid pit with a caution sign next to Strike and Shed: what you buy gets burned, never goes into
+  your wallet". Pit branch `acid-pit` (5ac6141, Vercel preview success, NOT merged): ☣ Acid tab in StrikeSheet (hazard
+  stripes, two-tap confirm), lib/acid.ts (BurnChecked for SPL/2022 + memo "snakepit acid"), buildSwapTx(..., after)
+  puts burn + memo right after the swap (Jupiter's CU limit +40k; DBC path too), burn = quote.otherAmountThreshold, a
+  better-price extra is offered as "melt it too" (plain burn), /api/acid verifies on-chain (memo + burn by the signer)
+  into acid_burns (supabase/acid.sql: RUN it on merge), AcidTally card on the coin sheet. Simulated on live SITELOG:
+  swap + burn + memo ok (77k CU). Same hour: Albert sold all his SITELOG through the new own-pool fallback (works live).
+  Creator-fee split explained: Meteora 20% of the fee; of the rest, creator share 50-80%, the remainder half buys + burns
+  the coin, half runs the Pit; partner fees sit in each pool until the fee wallet claims (no claim button yet).
+
 - Oct 22 (3 am): streaming copy for the Friday update (Albert: tips and subs are 100% the streamer's; small print "if
   you're using more than $20 of streaming, price may vary"; "keep it for the Friday launch"). Branch `friday-stream`
   (7ffdd7a, NOT merged; merge with beat-the-boss on Friday): lp/social.js Stream page (hero line, step 3, the $20 card +
