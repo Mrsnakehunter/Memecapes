@@ -92,6 +92,20 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (9:40 am): "token withdraw says live but a 30-day wait". SHIPPED build 20261022134821: server/withdraw.js
+  (table withdrawals; H.wdInfo/withdraw/withdrawCancel; coins leave the saved bank at once; due = +WITHDRAW_DAYS; cancel
+  while waiting/held; 100/day per account; total waiting <= pot wallet balance read on-chain (POT_WALLET / config.js
+  potWallet, cached 5 min); /withdraw list|hold|release|refuse|paid <id> <tx> (paid only after getTransaction shows
+  >= capes to the linked wallet AND the pot wallet signed); GET /withdrawals public numbers; test_withdraw.js 27 with
+  WITHDRAW_DAYS=0.00004). Game: tools/patch_withdraw.py (last in build.sh) = "Withdraw to your wallet" LIVE box at
+  the bank replacing the demo exchange (wd/wdBank messages; netSaveNow before sending). config.js withdrawalsOpen
+  true + potWallet "" (set it at launch; Albert must also set CAPES_MINT/capesMint). Site: exchange cards, table,
+  FAQ, Terms 11 (termsVersion NOT bumped), support answer, README row, PROGRESS. Payouts are Albert's: ready requests
+  listed by /withdraw list, he sends from the pot wallet, then /withdraw paid. Also: site logo = coin with the snake
+  (coin_mc.png crop, 168 px webp); "← Home" link on every page (Albert: /#token had no way back).
+  Streaming asked ("get it ready, I put the card in"): device bridge DOWN, so steps given instead; CF prices (docs):
+  $5/1000 stored min prepaid, $1/1000 delivered; recordings on (7 days) count as storage.
+
 - Oct 22 (9:25 am): "make the Strike/Info/Comment tabs and the Acid Pit live now". Pit main dbb6cbe = main + coin-tabs +
   acid-pit (StrikeSheet taken from friday, which already had green Strike + Acid tab) + burn desk (cherry-pick) +
   useWallet addresses/signTxAs (was only on beat-the-boss; BurnDesk/useSwap need it). Preview success, then ff main.
