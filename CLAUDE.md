@@ -92,6 +92,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (3:35 am): "I need it [Acid Pit] ready for Friday". FRIDAY = one merge per repo, already combined and
+  conflict-free: Pit branch `friday` (main + beat-the-boss + acid-pit; store.ts closeWeek conflict resolved keeping
+  settleBoss; Vercel preview success) and memecapes branch `friday` (main + beat-the-boss + friday-stream; crews tests
+  19/19). On Friday: re-merge main into each `friday` if main moved, ff main to it, run supabase/payout.sql + boss.sql +
+  acid.sql in Supabase, Cloudflare Stream keys on Render (Albert), re-render the home video with the NEW kicker.
+
 - Oct 22 (3:30 am): "acid pit with a caution sign next to Strike and Shed: what you buy gets burned, never goes into
   your wallet". Pit branch `acid-pit` (5ac6141, Vercel preview success, NOT merged): ☣ Acid tab in StrikeSheet (hazard
   stripes, two-tap confirm), lib/acid.ts (BurnChecked for SPL/2022 + memo "snakepit acid"), buildSwapTx(..., after)
