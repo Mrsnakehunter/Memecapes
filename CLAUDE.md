@@ -92,6 +92,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (2:40 pm): Albert's screenshot "you took down the whole launch site": hiding the Pit from the site (pit "") had
+  removed the home LAUNCH block too. Now that coins are hidden inside the Pit, config.js pit = https://pit.memecapes.com
+  again (pitWas removed; one-line switch, no rebuild: site, game and launch.html read it at runtime; live check ok).
+  A player's Shed failed "Attempt to debit an account but found no record of a prior credit" = the wallet had 0 SOL for
+  the network fee. Pit main a58b3bd (+ friday): lib/useSwap.ts plainError() (no-SOL, slippage 0x1771, expired blockhash
+  in plain words, used by strike/shed/acid), components/GetSol.tsx (the gasless Add SOL card, Jupiter Ultra) now sells a
+  few dollars of whichever held coin is worth the most (prices from the store; stables count $1), not only USDC/USDT.
+
 - Oct 22 (1:50 pm): "I still want to claim fees off them but nobody sees them on the platform". Pit main 3fad273 (also in
   friday): lib/hidden.ts, Vercel env PIT_HIDDEN_MINTS (Production; the four mints are in the chat, NOT here) = comma list
   of hatched mints dropped from /api/trending (pin + DexScreener list), /api/hatch (public), /api/token?q=, /api/token/
