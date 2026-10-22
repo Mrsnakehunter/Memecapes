@@ -1,4 +1,4 @@
-/* The public burn log on the $PIT page (#burnlog). It shows what the game server reads from Solana (server/burns.js):
+/* The public burn log on the $CAPES page (#burnlog). It shows what the game server reads from Solana (server/burns.js):
    the total burned (starting supply minus the supply now, so it counts every burn by anyone) and each burn signed by an
    official wallet, with its transaction on Solscan. Nothing here is typed in by hand. */
 (function () {

@@ -55,9 +55,9 @@ rpc.listen(0, async () => {
   let o; await B2.http({ method: 'GET' }, {}, new URL('/burns', 'http://x'), (x) => { o = x; }); assert.strictEqual(o.list.length, 3);
   assert.strictEqual(await B.http({ method: 'GET' }, {}, new URL('/other', 'http://x'), () => { }), false);
   // off without a coin
-  // the real config.js carries the live coin now, so the 'off' case is checked with a mint that can't be a coin
-  delete require.cache[require.resolve('./burns')]; process.env.CAPES_MINT = ''; const B3 = require('./burns')({ DATA: fs.mkdtempSync(path.join(os.tmpdir(), 'burns-')), now: Date.now, off: true });
+  delete require.cache[require.resolve('./burns')]; process.env.CAPES_MINT = ''; const B3 = require('./burns')({ DATA: fs.mkdtempSync(path.join(os.tmpdir(), 'burns-')), now: Date.now });
   await B3.http({ method: 'GET' }, {}, new URL('/burns', 'http://x'), (x) => { o = x; });
+  // config.js has no capesMint before launch, so with the env cleared the log is off
   assert.strictEqual(o.on, false); assert.ok(o.wallets.some(w => w.address === FEE));
   console.log('test_burns: 20 checks passed'); rpc.close(); process.exit(0);
 });

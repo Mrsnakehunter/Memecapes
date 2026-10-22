@@ -20,17 +20,17 @@ window.MC_CONFIG = {
   rpc: "https://api.mainnet-beta.solana.com",          // a paid RPC URL is more reliable at launch
   shopWallet: "",                // your PUBLIC Solana address that receives shop payments (SOL and USDC both arrive here)
   usdcMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",  // USDC on Solana (official, do not change)
-  capesMint: "[removed]",                 // the $PIT token mint address, once the token exists
-  capesCreator: "[removed]",              // PUBLIC address of the wallet that launched the coin (its Snake Bite burn shows in the burn log)
+  capesMint: "",                 // the $CAPES token mint address, once the token exists
+  capesCreator: "",              // PUBLIC address of the wallet that launched the coin (its Snake Bite burn shows in the burn log)
   capesSupply0: 1000000000,      // whole tokens the coin started with, before any burn (the burn log counts down from this)
-  ticker: "PIT",               // the token ticker shown to players as $TICKER (tools/token_launch.py sets it on launch day)
-  capesWallet: "",               // PUBLIC address that receives $PIT deposits from players
+  ticker: "CAPES",               // the token ticker shown to players as $TICKER (tools/token_launch.py sets it on launch day)
+  capesWallet: "",               // PUBLIC address that receives $CAPES deposits from players
   pit: "https://pit.memecapes.com",   // SnakePit, the trading app next to the game (snakepit-mu.vercel.app also still works). Empty = the game shows nothing about it
   solUsdFallback: 150,           // used only if the live SOL price can't be fetched
 
-  // ---- shop (prices in US dollars; SOL is worked out at the live price, $PIT at capesUsd)
-  burnPct: 1,                    // burn this % of all $PIT for the website ad spot (must match BURN_PCT on the server)
-  capesUsd: 0,                   // price of 1 $PIT in dollars, once it trades (0 = $PIT not accepted yet)
+  // ---- shop (prices in US dollars; SOL is worked out at the live price, $CAPES at capesUsd)
+  burnPct: 1,                    // burn this % of all $CAPES for the website ad spot (must match BURN_PCT on the server)
+  capesUsd: 0,                   // price of 1 $CAPES in dollars, once it trades (0 = $CAPES not accepted yet)
   shop: [
     { id: "billboard", name: "Town billboard", days: 7,  usd: 50,
       text: "Your project's banner on a billboard in one meme town for 7 days. Art supplied by you, approved by us." },
@@ -46,10 +46,10 @@ window.MC_CONFIG = {
       text: "Any four skins from the list above, in one redeem code. Write which four in the notes." }
   ],
 
-  // ---- $PIT and Meme Coins
-  capesToMemeCoins: 100,         // 1 $PIT deposited = this many Meme Coins
-  depositsOpen: false,           // true = players can deposit $PIT for Meme Coins (needs capesMint and capesWallet)
-  withdrawalsOpen: true,         // players can withdraw Meme Coins as $PIT (30-day wait, paid from the pot wallet; needs capesMint + potWallet)
+  // ---- $CAPES and Meme Coins
+  capesToMemeCoins: 100,         // 1 $CAPES deposited = this many Meme Coins
+  depositsOpen: false,           // true = players can deposit $CAPES for Meme Coins (needs capesMint and capesWallet)
+  withdrawalsOpen: true,         // players can withdraw Meme Coins as $CAPES (30-day wait, paid from the pot wallet; needs capesMint + potWallet)
   potWallet: "",                 // PUBLIC address of the player pot wallet: withdrawals are paid from it (its owner signs each payout)
 
   // ---- Launchpad (launch.html): coins launched on memecapes.com, built on Meteora's bonding curve on Solana.
@@ -62,7 +62,7 @@ window.MC_CONFIG = {
     streamPassDays: 30,          // how long one payment lasts
     streamPassWallet: "",        // PUBLIC address the pass is paid to; empty = the launchpad fee wallet above
     rpcDevnet: "https://api.devnet.solana.com",
-    burnShare: 50,               // % of MemeCapes' launchpad income that buys $PIT and burns it (every burn posted)
+    burnShare: 50,               // % of MemeCapes' launchpad income that buys $CAPES and burns it (every burn posted)
     // what launchers can choose (the server refuses coins outside these limits)
     feeBps: { min: 25, max: 200, def: 100 },              // trading fee on the bonding curve, in basis points (100 = 1%)
     creatorShare: { min: 50, max: 80, def: 60 },          // % of the fee left after Meteora's 20% that goes to the launcher
