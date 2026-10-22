@@ -31,6 +31,7 @@ has no npm dependencies.
 | Online play: accounts, saves, chat, player trades | Live (server on Render) |
 | Website, support page, security page | Live |
 | Watch (live trades on coins hatched in snakepit) | Live |
+| Streaming: go live from the browser or OBS, streamer pass checked on-chain, tips and subscriptions wallet to wallet (`server/social.js`, `lp/social.js`) | Live (Cloudflare Stream) |
 | Launchpad | Live in snakepit (Hatch); the launch links on this site open it |
 | Burn log: every $CAPES burn read from Solana, with its transaction (`server/burns.js`, `burnlog.js`) | Live from the token's first block (reads the chain once the token address is set) |
 | Withdrawals: Meme Coins out as $CAPES, 30-day wait, paid from the public pot wallet (`server/withdraw.js`, `tools/patch_withdraw.py`) | Live from the token's first block (needs the token address and the pot wallet) |

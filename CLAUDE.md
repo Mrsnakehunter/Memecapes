@@ -92,6 +92,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (10:40 am): STREAMING IS LIVE. Cloudflare: Albert paid the Starter Bundle ($5/mo: 1,000 min stored, 5,000
+  delivered) in the pane; account 118037479472c2d9ca477b31831516cc, customer code 85i7n9jjy7zldqtc (both public, in
+  Render env); API token "memecapes-stream" (Stream: Edit, no expiry) made in the pane, value pasted by Albert himself
+  into Render CF_STREAM_TOKEN (he pasted it in chat once: if it ever leaks, roll it at Cloudflare > API tokens and
+  update Render). Render env editor: rows are inputs named envVars.N.envVarKey / envVarValue (value = TEXTAREA);
+  screenshot frame = CSS px x 1.25. Deploy ok; /st/live answers streaming:true. README streaming row back as Live.
+  Not yet done: a real go-live (needs Albert's wallet + pass; admin can grant one with `/watch pass <wallet>` in game).
+
 - Oct 22 (9:40 am): "token withdraw says live but a 30-day wait". SHIPPED build 20261022134821: server/withdraw.js
   (table withdrawals; H.wdInfo/withdraw/withdrawCancel; coins leave the saved bank at once; due = +WITHDRAW_DAYS; cancel
   while waiting/held; 100/day per account; total waiting <= pot wallet balance read on-chain (POT_WALLET / config.js
