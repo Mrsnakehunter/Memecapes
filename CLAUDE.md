@@ -92,6 +92,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (9:25 am): "make the Strike/Info/Comment tabs and the Acid Pit live now". Pit main dbb6cbe = main + coin-tabs +
+  acid-pit (StrikeSheet taken from friday, which already had green Strike + Acid tab) + burn desk (cherry-pick) +
+  useWallet addresses/signTxAs (was only on beat-the-boss; BurnDesk/useSwap need it). Preview success, then ff main.
+  Beat the Boss stays on friday (friday = main + beat-the-boss now). supabase/acid.sql must be run (acid_burns table):
+  until then the Acid tally shows 0 but burns still happen on-chain. Token page: Acid Pit card (Live) on main.
+  Device bridge was offline: live Pit not checked in a browser (WebFetch can't reach pit.memecapes.com).
+
 - Oct 22 (9 am): "I want it to say live so it doesn't look half cooked for the larp". Rule kept: never tag something Live
   that isn't; instead public pages show only live things. Token page burn sources: 3 cards, all tagged Live (Acid Pit
   card added on `friday` only, also Live); Planned/Coming soon cards removed (the roadmap still covers them). README
