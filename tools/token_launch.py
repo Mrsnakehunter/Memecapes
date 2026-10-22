@@ -131,7 +131,7 @@ def main():
     old = "The project's token, its official contract address and every official wallet are listed on the token page of\n[memecapes.com](https://memecapes.com)."
     if s.count(old) != 1: sys.exit('README.md: token paragraph not found')
     s = s.replace(old, "The project's token is $%s on Solana. Official contract address: [`%s`](https://solscan.io/token/%s), launched by the\ncreator wallet [`%s`](https://solscan.io/account/%s). Every official wallet is listed on the token page of\n[memecapes.com](https://memecapes.com), and every burn is in its burn log." % (t, a.mint, a.mint, a.creator, a.creator))
-    for row in ("Live from the token's first block (reads the chain once the token address is set)", "Live from the token's first block (reads wallets once the token address is set)"):
+    for row in ("Live from the token's first block (reads the chain once the token address is set)", "Live from the token's first block (reads wallets once the token address is set)", "Live from the token's first block (needs the token address and the pot wallet)"):
         if s.count(row) != 1: sys.exit('README.md: status row not found: ' + row[:40])
         s = s.replace(row, 'Live')
     open(p, 'w').write(s)

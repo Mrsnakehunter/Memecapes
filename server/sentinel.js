@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS guard_state(k TEXT PRIMARY KEY, v TEXT);`);
     try {
       const cfg = fs.readFileSync(path.join(__dirname, '..', 'config.js'), 'utf8');
       const addr = k => { const m = new RegExp(k + ':\\s*"([1-9A-HJ-NP-Za-km-z]{32,44})"').exec(cfg); return m ? m[1] : ''; };
-      const cur = JSON.stringify({ partner: addr('partner'), partnerDevnet: addr('partnerDevnet'), streamPassWallet: addr('streamPassWallet') });
+      const cur = JSON.stringify({ partner: addr('partner'), partnerDevnet: addr('partnerDevnet'), streamPassWallet: addr('streamPassWallet'), potWallet: addr('potWallet') });
       const was = sget('wallets', '');
       if (was && was !== cur) { log('wallets', '', 'config.js wallets changed: ' + was + ' -> ' + cur); alert('wallets', 'The wallet addresses in config.js CHANGED: was ' + was + ', now ' + cur + '. If you did not change them, go to lockdown (/guard lockdown) and check GitHub now.', 0); }
       sset('wallets', cur);

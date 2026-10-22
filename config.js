@@ -49,7 +49,8 @@ window.MC_CONFIG = {
   // ---- $CAPES and Meme Coins
   capesToMemeCoins: 100,         // 1 $CAPES deposited = this many Meme Coins
   depositsOpen: false,           // true = players can deposit $CAPES for Meme Coins (needs capesMint and capesWallet)
-  withdrawalsOpen: false,        // keep false until the game server exists (see the note in the game's bank)
+  withdrawalsOpen: true,         // players can withdraw Meme Coins as $CAPES (30-day wait, paid from the pot wallet; needs capesMint + potWallet)
+  potWallet: "",                 // PUBLIC address of the player pot wallet: withdrawals are paid from it (its owner signs each payout)
 
   // ---- Launchpad (launch.html): coins launched on memecapes.com, built on Meteora's bonding curve on Solana.
   // partner = the PUBLIC address of the MemeCapes launchpad fee wallet. Empty = launching is switched off (the page
