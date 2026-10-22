@@ -92,6 +92,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (4:15 am): photo of the coin sheet, "too much going on with the scroll: 3 buttons under the chart: Strike,
+  Info, Comment". Pit branch `coin-tabs` (preview success; merged into `friday`, AcidTally lands in Info): TokenSheet
+  `top` slot passed into LiveChart (slot + showTrades props): tab bar right under the chart; Strike = STRIKE button +
+  MC/Liq/Vol/1h + 5m flow + trades (12 rows, "Show more", no inner scrollbar); Info = curve, Snake Bite, lock, fees,
+  launch check, Pit activity, Solscan/Copy CA; Comments = Holders talk. Studio chart stub (studio/chart.tsx) now takes
+  slot/showTrades. His photo still showed Price selected: taken at 4:09, before the 4:10 MC deploy (refresh).
 - Oct 22 (4 am): "MC auto showing, not the price, on the chart". Pit LiveChart: opens on MC (state `pick`, default
   "mc", localStorage pit_chart_mode remembers a Price pick; mode falls back to price while supply is unknown). On
   `buy-green` + `friday`. LIVE Oct 22 4:10 am (Albert "done now"): Pit main 1e36b86 = buy-green (green Strike, red
