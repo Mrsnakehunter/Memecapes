@@ -92,6 +92,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (3:50 am): "Strike red / Shed green is backwards (buys make green candles)". Pit branch `buy-green`
+  (Vercel preview success; also merged into `friday`): Strike = mint (green) everywhere, Shed = red (bg-strike token,
+  now meaning red/sell), incl. % picks, activity labels, BOUGHT badges; SNAKEPIT-BRIEF palette line updated. The old
+  "red only for Strike" brand rule is gone. Also asked "does any platform offer buy-and-burn?": searched; found burns
+  only as a separate cleanup action (Phantom burns NFTs/spam, Sol Incinerator burns held tokens) and no app with a
+  one-tap buy+burn; don't claim "first" publicly without a fuller check.
+
 - Oct 22 (3:35 am): "I need it [Acid Pit] ready for Friday". FRIDAY = one merge per repo, already combined and
   conflict-free: Pit branch `friday` (main + beat-the-boss + acid-pit; store.ts closeWeek conflict resolved keeping
   settleBoss; Vercel preview success) and memecapes branch `friday` (main + beat-the-boss + friday-stream; crews tests
