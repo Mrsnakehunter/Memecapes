@@ -90,6 +90,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (3 am): streaming copy for the Friday update (Albert: tips and subs are 100% the streamer's; small print "if
+  you're using more than $20 of streaming, price may vary"; "keep it for the Friday launch"). Branch `friday-stream`
+  (7ffdd7a, NOT merged; merge with beat-the-boss on Friday): lp/social.js Stream page (hero line, step 3, the $20 card +
+  .sfine small print, pass panel, FAQ), index.html (Stream card with *, FAQ, Terms 6a), support_qa.py (no $ allowed in
+  answers: "covers a set amount of streaming"). Removed the old "flat / only charge / no surprises" claims, which the
+  small print would contradict. Live video still needs Albert's Cloudflare Stream keys on Render before Friday.
+
 - Oct 22 (2 am): "quote failed: 400 NO_ROUTES_FOUND when I try to sell SITELOG from my launch". Jupiter had never
   picked up that Hatch pool (8 h after the hatch, no route either way) while $SNAKE/$FANGS routed within 30 min; no
   difference found in their configs. Pit main c5f0c1b: lib/dbcswap.ts, getQuote falls back on NO_ROUTES_FOUND to the
