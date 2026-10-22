@@ -33,6 +33,7 @@ has no npm dependencies.
 | Watch (live trades on coins hatched in snakepit) | Live |
 | Streaming (browser camera or screen, or OBS) | Built: Cloudflare Stream live inputs, streamer pass paid and checked on-chain, tips and subscriptions paid wallet to wallet. Video is on when the server has its Cloudflare keys. |
 | Launchpad | Moved to snakepit (Hatch). The old launch form on this site forwards there. |
+| Burn log | Built (`server/burns.js`, `burnlog.js`): every $CAPES burn read from Solana, shown on the token page with its transaction. Switches on when the token address is set. |
 | Holder perks (cosmetic only) | Built and tested (`server/test_holder.js`); switch on when the token address is set. |
 
 The game world has computer-controlled adventurers that look like players, to keep quiet areas alive. They are never
@@ -63,6 +64,7 @@ node test_pit.js          # the snakepit bridge
 node test_plink.js        # linking a game account with snakepit
 node test_memesnake.js    # the MemeSnake live feed
 node test_crews.js        # MemeSnake's automated crews
+node test_burns.js        # the public burn log against a fake blockchain
 ```
 
 ## Building the game
