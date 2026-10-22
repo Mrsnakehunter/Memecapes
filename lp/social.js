@@ -23,9 +23,20 @@
   const who = (w) => `<a class="addr" href="#/u/${esc(w)}">${esc(nameOf(w) || short(w))}</a>`;
 
   // ---------- sign in: the wallet signs a short text; the server hands back a session for posting, chat and channels
-  let tok = '', tokW = ''; try { tok = localStorage.getItem('lp_tok') || ''; tokW = localStorage.getItem('lp_tokw') || ''; } catch (e) { }
-  const signed = () => { const m = LPC.me(); return !!(tok && m && m.address === tokW); };
+  let tok = '', tokW = '', pitW = ''; try { tok = localStorage.getItem('lp_tok') || ''; tokW = localStorage.getItem('lp_tokw') || ''; pitW = localStorage.getItem('lp_pitw') || ''; } catch (e) { }
+  // Signed in with the snakepit wallet: the Pit's /stream-link page signs the same message with the Privy wallet and
+  // comes back here with the session in the address bar (#/stream?pit=<token>&w=<wallet>); nothing goes to a server.
+  { const m = /[#&?]pit=([a-f0-9]{48})&w=([1-9A-HJ-NP-Za-km-z]{32,44})/.exec(location.hash);
+    if (m) { tok = m[1]; tokW = pitW = m[2]; try { localStorage.setItem('lp_tok', tok); localStorage.setItem('lp_tokw', tokW); localStorage.setItem('lp_pitw', pitW); } catch (e) { }
+      history.replaceState(null, '', location.pathname + location.hash.replace(/[?&]pit=[^&]*&w=[^&]*/, '')); } }
+  const PIT = String(MC.pit || '').replace(/\/+$/, '');
+  const pitLink = () => PIT + '/stream-link?srv=' + encodeURIComponent(String(MC.server || '').replace(/^ws/, 'http').replace(/\/ws\/?$/, '')) + '&back=' + encodeURIComponent(location.origin + location.pathname + '#/stream');
+  const whoAmI = () => LPC.me() || (pitW && tok && tokW === pitW ? { address: pitW, pit: true } : null);
+  const signed = () => { const m = whoAmI(); return !!(tok && m && m.address === tokW); };
+  function pitSignOut() { tok = ''; tokW = ''; pitW = ''; try { ['lp_tok', 'lp_tokw', 'lp_pitw'].forEach(k => localStorage.removeItem(k)); } catch (e) { } }
   async function signIn() {
+    if (whoAmI() && whoAmI().pit && signed()) return whoAmI();
+    if (!LPC.me() && !LPC.wallets().length && /^https:\/\/(pit\.memecapes\.com|snakepit-mu\.vercel\.app)$/.test(PIT)) { location.href = pitLink(); throw new Error('closed'); }
     const m = await needWallet(); if (tok && tokW === m.address) return m;
     const { msg } = await api('/so/nonce', { wallet: m.address });
     const sig = await LPC.signMessage(msg);
@@ -89,7 +100,7 @@
     });
   }
   function composer(opts) {
-    const m = LPC.me();
+    const m = whoAmI();
     return `<form class="composer" id="cmp">${m ? avatar(m.address) : avatar('')}<div><textarea placeholder="${opts.placeholder || "What's happening? Tag a coin with $TICKER"}" maxlength="280" id="cmpt"></textarea>
       <div class="row">${opts.coin ? cchip(opts.coin) : ''}<span class="cnt" id="cmpc">280</span><span class="sp"></span><button class="btn gold sm" type="submit">${m ? (signed() ? 'Post' : 'Sign in and post') : 'Connect wallet to post'}</button></div></div></form>`;
   }
@@ -185,8 +196,8 @@
   const mock = () => `<div class="mock" aria-hidden="true"><div class="mplayer">${avatar('MockStreamer111111111111111111111', 'lg')}<span class="badge live">LIVE</span><span class="vw">128 watching</span><div class="mcoin"><span class="ph cf">MY</span>$MYCOIN <b>Buy</b></div></div>
     <div class="mside"><div class="mchat"><div style="animation-delay:.1s"><b>Froggo</b> first</div><div style="animation-delay:.7s"><b>capeLord</b> that cape tho</div><div style="animation-delay:1.3s"><b>Dee</b> buying a bag 👀</div><div class="tip" style="animation-delay:2s">💛 <b>Dee</b> tipped <b>0.5 SOL</b></div><div style="animation-delay:2.8s"><b>Snake</b> gg</div></div><div class="mtips"><span>0.05</span><span>0.1</span><span>0.5</span><span class="on">1 SOL</span></div></div></div>`;
   async function stream() {
-    const m = LPC.me(); let me = null;
-    if (m && signed()) { try { me = await apiA('/so/me'); learn(me); myCh = me.channel; } catch (e) { } }
+    const m = whoAmI(); let me = null;
+    if (m && signed()) { try { me = await apiA('/so/me'); learn(me); myCh = me.channel; } catch (e) { if (m.pit && /sign in/i.test(e.message || '')) pitSignOut(); } }
     const step1 = !!m && signed(), step2 = !!(me && me.channel), live = me && me.channel && me.channel.live;
     const P = (me && me.pass) || { usd: C.streamPassUsd != null ? C.streamPassUsd : 20, days: C.streamPassDays || 30, needed: (C.streamPassUsd == null || C.streamPassUsd > 0) && !!(C.streamPassWallet || C.partner), active: false, until: 0 };
     const needPass = P.needed, step3 = !needPass || P.active;
@@ -247,7 +258,7 @@
     };
   }
   function channelForm(c) {
-    const m = LPC.me(); const d = document.createElement('div'); d.className = 'modal';
+    const m = whoAmI(); const d = document.createElement('div'); d.className = 'modal';
     d.innerHTML = `<form class="panel"><h3>${c ? 'Edit your channel' : 'Set up your channel'}</h3>
       <div class="field"><label>Channel name</label><input class="inp" id="chn" maxlength="24" value="${esc(c ? c.name : (nameOf(m.address) || ''))}" placeholder="Snake TV"></div>
       <div class="field"><label>About you</label><textarea class="inp" id="cha" maxlength="300" placeholder="What you stream and when">${esc(c ? c.about : '')}</textarea></div>
@@ -261,7 +272,7 @@
   }
   async function goLivePanel(me) {
     const box = $('#golive'); if (!box) return;
-    let mine = []; try { mine = (await api('/lp/coins?creator=' + LPC.me().address)).coins; } catch (e) { }
+    let mine = []; try { mine = (await api('/lp/coins?creator=' + whoAmI().address)).coins; } catch (e) { }
     let mode = 'browser', cat = me.channel.category, mint = '';
     box.innerHTML = `<div style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px"><h3>Go live</h3>
       <div class="field"><label>Title</label><input class="inp" id="glt" maxlength="80" placeholder="Launching $MYCOIN live" value="${esc(me.channel.title || '')}"></div>
@@ -302,9 +313,9 @@
   const iceDone = pc => new Promise(ok => { if (pc.iceGatheringState === 'complete') return ok(); const t = setTimeout(ok, 1500); pc.onicegatheringstatechange = () => { if (pc.iceGatheringState === 'complete') { clearTimeout(t); ok(); } }; });
   function liveControls(me) {
     const box = $('#golive'); if (!box) return;
-    box.innerHTML = `<div style="margin-top:14px"><div class="player" style="max-width:520px"><video id="pv" autoplay muted playsinline></video><div class="over"><span class="badge live">LIVE</span><span class="vw" id="pvv">0 watching</span></div></div><p class="small mute" style="margin-top:8px">Keep this tab open while you stream. Your channel page: <a href="#/ch/${esc(LPC.me().address)}">open it in another tab</a> to see chat.</p></div>`;
+    box.innerHTML = `<div style="margin-top:14px"><div class="player" style="max-width:520px"><video id="pv" autoplay muted playsinline></video><div class="over"><span class="badge live">LIVE</span><span class="vw" id="pvv">0 watching</span></div></div><p class="small mute" style="margin-top:8px">Keep this tab open while you stream. Your channel page: <a href="#/ch/${esc(whoAmI().address)}">open it in another tab</a> to see chat.</p></div>`;
     $('#pv').srcObject = pub.ms;
-    const t = setInterval(async () => { try { const r = await api('/st/chat?channel=' + LPC.me().address + '&after=999999999'); if ($('#pvv')) $('#pvv').textContent = r.viewers + ' watching'; } catch (e) { } }, 10000); onLeave(() => clearInterval(t));
+    const t = setInterval(async () => { try { const r = await api('/st/chat?channel=' + whoAmI().address + '&after=999999999'); if ($('#pvv')) $('#pvv').textContent = r.viewers + ' watching'; } catch (e) { } }, 10000); onLeave(() => clearInterval(t));
   }
   // playing a stream: WebRTC (WHEP) for browser streams, Cloudflare's player for OBS streams
   function embed(st, el) {
@@ -323,7 +334,7 @@
   async function ch(wallet) {
     app.innerHTML = '<div class="empty" style="margin:30px 0">Opening the channel…</div>';
     const c = await apiA('/st/ch/' + encodeURIComponent(wallet)); learn(c.who); c.tips.recent.forEach(t => learn(t.who));
-    const m = LPC.me(), mine = m && m.address === wallet;
+    const m = whoAmI(), mine = m && m.address === wallet;
     app.innerHTML = `<div class="sgrid"><div>
       <div id="player">${c.live ? '' : `<div class="player"><div class="off">${avatar(wallet, 'lg')}<div><b>${esc(c.name)}</b> is offline.</div><div class="small">Follow to hear when they go live.</div></div></div>`}</div>
       <div style="display:flex;gap:12px;align-items:center;margin:12px 0;flex-wrap:wrap">${avatar(wallet, 'lg')}<div style="min-width:0;flex:1"><h1 style="font-size:24px;margin:0">${esc(c.live && c.title ? c.title : c.name)}</h1><div class="small mute">${esc(c.name)} · ${esc(c.category || '')} · ${c.live ? `<span class="badge live">LIVE</span> ${c.viewers} watching` : 'offline'} · ${c.followers} followers · ${c.subs} subscribers</div></div>
@@ -359,7 +370,7 @@
   async function u(wallet) {
     app.innerHTML = '<div class="empty" style="margin:30px 0">Loading…</div>';
     const p = await apiA('/so/u/' + encodeURIComponent(wallet)); learn(p); p.posts.forEach(x => learn(x.who));
-    const m = LPC.me(), mine = m && m.address === wallet;
+    const m = whoAmI(), mine = m && m.address === wallet;
     app.innerHTML = `<div class="uhead">${avatar(wallet, 'lg')}<div style="flex:1;min-width:0"><h1>${esc(p.name || short(wallet))}</h1><div class="small mute">${short(wallet)} · ${p.followers} followers${p.x ? ' · <a href="' + esc(p.x) + '" target="_blank" rel="noopener nofollow">X</a>' : ''}${p.channel ? ' · <a href="#/ch/' + esc(wallet) + '">' + esc(p.channel.name) + (p.channel.live ? ' <span class="badge live">LIVE</span>' : '') + '</a>' : ''}</div>${p.about ? `<p style="margin:6px 0 0">${linkify(p.about)}</p>` : ''}</div>
       ${mine ? '<button class="btn line sm" id="pedit" type="button">Edit profile</button>' : '<button class="btn line sm" id="pfol" type="button">Follow</button>'}</div>
       <div class="stats num"><div class="stat"><span>Trades</span><b>${p.trades}</b></div><div class="stat"><span>Coins traded</span><b>${p.coins}</b></div><div class="stat"><span>SOL in</span><b>${sol(p.solIn)}</b></div><div class="stat"><span>SOL out minus in</span><b class="${p.net >= 0 ? 'up' : 'dn'}">${p.net >= 0 ? '+' : ''}${p.net.toFixed(2)}</b></div></div>
@@ -385,8 +396,8 @@
   }
 
   Object.assign(A.views, { watch, stream, ch, u });
-  A.setSocial({ avatar, nameOf, coinPosts, embed, signIn, signed });
+  A.setSocial({ avatar, nameOf, coinPosts, embed, signIn, signed, me: whoAmI, pitLink, pitSignOut });
   tape();
-  LPC.onChange(() => { if (!LPC.me()) { tok = ''; try { localStorage.removeItem('lp_tok'); } catch (e) { } } });
+  LPC.onChange(() => { if (!LPC.me() && !pitW) { tok = ''; try { localStorage.removeItem('lp_tok'); } catch (e) { } } });
   if (/^#\/(watch|stream|ch|u)/.test(location.hash)) A.route();
 })();
