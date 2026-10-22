@@ -92,6 +92,22 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (5 am): LARP burn finding ("page says half of launchpad income buys and burns, no burn instructions, ad-burn
+  list empty") + "everything else ready for larpcheck 100%". memecapes main: server/burns.js GET /burns (total = capesSupply0
+  - getTokenSupply, counts every burn; list = burns from the fee wallet + creator token accounts: both ATAs derived in
+  plain Node (sha256 + ed25519 off-curve check, matches web3 12/12) + getTokenAccountsByOwner, getSignaturesForAddress
+  `until` the last read sig, jsonParsed burn/burnChecked of the mint; launch tx = log "Instruction: InitializeVirtualPool"
+  = Snake Bite; persisted DATA/burns.json; test_burns.js 20). burnlog.js + #burns section on the token page (Live / Coming
+  soon / Planned tags), config.js capesCreator + capesSupply0 (token_launch.py sets capesCreator and writes the CA into
+  README). Claims fixed: launchpad lives in snakepit, online play is live, pot-dependent features say so, "After legal
+  review" gone. README: Who builds it. LIVE: /burns answers {on:false} until the mint is set. Pit: burn-desk branch
+  (merged into friday only, it needs the Acid Pit lib): BurnDesk on /capes (public: MemeCapes fees waiting, /api/fees
+  reads partnerQuoteFee of every hatched pool, 5-min cache; fee wallet connected via signTxAs: Claim per pool, then
+  acid(..., {memo "snakepit burn", noVenom, as FEE_CLAIMER})). Pit main: capes page copy (token wording, no Nov 2 line,
+  quests rewards planned). Telegram pinned post now links x.com/Mrsnakebaby. Still open: MemeSnake bot @username
+  (never read @BotFather: tokens), Railway ALERT_CHAT_IDS, Cloudflare Stream keys (Stream claims), Terms still say the
+  servers have not launched (changing Terms = bump termsVersion: ask Albert).
+
 - Oct 22 (4:30 am): LARP CHECK (larpcheck.live) scores the public GITHUB repo (code authenticity, commit timing, dev
   identity, consistency, README claims vs code, contract alignment), not the website. README.md was just a title:
   rewritten (what is here, Live/Built status, run/test/build). Repo description/topics: GitHub settings writes are

@@ -31,10 +31,9 @@ has no npm dependencies.
 | Online play: accounts, saves, chat, player trades | Live (server on Render) |
 | Website, support page, security page | Live |
 | Watch (live trades on coins hatched in snakepit) | Live |
-| Streaming (browser camera or screen, or OBS) | Built: Cloudflare Stream live inputs, streamer pass paid and checked on-chain, tips and subscriptions paid wallet to wallet. Video is on when the server has its Cloudflare keys. |
-| Launchpad | Moved to snakepit (Hatch). The old launch form on this site forwards there. |
-| Burn log | Built (`server/burns.js`, `burnlog.js`): every $CAPES burn read from Solana, shown on the token page with its transaction. Switches on when the token address is set. |
-| Holder perks (cosmetic only) | Built and tested (`server/test_holder.js`); switch on when the token address is set. |
+| Launchpad | Live in snakepit (Hatch); the launch links on this site open it |
+| Burn log: every $CAPES burn read from Solana, with its transaction (`server/burns.js`, `burnlog.js`) | Live from the token's first block (reads the chain once the token address is set) |
+| Holder perks, cosmetic only (`server/test_holder.js`) | Live from the token's first block (reads wallets once the token address is set) |
 
 The game world has computer-controlled adventurers that look like players, to keep quiet areas alive. They are never
 counted as players anywhere (the online count and `/who` list real players only), and the website says so in its FAQ.
