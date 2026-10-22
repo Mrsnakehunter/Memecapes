@@ -303,7 +303,7 @@
   async function publish(whip, ms) {
     if (!whip) throw new Error('No stream endpoint came back.');
     const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.cloudflare.com:3478' }], bundlePolicy: 'max-bundle' });
-    ms.getTracks().forEach(t => pc.addTransceiver(t, { direction: 'sendonly' }));
+    ms.getTracks().forEach(t => pc.addTransceiver(t, { direction: 'sendonly', streams: [ms] }));
     const offer = await pc.createOffer(); await pc.setLocalDescription(offer); await iceDone(pc);
     const r = await fetch(whip, { method: 'POST', headers: { 'Content-Type': 'application/sdp' }, body: pc.localDescription.sdp });
     if (!r.ok) throw new Error('The stream service refused the connection (' + r.status + ').');
@@ -323,10 +323,13 @@
     if (!el) return; if (!st.playUrl) { el.innerHTML = `<div class="player"><div class="off">${avatar(st.wallet, 'lg')}<div>Live, but the video is not available yet.</div></div></div>`; return; }
     if (!/^https:\/\/[a-z0-9-]+\.cloudflarestream\.com\//i.test(String(st.playUrl))) { el.innerHTML = `<div class="player"><div class="off">${avatar(st.wallet, 'lg')}<div>Live, but the video is not available yet.</div></div></div>`; return; }
     if (st.playKind === 'iframe') { el.innerHTML = `<div class="player"><iframe src="${esc(st.playUrl)}?autoplay=true&muted=true" sandbox="allow-scripts allow-same-origin allow-presentation" referrerpolicy="no-referrer" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Live stream"></iframe></div>`; return; }
-    el.innerHTML = `<div class="player"><video autoplay playsinline muted controls></video><div class="over"><span class="badge live">LIVE</span></div></div>`;
+    el.innerHTML = `<div class="player"><video autoplay playsinline muted controls></video><div class="over"><span class="badge live">LIVE</span></div><button type="button" class="btn gold sm unmute">🔊 Tap for sound</button></div>`;
     const v = $('video', el); const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.cloudflare.com:3478' }] });
     pc.addTransceiver('video', { direction: 'recvonly' }); pc.addTransceiver('audio', { direction: 'recvonly' });
-    pc.ontrack = e => { if (!v.srcObject) v.srcObject = e.streams[0]; };
+    // the picture and the sound arrive as two tracks: put both on one stream (the first stream alone had no sound)
+    const got = new MediaStream(); pc.ontrack = e => { got.addTrack(e.track); if (!v.srcObject) v.srcObject = got; };
+    // browsers only autoplay muted video, so sound is one tap away
+    const um = $('.unmute', el); um.onclick = () => { v.muted = false; v.volume = 1; v.play().catch(() => { }); um.remove(); }; v.onvolumechange = () => { if (!v.muted && um.isConnected) um.remove(); };
     (async () => { try { const o = await pc.createOffer(); await pc.setLocalDescription(o); await iceDone(pc); const r = await fetch(st.playUrl, { method: 'POST', headers: { 'Content-Type': 'application/sdp' }, body: pc.localDescription.sdp }); await pc.setRemoteDescription({ type: 'answer', sdp: await r.text() }); } catch (e) { el.innerHTML = `<div class="player"><div class="off">${avatar(st.wallet, 'lg')}<div>The stream could not be played right now.</div></div></div>`; } })();
     onLeave(() => { try { pc.close(); } catch (e) { } });
   }
