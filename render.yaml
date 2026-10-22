@@ -49,6 +49,8 @@ services:
         sync: false
       - key: CF_CUSTOMER_CODE
         sync: false
+      - key: STREAM_PASS_FREE  # wallets that stream without paying the pass (the team), space separated
+        sync: false
     disk:
       name: memecapes-data
       mountPath: /var/data
