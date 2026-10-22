@@ -92,6 +92,9 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (4 am): "MC auto showing, not the price, on the chart". Pit LiveChart: opens on MC (state `pick`, default
+  "mc", localStorage pit_chart_mode remembers a Price pick; mode falls back to price while supply is unknown). On
+  `buy-green` + `friday` (previews success), not live yet.
 - Oct 22 (3:50 am): "Strike red / Shed green is backwards (buys make green candles)". Pit branch `buy-green`
   (Vercel preview success; also merged into `friday`): Strike = mint (green) everywhere, Shed = red (bg-strike token,
   now meaning red/sell), incl. % picks, activity labels, BOUGHT badges; SNAKEPIT-BRIEF palette line updated. The old
