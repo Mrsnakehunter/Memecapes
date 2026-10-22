@@ -9,6 +9,8 @@ numbers in here or anywhere in the repo.
 - Owner: Albert (GitHub Mrsnakehunter, X @Mrsnakebaby), Ohio. Writes fast and casually; wants results, not questions.
   When he says "ship" or "keep going", ship and keep going.
 - Launch: Mon Nov 2, 2026. Server live about Oct 19, playtest Oct 19-25, freeze Oct 28.
+  Oct 22 (3 am) Albert: the token relaunch is the MORNING of Oct 22 (Hatch, with boosts); the Friday Oct 23 update =
+  Beat the Boss + payout button + streaming copy (branches beat-the-boss + friday-stream).
 
 ## Standing rules (never break)
 
