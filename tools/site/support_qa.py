@@ -124,10 +124,10 @@ q('account', 'What are the password rules?',
   'At least 8 characters. Use a password you do not use on any other site, ideally from a password manager. MemeCapes never emails you, so nobody from MemeCapes will ever ask for it.',
   ['How long must my password be?', 'Password requirements'], np='the password rules', k='password rules length')
 q('account', 'I forgot my password. How do I reset it?',
-  'There is no automatic reset yet, because accounts have no email or phone attached (we keep what we know about you to a minimum). Keep your password somewhere safe. If you are locked out, message @Mrsnakebaby on X from the account you play with and we will see what can be done, but we cannot promise recovery.',
+  'There is no automatic reset yet, because accounts have no email or phone attached (we keep what we know about you to a minimum). Keep your password somewhere safe. If you are locked out, message @memecapes on X from the account you play with and we will see what can be done, but we cannot promise recovery.',
   ['Forgot password', 'Can I recover my account?', 'How do I reset my password?', 'I lost my password'], vp='reset my password', np='password recovery', k='forgot reset recover password lost locked out', top=True)
 q('account', 'Can I change my password?',
-  'Not from inside the game yet. If your password may have leaked, stop using it elsewhere and message @Mrsnakebaby on X so we can help secure the account.',
+  'Not from inside the game yet. If your password may have leaked, stop using it elsewhere and message @memecapes on X so we can help secure the account.',
   ['How do I update my password?'], vp='change my password', k='change password update')
 q('account', 'Why does it say "Could not reach the game server"?',
   'The game could not open its connection to the server. The usual causes: you are on plain http instead of https (the site now sends you to https automatically; reload once), a very strict network or VPN is blocking the connection, or the server is being restarted. Wait a minute and try again. You can always choose Play offline in the meantime; an offline game saves in your browser.',
@@ -151,7 +151,7 @@ q('account', 'Can I have more than one account?',
   'You can make more than one, but please play fair: using several accounts to cheat, farm or get around a ban is against the rules and can get all of them suspended.',
   ['Are alts allowed?', 'Can I make a second account?'], np='multiple accounts', k='alt second account multiple')
 q('account', 'Can I delete my account?',
-  'Yes. Message @Mrsnakebaby on X from the account you play with and ask for the account to be deleted. Deleting is final: the character, items and Meme Coins are gone.',
+  'Yes. Message @memecapes on X from the account you play with and ask for the account to be deleted. Deleting is final: the character, items and Meme Coins are gone.',
   ['How do I remove my account?', 'Delete my data'], vp='delete my account', k='delete remove account data')
 q('account', 'How old do I have to be?',
   'You must be 18 or older to use MemeCapes. The game has crypto features, so it is not for children, and we do not knowingly collect anything from anyone under 18.',
@@ -163,7 +163,7 @@ q('account', 'Why was I logged out?',
   'The game logs you out when the same account logs in somewhere else, when the connection drops for too long, or when the server restarts for an update. Just log in again; your progress is saved on the server.',
   ['I keep getting disconnected', 'Why did the game kick me?'], np='being logged out', k='logged out kicked disconnected')
 q('account', 'Someone else is using my account. What do I do?',
-  'Log in and the other session is kicked. Then stop using that password anywhere, and message @Mrsnakebaby on X so we can help lock things down. Never share your password, even with someone who says they are from MemeCapes.',
+  'Log in and the other session is kicked. Then stop using that password anywhere, and message @memecapes on X so we can help lock things down. Never share your password, even with someone who says they are from MemeCapes.',
   ['My account was hacked', 'Someone stole my account'], np='a stolen account', k='hacked stolen account compromised')
 q('account', 'Why does my login say the name is locked?',
   'Too many wrong passwords in a row lock a name for a short while to stop password guessing. Wait a bit and try again carefully.',
@@ -189,7 +189,7 @@ q('online', 'How do I ignore someone?',
   'Type /ignore followed by their name. You will no longer see their chat or trade requests. /unignore turns it back.',
   ['How do I mute a player?', 'Block a player', 'Someone is spamming me'], vp='ignore a player', k='ignore mute block spam')
 q('online', 'How do I report a player?',
-  'Type /report, their name and a short reason, for example /report name scamming. Reports go to the team. For anything urgent or with screenshots, message @Mrsnakebaby on X.',
+  'Type /report, their name and a short reason, for example /report name scamming. Reports go to the team. For anything urgent or with screenshots, message @memecapes on X.',
   ['Report cheating', 'Report harassment', 'Someone scammed me'], vp='report a player', k='report cheat harass scam')
 q('online', 'Are there bots in the game?',
   'Yes. To keep the world lively while it grows, MemeCapes has a few dozen bots: computer-controlled characters that look and act like players. They walk around, chat, chop trees, fish and mine. They never trade, never use the Stock Market and never take your kills or resources, and there are fewer of them as more real people play. Bots are never counted as players in anything we post.',
@@ -524,7 +524,7 @@ q('coins', 'What are Meme Coins?',
   'The in-game money. You earn them from drops, quests, skilling and selling to shops, and spend them at shops, the Cape merchant and the Stock Market. They are not a token and have no cash value.',
   ['Are Meme Coins real money?'], np='Meme Coins', k='meme coins currency money', top=True)
 q('coins', 'Is there a $CAPES token?',
-  'Not yet. MemeCapes launches as a free game first. When the token exists, the contract address will be posted only on memecapes.com and on @Mrsnakebaby on X. Anything using the name before that is fake: do not buy it.',
+  'Not yet. MemeCapes launches as a free game first. When the token exists, the contract address will be posted only on memecapes.com and on @memecapes on X. Anything using the name before that is fake: do not buy it.',
   ['Where do I buy $CAPES?', 'What is the contract address?', 'Is $CAPES out?'], np='the $CAPES token', k='token capes contract address buy fake', top=True)
 q('coins', 'How does the $CAPES exchange work?',
   'At any bank you will be able to exchange Meme Coins for $CAPES, starting at 100 Meme Coins per $CAPES, at most 100 $CAPES a day per player. The rate steepens as the player pot drains so it lasts for years. The exchange opens once the public pot wallet is funded, after the token launches.',
@@ -713,7 +713,7 @@ q('agent', 'Why does the AI Agent page say offline or demo?',
   'The page shows the agent\'s real status. When it is not running, or when no activity has been posted yet, it says so instead of pretending.',
   [], np='the agent status', k='agent offline demo status')
 q('agent', 'Can I talk to the AI Agent?',
-  'Not yet. The page is a read-only feed. Questions for the team go to @Mrsnakebaby on X.',
+  'Not yet. The page is a read-only feed. Questions for the team go to @memecapes on X.',
   [], vp='talk to the AI Agent', k='chat talk agent')
 
 # ---------------------------------------------------------------- safety and scams
@@ -721,19 +721,19 @@ q('safety', 'Will MemeCapes ever ask for my seed phrase?',
   'Never. Nobody from MemeCapes will ever ask for your seed phrase, private key or password, and we never message you first to send money or to "verify" a wallet. Anyone who does is a scammer. Never type a seed phrase into any website.',
   ['Is it safe to give my seed phrase?', 'Someone from MemeCapes asked for my private key'], np='seed phrase requests', k='seed phrase private key never ask scam', top=True)
 q('safety', 'How do I know a link or address is official?',
-  'Official addresses and links are only posted on memecapes.com and by @Mrsnakebaby on X. Anything else using the MemeCapes name, logo or $CAPES is fake. When in doubt, type memecapes.com yourself.',
+  'Official addresses and links are only posted on memecapes.com and by @memecapes on X. Anything else using the MemeCapes name, logo or $CAPES is fake. When in doubt, type memecapes.com yourself.',
   ['Is this the real MemeCapes site?', 'Fake MemeCapes websites'], np='official links', k='official link fake site address')
 q('safety', 'I found a fake $CAPES token',
-  'Do not buy it. No $CAPES exists until it is announced on memecapes.com and @Mrsnakebaby, and when it does the address is posted there only. Report the fake to the platform where you saw it.',
+  'Do not buy it. No $CAPES exists until it is announced on memecapes.com and @memecapes, and when it does the address is posted there only. Report the fake to the platform where you saw it.',
   ['Someone is selling $CAPES'], np='fake tokens', k='fake token scam capes')
 q('safety', 'How does MemeCapes keep me safe?',
   'We never hold your wallet, keys or money; every payment goes straight from your wallet and you see the exact transfer before you approve it. The game server has an always-on guard that blocks attacks, password guessing and floods, and an outside watcher checks that every page you load is exactly the one we published. See the Security page.',
   ['Is MemeCapes secure?', 'What protects my account?'], np='security', k='secure safe guard sentinel watchtower')
 q('safety', 'What should I do if I think I was scammed?',
-  'Stop sending anything. Blockchain transfers cannot be reversed, so there is usually no way to get crypto back, but tell us: report the player in game with /report or message @Mrsnakebaby on X with screenshots so we can ban them and warn others.',
+  'Stop sending anything. Blockchain transfers cannot be reversed, so there is usually no way to get crypto back, but tell us: report the player in game with /report or message @memecapes on X with screenshots so we can ban them and warn others.',
   ['I got scammed', 'Can you reverse a transaction?'], np='being scammed', k='scammed reverse transaction report')
 q('safety', 'Safe habits for playing a game with crypto features',
-  'Use a separate password for MemeCapes, keep your seed phrase offline and never type it anywhere, read every transfer in your wallet before approving, trust only memecapes.com and @Mrsnakebaby for links and addresses, and treat anyone who messages you first about money as a scammer.',
+  'Use a separate password for MemeCapes, keep your seed phrase offline and never type it anywhere, read every transfer in your wallet before approving, trust only memecapes.com and @memecapes for links and addresses, and treat anyone who messages you first about money as a scammer.',
   ['Security tips', 'How do I stay safe?'], np='safety tips', k='tips safe habits security')
 q('safety', 'Is the game server guarded against attacks?',
   'Yes. An always-on guard inside the servers rate-limits floods, stops password guessing and blocks abusive addresses, and it can pause sign-ups and uploads on its own if something looks wrong. We do not publish the details, for obvious reasons.',
@@ -786,7 +786,7 @@ q('tech', 'The game says a new version is available',
   'Reload the page to get the latest build. Updates are small and your save is kept.',
   ['How do I update the game?'], vp='update the game', k='update new version reload build')
 q('tech', 'I see an error message, what do I do?',
-  'Reload first. If it keeps happening, note what you were doing, the device and browser, and send that with a screenshot to @Mrsnakebaby on X. Every report helps.',
+  'Reload first. If it keeps happening, note what you were doing, the device and browser, and send that with a screenshot to @memecapes on X. Every report helps.',
   ['How do I report a bug?', 'Found a bug'], vp='report a bug', k='bug error report crash')
 q('tech', 'Does the game work on a VPN or at school?',
   'Usually. Some strict networks block the game\'s live connection; the start screen then shows Offline and you can play offline. Try another network for online play.',
@@ -809,7 +809,7 @@ q('rules', 'Can I use a bot or macro?',
   'No. Botting, macros and exploiting bugs are against the rules and get accounts banned. The computer-controlled characters in the world are ours and are disclosed; players may not automate play.',
   ['Is autoclicking allowed?'], np='botting', k='bot macro autoclick cheat')
 q('rules', 'I was banned. Can I appeal?',
-  'Message @Mrsnakebaby on X with your username. Bans for cheating, scamming or harassment are rarely lifted, but every appeal is read.',
+  'Message @memecapes on X with your username. Bans for cheating, scamming or harassment are rarely lifted, but every appeal is read.',
   ['Ban appeal', 'Why was I banned?'], vp='appeal a ban', k='ban appeal banned')
 q('rules', 'Where are the Terms of Service?',
   'On the site under Terms (the link at the bottom of every page). You agree to them when you pass the age gate, and the site asks again whenever they change.',
@@ -833,7 +833,7 @@ q('rules', 'Can I use MemeCapes art for my own project?',
   'The game, its world, writing, art and the MemeCapes name and medallion belong to MemeCapes. Screenshots and videos for sharing are fine; copying the art or code for something else is not.',
   [], np='using the art', k='art copy use project')
 q('rules', 'Where do I send legal notices or takedown requests?',
-  'Message @Mrsnakebaby on X, or use the contact details at the bottom of the site. Include what the notice is about and how to reach you.',
+  'Message @memecapes on X, or use the contact details at the bottom of the site. Include what the notice is about and how to reach you.',
   ['DMCA', 'Copyright complaint'], np='legal notices', k='legal notice dmca takedown copyright')
 q('rules', 'Is MemeCapes gambling?',
   'No. There is no betting, no loot boxes bought with money and no cash prizes. Random drops in the game are earned by playing, not purchased.',
@@ -841,16 +841,16 @@ q('rules', 'Is MemeCapes gambling?',
 
 # ---------------------------------------------------------------- about
 q('about', 'Who makes MemeCapes?',
-  'One builder, @Mrsnakebaby on X, with AI tools, building in public. Follow there for every update.',
+  'One builder, @memecapes on X, with AI tools, building in public. Follow there for every update.',
   ['Who is the developer?', 'How big is the team?'], np='the team', k='who makes developer team builder', top=True)
 q('about', 'How do I contact support?',
-  'Search this page first; most answers are here. For anything else, message @Mrsnakebaby on X. In game, /report handles player reports. We never message you first and never ask for passwords or seed phrases.',
+  'Search this page first; most answers are here. For anything else, message @memecapes on X. In game, /report handles player reports. We never message you first and never ask for passwords or seed phrases.',
   ['How do I reach the team?', 'Contact', 'Is there a support email?'], vp='contact support', np='support', k='contact support help email', top=True)
 q('about', 'Is there a Telegram?',
   'Yes: the official group is MemeCapes x snakepit at t.me/memecapesXsnakepit, linked at the bottom of every page here. Admins there never message you first and never ask for passwords, seed phrases or money.',
   ['Where is the Telegram group?', 'Is there a community chat?', 'Telegram link'], np='the Telegram group', k='telegram group community chat tg')
 q('about', 'When is the next update?',
-  'The Roadmap page lists what is coming and in what order. Updates ship when they are fun; follow @Mrsnakebaby for the announcement.',
+  'The Roadmap page lists what is coming and in what order. Updates ship when they are fun; follow @memecapes for the announcement.',
   ['What is coming next?', 'When does the game launch?'], np='the next update', k='next update launch when roadmap')
 q('about', 'What is on the roadmap?',
   'Six story updates, three minigames, three new skills and the cape that ties it together: The Great Rug, Maps and Capes, Stonks and Bonds, The Jeet Invasion, The Copium Mines, The Burn and The Final Rug. The Roadmap page has the detail.',
@@ -859,10 +859,10 @@ q('about', 'Is MemeCapes finished?',
   'No, and it says so: it is in active development and built in public. Things change, get rebalanced and sometimes break; game data can be reset during testing.',
   ['Is the game in beta?'], np='the beta', k='beta finished development reset')
 q('about', 'Can I help or contribute?',
-  'Play, report bugs, and tell us what is fun and what is not. Feedback goes to @Mrsnakebaby on X. Projects that want to be in the game use the Shop.',
+  'Play, report bugs, and tell us what is fun and what is not. Feedback goes to @memecapes on X. Projects that want to be in the game use the Shop.',
   ['How can I support the project?', 'Are you hiring?'], vp='help the project', k='help contribute feedback hiring')
 q('about', 'Where can I follow the news?',
-  'On X at @Mrsnakebaby, and on the site: the Roadmap and the home page. Official news comes only from those places.',
+  'On X at @memecapes, and on the site: the Roadmap and the home page. Official news comes only from those places.',
   ['Is there a Discord?', 'Is there a Telegram?', 'Social media'], np='the news channels', k='news follow x twitter discord telegram social')
 q('about', 'Why meme coins?',
   'Because the internet became a world. Meme coins are the monsters, their real market caps set their levels, and the game pokes fun at all of it. You do not need to own or understand any coin to play.',

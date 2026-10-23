@@ -12,7 +12,7 @@ window.MC_CONFIG = {
 
   // ---- who to contact
   contactEmail: "",              // e.g. "memecapes@gmail.com" once you make it
-  xHandle: "Mrsnakebaby",        // shown as the contact until the email is set
+  xHandle: "memecapes",        // shown as the contact until the email is set
   governingLaw: "the State of Ohio, United States",
   termsVersion: "2026-10-10",    // change this date when the Terms change: everyone is asked to agree again
 
