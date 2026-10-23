@@ -168,6 +168,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}nav{padding-top:env(safe-ar
 
 
 
+
 /* Support page (sp-*) */
 .sp-hero{position:relative;text-align:center;padding:46px 0 10px}
 .sp-crest{width:140px;height:140px;margin:0 auto 6px;display:block;filter:drop-shadow(0 0 28px rgba(255,210,63,.35))}
@@ -372,7 +373,7 @@ var e=function(t){return String(t).replace(/[&<>"']/g,function(x){return'&#'+x.c
 <section><h2>The token track runs alongside</h2><div class="grid g3">
 <div class="card"><span class="pill green">Phase 0 · now</span><h3>Game first</h3><p class="mute">Free game and this site. No token. Build the player base and prove the game is fun on its own.</p></div>
 <div class="card"><span class="pill gold">Phase 1</span><h3>Accounts and server</h3><p class="mute">Built: accounts, cloud saves, chat, trades the server checks itself, moderation and backups. Leaderboards and a server-side economy come next, before any real value moves.</p></div>
-<div class="card"><span class="pill red">Phase 2</span><h3>$CAPES launch</h3><p class="mute">A 20% creator buy in the launch itself: half burned on the spot, half locked in Jupiter Lock and opening month by month over 24 months. The player pot is funded over time in a public wallet, and the exchange opens server-side, with daily caps, once the pot is funded.</p></div>
+<div class="card"><span class="pill red">Phase 2</span><h3>$CAPES launch</h3><p class="mute">A 20% creator buy in the launch itself: half burned on the spot, half locked in Streamflow and opening month by month over 24 months. The player pot is funded over time in a public wallet, and the exchange opens server-side, with daily caps, once the pot is funded.</p></div>
 </div></section>
 
 </main><main class="pg" id="pg-watch" hidden><a class="pgback" href="#home">&larr; Home</a><section style="max-width:760px;padding:30px 0"><h1>Watch</h1><p class="lead">Live streams, live trades and the people behind them are on the launchpad side of the site.</p><a class="btn gold" href="launch.html#/watch">Open Watch</a></section></main>
@@ -386,11 +387,11 @@ var e=function(t){return String(t).replace(/[&<>"']/g,function(x){return'&#'+x.c
 <div class="card"><div class="ic">🏦</div><h3>Withdraw at a bank</h3><p class="mute">100 Meme Coins = 1 $CAPES, paid to the wallet linked to your account from the public pot wallet. Every withdrawal has a 30-day wait: you can cancel and take your coins back until then, and every payout is a public transaction.</p></div>
 <div class="card"><div class="ic">⏱️</div><h3>100 a day cap</h3><p class="mute">Every player can take out at most 100 $CAPES a day, and the pot never promises more than it holds: a withdrawal is only accepted while the pot wallet can cover everything waiting.</p></div>
 </div></section>
-<section><h2>Planned supply</h2><p class="mute">Launch on a public bonding curve in the snakepit launchpad. Nothing is allocated in advance. In the transaction that creates the coin, the creator buys 20% of the supply and burns half of it on the spot (10%), so the supply drops to 900 million. Right after, the other 10% goes into Jupiter Lock, where nobody, the creator included, can cancel it or move it early: 1/24 of it opens each month for 24 months. Everything else is bought by the public. The player pot is not bought at launch: it is funded over time in the public ecosystem wallet (mostly bought with game income), and every addition is posted.</p>
+<section><h2>Planned supply</h2><p class="mute">Launch on a public bonding curve in the snakepit launchpad. Nothing is allocated in advance. In the transaction that creates the coin, the creator buys 20% of the supply and burns half of it on the spot (10%), so the supply drops to 900 million. Right after, the other 10% goes into a Streamflow lock, where nobody, the creator included, can cancel it or move it early: 1/24 of it opens each month for 24 months. Everything else is bought by the public. The player pot is not bought at launch: it is funded over time in the public ecosystem wallet (mostly bought with game income), and every addition is posted.</p>
 <div class="bar" style="margin:14px 0"><i style="width:80%;background:#39ff88"></i><i style="width:10%;background:#7f9cff"></i><i style="width:10%;background:#5a5f66"></i></div>
 <table><tr><th>Wallet</th><th>Share</th><th>Purpose</th><th>Rule</th></tr>
 <tr><td>Public</td><td>80% (about 89% of what is left after the burn)</td><td>Bought on the curve by anyone</td><td>—</td></tr>
-<tr><td>Creator, locked</td><td>10% (about 11% after the burn)</td><td>The person building this</td><td>Jupiter Lock, can't be cancelled: 1/24 opens each month for 24 months, nothing in the first month</td></tr>
+<tr><td>Creator, locked</td><td>10% (about 11% after the burn)</td><td>The person building this</td><td>Streamflow lock, can't be cancelled: 1/24 opens each month for 24 months, nothing in the first month</td></tr>
 <tr><td>Burned</td><td>10%</td><td>Bought by the creator at launch and burned in the same transaction</td><td>Gone for good: the supply is 900 million</td></tr>
 <tr><td>Player Pot</td><td>None at launch</td><td>Paid out to players through the exchange</td><td>Public ecosystem wallet, funded over time, every addition posted; 100/day per player, 30-day wait</td></tr>
 <tr><td>Marketing</td><td>No tokens</td><td>Boosts, ads, partner deals</td><td>Paid in SOL from a public marketing wallet</td></tr>
@@ -610,6 +611,7 @@ const cd=document.getElementById('cd');if(cd){const T=new Date('2026-11-02T12:00
 if('IntersectionObserver' in window){new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var p=v.play();if(p&&p.catch)p.catch(function(){})}else if(v.muted)v.pause()})},{threshold:.4}).observe(v)}
 b.onclick=function(){v.muted=false;v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});b.hidden=true};
 v.addEventListener('volumechange',function(){b.hidden=!v.muted})})();</script><script>(function(){var p=String((window.MC_CONFIG||{}).pit||"").replace(/\/+$/,"");if(!/^https:\/\/[a-z0-9.-]+$/.test(p)){var st=document.createElement("style");st.textContent="a[data-pit],.cr-by,#battle,section.lpshow,details.pitfaq{display:none!important}";document.head.appendChild(st);return}document.querySelectorAll("a[data-pit]").forEach(function(a){a.href=p+a.getAttribute("data-pit")});window.__PITB=p})();</script>
+
 
 
 
