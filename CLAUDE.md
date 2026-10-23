@@ -92,6 +92,22 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 22 (10 pm): "send money wallet to wallet like FOMO?" The Pit had Receive only. Pit main 8320458 (+ friday):
+  components/SendSheet.tsx (To = address or @username via GET /api/profile?handle=, coin picker SOL + holdings, Max keeps
+  0.001 SOL for fees, review shows fee + 0.00204 SOL rent when the recipient has no token account, sign, confirmSig,
+  Solscan), lib/send.ts (SystemProgram transfer; tokens: idempotent create-ATA ix [1] + TransferChecked ix 12, hand-built
+  like acid.ts; toBase for decimals). Wallet sheet (TopBar + PortfolioSnake) has "Send SOL or a coin to someone".
+  Tested by simulateTransaction on mainnet through the Pit's own /api/rpc: public/dev harness on a throwaway branch
+  (esbuild bundle of lib/send via /tmp/claude-0/sendt/build.mjs from the dbcs pattern, platform browser; the artifact
+  sandbox blocks RPC fetches and gists are blocked by the proxy, so a Vercel preview of the branch was the way). Lesson:
+  `git commit -a` skips untracked files: `git add` new files explicitly before pushing a branch.
+  Same evening: Tuesday launch considered then "as soon as the new X account exists"; told him honestly that $100M
+  volume in 4 weeks is lottery territory, that longer hype + the Hatch sniper fee is the right pair, and that pre-launch
+  allocations for friends read as a bundle. $nextcoin kit rendered (coin with a nextcoin tail: /tmp/claude-0/nextcoin/
+  nextcoin_tail.py post-process; banners via env TK/TS/COIN/OUTD/PFX in /tmp/claude-0/nextcoin/banners.py) + plain
+  snakepit avatar/header with no ticker (plain.py) in /mnt/user-data/outputs/nextcoin. GoDaddy has no free forwarding
+  any more: pit@memecapes.com = ImprovMX (Albert signs up; then MX records at GoDaddy).
+
 - Oct 22 (3:30 pm): "people need to pay with cash". Privy dashboard (app cmvc7cdca00mc0fl4kmd9paoo, /funding): Card
   onramps ON with Stripe + MoonPay, BUT without a KYB Privy's card providers only take USD via Stripe (needs react-auth
   3.33+; we are on 2.25 and v3 drops @solana/web3.js = a big migration) and AUD/BRL via MoonPay. So Pit main 523fa92
