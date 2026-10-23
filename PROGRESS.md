@@ -2,6 +2,14 @@
 
 _Last updated: October 23, 2026_
 
+## Oct 23, 2026: First Strike locks on Streamflow
+
+When a coin is hatched in the Pit with a locked First Strike, the creator's tokens now go into a Streamflow vesting lock
+instead of Jupiter Lock. Same rules: nothing opens in the first month, then an equal share each month; nobody can
+cancel, pause or move it, the creator included. Streamflow locks show up in more checkers (Solscan, RugCheck and
+trading tools that read Streamflow). Streamflow keeps a small share (0.19%) of the locked tokens as its fee. The coin
+page's "Creator lock" badge counts both kinds of lock.
+
 ## Oct 23, 2026: Beat the Boss, one-tap payouts, streaming small print
 
 - Beat the Boss: MemeSnake now plays every Weekly Agent Battle with its own agent, on the same prices and rules as

@@ -100,7 +100,8 @@ numbers in here or anywhere in the repo.
   (start = cliff = now + 30 d, period 30 d, cliffAmount = first share, per = deposit/N; nothing cancellable,
   transferable, pausable or top-up-able; deposit = balance less the fee-oracle token fee, 0.19%), the coin page's
   Creator lock badge adds the hatcher's Streamflow locks (searchStreams mint + sender). NEXT_PUBLIC_LOCK_PROVIDER=jupiter
-  switches back. Simulated on mainnet from a throwaway preview page: 24-month lock of USDC from Albert's Pit wallet,
+  switches back. LIVE Oct 23 6:35 pm ("make it live"): Pit main 48a348a (production ok, hatch chunks carry Streamflow); site token page +
+  support say the creator's 10% is in a Streamflow lock (the holder 1M lock on /capes stays Jupiter Lock). Simulated on mainnet from a throwaway preview page: 24-month lock of USDC from Albert's Pit wallet,
   OK, 66.7k CU, 784 bytes. GitHub branch deletes are blocked by the proxy: the throwaway branch sf-test was reset to main
   (Albert can delete it). A real Streamflow stream was not read back yet (none existed): check the badge after launch.
 
