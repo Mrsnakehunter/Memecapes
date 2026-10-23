@@ -105,8 +105,8 @@ numbers in here or anywhere in the repo.
   channel Private without the tick did nothing and the group's name change said "already taken"); the link input ignores
   typed text, so focus it by JS (setSelectionRange) and use Backspace. Site, launch.html and support link t.me/memecapes
   only. Still his: group photo (memecapes_telegram_avatar.png in outputs/nextcoin; the pane can't upload files), re-adding
-  the bots as admins, Railway ALERT_CHAT_IDS=-1004352172935 + TELEGRAM_URL=https://t.me/memecapes. Owner posts show as
-  the group ("Send anonymously" = his admin right "Remain anonymous"); turn it off in Administrators if he wants his name.
+  the bots as admins, Railway ALERT_CHAT_IDS=-1004352172935 + TELEGRAM_URL=https://t.me/memecapes. "Remain anonymous" is
+  OFF (Albert wants everyone's name shown; the box said "Send anonymously"); group photo set by Albert; members may add users.
 
 - Oct 22 (10 pm): "send money wallet to wallet like FOMO?" The Pit had Receive only. Pit main 8320458 (+ friday):
   components/SendSheet.tsx (To = address or @username via GET /api/profile?handle=, coin picker SOL + holdings, Max keeps
