@@ -97,7 +97,8 @@ numbers in here or anywhere in the repo.
   nothing; it is not in the groups Albert admins). He had made a new private CHANNEL (peer -1004467752371, "memecape X
   snakepit", 1 subscriber). Set up in the pane (web.telegram.org/a handles @links; /k kept showing his DM list: avoid):
   name "MemeCapes x snakepit", description, public username t.me/memecapes (was free), welcome post with every official
-  link posted and pinned. No discussion group linked (his other groups are unrelated: don't pick them). Site, launch.html
+  link posted and pinned. Albert: "they can't say stuff" (a channel is read-only) -> linked chat group made from the channel's Discussion →
+  Create a New Group: "MemeCapes x snakepit Chat" (peer -1004352172935), public at t.me/memecapeschat; site footers link both. Site, launch.html
   and support now link t.me/memecapes. Still his: channel photo (snakepit_telegram_avatar.png in outputs/nextcoin), a chat
   group if he wants one (Discussion → Create a New Group), re-adding the bots, Railway ALERT_CHAT_IDS + TELEGRAM_URL.
 
