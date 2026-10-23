@@ -93,6 +93,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 23 (5 am): Albert: "get rid of the old contract addresses from the repo, my choice". History REWRITTEN with
+  git-filter-repo (cloned from github.com/newren/git-filter-repo; pip has no package here) on a --mirror clone:
+  --replace-text + --replace-message turned the two earlier mints, the $PIT lock escrow and both earlier creator wallets
+  into [removed], and the private next ticker into "nextcoin"; dates kept, today's files identical; all 8 branches
+  force-pushed. Old SHAs are gone: re-clone or `git fetch -f` + reset any other copy. On-chain history is unchanged.
+
 - Oct 23 (3:50 am): FRIDAY UPDATE SHIPPED ("make it live"). Pit main 86d8532 = friday (Beat the Boss, one-tap payout;
   Vercel production ok). memecapes main 423d1dd = friday re-merged with main (conflicts: two blank lines in index.html +
   support/qa.json regenerated) + d5b9b46 home video media/memecapes-tour-4.mp4 (NEW kicker; tour-3 removed). Supabase
