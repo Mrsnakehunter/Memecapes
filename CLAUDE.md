@@ -93,6 +93,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 23 (1:45 pm): "why can't you open larpcheck?" WebFetch has an allowlist; the browser pane works (site access granted).
+  TESTED larpcheck.live: it makes NO GitHub API call and the same repo scored 4.2, 4.6, 7.3, 3.7, 5.6 on five scans
+  (famous names like torvalds are fixed at 9.8): its scores are random, so don't chase them. The other checker is
+  Uxento (Vision "Scan" on a post: past usernames, smart followers, CA history = the X account's tweets with contract
+  addresses; "PumpFun Lookup" by wallet or username: coins it deployed on pump.fun). A new X account has no CA history.
+
 - Oct 23 (5 am): Albert: "get rid of the old contract addresses from the repo, my choice". History REWRITTEN with
   git-filter-repo (cloned from github.com/newren/git-filter-repo; pip has no package here) on a --mirror clone:
   --replace-text + --replace-message turned the two earlier mints, the $PIT lock escrow and both earlier creator wallets
