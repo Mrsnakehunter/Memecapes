@@ -93,6 +93,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 23 (6:45 pm): MemeSnake bot /start still said "tracks $CAPES". memesnake-bots f8d48c3: config TICKER default blank;
+  coin_name() shows $TICKER only once TICKER AND TOKEN_CA are both set (pre-launch: "the MemeCapes x snakepit coin"),
+  so the private ticker can sit nowhere until launch; /buy + alert Buy buttons -> <PIT_URL>/?q=<CA> first, Jupiter
+  second (Hatch coins may not route on Jupiter at first); TELEGRAM_URL default t.me/memecapes, X_URL x.com/memecapes;
+  chat ID line only in private chats. LAUNCH DAY on Railway (Albert or the pane): TICKER, TOKEN_CA, ALERT_CHAT_IDS=
+  -1004352172935 (the group), then /alerts on in the group. Tests pass.
+
 - Oct 23 (3:20 pm): "do the lock through Streamflow instead" (Uxento reads Streamflow locks, not Jupiter Lock). Pit
   branch `streamflow-lock` (48a348a, Vercel preview success, NOT merged): lib/streamflow.ts (@streamflow/stream ^13,
   dynamic import; v13 exports SolanaStreamClient at the top level and ships its OWN @solana/web3.js, so give it the RPC
