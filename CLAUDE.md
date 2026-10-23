@@ -7,7 +7,7 @@ numbers in here or anywhere in the repo.
 ## Owner and dates
 
 - Owner: Albert (GitHub Mrsnakehunter), Ohio. Project X account: @memecapes (made Oct 23, display name snakepitapp; his old
-  personal @Mrsnakebaby is renamed 'trash can', not deactivated: never link it again). Writes fast and casually; wants results, not questions.
+  personal @Mrsnakebaby is renamed 'trash can', not deactivated: never link it again; @memecapes bio/location Solana/website memecapes.com set Oct 23, name left as is so the check stays). Writes fast and casually; wants results, not questions.
   When he says "ship" or "keep going", ship and keep going.
 - Launch: Mon Nov 2, 2026. Server live about Oct 19, playtest Oct 19-25, freeze Oct 28.
   Oct 22 (3 am) Albert: the token relaunch is the MORNING of Oct 22 (Hatch, with boosts); the Friday Oct 23 update =
