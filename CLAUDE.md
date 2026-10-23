@@ -93,6 +93,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 23 (2:50 am): "set up the telegram again". The old supergroup t.me/memecapesXsnakepit is GONE (the link resolves to
+  nothing; it is not in the groups Albert admins). He had made a new private CHANNEL (peer -1004467752371, "memecape X
+  snakepit", 1 subscriber). Set up in the pane (web.telegram.org/a handles @links; /k kept showing his DM list: avoid):
+  name "MemeCapes x snakepit", description, public username t.me/memecapes (was free), welcome post with every official
+  link posted and pinned. No discussion group linked (his other groups are unrelated: don't pick them). Site, launch.html
+  and support now link t.me/memecapes. Still his: channel photo (snakepit_telegram_avatar.png in outputs/nextcoin), a chat
+  group if he wants one (Discussion → Create a New Group), re-adding the bots, Railway ALERT_CHAT_IDS + TELEGRAM_URL.
+
 - Oct 22 (10 pm): "send money wallet to wallet like FOMO?" The Pit had Receive only. Pit main 8320458 (+ friday):
   components/SendSheet.tsx (To = address or @username via GET /api/profile?handle=, coin picker SOL + holdings, Max keeps
   0.001 SOL for fees, review shows fee + 0.00204 SOL rent when the recipient has no token account, sign, confirmSig,
@@ -208,7 +216,7 @@ numbers in here or anywhere in the repo.
   income buys and burns, no burn instructions, ad-burn list empty". Answer: Snake Bite = real burn in the launch tx;
   ongoing burns stay creator-signed (automatic = a server key = custody, against the rules); offered a one-tap
   claim + buy + burn for the fee wallet and a public burn log. Telegram: group t.me/memecapesXsnakepit (supergroup
-  peer -4445161618 = Bot API -1004445161618; old basic group -5106298088 migrated into it). Done in the pane: new
+  peer -4445161618 = Bot API -1004445161618; old basic group -5106298088 migrated into it; DELETED Oct 23, see above). Done in the pane: new
   description, welcome/rules post pinned; site + launch.html footers + support answer link it. Adding the bots /
   admin rights was DENIED by the safety classifier (permission grant): Albert adds MrSnake (admin: delete, ban,
   restrict, pin) + MemeSnake himself. Bots repo Mrsnakehunter/memesnake-bots (Railway "divine-courtesy"): /links now

@@ -847,7 +847,7 @@ q('about', 'How do I contact support?',
   'Search this page first; most answers are here. For anything else, message @memecapes on X. In game, /report handles player reports. We never message you first and never ask for passwords or seed phrases.',
   ['How do I reach the team?', 'Contact', 'Is there a support email?'], vp='contact support', np='support', k='contact support help email', top=True)
 q('about', 'Is there a Telegram?',
-  'Yes: the official group is MemeCapes x snakepit at t.me/memecapesXsnakepit, linked at the bottom of every page here. Admins there never message you first and never ask for passwords, seed phrases or money.',
+  'Yes: the official group is MemeCapes x snakepit at t.me/memecapes, linked at the bottom of every page here. Admins there never message you first and never ask for passwords, seed phrases or money.',
   ['Where is the Telegram group?', 'Is there a community chat?', 'Telegram link'], np='the Telegram group', k='telegram group community chat tg')
 q('about', 'When is the next update?',
   'The Roadmap page lists what is coming and in what order. Updates ship when they are fun; follow @memecapes for the announcement.',
