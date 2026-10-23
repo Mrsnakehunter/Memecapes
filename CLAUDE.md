@@ -93,6 +93,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 23 (3:50 am): FRIDAY UPDATE SHIPPED ("make it live"). Pit main 86d8532 = friday (Beat the Boss, one-tap payout;
+  Vercel production ok). memecapes main 423d1dd = friday re-merged with main (conflicts: two blank lines in index.html +
+  support/qa.json regenerated) + d5b9b46 home video media/memecapes-tour-4.mp4 (NEW kicker; tour-3 removed). Supabase
+  (project vzholjzivivoeyntgxwt, SQL editor via monaco setValue + Run): boss.sql + payout.sql + acid.sql run, Success
+  ("destructive" warning = the drop-policy lines only). Live: /api/battle/boss has the Boss (Snake on POPCAT) after the
+  next server tick; memesnake page has the Boss panel; streaming small print on the site. Video encode: frames from
+  /tmp/claude-0/ad3/make.py (non-LONG, 1673 frames, ~6 min) + music.json start 135.51, crf 25, loudnorm -14, 55.77 s.
+  Pay out button still needs Albert signed in with the pot wallet when a week closes.
+
 - Oct 23 (2:50 am): "set up the telegram again". The old supergroup t.me/memecapesXsnakepit is GONE (the link resolves to
   nothing; it is not in the groups Albert admins). He had made a new private CHANNEL (peer -1004467752371, "memecape X
   snakepit", 1 subscriber). Set up in the pane (web.telegram.org/a handles @links; /k kept showing his DM list: avoid):

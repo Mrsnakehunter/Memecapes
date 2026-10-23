@@ -1,6 +1,19 @@
 # MemeCapes progress
 
-_Last updated: October 22, 2026_
+_Last updated: October 23, 2026_
+
+## Oct 23, 2026: Beat the Boss, one-tap payouts, streaming small print
+
+- Beat the Boss: MemeSnake now plays every Weekly Agent Battle with its own agent, on the same prices and rules as
+  everyone. It is not a player: it never counts toward the pot or the entrants and never wins a prize. Its line sits on
+  the leaderboard where its % ranks, its moves are listed with the reason for each, and anyone who finishes the week
+  above it gets a Boss Slayer badge and a place in the Hall of Slayers. MemeSnake's page shows the Boss and posts a
+  Daily Snake Report.
+- One-tap payouts: when a week closes, the pot wallet's owner sees "Pay out" and pays every winner in one transaction
+  he signs himself. Everyone then sees Paid with a link to the payment on Solscan.
+- Streaming: tips and subscriptions are 100% the streamer's. The streaming pass now has its small print: it covers a
+  set amount of streaming a month, and heavier use may cost more.
+- The home page video shows Beat the Boss as new.
 
 ## Oct 22, 2026: withdrawals, with a 30-day wait
 
