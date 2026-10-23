@@ -93,6 +93,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 23 (3:20 pm): "do the lock through Streamflow instead" (Uxento reads Streamflow locks, not Jupiter Lock). Pit
+  branch `streamflow-lock` (48a348a, Vercel preview success, NOT merged): lib/streamflow.ts (@streamflow/stream ^13,
+  dynamic import; v13 exports SolanaStreamClient at the top level and ships its OWN @solana/web3.js, so give it the RPC
+  address string and rebuild its instructions/keypair with our classes), useHatch lock step = Streamflow vesting
+  (start = cliff = now + 30 d, period 30 d, cliffAmount = first share, per = deposit/N; nothing cancellable,
+  transferable, pausable or top-up-able; deposit = balance less the fee-oracle token fee, 0.19%), the coin page's
+  Creator lock badge adds the hatcher's Streamflow locks (searchStreams mint + sender). NEXT_PUBLIC_LOCK_PROVIDER=jupiter
+  switches back. Simulated on mainnet from a throwaway preview page: 24-month lock of USDC from Albert's Pit wallet,
+  OK, 66.7k CU, 784 bytes. GitHub branch deletes are blocked by the proxy: the throwaway branch sf-test was reset to main
+  (Albert can delete it). A real Streamflow stream was not read back yet (none existed): check the badge after launch.
+
 - Oct 23 (1:45 pm): "why can't you open larpcheck?" WebFetch has an allowlist; the browser pane works (site access granted).
   TESTED larpcheck.live: it makes NO GitHub API call and the same repo scored 4.2, 4.6, 7.3, 3.7, 5.6 on five scans
   (famous names like torvalds are fixed at 9.8): its scores are random, so don't chase them. The other checker is
