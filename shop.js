@@ -17,7 +17,7 @@
     return +(it.usd / (sol || C.solUsdFallback || 150)).toFixed(4);
   };
   var contact = function () {
-    return C.contactEmail ? '<a href="mailto:' + esc(C.contactEmail) + '">' + esc(C.contactEmail) + '</a>' : '<a href="https://x.com/' + esc(C.xHandle || 'Mrsnakebaby') + '" target="_blank" rel="noopener">@' + esc(C.xHandle || 'Mrsnakebaby') + ' on X</a>';
+    return C.contactEmail ? '<a href="mailto:' + esc(C.contactEmail) + '">' + esc(C.contactEmail) + '</a>' : '<a href="https://x.com/' + esc(C.xHandle || 'memecapes') + '" target="_blank" rel="noopener">@' + esc(C.xHandle || 'memecapes') + ' on X</a>';
   };
   function list() {
     root.innerHTML = (open ? '' : '<div class="warn"><b>The shop opens soon.</b> Payments are switched off until the official MemeCapes wallet address is posted here. Never pay an address you got anywhere else.</div>')
@@ -58,7 +58,7 @@
       var msg = 'MemeCapes order ' + cur.code + '\nItem: ' + cur.it.name + '\nPaid: ' + r.amount + ' ' + cur.ccy + '\nFrom wallet: ' + r.from + '\nTransaction: ' + sig + '\nContact: ' + who + '\nNotes: ' + note;
       out.innerHTML = '<div class="ok"><b>Payment found: ' + r.amount + ' ' + esc(cur.ccy) + '.</b> Last step: send us this order so we can make your ' + esc(cur.it.name.toLowerCase()) + '.</div><pre class="order">' + esc(msg) + '</pre>'
         + '<div class="ccy">' + (C.contactEmail ? '<a class="btn gold" href="mailto:' + esc(C.contactEmail) + '?subject=' + encodeURIComponent('MemeCapes order ' + cur.code) + '&body=' + encodeURIComponent(msg) + '">Email the order</a>' : '')
-        + '<a class="btn ' + (C.contactEmail ? 'ghost' : 'gold') + '" href="https://x.com/' + esc(C.xHandle || 'Mrsnakebaby') + '" target="_blank" rel="noopener">Send it on X</a><button class="btn ghost" id="scopyo">Copy the order</button></div>';
+        + '<a class="btn ' + (C.contactEmail ? 'ghost' : 'gold') + '" href="https://x.com/' + esc(C.xHandle || 'memecapes') + '" target="_blank" rel="noopener">Send it on X</a><button class="btn ghost" id="scopyo">Copy the order</button></div>';
       document.getElementById('scopyo').onclick = function () { try { navigator.clipboard.writeText(msg); this.textContent = 'Copied'; } catch (e) {} };
     });
   }

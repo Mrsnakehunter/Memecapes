@@ -25,12 +25,12 @@ def ca_link(m):
 def site_lines(t, mint, creator):
     """exact sentences on index.html that change at launch: (old, new, expected count)"""
     CA = ca_link(mint)
-    X = '<a href="https://x.com/Mrsnakebaby" style="color:var(--gold)">@Mrsnakebaby</a>'
+    X = '<a href="https://x.com/memecapes" style="color:var(--gold)">@memecapes</a>'
     return [
         ('<b>No $CAPES token exists yet.</b> When it does, the contract address will be posted only on this site and on ',
          '<b>$%s is live.</b> Official contract address: %s. It is posted only on this site and on ' % (t, CA), 1),
-        ('The token does not exist yet. When it launches, the contract address will be posted only on this site and on @Mrsnakebaby.',
-         'Official contract address: %s. It is posted only on this site and on @Mrsnakebaby.' % CA, 1),
+        ('The token does not exist yet. When it launches, the contract address will be posted only on this site and on @memecapes.',
+         'Official contract address: %s. It is posted only on this site and on @memecapes.' % CA, 1),
         ('<b>No $CAPES token exists yet.</b> The contract address will be posted only on this page and on ' + X +
          '. If you see a "$CAPES" anywhere before that, it is fake. Do not buy it.',
          '<b>Official contract address:</b> %s. It is posted only on this page and on %s. Any other "$%s" is fake. Do not buy it.' % (CA, X, t), 1),
@@ -40,9 +40,9 @@ def site_lines(t, mint, creator):
         (' The token launches only after the multiplayer server is ready, not before.', ' Live on Solana: the official contract address is below.', 1),
         ('The $CAPES side is optional and comes later.', 'The $%s side is optional.' % t, 1),
         ('<summary>Is there a token?</summary>Not yet. When there is, it will be announced here first. Anything before that is fake.',
-         '<summary>Is there a token?</summary>Yes: $%s on Solana. The only official contract address is %s, posted here and on @Mrsnakebaby. Anything else is fake.' % (t, CA), 1),
-        ('<b>No $CAPES token exists until we announce it on this website and on <a href="https://x.com/Mrsnakebaby">@Mrsnakebaby</a>.</b> Any token using the name before that is not ours. If and when $CAPES launches:',
-         '<b>The only official $%s token is %s, announced on this website and on <a href="https://x.com/Mrsnakebaby">@Mrsnakebaby</a>.</b> Any other token using the name is not ours. About $%s:' % (t, CA, t), 1),
+         '<summary>Is there a token?</summary>Yes: $%s on Solana. The only official contract address is %s, posted here and on @memecapes. Anything else is fake.' % (t, CA), 1),
+        ('<b>No $CAPES token exists until we announce it on this website and on <a href="https://x.com/memecapes">@memecapes</a>.</b> Any token using the name before that is not ours. If and when $CAPES launches:',
+         '<b>The only official $%s token is %s, announced on this website and on <a href="https://x.com/memecapes">@memecapes</a>.</b> Any other token using the name is not ours. About $%s:' % (t, CA, t), 1),
         ('Meme Coins are play money, $CAPES does not exist yet, and crypto can go to zero.', 'Meme Coins are play money, and crypto can go to zero.', 1),
         ('<p class="mute" style="margin-top:10px">More wallets (creator, game pot) are added here as they are used.',
          '<p class="mute" style="margin-top:10px">More wallets (game pot) are added here as they are used.', 1),

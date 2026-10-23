@@ -6,7 +6,8 @@ numbers in here or anywhere in the repo.
 
 ## Owner and dates
 
-- Owner: Albert (GitHub Mrsnakehunter, X @Mrsnakebaby), Ohio. Writes fast and casually; wants results, not questions.
+- Owner: Albert (GitHub Mrsnakehunter), Ohio. Project X account: @memecapes (made Oct 23, display name snakepitapp; his old
+  personal @Mrsnakebaby is renamed 'trash can', not deactivated: never link it again; @memecapes bio/location Solana/website memecapes.com set Oct 23, name left as is so the check stays). Writes fast and casually; wants results, not questions.
   When he says "ship" or "keep going", ship and keep going.
 - Launch: Mon Nov 2, 2026. Server live about Oct 19, playtest Oct 19-25, freeze Oct 28.
   Oct 22 (3 am) Albert: the token relaunch is the MORNING of Oct 22 (Hatch, with boosts); the Friday Oct 23 update =
@@ -92,6 +93,66 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 23 (2:50 am): "set up the telegram again". The old supergroup t.me/memecapesXsnakepit is GONE (the link resolves to
+  nothing; it is not in the groups Albert admins). He had made a new private CHANNEL (peer -1004467752371, "memecape X
+  snakepit", 1 subscriber). Set up in the pane (web.telegram.org/a handles @links; /k kept showing his DM list: avoid):
+  name "MemeCapes x snakepit", description, public username t.me/memecapes (was free), welcome post with every official
+  link posted and pinned. Albert: "they can't say stuff" (a channel is read-only), then "I want ONE telegram where everyone
+  can type". Telegram can't turn a channel into a group, so the GROUP is now the one Telegram: supergroup
+  "MemeCapes x snakepit" (peer -1004352172935, Bot API -1004352172935), public at t.me/memecapes, same description,
+  welcome post posted + pinned, everyone can post. The channel (peer -1004467752371) is private and unused: Albert can
+  delete it. Pane lessons: Telegram's Group/Channel type screen only saves when its blue tick is pressed (setting the
+  channel Private without the tick did nothing and the group's name change said "already taken"); the link input ignores
+  typed text, so focus it by JS (setSelectionRange) and use Backspace. Site, launch.html and support link t.me/memecapes
+  only. Still his: group photo (memecapes_telegram_avatar.png in outputs/nextcoin; the pane can't upload files), re-adding
+  the bots as admins, Railway ALERT_CHAT_IDS=-1004352172935 + TELEGRAM_URL=https://t.me/memecapes. "Remain anonymous" is
+  OFF (Albert wants everyone's name shown; the box said "Send anonymously"); group photo set by Albert; members may add users.
+
+- Oct 22 (10 pm): "send money wallet to wallet like FOMO?" The Pit had Receive only. Pit main 8320458 (+ friday):
+  components/SendSheet.tsx (To = address or @username via GET /api/profile?handle=, coin picker SOL + holdings, Max keeps
+  0.001 SOL for fees, review shows fee + 0.00204 SOL rent when the recipient has no token account, sign, confirmSig,
+  Solscan), lib/send.ts (SystemProgram transfer; tokens: idempotent create-ATA ix [1] + TransferChecked ix 12, hand-built
+  like acid.ts; toBase for decimals). Wallet sheet (TopBar + PortfolioSnake) has "Send SOL or a coin to someone".
+  Tested by simulateTransaction on mainnet through the Pit's own /api/rpc: public/dev harness on a throwaway branch
+  (esbuild bundle of lib/send via /tmp/claude-0/sendt/build.mjs from the dbcs pattern, platform browser; the artifact
+  sandbox blocks RPC fetches and gists are blocked by the proxy, so a Vercel preview of the branch was the way). Lesson:
+  `git commit -a` skips untracked files: `git add` new files explicitly before pushing a branch.
+  Same evening: Tuesday launch considered then "as soon as the new X account exists"; told him honestly that $100M
+  volume in 4 weeks is lottery territory, that longer hype + the Hatch sniper fee is the right pair, and that pre-launch
+  allocations for friends read as a bundle. $nextcoin kit rendered (coin with a nextcoin tail: /tmp/claude-0/nextcoin/
+  nextcoin_tail.py post-process; banners via env TK/TS/COIN/OUTD/PFX in /tmp/claude-0/nextcoin/banners.py) + plain
+  snakepit avatar/header with no ticker (plain.py) in /mnt/user-data/outputs/nextcoin. GoDaddy has no free forwarding
+  any more: pit@memecapes.com = ImprovMX (Albert signs up; then MX records at GoDaddy).
+
+- Oct 22 (3:30 pm): "people need to pay with cash". Privy dashboard (app cmvc7cdca00mc0fl4kmd9paoo, /funding): Card
+  onramps ON with Stripe + MoonPay, BUT without a KYB Privy's card providers only take USD via Stripe (needs react-auth
+  3.33+; we are on 2.25 and v3 drops @solana/web3.js = a big migration) and AUD/BRL via MoonPay. So Pit main 523fa92
+  (+ friday): lib/useFunding.ts cashUrl/openCash/cash() = MoonPay's PUBLIC checkout (buy.moonpay.com, no API key,
+  currencyCode sol + walletAddress + USD amount, min $20) in a new tab; EmptyWallet $25/$50/$100 buttons, ReceiveSheet
+  "Pay with cash" button. Checked in the pane: the link opens MoonPay's sign-in (Google/Apple/email) then card. Privy's
+  own fund() modal stays for exchange transfers. Privy app is STILL in development mode: Albert presses Upgrade to
+  production himself. Later option: complete Meld KYB in Privy for in-app USD cards.
+
+- Oct 22 (2:40 pm): Albert's screenshot "you took down the whole launch site": hiding the Pit from the site (pit "") had
+  removed the home LAUNCH block too. Now that coins are hidden inside the Pit, config.js pit = https://pit.memecapes.com
+  again (pitWas removed; one-line switch, no rebuild: site, game and launch.html read it at runtime; live check ok).
+  A player's Shed failed "Attempt to debit an account but found no record of a prior credit" = the wallet had 0 SOL for
+  the network fee. Pit main a58b3bd (+ friday): lib/useSwap.ts plainError() (no-SOL, slippage 0x1771, expired blockhash
+  in plain words, used by strike/shed/acid), components/GetSol.tsx (the gasless Add SOL card, Jupiter Ultra) now sells a
+  few dollars of whichever held coin is worth the most (prices from the store; stables count $1), not only USDC/USDT.
+
+- Oct 22 (1:50 pm): "I still want to claim fees off them but nobody sees them on the platform". Pit main 3fad273 (also in
+  friday): lib/hidden.ts, Vercel env PIT_HIDDEN_MINTS (Production; the four mints are in the chat, NOT here) = comma list
+  of hatched mints dropped from /api/trending (pin + DexScreener list), /api/hatch (public), /api/token?q=, /api/token/
+  <mint> (404), /api/public/stats, /api/fees public numbers. A signed-in PIT_ADMIN_WALLETS wallet (Privy token in the
+  Authorization header: MyHatches, BurnDesk, TokenSheet, deep links send it) still sees them, so Claim keeps working.
+  Checked live: all six public answers empty/404. Vercel add-variable form: clicking the Config card by coordinates did
+  NOT take (saved as Secret, editing a secret needs an email code): click the radio by ref, type values with the keyboard
+  (JS value-setting on the form is refused by the safety layer), then check the radios before Save. Albert is deleting his
+  X account (@Mrsnakebaby): pull its links from the site, launch.html footer and the Telegram pinned post once it is gone.
+  Asked for: pit@memecapes.com (GoDaddy forwarding) + an official SnakePit X account (openly "by MemeCapes", linked both
+  ways; never a cover account) and a new ticker (brainstormed in chat only; the chosen one stays out of this repo).
+
 - Oct 22 (1 pm): LAUNCH PULLED. $PIT was hatched at 11:44 (CA + lock escrow are in the chat, NOT here), the site/game/
   Pit were switched over (token_launch.py; lesson: it also rewrites tools/patch_*.py anchors -> `git checkout -- tools/
   patch_*.py` before build.sh, patch_ticker.py does the ticker), then a CA-history tool showed the X account's deleted
@@ -162,7 +223,7 @@ numbers in here or anywhere in the repo.
   income buys and burns, no burn instructions, ad-burn list empty". Answer: Snake Bite = real burn in the launch tx;
   ongoing burns stay creator-signed (automatic = a server key = custody, against the rules); offered a one-tap
   claim + buy + burn for the fee wallet and a public burn log. Telegram: group t.me/memecapesXsnakepit (supergroup
-  peer -4445161618 = Bot API -1004445161618; old basic group -5106298088 migrated into it). Done in the pane: new
+  peer -4445161618 = Bot API -1004445161618; old basic group -5106298088 migrated into it; DELETED Oct 23, see above). Done in the pane: new
   description, welcome/rules post pinned; site + launch.html footers + support answer link it. Adding the bots /
   admin rights was DENIED by the safety classifier (permission grant): Albert adds MrSnake (admin: delete, ban,
   restrict, pin) + MemeSnake himself. Bots repo Mrsnakehunter/memesnake-bots (Railway "divine-courtesy"): /links now

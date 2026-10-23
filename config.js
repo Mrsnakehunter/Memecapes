@@ -12,7 +12,7 @@ window.MC_CONFIG = {
 
   // ---- who to contact
   contactEmail: "",              // e.g. "memecapes@gmail.com" once you make it
-  xHandle: "Mrsnakebaby",        // shown as the contact until the email is set
+  xHandle: "memecapes",        // shown as the contact until the email is set
   governingLaw: "the State of Ohio, United States",
   termsVersion: "2026-10-10",    // change this date when the Terms change: everyone is asked to agree again
 
@@ -25,8 +25,7 @@ window.MC_CONFIG = {
   capesSupply0: 1000000000,      // whole tokens the coin started with, before any burn (the burn log counts down from this)
   ticker: "CAPES",               // the token ticker shown to players as $TICKER (tools/token_launch.py sets it on launch day)
   capesWallet: "",               // PUBLIC address that receives $CAPES deposits from players
-  pit: "",   // "" = the website, game and server show nothing about snakepit (it still runs at pit.memecapes.com); set "https://pit.memecapes.com" to show it again.
-  pitWas: "https://pit.memecapes.com",   // the Pit's address, kept here for when it is shown again
+  pit: "https://pit.memecapes.com",   // "" = the website, game and server show nothing about snakepit (it still runs there)
   solUsdFallback: 150,           // used only if the live SOL price can't be fetched
 
   // ---- shop (prices in US dollars; SOL is worked out at the live price, $CAPES at capesUsd)
