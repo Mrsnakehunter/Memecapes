@@ -97,10 +97,16 @@ numbers in here or anywhere in the repo.
   nothing; it is not in the groups Albert admins). He had made a new private CHANNEL (peer -1004467752371, "memecape X
   snakepit", 1 subscriber). Set up in the pane (web.telegram.org/a handles @links; /k kept showing his DM list: avoid):
   name "MemeCapes x snakepit", description, public username t.me/memecapes (was free), welcome post with every official
-  link posted and pinned. Albert: "they can't say stuff" (a channel is read-only) -> linked chat group made from the channel's Discussion →
-  Create a New Group: "MemeCapes x snakepit Chat" (peer -1004352172935), public at t.me/memecapeschat; site footers link both. Site, launch.html
-  and support now link t.me/memecapes. Still his: channel photo (snakepit_telegram_avatar.png in outputs/nextcoin), a chat
-  group if he wants one (Discussion → Create a New Group), re-adding the bots, Railway ALERT_CHAT_IDS + TELEGRAM_URL.
+  link posted and pinned. Albert: "they can't say stuff" (a channel is read-only), then "I want ONE telegram where everyone
+  can type". Telegram can't turn a channel into a group, so the GROUP is now the one Telegram: supergroup
+  "MemeCapes x snakepit" (peer -1004352172935, Bot API -1004352172935), public at t.me/memecapes, same description,
+  welcome post posted + pinned, everyone can post. The channel (peer -1004467752371) is private and unused: Albert can
+  delete it. Pane lessons: Telegram's Group/Channel type screen only saves when its blue tick is pressed (setting the
+  channel Private without the tick did nothing and the group's name change said "already taken"); the link input ignores
+  typed text, so focus it by JS (setSelectionRange) and use Backspace. Site, launch.html and support link t.me/memecapes
+  only. Still his: group photo (memecapes_telegram_avatar.png in outputs/nextcoin; the pane can't upload files), re-adding
+  the bots as admins, Railway ALERT_CHAT_IDS=-1004352172935 + TELEGRAM_URL=https://t.me/memecapes. Owner posts show as
+  the group ("Send anonymously" = his admin right "Remain anonymous"); turn it off in Administrators if he wants his name.
 
 - Oct 22 (10 pm): "send money wallet to wallet like FOMO?" The Pit had Receive only. Pit main 8320458 (+ friday):
   components/SendSheet.tsx (To = address or @username via GET /api/profile?handle=, coin picker SOL + holdings, Max keeps
