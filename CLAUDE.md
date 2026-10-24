@@ -93,6 +93,24 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 23 (11:55 pm): "a 4 minute video showcasing everything, better music, slowed down, no ticker, important stuff first,
+  10 s hook". /tmp/claude-0/ad6: make6.py (make5 with A=ad6, exec's plan6.py), plan6.py PLANS['long'] = 32 scenes, 121 bars
+  at 122 BPM (We Are Made Of Win = ad3/mus/stream.mp3 from 30.267 s: beat from bar 0, the track's own breakdown lands at
+  bars 13-15 = "And that is only the game", the drop at bar 16 = 0.4%) = 238 s. Scenes 4 bars (8 s) so the text reads.
+  New helpers: site_scene (browser mockup of a scrolling site capture + headline/sub, pmax caps the scroll), facts_scene
+  (bullets one per beat; the coin section with NO ticker, "what it is not", Telegram/X), skins_scene (wall of
+  models/skins/thumbs), breath_scene, progress bar + brand chip on every inner scene. Assets: ad6/siteshots.py (Playwright,
+  1280x800 dpr 1.5 scroll sequences of #story #bestiary #items #towns #quests #capes #roadmap #shop #faq #security #support
+  #home + launch.html#/stream (stream2; the OLD ad3 site/stream capture carries the retired "flat $20, only charge" copy:
+  never use it) and #/watch (watch2 = "Failed to fetch" offline: use the old ad3 watch); ad6/clips.json via ad4/gp4.py
+  (PORT 8791, GPOUT ad6/gp): sq_fish, sq_mine (S.fish / S.rocks nearest, go({k:'fish'|'rock'})), sq_town (orbit over
+  TW[0]), sq_street (TW[2]), sq_night (day .82), sq_high (TW[5], dist 30); ~2 s/frame. The game's side tab under the $ icon
+  says the placeholder ticker: plan6 _nolabel() paints it over with COIN on every sq/sq6 frame. Not used: roadmap (dates),
+  items/faq (placeholder ticker in text), shop (Coming soon). Render = ~55 min for 7,140 frames and the 30-min background
+  limit kills it: re-render the missing frames by index (job(n) after exec'ing make6 up to `if __name__`). encode.sh:
+  1:1 crf 21 + loudnorm -14 + 2 s fade; 16:9 = square centred on a blurred copy. Outputs outputs/x_ads/memecapes_full_tour_*.
+  Lesson: check extracted frames only after the encoder has really finished (a check that races the encode reads the old file).
+
 - Oct 23 (8:20 pm): "the best X ad video humanly possible... one with rattle and one without". /tmp/claude-0/ad5: make5.py
   (ad3/make.py + scenes + vids helpers, exec's plan5.py; FROM=n re-renders from frame n), plan5.py PLANS hero / hero_rattle:
   15 bars at 160 BPM (Swag Drop, ad3/mus/launch.mp3 from 72.38 s = the drop) = 22.5 s: hook MEME/COINS/HAVE/HP., Fight the
