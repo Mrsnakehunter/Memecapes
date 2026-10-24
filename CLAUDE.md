@@ -93,6 +93,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 23 (8:20 pm): "the best X ad video humanly possible... one with rattle and one without". /tmp/claude-0/ad5: make5.py
+  (ad3/make.py + scenes + vids helpers, exec's plan5.py; FROM=n re-renders from frame n), plan5.py PLANS hero / hero_rattle:
+  15 bars at 160 BPM (Swag Drop, ad3/mus/launch.mp3 from 72.38 s = the drop) = 22.5 s: hook MEME/COINS/HAVE/HP., Fight the
+  memes (free, browser), 0.4%, Hatch, Beat the Boss, Acid Pit, then Meme Cape + end card (plain) or $RATTLE reveal + end
+  card (rattle). brand_chip on every frame (X: brand inside 3 s). encode.sh <video>: 1:1 crf 20 + loudnorm -14 + fade, and
+  9:16 (square centred, blurred copy behind, vbars_<video>.png bands with brand line / CTA / honesty lines). Thumbs via
+  ffmpeg -ss. Output outputs/x_ads (4 MP4s ~7 MB, 2 thumbnails). QC rules kept: EXAMPLE DATA chip on every Pit screen,
+  no dates, "Mrsnakebaby" painted out (ad5/clean), coin art keyed from its dark square (rattle_coin_rgba.png). Lessons: make5
+  reads music_<VIDEO>.json (copy music.json to it or the sheet runs at 140 BPM); frames are %05d.png. X ad rules found:
+  crypto ads allowed with X's review (not paid partnerships), <= 30 s, captions for sound-off, 50-100 char copy, no hashtags.
+  The ticker is in the video files only, which stay out of the repo.
+
 - Oct 23 (6:45 pm): MemeSnake bot /start still said "tracks $CAPES". memesnake-bots f8d48c3: config TICKER default blank;
   coin_name() shows $TICKER only once TICKER AND TOKEN_CA are both set (pre-launch: "the MemeCapes x snakepit coin"),
   so the private ticker can sit nowhere until launch; /buy + alert Buy buttons -> <PIT_URL>/?q=<CA> first, Jupiter
