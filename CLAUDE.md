@@ -104,6 +104,14 @@ numbers in here or anywhere in the repo.
   reads music_<VIDEO>.json (copy music.json to it or the sheet runs at 140 BPM); frames are %05d.png. X ad rules found:
   crypto ads allowed with X's review (not paid partnerships), <= 30 s, captions for sound-off, 50-100 char copy, no hashtags.
   The ticker is in the video files only, which stay out of the repo.
+  Then (9:30 pm) "the rattle isn't touching the snake tail, the banner ends aren't green": the old rattle was pasted on
+  after the fact (rattle/rattle_tail.py). Now /tmp/claude-0/pit/coin_rattle.py (coin.py + the rattle built in): the tail
+  tapers to a blunt end (radius clip .42), six keratin beads grow out of P[0] along a bezier down past the ribbon's left
+  end, drawn after the letters and before body_front (the snake is in front of the ribbon, so the rattle is too); the
+  folds are the ribbon's green with a gold edge. Render: RIBBON='$RATTLE' RSIZE=125 RTRACK=10 python3 coin_rattle.py out.png;
+  kit: COIN=.. TK=.. TS=0.8 OUTD=.. PFX=rattle python3 /tmp/claude-0/rattle/banners.py still (the pit/ copy has a fixed
+  OUTD). Ad lesson: a glow made by blurring the coin's alpha stops at the image edge = a visible square; pad the sprite
+  (200 px) first. Kit in outputs/rattle_v2.
 
 - Oct 23 (6:45 pm): MemeSnake bot /start still said "tracks $CAPES". memesnake-bots f8d48c3: config TICKER default blank;
   coin_name() shows $TICKER only once TICKER AND TOKEN_CA are both set (pre-launch: "the MemeCapes x snakepit coin"),
