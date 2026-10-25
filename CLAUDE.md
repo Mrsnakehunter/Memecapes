@@ -93,6 +93,25 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 25 (7 pm): "Go" on TradingAgents (TauricResearch/TradingAgents, Apache-2.0, pinned e8f5503) for MemeSnake trading,
+  PAPER first. memesnake-bots main 9aee84b, folder boss_agent/ (README_BOSS.md): vendor.py registers a "solana_dex"
+  vendor into router.VENDOR_METHODS and swaps tools.build_verified_market_snapshot (the market analyst's Yahoo snapshot)
+  for ours; the mint is the instrument (InjectedState, the model never types it), rows are HOURLY candles (GeckoTerminal),
+  prices keep 4 significant digits (Yahoo code rounds to cents = 0.00 on memecoins); analysts market,news,fundamentals
+  (social skipped: StockTwits/Reddit by mint is junk); asset_type crypto; Grok via XAI_API_KEY (grok-4.6). book.py = paper
+  book with 0.4% venom + 0.3% + constant-product impact, hard rules (liquidity/volume/age/top-10/dev/mint+freeze
+  authority/honeypot/launch check, sizes, -30% stop, half at 2x, trailing, rug floor), unknown holders = SKIP (fail
+  closed). Two books: agents vs a trend+RSI baseline (boss_book.json / boss_baseline.json on branch boss-ledger, force-
+  pushed by the workflow). .github/workflows/boss.yml: tests on push, mark every 3 h, decide 14:41 UTC; no XAI_API_KEY
+  secret = mark only. Lessons: pip/PyPI is blocked here, so GitHub Actions is the test bench; Actions logs are blocked
+  (blob storage) but annotations are readable (::notice + check-runs/<job>/annotations); public Solana RPCs refuse
+  getTokenLargestAccounts from GitHub and Vercel (403/429/timeouts) and the Pit's middleware 403s server POSTs without
+  its Origin (by design, don't fake it): GeckoTerminal /tokens/<mint>/info gives holders count, top_10 % (pool excluded),
+  mint/freeze authority, honeypot, developer % keyless. Pit main 08baaf1: GET /api/public/holders?mint= (read-only,
+  fallback; needs a real RPC key in the Pit to answer). Albert's to do: xAI API key at console.x.ai -> GitHub secret
+  XAI_API_KEY (+ MEMESNAKE_KEY secret for feed posts). Real money only after it beats the baseline after costs for weeks,
+  then only the Boss's own wallet.
+
 - Oct 23 (11:55 pm): "a 4 minute video showcasing everything, better music, slowed down, no ticker, important stuff first,
   10 s hook". /tmp/claude-0/ad6: make6.py (make5 with A=ad6, exec's plan6.py), plan6.py PLANS['long'] = 32 scenes, 121 bars
   at 122 BPM (We Are Made Of Win = ad3/mus/stream.mp3 from 30.267 s: beat from bar 0, the track's own breakdown lands at
