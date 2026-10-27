@@ -96,6 +96,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 27: "are boosted DexScreener coins botted, true volume per boost level, what is a boost worth". Method: DexScreener
+  token-boosts/top + latest (Solana) -> pairs, then GeckoTerminal pools/multi (h24 buyers/sellers/buys/sells) from a
+  geckoterminal.com tab. Bot flags: trades per wallet > 8, < $10 per trade, volume/liquidity > 100x, -90% in 24 h.
+  Snapshot of 24 coins: ~9 clearly botted or washed (2 of the 3 500-boost coins), 8 down 62-97%. Boosts follow coins
+  already moving; they don't create buyers. Advice given: fire boosts once real buys are flowing, not at minute zero.
+
 - Oct 25 (7 pm): "Go" on TradingAgents (TauricResearch/TradingAgents, Apache-2.0, pinned e8f5503) for MemeSnake trading,
   PAPER first. memesnake-bots main 9aee84b, folder boss_agent/ (README_BOSS.md): vendor.py registers a "solana_dex"
   vendor into router.VENDOR_METHODS and swaps tools.build_verified_market_snapshot (the market analyst's Yahoo snapshot)
