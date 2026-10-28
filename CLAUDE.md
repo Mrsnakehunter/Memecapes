@@ -96,6 +96,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 28 (4 am): "30 top-line meme pictures of memes wearing the cape, made with ChatGPT's image creator". Made in Albert's
+  ChatGPT via the pane (outputs/memecapes_pics + zip, kept out of the repo). Declined real meme characters (Pepe, Doge, WIF...):
+  original dog/frog/cat/hippo/snake/bull etc. instead; cape described in words (red velvet, gold baroque border, crown clasp,
+  mint snake coin on the back) because the pane can't upload files. Pipeline: prompts in localStorage (mcP/mcS) on
+  chatgpt.com, each tab: execCommand('insertText') into [contenteditable] + click button[aria-label=Send] (works in hidden
+  tabs; typing doesn't); 6 tabs in parallel, ~3 min per round; download = fetch the blob img (naturalWidth>400) +
+  a[download].click() by JS (worked with the window hidden), lands in Downloads as <uuid>.tmp: match by byte size, then
+  device_stage_files. QC catches: a stray "$SNAKE" on an in-image screen (fixed by asking ChatGPT to redo with "MEMECAPES"),
+  a cape in the BEFORE panel. Flag "passive income" / rocket "send it" images as possible gain-implying copy.
+
 - Oct 27: "are boosted DexScreener coins botted, true volume per boost level, what is a boost worth". Method: DexScreener
   token-boosts/top + latest (Solana) -> pairs, then GeckoTerminal pools/multi (h24 buyers/sellers/buys/sells) from a
   geckoterminal.com tab. Bot flags: trades per wallet > 8, < $10 per trade, volume/liquidity > 100x, -90% in 24 h.
