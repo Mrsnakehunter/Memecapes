@@ -96,6 +96,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 28 (5 am): "use OUR cape (the website one with the meme patches) and our symbol, 15 with the ticker, 15 without".
+  ChatGPT made 15 empty background plates only; scratchpad capes/comp.py pastes the REAL tools/art/cape.webp and the real
+  coins (transparent renders: coin.py / coin_rattle3.py with NOBG=1 -> /tmp/claude-0/pit/mc_rgba.png, rattle_rgba.png),
+  Cinzel gold headline, mint links line, fine print (memes belong to their creators; ticker set adds "Not financial
+  advice"). Outputs outputs/cape_posts (+zip), out of the repo. Rattle rebuilt in 3D (coin_rattle3.py: one keratin tube
+  along a bezier from the tail tip, sawtooth segments wide at the lip, lip shadow, drawn OVER the tail so the tail goes
+  into the first segment; Albert: the flat beads looked pasted on and "under the tail"). Declined real memes/Elon wearing
+  the cape (endorsement + IP); Albert pushed back ("it's marketing", sent a Grok Pepe): held it, his own posts are his
+  call. Downloads: a JS a.click() works once per page load; reuse one tab and navigate between chats.
+
 - Oct 28 (4 am): "30 top-line meme pictures of memes wearing the cape, made with ChatGPT's image creator". Made in Albert's
   ChatGPT via the pane (outputs/memecapes_pics + zip, kept out of the repo). Declined real meme characters (Pepe, Doge, WIF...):
   original dog/frog/cat/hippo/snake/bull etc. instead; cape described in words (red velvet, gold baroque border, crown clasp,
