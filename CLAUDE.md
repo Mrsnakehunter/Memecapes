@@ -96,6 +96,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 28 (noon): "2 of the 15 pictures a day posted on X by you, not me". Nothing had been posted (the pane can't post
+  on his X). Built memesnake-bots (PRIVATE repo) x_poster/: queue.json (the 15 no-ticker cape posts + captions, no
+  dates/prices/ticker), img/*.jpg, post.py (hand-rolled OAuth 1.0a, checked against X's documented example signature;
+  v2 media upload, v1.1 fallback; POST /2/tweets; never prints keys), .github/workflows/x_post.yml (16:17 + 22:43 UTC,
+  workflow_dispatch dry; state.json on branch x-ledger so nothing posts twice; no secrets = notice only). Dry run on
+  Actions passed. Albert's to do: X developer app on @memecapes (Free, Read and Write), 4 secrets X_API_KEY,
+  X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET in memesnake-bots Actions secrets (he pastes them; never through me).
+  Ticker set waits for launch (add to queue.json then). gh workflow run needs GraphQL: use the REST dispatches route.
+
 - Oct 28 (5 am): "use OUR cape (the website one with the meme patches) and our symbol, 15 with the ticker, 15 without".
   ChatGPT made 15 empty background plates only; scratchpad capes/comp.py pastes the REAL tools/art/cape.webp and the real
   coins (transparent renders: coin.py / coin_rattle3.py with NOBG=1 -> /tmp/claude-0/pit/mc_rgba.png, rattle_rgba.png),
