@@ -96,6 +96,20 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 29 (2:25-3:30 pm): "make a game play [video] and how are the armor sets coming". Armour: Meshy image-to-3D
+  multi-view (front + back concept, A-pose, Ultra 2K, 35 credits each) -> free remesh 20k tris -> free auto-rig
+  (Humanoid, 1.7 m) for lv1 / lv40 / lv80 (credits 1,155 left). Meshy's NEW auto-rig has 64-91 bones (fingers +
+  Bone_0xx extras): download with Skeleton template "MeshyRig" (the dialog resets to Mixamo every time), then
+  `glb2rig.py X.glb models/arm_lvNN.json --rig28 --map tools/clipmap.json --pack` (new --rig28 = exactly
+  rigkit.NAMES, extras follow their parent). Retargeting the PLAYER's clips onto the new rig (npc_clips.py) bent arms
+  and flung shoulder plates, so lv40 got every motion natively in Meshy (adding library motions is free; Idle id 0 is
+  refused with a 400 by Meshy's API: use "Idle 1" = Idle_02; only 20 motions per download, the button greys out
+  above 20, so remove extras first; adding switches the pane to the Viewer, re-open Toolkit each time; pin the card
+  with position:fixed + real clicks; wait until the search list is stable before pinning). Then tools/armor_clips.py
+  copies lv40's clips to the other sets (same rig: running check 1-2 cm). glb2rig --hands-from now reads packed
+  ('fb') clips. Models in models/arm_lv01/40/80.json (~1.7-2 MB, NOT committed, NOT in game yet: armour isn't
+  equippable as a body yet; emotes not on armour yet = next round of 20 in Meshy). Preview: outputs/armor_3d.
+
 - Oct 29 (2:45-4 am): "yes ship + armour concept art", then a 45 s X video, YouTube kit. SHIPPED build 20261029064807
   (main 708a1ec: MemeCape v3, weapons carry, loading screen; live version.json checked in the pane; gh pages API is
   blocked by the proxy). Armour concept: 9 sets in his ChatGPT (outputs/armor_concepts + sheet; Lv1 Paper Hands, 10 Copper

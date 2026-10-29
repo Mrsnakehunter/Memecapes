@@ -12,6 +12,7 @@ same way; the hands get the same quarter turn as tools/pose_hands.py (hand bone 
 Works for any number of bones (Meshy's newer rig has 66 with fingers, the older one 28).
 --map: rename Meshy's motions to the game's clip names (see tools/clipmap.json); motions not in the map are left out.
 --pack: store frames as 16-bit numbers (about 3x smaller files).
+--rig28: keep only the game's 28 bones in rigkit.NAMES order (for tools/npc_clips.py), everything else follows its parent.
 --drop-fingers: fingers move with the hand (fewer bones, smaller files; fingers are too small to see in game).
 Clips other than Death have their sideways drift removed, so the character stays on its tile.
 "_trim" in the map keeps only part of a motion: {"Stab": [start, end]} in seconds.
@@ -23,7 +24,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import addclips as A
 
 ap = argparse.ArgumentParser(); ap.add_argument('src'); ap.add_argument('dst')
-ap.add_argument('--hands-from'); ap.add_argument('--map'); ap.add_argument('--extra', nargs='*', default=[]); ap.add_argument('--pack', action='store_true'); ap.add_argument('--drop-fingers', action='store_true'); ap.add_argument('--tex', type=int, default=1024); ap.add_argument('--q', type=int, default=82)
+ap.add_argument('--hands-from'); ap.add_argument('--map'); ap.add_argument('--extra', nargs='*', default=[]); ap.add_argument('--pack', action='store_true'); ap.add_argument('--drop-fingers', action='store_true'); ap.add_argument('--rig28', action='store_true'); ap.add_argument('--tex', type=int, default=1024); ap.add_argument('--q', type=int, default=82)
 a = ap.parse_args()
 
 r = A.Rig(a.src); J, B = r.J, r.B
@@ -48,6 +49,20 @@ if a.drop_fingers:
     keep = sorted(set(target)); newi = {k: i for i, k in enumerate(keep)}
     JI = np.vectorize(lambda k: newi[target[k]])(JI)
     print(f'fingers dropped: {nj} -> {len(keep)} bones')
+if a.rig28:  # the game's exact 28-bone layout (rigkit.NAMES order); fingers and extra bones follow their nearest kept ancestor
+    import rigkit
+    clean = [n.split(':')[-1] for n in names]
+    keep = [clean.index(n) for n in rigkit.NAMES]
+    jpos = {j: k for k, j in enumerate(r.joints)}
+    def up28(k):
+        while k not in keep:
+            p = r.parent[r.joints[k]]
+            while p >= 0 and p not in jpos: p = r.parent[p]
+            k = jpos[p]
+        return k
+    newi = {k: i for i, k in enumerate(keep)}
+    JI = np.vectorize(lambda k: newi[up28(k)])(JI)
+    print(f'rig28: {nj} -> 28 bones')
 V = (np.c_[P, np.ones(len(P))] @ N.T)[:, :3]
 Nn = Nn / np.maximum(np.linalg.norm(Nn, axis=1, keepdims=True), 1e-9)
 # weights: keep 4, normalise, pack to bytes so they still sum to 255
@@ -69,7 +84,8 @@ BR = BL = None
 if a.hands_from:
     d0 = json.load(open(a.hands_from)); n0 = d0['nj']; wc = next(c for c in d0['an'] if c['n'] == 'Walking')
     RH0 = 16 if n0 == 28 else None
-    Bs = [np.linalg.inv(A.m44(np.array(wc['f'][i]).reshape(n0, 12)[RH0])) @ A.m44(h) for i, h in enumerate(wc['hand'])]
+    import rigkit; WF = rigkit.clip_frames(wc)   # packed ('fb') or plain ('f') frames
+    Bs = [np.linalg.inv(WF[i, RH0]) @ A.m44(h) for i, h in enumerate(wc['hand'])]
     BR = np.mean(Bs, axis=0); U, _, Vt = np.linalg.svd(BR[:3, :3]); BR[:3, :3] = U @ Vt
     G = [np.linalg.inv(r.ibm[k]) for k in range(nj)]
     RH, LH = names.index('RightHand'), names.index('LeftHand')
