@@ -96,6 +96,22 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 29 (2:45-4 am): "yes ship + armour concept art", then a 45 s X video, YouTube kit. SHIPPED build 20261029064807
+  (main 708a1ec: MemeCape v3, weapons carry, loading screen; live version.json checked in the pane; gh pages API is
+  blocked by the proxy). Armour concept: 9 sets in his ChatGPT (outputs/armor_concepts + sheet; Lv1 Paper Hands, 10 Copper
+  Coin, 20 HODL Iron, 30 Bull Steel, 40 Gold Rush, 50 Diamond Hands, 60 Whale Plate, 70 Moonforged, 80 Legend of the
+  Meme; front+back A-pose for Meshy); waiting on his picks. a[download] files land in Downloads as <uuid>.tmp first and
+  get their names a minute later: match by size. Video: /tmp/claude-0/ad8 (make8.py = make5 + plan8.py, Epic Trailer
+  mmo.mp3 from 108.8556 s, 22 bars = 44.7 s, climax at bar 11; encode8.sh -> outputs/x_ads/memecapes_new_update_1x1/
+  9x16). Footage: gp5.py (gp4 + plan fps) at 15 fps, dpr 1, viewport 980x720 (the game canvas is the left 720 px; a 720
+  viewport leaves the right third blank), HUD hidden + #ldx hidden; one job at a time (2 CPUs: two in parallel timed
+  out); sources 'n8:clip@speed@frame'. xp 2e7 kills Bonk in ~2.5 s: use the first frames, slowed. YouTube kit in
+  outputs/youtube: title/description/tags (no other games' names), watermark 150, banner 2560x1440 (safe 1546x423),
+  profile 800, 4 thumbnails (ChatGPT key art + text by thumb.py). AI disclosure: No (stylized game footage, Pixabay
+  music). Branch anim-blend (NOT shipped): tools/patch_blend.py crossfade in qMdl (actors matched by model + position,
+  0.2 s, 0.11 s around NCL attacks/Hit) + held-weapon grip blend in qHold; needs an in-game test. Albert named me
+  "Stitch" (his call; his favourite Disney character, so never put Disney's Stitch in anything public).
+
 - Oct 29 (1:30 am): "capes clumped in the middle, no M crown, memes only, research how classic MMOs wear capes, armour
   by level, a loading screen after login, modern MMO, look at ChatGPT/'astrol' (= Astrocade)". Branch oct29-update =
   main + weapons-carry + memecape-v2 (now v3) + loading-screen; build passes, test-hook grep 0; NOT shipped.
