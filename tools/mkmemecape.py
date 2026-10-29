@@ -1,121 +1,276 @@
 #!/usr/bin/env python3
-"""The MemeCape on the caped bodies, like every other cape (models/player_memecape.json, playerf_memecape.json).
+"""The MemeCape v3: a real wide cape on the plain player bodies (models/player_memecape.json, playerf_memecape.json).
 
-Before, the MemeCape (and the Quest cape) were a separate stiff cape shape drawn behind the character: it did not
-move with the body, so it hung off one shoulder when the character turned, walked or swung. Every other cape is
-part of the character (the caped bodies made in Meshy) and moves with it.
+v1/v2 painted the MemeCape onto the caped bodies' own cape: a narrow strip cut into dozens of little texture
+islands, so the meme pictures had to bunch up in the middle, came out small, and seams ran through them.
 
-Now the MemeCape is the caped body too:
-  - the MemeCape pattern is laid out in the cape's own 3D space (so it reads as one picture although the texture
-    is cut into pieces): red velvet with faint gold embroidery, the MemeCapes coin under the collar, staggered rows
-    of gold-framed medallions with the game's own meme characters (tools/art/memecape), a gold border down both
-    edges and along the hem; the cape's folds and shading are kept (each texel's brightness multiplies it);
-  - the inside of the cape is dark red velvet;
-  - the gold crown is part of the model, on the head bone, so it stays on the head through every motion.
+v3 builds its own cape and adds it to the plain body (same outfit, same 28-bone rig and motions):
+  - a wide cloth that sits on the shoulders, falls over the shoulder blades and hangs to mid-calf, flaring
+    out towards the hem, curved round the back, with soft pleats that deepen towards the hem;
+  - designed in the standing pose (Idle, first frame) and turned back into the rest pose by inverting each
+    vertex's own skin matrix, so it looks exactly as designed when the character stands;
+  - the top follows the upper back and shoulders, the middle the spine and hips, and the lower part also
+    follows the thighs a little, so it sways with every step instead of hanging stiff;
+  - it has its own clean area of a 2048 texture (the body keeps its texture in one quarter), so the pattern is
+    painted on one flat sheet: the game's own meme characters packed edge to edge in gold-corded patches on red
+    velvet, a gold border and hem, a dark red lining inside;
+  - the gold crown stays on the head bone.
 usage: python3 tools/mkmemecape.py [--preview]       (run from the repo root)
 """
 import base64, io, json, math, sys
 import numpy as np
 from PIL import Image
+from scipy.ndimage import map_coordinates
+from scipy.spatial import cKDTree
 sys.path.insert(0, 'tools')
-from capeskins import load, posmap, S
+import rigkit
 
-BODIES = {'player': 'models/player_cape.json', 'playerf': 'models/playerf_cape.json'}
-HEAD = 5   # head bone of the caped bodies (22-bone rig)
-
-
+BODIES = {'player': 'models/player.json', 'playerf': 'models/playerf.json'}
+HEAD = 5                      # Head bone of the 28-bone rig
+TS = 2048                     # texture size
 ART = 'tools/art/memecape'
-# the game's own meme characters, one per medallion (portraits cut from their 3D renders)
+# the game's own meme characters, one per patch (portraits cut from their 3D renders)
 FACES = ['bonk', 'shibe', 'popcat', 'froggo', 'mog_coin', 'floki', 'bouncy_hippo', 'gigachad', 'fartcoin', 'slerf',
          'nutty_the_squirrel', 'book_of_meme', 'golden_hound', 'lamp_genie', 'brainrot_jester', 'shiba_inu',
          'the_frozen_shibe', 'rich_wojak', 'snack_shibe']
 BACKS = [(28, 92, 120), (92, 40, 128), (196, 98, 22), (26, 110, 64), (30, 64, 140), (150, 30, 40), (20, 120, 120),
          (120, 90, 20), (70, 30, 90)]
 
+# cape shape (metres, standing pose; +y up, the back of the body is -z)
+NU, NV = 25, 41               # grid across and down
+TOP_Y, HEM_Y = 1.43, 0.30     # sits on the shoulders, hangs to mid-calf
+HW_TOP, HW_HEM = .17, .34     # half width at the shoulders and at the hem
+CLEAR = .035                  # gap kept between the cloth and the body
+TORSO = {0, 1, 2, 3, 4, 8, 13}  # bones the upper cape may follow (no head, no arms)
+LEG = {'L': 18, 'R': 23}      # LeftUpLeg (+x side), RightUpLeg (-x side)
+
 
 def medallions():
-    """128 px round medallion faces on jewel-coloured enamel"""
+    """128 px faces on jewel-coloured enamel (black studio backgrounds count as background)"""
     out = []
     yy, xx = np.mgrid[0:128, 0:128]; rr = np.hypot(xx - 63.5, yy - 63.5) / 64
     for i, n in enumerate(FACES):
         im = np.asarray(Image.open(f'{ART}/{n}.png').convert('RGBA')).astype(float)
         bc = np.array(BACKS[i % len(BACKS)], float)
-        bg = bc[None, None] * (1.15 - .45 * rr[..., None])           # enamel, lighter in the middle
-        a = im[..., 3:4] / 255
-        rgb = im[..., :3]
-        dark = (rgb.max(2, keepdims=True) < 26) & (a > .5)          # black studio backgrounds count as background
-        a = np.where(dark, 0, a)
+        bg = bc[None, None] * (1.15 - .45 * rr[..., None])
+        a = im[..., 3:4] / 255; rgb = im[..., :3]
+        a = np.where((rgb.max(2, keepdims=True) < 26) & (a > .5), 0, a)
         out.append(rgb * a + bg * (1 - a))
-    logo = np.asarray(Image.open(f'{ART}/_logo.png').convert('RGBA').resize((128, 128), Image.LANCZOS)).astype(float)
-    la = logo[..., 3:4] / 255
-    logo = logo[..., :3] * la + np.array([120, 14, 26.]) * (1 - la)
-    return out, logo
+    return out
 
 
-def pattern(X, Y, u, v, top, half):
-    """the MemeCape: red velvet, gold-framed medallions in staggered rows, the MemeCapes coin at the top,
-    a gold embroidered border. X, Y in metres (X from the cape's middle, seen from behind +X is on the left)."""
-    faces, logo = medallions()
-    n = len(X)
-    # velvet with a faint gold diamond embroidery
-    out = np.zeros((n, 3)) + np.array([150., 18, 34]) * (1 - .35 * v)[:, None]
-    q1, q2 = (X * 26 + Y * 26) % 1, (X * 26 - Y * 26) % 1
-    emb = (np.minimum(np.minimum(q1, 1 - q1), np.minimum(q2, 1 - q2)) < .05)
-    out[emb] = out[emb] * .7 + np.array([214., 168, 60]) * .3
-    R, RING = .066, .011
-    def disc(cx, cy, r, img):
-        dx, dy = -(X - cx), (cy - Y)                                # image x runs left to right seen from behind
+def sample(img, px, py):
+    return np.stack([map_coordinates(img[..., c], [py, px], order=1, mode='nearest') for c in range(3)], -1)
+
+
+# ---------------------------------------------------------------- geometry
+def back_z(B, y, hw):
+    """the back of the body at height y across |x| < hw (the furthest-back point), or None"""
+    s = (np.abs(B[:, 1] - y) < .035) & (np.abs(B[:, 0]) < hw)
+    return B[s, 2].min() if s.any() else None
+
+
+def sheet(Vp, body):
+    """the cape's points in the standing pose, (NV, NU, 3), plus arc length along it and its half widths"""
+    B = Vp[body]
+    ys = np.linspace(TOP_Y, HEM_Y, 200)
+    hw = lambda y: HW_TOP + (HW_HEM - HW_TOP) * ((TOP_Y - y) / (TOP_Y - HEM_Y)) ** .8
+    # centre line: from on top of the shoulders, back over the shoulder blades, then straight down past the
+    # bottom and the backs of the legs; never closer to the body than CLEAR, and it never comes forward again
+    zc = []; z_run = None
+    for i, y in enumerate(ys):
+        zb = back_z(B, y, hw(y) * .8)
+        if y > TOP_Y - .04:                           # the first few cm lie on top of the shoulders
+            z = (zb if zb is not None else -.1) + .01
+        else:
+            z = (zb if zb is not None else z_run) - CLEAR
+        z_run = z if z_run is None else min(z_run, z)
+        t = (TOP_Y - y) / (TOP_Y - HEM_Y)
+        zc.append(z_run - .07 * max(0, t - .35) ** 1.3)  # a little flare out at the hem
+    zc = np.array(zc)
+    # smooth it, then put the rows evenly along the cloth (arc length), not evenly in height
+    k = np.ones(9) / 9; zc = np.convolve(np.pad(zc, 4, mode='edge'), k, 'valid')
+    seg = np.hypot(np.diff(ys), np.diff(zc)); arc = np.r_[0, np.cumsum(seg)]
+    L = arc[-1]
+    ar = np.linspace(0, L, NV)
+    ry, rz = np.interp(ar, arc, ys), np.interp(ar, arc, zc)
+    P = np.zeros((NV, NU, 3))
+    for r in range(NV):
+        t = ar[r] / L; h = hw(ry[r])
+        s = np.linspace(-1, 1, NU)
+        x = s * h
+        wrap = .055 + .03 * (1 - t)                   # the edges come forward round the body
+        pleat = .016 * t ** 1.2 * np.cos(s * math.pi * 3.5) * (1 - .4 * np.abs(s))
+        P[r, :, 0] = x
+        P[r, :, 1] = ry[r] + .015 * t * np.abs(s) ** 2  # the corners hang a touch higher than the middle
+        P[r, :, 2] = rz[r] + wrap * s ** 2 + pleat
+    halfw = np.array([hw(y) for y in ry])
+    return P, ar, halfw
+
+
+def weights(Pg, Vp, J, W):
+    """skin weights per cape point: the upper back/shoulders and spine/hips from the nearest torso vertex,
+    the lower part also a little from each thigh (it swings with the stride)"""
+    dom = J[np.arange(len(J)), W.argmax(1)]
+    tor = np.nonzero(np.isin(dom, list(TORSO)))[0]
+    tree = cKDTree(Vp[tor])
+    out = []
+    ymin = Pg[..., 1].min(); hip_y = .97
+    for p in Pg.reshape(-1, 3):
+        q = np.array([np.clip(p[0], -.14, .14), max(p[1], hip_y), p[2] + CLEAR])
+        _, i = tree.query(q, k=6)
+        acc = {}
+        for ii in i:
+            v = tor[ii]
+            for b, w in zip(J[v], W[v]):
+                if w > 0: acc[b] = acc.get(b, 0) + w / 6
+        f = .38 * np.clip((hip_y - p[1]) / (hip_y - ymin), 0, 1) ** 1.1
+        if f > 0:
+            sl = 1 / (1 + math.exp(-p[0] / .07))           # +x = left leg
+            for b in acc: acc[b] *= (1 - f)
+            acc[LEG['L']] = acc.get(LEG['L'], 0) + f * sl
+            acc[LEG['R']] = acc.get(LEG['R'], 0) + f * (1 - sl)
+        top = sorted(acc.items(), key=lambda kv: -kv[1])[:4]
+        tot = sum(w for _, w in top)
+        out.append([(b, w / tot) for b, w in top])
+    return out
+
+
+def unskin(Pg, wts, F0):
+    """standing-pose points -> rest-pose points (inverse of each point's own blended skin matrix)"""
+    out = []
+    for p, wl in zip(Pg.reshape(-1, 3), wts):
+        M = sum(w * F0[b] for b, w in wl)
+        out.append(np.linalg.solve(M, np.r_[p, 1])[:3])
+    return np.array(out)
+
+
+def grid_tris(nu, nv, base, flip=False):
+    I = []
+    for r in range(nv - 1):
+        for c in range(nu - 1):
+            a, b, d, e = base + r * nu + c, base + r * nu + c + 1, base + (r + 1) * nu + c, base + (r + 1) * nu + c + 1
+            I += ([a, d, b, b, d, e] if not flip else [a, b, d, b, e, d])
+    return I
+
+
+def vnormals(V, I):
+    N = np.zeros_like(V)
+    T = np.array(I).reshape(-1, 3)
+    fn = np.cross(V[T[:, 1]] - V[T[:, 0]], V[T[:, 2]] - V[T[:, 0]])
+    for k in range(3): np.add.at(N, T[:, k], fn)
+    return N / np.maximum(np.linalg.norm(N, axis=1, keepdims=True), 1e-9)
+
+
+# ---------------------------------------------------------------- the painting (1024 x 2048 sheet)
+GOLD_HI, GOLD_LO = np.array([255., 226, 120]), np.array([120., 76, 10])
+
+
+def paint(L, halfw, ar, faces, ss=2):
+    """the cape's sheet texture: x across (0..1 = left..right edge seen from behind), y down the cloth"""
+    Wt, Ht = 1024 * ss, 2048 * ss
+    t = (np.arange(Ht) + .5) / Ht
+    hwt = np.interp(t * L, ar, halfw)                         # half width at each texel row
+    s = (np.arange(Wt) + .5) / Wt
+    X = (s[None, :] - .5) * 2 * hwt[:, None]                  # metres across, seen from behind
+    Y = np.broadcast_to((t * L)[:, None], X.shape)            # metres down the cloth
+    edge = np.abs(s[None, :] - .5) * 2                        # 0 middle .. 1 edge
+    # red velvet: soft sheen and a tone-on-tone damask diamond, darker towards the hem
+    sheen = .5 + .5 * np.sin(X * 9 + np.sin(Y * 4) * 1.5) * np.sin(Y * 6.5 + X * 3)
+    q1, q2 = (X * 14 + Y * 14) % 1, (X * 14 - Y * 14) % 1
+    dam = (np.minimum(np.minimum(q1, 1 - q1), np.minimum(q2, 1 - q2)) < .06)
+    out = np.empty(X.shape + (3,))
+    out[:] = np.array([140., 14, 30])
+    out *= ((.9 + .2 * sheen) * (1 - .22 * t[:, None]) * np.where(dam, .86, 1))[..., None]
+    BD, HEM, COL = .045, .065, .035                            # border, hem and collar band widths (m)
+    in_hw = hwt - BD - .012
+    # patches packed edge to edge like the website cape: hex rows, symmetric, every patch whole
+    R, CORD, GAP = .052, .009, .008
+    D = 2 * (R + CORD)
+    hw_at = lambda y: min(np.interp(max(y - R, 0), t * L, in_hw), np.interp(min(y + R, L), t * L, in_hw))
+    def count(y):
+        w = 2 * hw_at(y)
+        return max(0, int((w + GAP) // (D + GAP)))
+    def place(y, n):
+        if n == 1: return [0.]
+        w = 2 * hw_at(y) - D
+        step = min(w / (n - 1), (D + GAP) * 1.35)
+        return [(k - (n - 1) / 2) * step for k in range(n)]
+    # rows: as many patches as fit, alternating with one fewer so neighbouring rows interlock (hex packing);
+    # rows that interlock sit closer together than rows that stack
+    rows = []; y = max(COL + .012, .075) + R + CORD; prev = None      # the first cm fold over the shoulders
+    while y + R + CORD < L - HEM - .01:
+        n = count(y)
+        if prev is not None and n == prev and n >= 2: n -= 1
+        if n == 0: y += .01; continue
+        rows.append((y, place(y, n)))
+        nxt = y + (D + GAP) * .88
+        n2 = count(nxt); n2 = n2 - 1 if (n2 == n and n2 >= 2) else n2
+        y = nxt if n2 != n else y + D + GAP
+        prev = n
+    discs = [(x, y) for y, xs in rows for x in xs]
+    # faces: never the same picture close together
+    order = []; used = {}
+    for i, (x, y) in enumerate(discs):
+        best = None
+        for f in sorted(range(len(faces)), key=lambda f: (len(used.get(f, [])), (f * 7 + i * 3) % len(faces))):
+            if all(math.hypot(x - a, y - b) > 3.2 * (D + GAP) for a, b in used.get(f, [])):
+                best = f; break
+        if best is None: best = min(range(len(faces)), key=lambda f: len(used.get(f, [])))
+        used.setdefault(best, []).append((x, y)); order.append(best)
+    sh = (Ht / L)                                             # texels per metre down
+    for (cx, cy), f in zip(discs, order):
+        img = faces[f]
+        r0 = int(max(0, (cy - R - CORD - .02) * sh)); r1 = int(min(Ht, (cy + R + CORD + .02) * sh))
+        Xs, Ys = X[r0:r1], Y[r0:r1]
+        dx, dy = -(Xs - cx), Ys - cy                           # (image x runs left to right seen from behind)
         d = np.hypot(dx, dy)
-        ring = (d < r + RING) & (d >= r)
-        t = (d[ring] - r) / RING
-        gold = np.array([255., 222, 110])[None] * (1 - t)[:, None] + np.array([150., 98, 14])[None] * t[:, None]
-        out[ring] = gold
-        rim = (d < r + RING + .0035) & (d >= r + RING)
-        out[rim] = np.array([70., 40, 6])
-        ins = d < r
-        px = np.clip((dx[ins] / r + 1) / 2 * 127, 0, 127).astype(int)
-        py = np.clip((dy[ins] / r + 1) / 2 * 127, 0, 127).astype(int)
-        out[ins] = img[py, px]
-    # the MemeCapes coin, bigger, just below the collar
-    yl = top - .2
-    disc(0, yl, .085, logo)
-    # staggered rows of medallions under it
-    k = 0
-    dxs, dys = .16, .145
-    for row in range(12):
-        cy = yl - .155 - row * dys
-        off = (row % 2) * dxs / 2
-        for col in range(-4, 5):
-            cx = col * dxs + off
-            # only where the whole medallion fits inside the border at that height
-            hw = np.interp(cy, *half)
-            if abs(cx) + R + RING + .02 > hw * .86 or cy - R < Y.min() + .07: continue
-            disc(cx, cy, R, faces[k % len(faces)]); k += 1
-    # gold embroidered border down both edges and along the hem
-    edge = np.maximum(np.abs(u), 0)
-    side = edge > .9; hem = v > .955
-    bd = side | hem
-    tt = np.where(side, (edge - .9) / .1, (v - .955) / .045)
-    out[bd] = np.array([236., 186, 64]) * (1 - .35 * np.abs(np.sin(tt[bd] * 9)))[:, None]
-    inner = ((edge > .875) & (edge <= .9) & ~hem) | ((v > .945) & (v <= .955) & ~side)
-    out[inner] = np.array([90., 50, 8])
-    return out, k
+        o = out[r0:r1]
+        shd = (d >= R + CORD) & (d < R + CORD + .014)
+        o[shd] *= (.5 + .5 * ((d[shd] - R - CORD) / .014))[:, None]
+        ring = (d >= R) & (d < R + CORD)
+        tt = (d[ring] - R) / CORD; ang = np.arctan2(dy[ring], dx[ring])
+        rope = .5 + .5 * np.sin(ang * 46 + tt * 6)
+        prof = np.sin(tt * np.pi) ** .6
+        o[ring] = GOLD_LO + (GOLD_HI - GOLD_LO) * (prof * (.4 + .6 * rope))[:, None]
+        ins = d < R
+        px = np.clip((dx[ins] / R + 1) / 2 * 127, 0, 127); py = np.clip((dy[ins] / R + 1) / 2 * 127, 0, 127)
+        col = sample(img, px, py)
+        e = d[ins] / R
+        col *= (1 - .4 * np.clip((e - .9) / .1, 0, 1))[:, None]      # stitched dark line inside the cord
+        col = col * .93 + 255 * .07 * (((px + py) % 3) < 1)[:, None] * 0  # (no fake stitches)
+        o[ins] = col
+    # gold border down both edges, hem and collar band, with engraved scroll and a dark inner line
+    def goldband(mask, tt, along):
+        scroll = .5 + .5 * np.sin(along + 1.4 * np.sin(along * .5 + tt * 3))
+        lines = 1 - .32 * (np.abs(tt - .22) < .07) - .32 * (np.abs(tt - .78) < .07)
+        g = (.74 + .26 * scroll) * (.75 + .25 * np.sin(tt * np.pi)) * lines
+        out[mask] = np.array([236., 182, 62]) * g[mask][:, None]
+    dside = hwt[:, None] - np.abs(X)                           # metres in from the side edge
+    side = dside < BD; hem = Y > L - HEM; col_ = Y < COL
+    goldband(side & ~hem & ~col_, np.clip(1 - dside / BD, 0, 1), Y * 70)
+    goldband(hem, np.clip((Y - (L - HEM)) / HEM, 0, 1), X * 70)
+    goldband(col_ & ~side, np.clip(Y / COL, 0, 1), X * 70)
+    inner = ((dside >= BD) & (dside < BD + .006) & (Y >= COL) & (Y <= L - HEM)) | \
+            ((Y <= L - HEM) & (Y > L - HEM - .006) & (dside >= BD)) | ((Y >= COL) & (Y < COL + .006) & (dside >= BD))
+    out[inner] = np.array([70., 36, 4])
+    img = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).resize((1024, 2048), Image.LANCZOS)
+    return np.asarray(img).astype(float), len(discs)
 
 
+# ---------------------------------------------------------------- crown (gold ring with points on the head)
 def crown(V, J, W, top):
-    """a gold crown ring around the head: points in bind space, all on the head bone"""
     dom = J[np.arange(len(J)), W.argmax(1)]
     hd = V[dom == HEAD]
     yb = top - 0.115
     band = hd[np.abs(hd[:, 1] - (yb + .03)) < .02]
     cx, cz = (band[:, 0].min() + band[:, 0].max()) / 2, (band[:, 2].min() + band[:, 2].max()) / 2
-    # the ring fits round the head; the back of the hair sticks out further than the face, so use percentiles
     rx = (np.percentile(band[:, 0], 99) - np.percentile(band[:, 0], 1)) / 2 + .016
     rz = (np.percentile(band[:, 2], 97) - np.percentile(band[:, 2], 3)) / 2 + .012
     H = .05; P, N, UVc, I = [], [], [], []
     def add(p, n, uv): P.append(p); N.append(n); UVc.append(uv); return len(P) - 1
     n = 36
-    for side in (1, -1):          # outside and inside of the band
+    for side in (1, -1):
         base = len(P)
         for i in range(n + 1):
             a = i / n * 2 * math.pi; s, c = math.sin(a), math.cos(a)
@@ -125,7 +280,6 @@ def crown(V, J, W, top):
         for i in range(n):
             a0, a1, b0, b1 = base + i * 2, base + i * 2 + 1, base + i * 2 + 2, base + i * 2 + 3
             I += ([a0, b0, b1, a0, b1, a1] if side > 0 else [a0, b1, b0, a0, a1, b1])
-    # rim on top of the band
     base = len(P)
     for i in range(n + 1):
         a = i / n * 2 * math.pi; s, c = math.sin(a), math.cos(a)
@@ -134,7 +288,6 @@ def crown(V, J, W, top):
     for i in range(n):
         a0, a1, b0, b1 = base + i * 2, base + i * 2 + 1, base + i * 2 + 2, base + i * 2 + 3
         I += [a0, b1, b0, a0, a1, b1]
-    # 6 points with a ball on each (one point straight over the face)
     for k in range(6):
         am = k / 6 * 2 * math.pi; a0, a1 = am - .3, am + .3
         p0 = [cx + rx * 1.02 * math.sin(a0), yb + H, cz + rz * 1.02 * math.cos(a0)]
@@ -143,107 +296,98 @@ def crown(V, J, W, top):
         nn = [math.sin(am), .35, math.cos(am)]
         i0, i1, i2 = add(p0, nn, (.3, .9)), add(p1, nn, (.7, .9)), add(tip, nn, (.5, 1.))
         I += [i0, i1, i2, i0, i2, i1]
-        ball = [tip[0], tip[1] + .009, tip[2]]; bb = len(P)
-        for j in range(4):
-            for i in range(8):
-                th = j / 3 * math.pi; ph = i / 8 * 2 * math.pi
-                q = [math.sin(th) * math.cos(ph), math.cos(th), math.sin(th) * math.sin(ph)]
-                add([ball[0] + q[0] * .011, ball[1] + q[1] * .011, ball[2] + q[2] * .011], q, (.5, 2.))  # 2 = gem
-        for j in range(3):
-            for i in range(8):
-                a, b = bb + j * 8 + i, bb + j * 8 + (i + 1) % 8
-                I += [a, b, b + 8, a, b + 8, a + 8]
-    # a red jewel on the front of the band, over the face
-    f = [cx, yb + H * .5, cz + rz * 1.05 + .004]; bb = len(P)
-    for j in range(4):
-        for i in range(8):
-            th = j / 3 * math.pi; ph = i / 8 * 2 * math.pi
-            q = [math.sin(th) * math.cos(ph), math.sin(th) * math.sin(ph), math.cos(th)]
-            add([f[0] + q[0] * .014, f[1] + q[1] * .014, f[2] + q[2] * .007], q, (.5, 3.))   # 3 = ruby
-    for j in range(3):
-        for i in range(8):
-            a, b = bb + j * 8 + i, bb + j * 8 + (i + 1) % 8
-            I += [a, b, b + 8, a, b + 8, a + 8]
-    return np.array(P), np.array(N, float), np.array(UVc, float), np.array(I, int)
-
-
-def free_block(pm, size):
-    """a square of the texture no triangle uses (pm is NaN there), for the crown's gold"""
-    free = np.isnan(pm[..., 0]).astype(np.int32)
-    ii = np.pad(free.cumsum(0).cumsum(1), ((1, 0), (1, 0)))
-    n = size + 4
-    tot = ii[n:, n:] - ii[:-n, n:] - ii[n:, :-n] + ii[:-n, :-n]
-    ys, xs = np.nonzero(tot == n * n)
-    if not len(ys): return None
-    return int(xs[0]) + 2, int(ys[0]) + 2
+        add(tip, [0, 1, 0], (.5, 3.))
+    return np.array(P), np.array(N), UVc, np.array(I)
 
 
 def make(base, path, preview):
-    d, V, U, I, tex, cm = load(path)
-    Nn = np.frombuffer(base64.b64decode(d['nb']), np.int8).reshape(-1, 3) / 127.
-    pm = posmap(V, U, I); nm = posmap(Nn, U, I)
-    hi, lo = tex.max(2), tex.min(2)
-    sel = ((cm > 200) | ((cm > 60) & (hi - lo < 45) & (hi > 70))) & ~np.isnan(pm[..., 0])
-    P, Nt = pm[sel], nm[sel]
-    y0, y1 = np.percentile(P[:, 1], [1.5, 99.5])
-    v = np.clip((y1 - P[:, 1]) / (y1 - y0), 0, 1)
-    # the cape's width at each height: map its own left and right edge onto the painting's
-    nb = 48; bi = np.clip((v * nb).astype(int), 0, nb - 1)
-    XL = np.zeros(nb); XR = np.zeros(nb)
-    for b in range(nb):
-        xs = P[bi == b, 0]
-        if len(xs) < 20: xs = P[np.abs(bi - b) <= 3, 0]
-        XL[b], XR[b] = np.percentile(xs, [1, 99])
-    k = np.ones(5) / 5; XL = np.convolve(np.pad(XL, 2, mode='edge'), k, 'valid'); XR = np.convolve(np.pad(XR, 2, mode='edge'), k, 'valid')
-    xc = (XL[bi] + XR[bi]) / 2
-    u = np.clip(-(P[:, 0] - xc) / ((XR[bi] - XL[bi]) / 2), -1, 1)   # seen from behind, left to right
-    ys = y1 - (np.arange(nb) + .5) / nb * (y1 - y0)                    # cape half-width at each height (for layout)
-    half = (ys[::-1], ((XR - XL) / 2)[::-1])
-    col, nmed = pattern(P[:, 0] - xc, P[:, 1], u, v, y1, half)
-    print(base, 'medallions', nmed)
-    lum = tex[sel].mean(1); g = np.clip(lum / np.percentile(lum, 70), .45, 1.2)[:, None]
-    inner = Nt[:, 2] > .35          # faces the body: the lining
-    lining = np.array([92., 12., 24.]) * (.75 + .25 * (1 - v))[:, None]
-    out = tex.copy()
-    px = np.where(inner[:, None], lining, col * (.5 + .5 * g))
-    out[sel] = np.clip(px, 0, 255)
-    # crown gold and jewels in a free corner of the texture
-    m = {'V': V}
-    J = np.frombuffer(base64.b64decode(d['jb']), np.uint8).reshape(-1, 4).astype(int)
-    W = np.frombuffer(base64.b64decode(d['wb']), np.uint8).reshape(-1, 4).astype(float)
+    d = json.load(open(path))
+    m = rigkit.load(path)
+    V, U, I, J, W = m['V'], m['UV'], m['I'], m['J'], m['W']
+    Nn = rigkit.dec(d['nb'], np.int8).astype(float).reshape(-1, 3) / 127
+    F0 = m['clips']['Idle'][0]
+    Vp = rigkit.skin(m, F0)
+    dom = J[np.arange(len(J)), W.argmax(1)]
+    body = ~np.isin(dom, [9, 10, 11, 12, 14, 15, 16, 17, HEAD, 6, 7])   # torso + legs (arms and head left out)
+    Pg, ar, halfw = sheet(Vp, body)
+    L = ar[-1]
+    wts = weights(Pg, Vp, J, W)
+    Pb = unskin(Pg, wts, F0)
+    # outer sheet + lining a few mm closer to the body (both faces drawn by their own triangles)
+    Vo = Pb
+    # lining: offset toward the body along the standing-pose normal, then unskinned with the same weights
+    Ig = grid_tris(NU, NV, 0)
+    Ng = vnormals(Pg.reshape(-1, 3), Ig)
+    if Ng[:, 2].mean() > 0: Ng = -Ng                       # outer face points back (-z)
+    Pin = unskin(Pg.reshape(-1, 3) - Ng * .006, wts, F0)
+    # texture: body atlas in the top-left quarter, cape sheet in the right half, lining + crown bottom-left
+    tex0 = np.asarray(Image.open(io.BytesIO(base64.b64decode(d['tex'].split(',')[1]))).convert('RGB').resize((1024, 1024), Image.LANCZOS)).astype(float)
+    T = np.zeros((TS, TS, 3)); T[:1024, :1024] = tex0
+    faces = medallions()
+    capeimg, npatch = paint(L, halfw, ar, faces)
+    T[:, 1024:] = capeimg
+    yy = np.arange(1024)[:, None]
+    T[1024:, :1024] = np.array([88., 12, 24]) * (.85 + .15 * np.sin(yy / 1024 * 20))[..., None]   # lining velvet
+    # crown gold block at (32, 1056): 32 px
+    bx, by = 32, 1056
+    for k in range(20):
+        tt = k / 19; T[by + k, bx:bx + 32] = np.array([250, 214, 96]) * (1 - tt) + np.array([168, 112, 18]) * tt
+    T[by + 20:by + 26, bx:bx + 32] = [255, 236, 150]; T[by + 26:by + 32, bx:bx + 32] = [200, 16, 40]
+    # UVs
+    U2 = U * .5                                             # body into its quarter
+    rr, cc = np.meshgrid(np.arange(NV), np.arange(NU), indexing='ij')
+    s = (cc / (NU - 1)).ravel(); tcl = (ar[rr] / L).ravel()
+    # seen from behind the sheet's +x is on the viewer's left; the painting's x=0 is the viewer's left
+    uo = np.c_[.5 + .5 * (1 - (s * (1 - 2 / 1024) + 1 / 1024)), tcl * (1 - 2 / 2048) + 1 / 2048]
+    uo[:, 0] = 1 - .5 * (s * (1 - 2 / 1024) + 1 / 1024) - 0  # x: s=0 (+x? no: -x side) handled below
+    # Pg's s runs -1..1 = -x..+x; from behind (camera at -z looking +z) +x appears on the LEFT, so viewer-left
+    # (painting x=0) is s=1: painting x = 1 - s
+    uo[:, 0] = .5 + .5 * ((1 - s) * (1 - 2 / 1024) + 1 / 1024)
+    ui = np.c_[np.full(len(s), .25), .5 + .5 * np.clip(tcl, .02, .98)]
     CP, CN, CUV, CI = crown(V, J, W, V[:, 1].max())
-    fb = free_block(pm, 32); assert fb, 'no free texture block for the crown'
-    bx, by = fb
-    for yy in range(20):         # gold, light at the top of the band, darker below, one engraved line
-        t = yy / 19
-        gcol = np.array([250, 214, 96]) * (1 - t) + np.array([168, 112, 18]) * t
-        if yy == 10: gcol = gcol * .8
-        out[by + yy, bx:bx + 32] = gcol
-    out[by + 20:by + 26, bx:bx + 32] = [255, 236, 150]      # bright gold (balls on the points)
-    out[by + 26:by + 32, bx:bx + 32] = [200, 16, 40]        # ruby
-    def cuv(t):
-        u_, v_ = t
-        if v_ >= 3: return (bx + 16) / S, (by + 29.5) / S
-        if v_ >= 2: return (bx + 16) / S, (by + 23) / S
-        return (bx + 2 + u_ * 28) / S, (by + 1 + (1 - min(v_, 1)) * 17) / S
+    def cuv(tv):
+        u_, v_ = tv
+        if v_ >= 3: return (bx + 16) / TS, (by + 29.5) / TS
+        if v_ >= 2: return (bx + 16) / TS, (by + 23) / TS
+        return (bx + 2 + u_ * 28) / TS, (by + 1 + (1 - min(v_, 1)) * 17) / TS
     CUVt = np.array([cuv(t) for t in CUV])
-    nv = len(V)
-    V2 = np.vstack([V, CP]); N2 = np.vstack([Nn, CN / np.maximum(np.linalg.norm(CN, axis=1, keepdims=True), 1e-9)])
-    U2 = np.vstack([U, CUVt]); I2 = np.vstack([I, CI.reshape(-1, 3) + nv])
-    J2 = np.vstack([J, np.tile([HEAD, 0, 0, 0], (len(CP), 1))]); W2 = np.vstack([W, np.tile([255, 0, 0, 0], (len(CP), 1))])
+    nv0 = len(V); nC = NU * NV
+    Io = grid_tris(NU, NV, nv0)
+    Ii = grid_tris(NU, NV, nv0 + nC, flip=True)
+    # winding: outer triangles must face back (-z) in the standing pose
+    tri0 = np.array(Io[:3]) - nv0
+    fn = np.cross(Pg.reshape(-1, 3)[tri0[1]] - Pg.reshape(-1, 3)[tri0[0]], Pg.reshape(-1, 3)[tri0[2]] - Pg.reshape(-1, 3)[tri0[0]])
+    if fn[2] > 0:
+        Io = grid_tris(NU, NV, nv0, flip=True); Ii = grid_tris(NU, NV, nv0 + nC)
+    V2 = np.vstack([V, Vo, Pin, CP])
+    Ivert = np.array(Io + Ii)
+    Ncape = vnormals(V2, Ivert)
+    N2 = np.vstack([Nn, Ncape[nv0:nv0 + 2 * nC], CN / np.maximum(np.linalg.norm(CN, axis=1, keepdims=True), 1e-9)])
+    U3 = np.vstack([U2, uo, ui, CUVt])
+    I2 = np.r_[I.ravel(), Ivert, CI + nv0 + 2 * nC]
+    def jw(wl):
+        b = [x[0] for x in wl] + [0] * (4 - len(wl)); w = [x[1] for x in wl] + [0] * (4 - len(wl))
+        q = np.round(np.array(w) * 255).astype(int); q[0] += 255 - q.sum(); return b, q
+    JWc = [jw(wl) for wl in wts]
+    Jc = np.array([a for a, _ in JWc] * 2); Wc = np.array([b for _, b in JWc] * 2)
+    Jo = np.asarray(rigkit.dec(d['jb'], np.uint8)).reshape(-1, 4).astype(int)
+    Wo = np.asarray(rigkit.dec(d['wb'], np.uint8)).reshape(-1, 4).astype(int)
+    J2 = np.vstack([Jo, Jc, np.tile([HEAD, 0, 0, 0], (len(CP), 1))])
+    W2 = np.vstack([Wo, Wc, np.tile([255, 0, 0, 0], (len(CP), 1))])
     assert len(V2) < 65536
-    b64 = lambda a: base64.b64encode(a.tobytes()).decode()
-    bio = io.BytesIO(); Image.fromarray(out.astype(np.uint8)).save(bio, 'JPEG', quality=88, subsampling=0)
+    b64 = lambda a: base64.b64encode(np.ascontiguousarray(a).tobytes()).decode()
+    bio = io.BytesIO(); Image.fromarray(np.clip(T, 0, 255).astype(np.uint8)).save(bio, 'JPEG', quality=87, subsampling=0)
     o = dict(d)
     o.update(vb=b64(np.round(V2 * 1000).astype(np.int16)), nb=b64(np.round(N2 * 127).astype(np.int8)),
-             ub=b64(np.round(np.clip(U2, 0, 1) * 65535).astype(np.uint16)), ib=b64(I2.astype(np.uint16)),
+             ub=b64(np.round(np.clip(U3, 0, 1) * 65535).astype(np.uint16)), ib=b64(I2.astype(np.uint16)),
              jb=b64(J2.astype(np.uint8)), wb=b64(np.clip(W2, 0, 255).astype(np.uint8)),
              tex='data:image/jpeg;base64,' + base64.b64encode(bio.getvalue()).decode())
     o.pop('cm', None)
     dst = f'models/{base}_memecape.json'
-    json.dump(o, open(dst, 'w'), separators=(',', ':'))
-    if preview: Image.fromarray(out.astype(np.uint8)).save(f'/tmp/memecape_tex_{base}.jpg', quality=88)
-    print(dst, len(V2), 'verts', len(CP), 'crown verts', round(len(json.dumps(o)) / 1e6, 2), 'MB')
+    s_ = json.dumps(o, separators=(',', ':'))
+    open(dst, 'w').write(s_)
+    if preview: Image.fromarray(np.clip(T, 0, 255).astype(np.uint8)).save(f'/tmp/memecape_tex_{base}.jpg', quality=88)
+    print(dst, 'patches', npatch, 'cape length %.2f m' % L, len(V2), 'verts', round(len(s_) / 1e6, 2), 'MB')
 
 
 if __name__ == '__main__':
