@@ -35,6 +35,7 @@ python3 tools/patch_story.py >/dev/null
 python3 tools/patch_skins.py && python3 tools/patch_holder.py && python3 tools/patch_partner.py && python3 tools/patch_roads.py && python3 tools/patch_trade.py && python3 tools/patch_seethru.py && python3 tools/patch_water.py && python3 tools/patch_bridges.py && python3 tools/patch_npcfight.py && python3 tools/patch_hitmark.py && python3 tools/patch_facing.py && python3 tools/patch_memecape.py && python3 tools/patch_tokenplan.py && python3 tools/patch_sotm.py && python3 tools/patch_skinstore.py && python3 tools/patch_wanderers.py && python3 tools/patch_launchpad.py && python3 tools/patch_online.py && python3 tools/patch_lookalike.py && python3 tools/patch_security.py && python3 tools/patch_trees.py && python3 tools/patch_pace.py && python3 tools/patch_snakepit.py && python3 tools/patch_pitlink.py && python3 tools/patch_withdraw.py
 python3 tools/patch_split.py
 python3 tools/patch_xhandle.py
+python3 tools/patch_loading.py
 python3 tools/patch_ticker.py
 sed -i "s/__BUILD__/$(date -u +%Y%m%d%H%M%S)/" play.html
 python3 - <<'P'
