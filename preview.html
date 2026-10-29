@@ -355,7 +355,7 @@ body.pre #col{display:none!important}
 <div id="ctx"></div><div id="modal"><div id="mb"></div></div>
 <script>
 (()=>{
-const $=i=>document.getElementById(i);const BUILD='20261029054810';
+const $=i=>document.getElementById(i);const BUILD='20261029055618';
 let W=384,H=384;const CX=192,CY=192,W0=384,H0=384;
 let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:756,ck:0,sm:0,str:0,def:0},inv:[],hp:12,hp10:1,run:0,en:100,flow:[]};
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
@@ -871,7 +871,7 @@ const wc=m.clips.Walking||m.clips[Object.keys(m.clips)[0]];if(wc){let best=1e9;f
 if(!m.idle)m.idle=m.bind;m.ok=1;MDL[k]=m}
 const LDS=(()=>{let el=null,t0=0,fr=0,shown=0,gone=0;const pre=new Image();pre.src='media/loading_cape.webp';
 const LINES=['Polishing the Meme Coins','Waking up the shopkeepers','Sharpening the bronze swords','Planting the forests',"Filling Froggo's Pond",'Raising Castle Gigachad','Stitching the patches on the MemeCape','Teaching Popcat to pop','Lighting the lamps in Wow Landing','Counting the coins in the bank'];
-function css(){const s=document.createElement('style');s.textContent='#ldx{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;box-sizing:border-box;background:radial-gradient(ellipse at 50% 38%,#33101a 0%,#160a0e 45%,#0b090a 75%);transition:opacity .65s;font-family:Cinzel,Georgia,serif;user-select:none}'
+function css(){const s=document.createElement('style');s.textContent='#ldx{position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;box-sizing:border-box;background:radial-gradient(ellipse at 50% 38%,#33101a 0%,#160a0e 45%,#0b090a 75%);transition:opacity .65s;font-family:Cinzel,Georgia,serif;user-select:none}'
 +'#ldx.ldx-out{opacity:0;pointer-events:none}'
 +'.ldx-art{height:min(54vh,520px);max-width:86vw;object-fit:contain;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);animation:ldxf 4.5s ease-in-out infinite}'
 +'@keyframes ldxf{50%{transform:translateY(-7px)}}'

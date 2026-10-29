@@ -29,7 +29,7 @@ rep("m={k,nv,ni:d.i.length,ok:0,tex:null,clips:{}", "m={k,nv,ni:d.i.length,ok:0,
 
 LDS = r"""const LDS=(()=>{let el=null,t0=0,fr=0,shown=0,gone=0;const pre=new Image();pre.src='media/loading_cape.webp';
 const LINES=['Polishing the Meme Coins','Waking up the shopkeepers','Sharpening the bronze swords','Planting the forests',"Filling Froggo's Pond",'Raising Castle Gigachad','Stitching the patches on the MemeCape','Teaching Popcat to pop','Lighting the lamps in Wow Landing','Counting the coins in the bank'];
-function css(){const s=document.createElement('style');s.textContent='#ldx{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;box-sizing:border-box;background:radial-gradient(ellipse at 50% 38%,#33101a 0%,#160a0e 45%,#0b090a 75%);transition:opacity .65s;font-family:Cinzel,Georgia,serif;user-select:none}'
+function css(){const s=document.createElement('style');s.textContent='#ldx{position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;box-sizing:border-box;background:radial-gradient(ellipse at 50% 38%,#33101a 0%,#160a0e 45%,#0b090a 75%);transition:opacity .65s;font-family:Cinzel,Georgia,serif;user-select:none}'
 +'#ldx.ldx-out{opacity:0;pointer-events:none}'
 +'.ldx-art{height:min(54vh,520px);max-width:86vw;object-fit:contain;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);animation:ldxf 4.5s ease-in-out infinite}'
 +'@keyframes ldxf{50%{transform:translateY(-7px)}}'
