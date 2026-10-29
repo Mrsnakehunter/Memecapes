@@ -96,6 +96,22 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 29 (1:30 am): "capes clumped in the middle, no M crown, memes only, research how classic MMOs wear capes, armour
+  by level, a loading screen after login, modern MMO, look at ChatGPT/'astrol' (= Astrocade)". Branch oct29-update =
+  main + weapons-carry + memecape-v2 (now v3) + loading-screen; build passes, test-hook grep 0; NOT shipped.
+  MemeCape v3 (tools/mkmemecape.py rewritten): a procedural wide cape (25x41 grid, shoulders y1.43 to mid-calf y0.30,
+  half width .17 -> .34, wraps round the back, pleats) added to the PLAIN bodies models/player(f).json (same outfit, 28-bone
+  rig): designed in Idle frame 0 and unskinned per vertex (solve blended skin matrix), weights = nearest torso vertex
+  (bones 0-4, 8, 13) + up to 38% thighs (18 = +x/left, 23) so it swings with the stride; outer sheet + lining 6 mm in;
+  2048 texture: body atlas top-left quarter (UV x .5), cape sheet right half (1024x2048, painted 2x supersampled in
+  metres), lining + crown gold bottom-left; 20 gold-corded patches hex-packed (R .052) of the game's own characters only.
+  ~3.1 MB per model. Checked in charview and in game (test7, castle gate). Loading screen: tools/patch_loading.py (before
+  patch_ticker): LDS.show() in begin(); progress = models in MLOAD done (m.ok and texture if regMdl saw d.tex = m.wt) +
+  TRP.on + first frames; out after 1.6 s once all loaded or 16 s max; art media/loading_cape.webp (charview render);
+  z-index 90. Research (agent): only weapons/shields are drawn on the 3D body today; helmets/body armour are stats only.
+  ChatGPT Apps rules ban crypto/tokens/digital-goods sales: not worth it for the game. Astrocade makes small AI games,
+  doesn't host an existing 3D MMO.
+
 - Oct 28 (night): "the memecape prize a million times nicer, hard to see the images on the back" + "weapons held/walked
   better". Branch weapons-carry (tools/carry.js + patch_carry.py, before patch_ticker in build.sh): blades hang at the
   side in Idle/Walking/Running, swing poses untouched; shield still tilts flat when running. Branch memecape-v2:
