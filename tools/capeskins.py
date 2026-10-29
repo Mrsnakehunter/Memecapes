@@ -8,11 +8,11 @@ Writes models/skins/<skin>_m.jpg and <skin>_f.jpg (one per caped body) and a bac
 each in /tmp/capeskin_<skin>.png when --preview is given.
 usage: python3 tools/capeskins.py [--preview] [--only=name,name]
 """
-import base64, io, json, math, sys
+import base64, io, json, math, os, sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-S = 1024
+S = int(os.environ.get("CAPE_S", 1024))
 BODIES = {'m': 'models/player_cape.json', 'f': 'models/playerf_cape.json'}
 
 

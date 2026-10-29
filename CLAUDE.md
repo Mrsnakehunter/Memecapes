@@ -96,6 +96,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 28 (night): "the memecape prize a million times nicer, hard to see the images on the back" + "weapons held/walked
+  better". Branch weapons-carry (tools/carry.js + patch_carry.py, before patch_ticker in build.sh): blades hang at the
+  side in Idle/Walking/Running, swing poses untouched; shield still tilts flat when running. Branch memecape-v2:
+  tools/mkmemecape.py v2 = 2048 texture (CAPE_S env in capeskins.py, default 1024 for other skins), pattern painted
+  in the AVERAGE Idle+Walking pose (rigkit.skin; the rest pose spreads the cape so circles became ovals; one Idle frame
+  differs 20% in width from another), whole-triangle cape selection + 3 px padding (island edges kept old red = streaks),
+  lining = faces the body AND 4.5 cm behind the outer surface (normals flip in folds), 2x2 supersampling, crown + M
+  crest (the $CAPES logo is mush at this size), 8 medallions (m) / 7 (f, R .06), KX 1.12 squeeze. Models ~3.2 MB each.
+  Both branches wait for Albert's "ship". Probe lesson: patching json.dump still truncates the file opened for it.
+  Wallet decision (his): new creator wallet funded straight from the old one, disclosed openly.
+
 - Oct 28 (noon): "2 of the 15 pictures a day posted on X by you, not me". Nothing had been posted (the pane can't post
   on his X). Built memesnake-bots (PRIVATE repo) x_poster/: queue.json (the 15 no-ticker cape posts + captions, no
   dates/prices/ticker), img/*.jpg, post.py (hand-rolled OAuth 1.0a, checked against X's documented example signature;
