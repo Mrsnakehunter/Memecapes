@@ -1,6 +1,15 @@
 # MemeCapes progress
 
-_Last updated: October 23, 2026_
+_Last updated: October 29, 2026_
+
+## Oct 29, 2026: the new MemeCape, weapons at your side, a loading screen
+
+- The MemeCape is rebuilt as a real cape: it sits on the shoulders, flares out and hangs to the calves, with soft folds.
+  Its back is covered edge to edge with twenty sharp, gold-stitched patches of the game's own meme characters. The lower
+  part sways with every step.
+- Swords, axes and staffs now hang at your side when you stand, walk or run, and come up only when you swing.
+- After you log in, a loading screen shows the MemeCape and a gold bar while the world gets ready, so towns and
+  characters no longer pop in piece by piece. The bar follows what has really loaded.
 
 ## Oct 23, 2026: First Strike locks on Streamflow
 
