@@ -98,6 +98,24 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 30 (2:30-6 am, Albert asleep: "keep working on everything, I give you permission for the sites"). X: 11 of the
+  12 approved posts scheduled from the pane (see Standing rules); the Sat 1:37 pm towns post is a DRAFT in his X
+  composer (text + time set) because the pane cannot attach c20_towns.mp4 (in his Downloads): he adds the video and
+  presses Schedule. Animation pack he remembered = Fab "RPG Animations Pack" by DoubleLSoft (8,098 motions, FBX on the
+  UE5 skeleton, $129.99 personal / $399.99 pro); he must sign in to fab.com with his Epic account before it can go in
+  the cart, and the purchase is his click. CAPES OVER ARMOUR: tools/mkarmorcape.py builds models/arm_lvNN_cape.json
+  (the MemeCape v3 cloth round each armour's standing pose; texm = meme painting, texp + cm = grey velvet tinted in game
+  by capePaint; no clips: tools/patch_armcape.py armCape() borrows the armour's clip matrices at regMdl time, so the
+  cloth moves with the armour; drawn after the body for you and other players; cs_* skins fall back to the cape colour).
+  mkmemecape.paint(plain=True) returns (grey sheet, velvet mask). ARMOUR SOURCES: tools/patch_armorget.py (iron ore from
+  copper rocks at Mining 15, coal from tin rocks at Mining 30, iron/steel bars, forge recipes ARMREC for arm10-40,
+  arm50 Ratio Knight drop 1/150, arm60/70/80 Ratio Lord drops 1/25, 1/50, 1/125, arm80 NOTRADE). Anim-blend branch
+  merged into armor-sets and tested in game (works; the earlier "sticking" was my half-speed 7.5 fps review video: the
+  player moves 1.1-1.9 tiles/s with no stops, measured on the virtual clock). All on branch armor-sets, NOT shipped.
+  Emotes on armour still missing: the player's emote clips (Cheer, Bow, Griddy...) are not in Meshy's current library
+  by those names, so substitutes need Albert's picks. Scratch test7f.html = test7 + modal/PR/lvl in __S (forge UI tests
+  with /tmp/claude-0/stick/ui_f.py).
+
 - Oct 29 (2:25-3:30 pm): "make a game play [video] and how are the armor sets coming". Armour: Meshy image-to-3D
   multi-view (front + back concept, A-pose, Ultra 2K, 35 credits each) -> free remesh 20k tris -> free auto-rig
   (Humanoid, 1.7 m) for lv1 / lv40 / lv80 (credits 1,155 left). Meshy's NEW auto-rig has 64-91 bones (fingers +
