@@ -1,4 +1,4 @@
-const CARRYG={f:[[-.14,-.95,.27],[-.58,-.58,-.57]],a:[[-.14,-.95,.27],[-.58,-.58,-.57]],v:[[-.06,.97,.24],[-.08,.86,.5]]};
+const CARRYG={v:[[-.06,.97,.24],[-.08,.86,.5]]};   // blades and axes: the carry is baked into the motions (tools/carry_bake.py), the hand turns with them
 const CARRYA={Attack:1,Stab:1,Punch:1,Kick:1,Chop:1,Mine:1,Fish:1,Cook:1,Cast:1,Pickup:1,Death:1};
 function carryK(cl,t){if(!cl||cl=='Idle'||cl=='Walking'||cl=='Running')return 1;if(cl=='Hit')return .75;const A=NCL[cl];if(A){const s=Math.max(0,A[0]-A[2]),b=Math.min(1,Math.max(0,(t-s)/.15),Math.max(0,(A[1]-t)/.2));return 1-b}return CARRYA[cl]?0:1}
 function carryM(M,ty,cl,t,left){if(left)return M;const G=CARRYG[ty];if(!G)return M;const k=carryK(cl,t);if(k<=0)return M;const g0=G[cl=='Running'?1:0];
