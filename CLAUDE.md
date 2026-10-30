@@ -134,6 +134,14 @@ numbers in here or anywhere in the repo.
   in the 'c' look field for other players; capes not drawn over armour yet). Paper Hands is in the starter pack
   (Albert: until the tutorial island exists). Map Meshy .tmp downloads by download order + average texture colour.
   How players get each set (smithing/quests/bosses) = plan sent to Albert, waiting on his OK.
+  Oct 30 (day): hands fixed (glb2rig --rig28 bakes the dropped finger bones' Walking/Idle pose into the mesh: they were
+  frozen in the open bind pose); sword carry baked into Idle/Walking/Running by tools/carry_bake.py (hand turns with the
+  blade; CARRY = tip forward, 35 deg down; carry.js now only handles staffs); grips: tools/armor_hands.py copies the
+  player's hand tracks to each armour (same motions frame for frame) shifted to the armour's own fist centre (run BEFORE
+  carry_bake, on unbaked clips). Order to rebuild an armour set: glb2rig --rig28 -> armor_clips from lv40 (unbaked) ->
+  armor_hands -> carry_bake. Versioned bodies: tools/patch_mdlv.py maps player -> models/player2.json etc. (baked carry)
+  so the live play.html keeps the old files; delete the old six at ship and keep the map. Armour parade: tools/
+  patch_armordemo.py, 9 knights at Castle Gigachad courtyard y=121 (preview/test pages only, MC_CONFIG.armorDemo).
 
 - Oct 29 (2:45-4 am): "yes ship + armour concept art", then a 45 s X video, YouTube kit. SHIPPED build 20261029064807
   (main 708a1ec: MemeCape v3, weapons carry, loading screen; live version.json checked in the pane; gh pages API is
