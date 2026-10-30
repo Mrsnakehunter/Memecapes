@@ -36,6 +36,7 @@ python3 tools/patch_skins.py && python3 tools/patch_holder.py && python3 tools/p
 python3 tools/patch_split.py
 python3 tools/patch_xhandle.py
 python3 tools/patch_carry.py
+python3 tools/patch_blend.py
 python3 tools/patch_loading.py
 python3 tools/patch_armor.py
 python3 tools/patch_ticker.py
