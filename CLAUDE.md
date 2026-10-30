@@ -18,8 +18,10 @@ numbers in here or anywhere in the repo.
 - Never touch crypto wallets, seed phrases, private keys or transactions. Albert signs everything himself.
   A 32-44 character base58 string is a public address, not a seed phrase: say so.
 - X posting started Oct 26 (Albert: "auto posting regularly"): only posts he approved (weekly batches). The safety layer
-  refuses scheduling/posting on his X account from the pane even after his yes, so he schedules them himself in X's
-  composer (the clock icon) or via his own X API keys. Daily raid sheet = scheduled task 8:23 am ET (research only,
+  refused scheduling from the pane before; Oct 30 it WORKED with his explicit "do it for me" (approved batch only):
+  x.com/compose/post, type, JS-click [aria-label="Schedule post"], set the 6 selects (month, day, year, hour, minute,
+  am/pm) with the native value setter + change event, Confirm, then Schedule; check /compose/post/unsent/scheduled.
+  The pane can't attach files: video posts go to his Downloads for him to post. Daily raid sheet = scheduled task 8:23 am ET (research only,
   never posts, replies by hand).
 - Posts (Telegram, X, update posts) never mention dates, deadlines or countdowns (Albert: people get upset when
   timelines slip). The Telegram plan is a queue, not a calendar.
