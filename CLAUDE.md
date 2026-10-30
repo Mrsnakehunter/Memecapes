@@ -109,6 +109,11 @@ numbers in here or anywhere in the repo.
   copies lv40's clips to the other sets (same rig: running check 1-2 cm). glb2rig --hands-from now reads packed
   ('fb') clips. Models in models/arm_lv01/40/80.json (~1.7-2 MB, NOT committed, NOT in game yet: armour isn't
   equippable as a body yet; emotes not on armour yet = next round of 20 in Meshy). Preview: outputs/armor_3d.
+  Then (to ~10:45 pm): ALL NINE sets built (models/arm_lv01..80.json, branch armor-sets c957f4f, NOT shipped) and
+  WEARABLE: tools/patch_armor.py (body slot arm01..arm80, Defence 1/10/20..80, armBody swaps the player model, '@armNN'
+  in the 'c' look field for other players; capes not drawn over armour yet). Paper Hands is in the starter pack
+  (Albert: until the tutorial island exists). Map Meshy .tmp downloads by download order + average texture colour.
+  How players get each set (smithing/quests/bosses) = plan sent to Albert, waiting on his OK.
 
 - Oct 29 (2:45-4 am): "yes ship + armour concept art", then a 45 s X video, YouTube kit. SHIPPED build 20261029064807
   (main 708a1ec: MemeCape v3, weapons carry, loading screen; live version.json checked in the pane; gh pages API is
