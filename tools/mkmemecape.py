@@ -166,7 +166,7 @@ def vnormals(V, I):
 GOLD_HI, GOLD_LO = np.array([255., 226, 120]), np.array([120., 76, 10])
 
 
-def paint(L, halfw, ar, faces, ss=2):
+def paint(L, halfw, ar, faces, ss=2, plain=False):
     """the cape's sheet texture: x across (0..1 = left..right edge seen from behind), y down the cloth"""
     Wt, Ht = 1024 * ss, 2048 * ss
     t = (np.arange(Ht) + .5) / Ht
@@ -180,8 +180,9 @@ def paint(L, halfw, ar, faces, ss=2):
     q1, q2 = (X * 14 + Y * 14) % 1, (X * 14 - Y * 14) % 1
     dam = (np.minimum(np.minimum(q1, 1 - q1), np.minimum(q2, 1 - q2)) < .06)
     out = np.empty(X.shape + (3,))
-    out[:] = np.array([140., 14, 30])
+    out[:] = np.array([150., 150, 150]) if plain else np.array([140., 14, 30])   # plain = grey velvet, tinted in game
     out *= ((.9 + .2 * sheen) * (1 - .22 * t[:, None]) * np.where(dam, .86, 1))[..., None]
+    velvet = np.ones(X.shape, bool)
     BD, HEM, COL = .045, .065, .035                            # border, hem and collar band widths (m)
     in_hw = hwt - BD - .012
     # patches packed edge to edge like the website cape: hex rows, symmetric, every patch whole
@@ -208,7 +209,7 @@ def paint(L, halfw, ar, faces, ss=2):
         n2 = count(nxt); n2 = n2 - 1 if (n2 == n and n2 >= 2) else n2
         y = nxt if n2 != n else y + D + GAP
         prev = n
-    discs = [(x, y) for y, xs in rows for x in xs]
+    discs = [] if plain else [(x, y) for y, xs in rows for x in xs]
     # faces: never the same picture close together
     order = []; used = {}
     for i, (x, y) in enumerate(discs):
@@ -245,7 +246,7 @@ def paint(L, halfw, ar, faces, ss=2):
         scroll = .5 + .5 * np.sin(along + 1.4 * np.sin(along * .5 + tt * 3))
         lines = 1 - .32 * (np.abs(tt - .22) < .07) - .32 * (np.abs(tt - .78) < .07)
         g = (.74 + .26 * scroll) * (.75 + .25 * np.sin(tt * np.pi)) * lines
-        out[mask] = np.array([236., 182, 62]) * g[mask][:, None]
+        out[mask] = np.array([236., 182, 62]) * g[mask][:, None]; velvet[mask] = False
     dside = hwt[:, None] - np.abs(X)                           # metres in from the side edge
     side = dside < BD; hem = Y > L - HEM; col_ = Y < COL
     goldband(side & ~hem & ~col_, np.clip(1 - dside / BD, 0, 1), Y * 70)
@@ -253,8 +254,11 @@ def paint(L, halfw, ar, faces, ss=2):
     goldband(col_ & ~side, np.clip(Y / COL, 0, 1), X * 70)
     inner = ((dside >= BD) & (dside < BD + .006) & (Y >= COL) & (Y <= L - HEM)) | \
             ((Y <= L - HEM) & (Y > L - HEM - .006) & (dside >= BD)) | ((Y >= COL) & (Y < COL + .006) & (dside >= BD))
-    out[inner] = np.array([70., 36, 4])
+    out[inner] = np.array([70., 36, 4]); velvet[inner] = False
     img = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).resize((1024, 2048), Image.LANCZOS)
+    if plain:
+        mk = Image.fromarray((velvet * 255).astype(np.uint8)).resize((1024, 2048), Image.BILINEAR)
+        return np.asarray(img).astype(float), np.asarray(mk).astype(float)
     return np.asarray(img).astype(float), len(discs)
 
 

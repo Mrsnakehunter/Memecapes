@@ -39,6 +39,7 @@ python3 tools/patch_carry.py
 python3 tools/patch_blend.py
 python3 tools/patch_loading.py
 python3 tools/patch_armor.py
+python3 tools/patch_armcape.py
 python3 tools/patch_ticker.py
 sed -i "s/__BUILD__/$(date -u +%Y%m%d%H%M%S)/" play.html
 python3 - <<'P'
