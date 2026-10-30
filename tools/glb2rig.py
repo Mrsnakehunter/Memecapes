@@ -61,6 +61,23 @@ if a.rig28:  # the game's exact 28-bone layout (rigkit.NAMES order); fingers and
             k = jpos[p]
         return k
     newi = {k: i for i, k in enumerate(keep)}
+    # the dropped bones (fingers, toes) keep the pose they have in the reference motion (Idle, else Walking, else the
+    # first), relative to the kept ancestor: baked into the rest mesh so a hand stays relaxed instead of the stiff
+    # open bind pose
+    ref = next((an for an in r.anims if 'idle' in an.get('name', '').lower()), None) or \
+          next((an for an in r.anims if 'walk' in an.get('name', '').lower()), None) or (r.anims[0] if r.anims else None)
+    if ref is not None:
+        S0 = r.pose(ref, 0.0)
+        def rel(k):
+            try: return np.eye(4) if k in keep else np.linalg.inv(S0[up28(k)]) @ S0[k]
+            except KeyError: return np.eye(4)       # a bone above the hips with no kept ancestor: no vertices use it
+        REL = [rel(k) for k in range(nj)]
+        Wn = WT / np.maximum(WT.sum(1, keepdims=True), 1e-9)
+        Mv = np.einsum('vb,vbij->vij', Wn, np.array([[REL[k] for k in row] for row in JI]))
+        P = (np.einsum('vij,vj->vi', Mv, np.c_[P, np.ones(len(P))]))[:, :3]
+        Nn = np.einsum('vij,vj->vi', Mv[:, :3, :3], Nn)
+        nb = sum(1 for k in range(nj) if k not in keep)
+        print(f'rig28: baked the {ref.get("name")} pose of {nb} dropped bones (fingers, toes) into the mesh')
     JI = np.vectorize(lambda k: newi[up28(k)])(JI)
     print(f'rig28: {nj} -> 28 bones')
 V = (np.c_[P, np.ones(len(P))] @ N.T)[:, :3]
