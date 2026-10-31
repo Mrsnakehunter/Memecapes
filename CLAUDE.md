@@ -113,6 +113,11 @@ numbers in here or anywhere in the repo.
   window.__MK, rebuilt from the new preview): sq_sets (all nine sets cycling, 30 frames each; pre-load by switching the
   body on a virtual setTimeout chain during settle), sq_arm_low/mid/high, sq_parade, sq_cape2, sq_forge (S.pa('smith')).
   New scenes PLAY · ARMOUR and PLAY · WEAPONS before the cape scene; hook FIGHT/EARN and the montage PLAY use the new clips.
+  RENDERED Oct 31 6 am: outputs/x_ads/memecapes_full_tour_1x1.mp4 + _16x9.mp4 (249.8 s, 7,495 frames, sent to Albert; not
+  posted, not on the site yet: the home page still plays tour-4). Parade clip = sq_parade2 (west end, name tags hidden) with
+  its first 45 settling frames dropped (gp7/sq_parade); v1 and the raw v2 kept beside it. ad3's word_scene only knows gp:/dir:
+  sources, so plan6.py wraps it for 'sq7:' (the montage crashed the pool at frame 7021 before: fill.py re-renders missing
+  frames by index, RESUME-style). Friends FAQ/support patch still held until "ship".
 
 - Oct 31 (2:30 am): "Moonforged level 70 has two capes: design it without the standard cape". My Oct 29 prompt had asked
   for "a short starry midnight-blue cape" on the lv70 concept, so the Meshy body carries a cape AND armCape draws one.
