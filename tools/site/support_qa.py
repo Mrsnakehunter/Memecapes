@@ -593,9 +593,6 @@ q('skins', 'Can I wear a cape skin without a cape?',
 q('trade', 'How do I trade with another player?',
   'Type /trade and their name, or tap them and choose Trade. Both of you put items in the window, check the big pictures, names and values, then press Accept on both screens. Watch for the change warnings: if the other side changes anything, the accepts reset.',
   ['How does player trading work?', 'Trade request'], vp='trade with a player', np='player trading', k='trade player window accept', top=True)
-q('trade', 'How do I add a friend or send a private message?',
-  'Press Friends in the chat bar, or tap a player\'s name and choose Add friend. Once they accept you see when they are online and can message them: Friends, then their name, or type /pm and their name. Messages reach them at once when they are online and wait for them when they are not. Only friends can message each other; ignoring someone drops their messages and requests.',
-  ['Private messages', 'Friends list', 'How do I whisper to someone?', 'Can I DM a player?'], vp='message a friend', np='the friends list', k='friend add message pm whisper dm private', top=True)
 q('trade', 'Why did my trade request go nowhere?',
   'The other player may be busy, offline, ignoring requests, or a bot: bots never trade. Try someone else or ask in chat.',
   ['Trade request sent but nothing happened'], np='an unanswered trade request', k='trade request nothing bot')
