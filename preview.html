@@ -154,6 +154,20 @@ body.pre #cmp,body.pre #wmb,body.pre #panel,body.pre #chat,body.pre #mm,body.pre
 .row2{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px dashed #fff3;gap:8px}.row2 span{text-align:right}
 #ctx{position:fixed;display:none;background:#5d5447;border:2px solid #000;z-index:20;min-width:130px}
 #ctx div{padding:3px 8px;color:#fff;cursor:pointer}#ctx div:hover{background:#000}#ctx .h{background:#000;color:#ffb000;font-weight:bold;font-size:11px}
+#frdb{position:relative;flex:none;padding:2px 7px;font:700 13px/1 Georgia,serif;border-radius:10px;background:linear-gradient(#7a1420,#4a0a12);color:#ffe9b0;border:1px solid #d9a520;cursor:pointer;margin-right:2px}#frdn{display:none;position:absolute;top:-6px;right:-6px;min-width:16px;height:16px;border-radius:8px;background:#e0342c;color:#fff;font:700 10px/16px Georgia,serif;text-align:center;padding:0 3px;font-style:normal}#frdn.on{display:block}
+#cl.f-pm>div:not(.pm){display:none}#cl .pm{color:#7a2cb8!important}#cl .pm a.frr{color:#7a2cb8;font-weight:700}
+#mb.frd{max-width:460px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:84vh}
+.frdh{display:flex;align-items:center;gap:8px;padding:10px 12px;background:linear-gradient(#7a1420,#4a0a12);color:#ffe9b0;font:700 15px Cinzel,Georgia,serif;border-bottom:2px solid #d9a520}.frdh b{flex:1}.frdh button{padding:3px 9px;font-size:11px}
+.frdbody{overflow:auto;padding:10px 12px;flex:1;min-height:200px}
+.frdsec{font:700 11px Cinzel,Georgia,serif;color:#d9b98a;letter-spacing:.06em;margin:10px 0 4px}.frdsec:first-child{margin-top:0}
+.frdrow{display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px dashed #fff3}.frdrow .nm{flex:1;font-weight:700;cursor:pointer;color:var(--ink)}.frdrow .nm small{font-weight:400;opacity:.7;margin-left:6px}
+.frdot{width:9px;height:9px;border-radius:50%;background:#777;flex:none;box-shadow:0 0 0 1px #0006 inset}.frdot.on{background:#3ddc6a;box-shadow:0 0 6px #3ddc6a}
+.frdrow button{padding:3px 8px;font-size:11px}.frdadd{display:flex;gap:6px;margin-top:6px}.frdadd input{flex:1;min-width:0;font:700 13px Georgia,serif;padding:5px 8px}
+.frdempty{opacity:.75;font-size:12px;padding:4px}
+.frdlog{overflow:auto;flex:1;padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-height:220px;max-height:50vh;background:#0002}
+.frdm{max-width:82%;padding:6px 10px;border-radius:12px;background:#fff8;color:#2a1400;font-size:13px;line-height:1.35;align-self:flex-start;word-break:break-word}.frdm.me{align-self:flex-end;background:#f2d27a}.frdm small{display:block;opacity:.6;font-size:10px;margin-top:2px}
+.frdin{display:flex;gap:6px;padding:8px 12px;border-top:1px solid #fff3}.frdin input{flex:1;min-width:0;font:13px Georgia,serif;padding:6px 8px}
+.frdnote{font-size:11px;opacity:.75;padding:0 12px 8px}
 #modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:12px;z-index:9}
 #mb{background:var(--p);border:4px solid #000;outline:2px solid #7a6640;padding:12px;max-width:400px;width:100%;max-height:80vh;overflow:auto;line-height:1.5}
 h2{font-size:15px;color:var(--ink);margin:0 0 8px}.row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dashed #fff3}
@@ -348,14 +362,14 @@ body.pre #col{display:none!important}
 <div class="orb" id="spo" title="Special attack" style="top:212px;cursor:pointer"><i id="spb" style="background:#3aa0ff"></i><span id="spt"></span></div>
 <div class="orb" style="top:236px;width:120px" id="xpo"><i id="xpf" style="background:#2a9a2a"></i><span id="xpt"></span></div>
 <div id="zm"><img id="lgo" alt="MemeCapes"><button id="zi">+</button><button id="zo">-</button></div>
-<div id="chat"><div id="crib"><button data-cf="all" class="on">All</button><button data-cf="game">Game</button><button data-cf="chat">Chat</button></div><div id="clog"><div id="cl"></div></div><div id="cin"><b id="cnm">Guest:</b><input id="cti" maxlength="80" placeholder="Press Enter to chat" autocomplete="off" spellcheck="false" enterkeyhint="send"></div></div>
+<div id="chat"><div id="crib"><button data-cf="all" class="on">All</button><button data-cf="game">Game</button><button data-cf="chat">Chat</button><button data-cf="pm">PMs</button></div><div id="clog"><div id="cl"></div></div><div id="cin"><button id="frdb" type="button" title="Friends and messages">&#9825;<i id="frdn"></i></button><b id="cnm">Guest:</b><input id="cti" maxlength="80" placeholder="Press Enter to chat" autocomplete="off" spellcheck="false" enterkeyhint="send"></div></div>
 <div id="panel"><div id="pc"></div><div id="tabs"><div data-t="inv" class="on" title="Bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7c0-2 1.5-3 4-3s4 1 4 3"/><path d="M6 8h12l1.5 11a2 2 0 0 1-2 2.2H6.5a2 2 0 0 1-2-2.2z"/><path d="M9 12h6"/></svg><span>Bag</span></div><div data-t="sk" title="Skills"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V13M10 20V8M16 20v-5M22 20H2"/><path d="M15 4l2 2 4-4" transform="translate(-1 2)"/></svg><span>Skills</span></div><div data-t="eq" title="Gear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M12 8v8M8.5 11.5h7"/></svg><span>Gear</span></div><div data-t="qs" title="Quests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h10a2 2 0 0 1 2 2v12a2 2 0 0 0 2 2H8a2 2 0 0 1-2-2z"/><path d="M6 4a2 2 0 0 0-2 2v2h2M9 9h6M9 13h6"/></svg><span>Quests</span></div><div data-t="pot" title="$CAPES"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M14.5 9.2c-.6-.8-1.5-1.2-2.5-1.2-1.4 0-2.5.8-2.5 2s1.1 1.6 2.5 2 2.5.8 2.5 2-1.1 2-2.5 2c-1 0-1.9-.4-2.5-1.2M12 6.5v11"/></svg><span>$CAPES</span></div><div data-t="more" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/><path d="M3 5h18M3 19h18"/></svg><span>More</span></div></div></div>
 <div id="wm"><div style="font-weight:bold;color:#ffb000;text-shadow:1px 1px #000;text-align:center;font-size:12px">World Map - drag to pan, pinch or scroll to zoom, tap to walk</div><canvas id="wmc"></canvas><div id="wleg" style="font-size:10px;color:#fff;text-align:center;line-height:1.7"><b style="color:#ffd23f">&#9632;</b> Shop <b style="color:#4a8cff">&#9632;</b> Bank <b style="color:#b5452f">&#9632;</b> House <b style="color:#8a5a2b">&#9632;</b> Bridge <b style="color:#c9ccd4">&#9632;</b> Castle <b style="color:#3fa0ff">&#9679;</b> Well <b style="color:#ff5fd0">&#9632;</b> Party chest <b style="color:#ff8a2a">&#9632;</b> Forge/range</div><div><button id="wzi">+</button> <button id="wzo">-</button> <button id="wzm">Zoom to me</button> <button id="wzr">Reset</button> <button id="wmx">Close</button></div></div>
 <div id="start"><div id="sbox"></div></div>
 <div id="ctx"></div><div id="modal"><div id="mb"></div></div>
 <script>
 (()=>{
-const $=i=>document.getElementById(i);const BUILD='20261031072244';
+const $=i=>document.getElementById(i);const BUILD='20261031085509';
 let W=384,H=384;const CX=192,CY=192,W0=384,H0=384;
 let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:756,ck:0,sm:0,str:0,def:0},inv:[],hp:12,hp10:1,run:0,en:100,flow:[]};
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
@@ -994,16 +1008,60 @@ const NETH={
  tradeAcc(){if(T2){T2.acc[1]=1;p2pUI()}},
  tradeStage2(){if(T2)p2pStage2()},
  tradeDone(m){NETS.inTrade=0;st.inv=m.inv;st.coins=m.coins;NETS.rev=m.rev;LS.set('mc_rev',String(m.rev));if(T2)p2pFinish(m.gave,m.got,0);else{ui();save()}},
- tradeCancel(m){NETS.inTrade=0;if(T2)p2pCancel(m.why||'Trade cancelled.',1)}
+ tradeCancel(m){NETS.inTrade=0;if(T2)p2pCancel(m.why||'Trade cancelled.',1)},
+ friends(m){FRDH.friends(m)},fon(m){FRDH.fon(m)},pm(m){FRDH.pm(m)},pmHist(m){FRDH.pmHist(m)}
 };
+// ---- friends and private messages (server/friends.js)
+const FRD={list:[],reqs:[],unread:{},open:null,hist:{},view:'list'};
+function frdBadge(){let n=0;for(const k in FRD.unread)n+=FRD.unread[k];n+=FRD.reqs.length;const b=$('frdn');if(!b)return;b.textContent=n>99?'99+':String(n);b.classList.toggle('on',n>0)}
+function frdWhen(t){const d=new Date(t||Date.now()),n=new Date();return (d.toDateString()==n.toDateString()?'':d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' ')+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}
+function frdSay(html){chat.push('<div class="pm pl">'+html+'</div>');if(chat.length>150)chat.shift();const L=$('clog'),atB=L.scrollHeight-L.scrollTop-L.clientHeight<28;$('cl').innerHTML=chat.join('');if(atB)L.scrollTop=L.scrollHeight}
+function frdOpen(name){if(!NETS.on){say('Friends and messages need online play.','#c00');return}FRD.view=name?'thread':'list';FRD.open=name||null;M.style.display='flex';MB.onclick=null;MB.oncontextmenu=null;MB.className='frd';frdRender();if(name){FRD.unread[name]=0;frdBadge();netSend({t:'pmHist',name})}}
+function frdClose(){M.style.display='none';MB.className='';MB.innerHTML='';FRD.open=null;FRD.view='list'}
+function frdRender(){if(MB.className!='frd')return;let x='';
+ if(FRD.view=='thread'&&FRD.open){const n=FRD.open,f=FRD.list.find(q=>q.name==n),on=f&&f.on;
+  x='<div id="frdroot"><div class="frdh"><button data-fa="back">&larr;</button><span class="frdot'+(on?' on':'')+'"></span><b>'+esc(n)+'</b>'+(on?'<button data-fa="trade" data-n="'+esc(n)+'">Trade</button>':'')+'<button data-fa="close">&times;</button></div><div class="frdlog" id="frdlog">';
+  const L=FRD.hist[n]||[];if(!L.length)x+='<div class="frdempty">No messages yet. Say hi.</div>';
+  for(const m of L)x+='<div class="frdm'+(m.mine?' me':'')+'">'+esc(m.text)+'<small>'+frdWhen(m.t0)+'</small></div>';
+  x+='</div><div class="frdin"><input id="frdi" maxlength="160" placeholder="Message '+esc(n)+'" autocomplete="off" spellcheck="false" enterkeyhint="send"><button data-fa="send">Send</button></div>'+(on?'':'<div class="frdnote">'+esc(n)+' is offline: they get your message when they sign in.</div>')+'</div>';
+ }else{
+  x='<div id="frdroot"><div class="frdh"><b>Friends</b><button data-fa="close">&times;</button></div><div class="frdbody">';
+  if(FRD.reqs.length){x+='<div class="frdsec">WANT TO BE YOUR FRIEND</div>';for(const n of FRD.reqs)x+='<div class="frdrow"><span class="nm">'+esc(n)+'</span><button data-fa="yes" data-n="'+esc(n)+'">Accept</button><button data-fa="no" data-n="'+esc(n)+'">Decline</button></div>'}
+  const L=FRD.list.slice().sort((a,b)=>(b.ok-a.ok)||(b.on-a.on)||a.name.localeCompare(b.name));
+  x+='<div class="frdsec">FRIENDS ('+L.filter(q=>q.ok).length+')</div>';
+  if(!L.length)x+='<div class="frdempty">No friends yet. Add someone by name below, or click a player\'s name in chat.</div>';
+  for(const f of L){const u=FRD.unread[f.name]||0;x+='<div class="frdrow"><span class="frdot'+(f.on?' on':'')+'"></span><span class="nm" data-fa="open" data-n="'+esc(f.name)+'">'+esc(f.name)+(f.ok?(f.on?'':'<small>offline</small>'):'<small>waiting for them</small>')+(u?' <i id="frdn" class="on" style="position:static;display:inline-block">'+u+'</i>':'')+'</span>'+(f.ok?'<button data-fa="open" data-n="'+esc(f.name)+'">Message</button>':'')+'<button data-fa="no" data-n="'+esc(f.name)+'" title="Remove">&times;</button></div>'}
+  x+='<div class="frdsec">ADD A FRIEND</div><div class="frdadd"><input id="frda" maxlength="12" placeholder="Player name" autocomplete="off" spellcheck="false"><button data-fa="add">Add</button></div><div class="frdempty">Friends see when you are online and can message you. Only friends can.</div></div></div>';
+ }
+ MB.innerHTML=x;const lg=$('frdlog');if(lg)lg.scrollTop=lg.scrollHeight;const inp=$('frdi')||$('frda');if(inp&&innerWidth>640)inp.focus();
+ MB.onclick=e=>{const b=e.target.closest&&e.target.closest('[data-fa]');if(!b)return;const a=b.dataset.fa,n=b.dataset.n;
+  if(a=='close')frdClose();else if(a=='trade'){frdClose();netCmd('/trade '+n)}else if(a=='back')frdOpen(null);else if(a=='open')frdOpen(n);else if(a=='yes')netSend({t:'friendYes',name:n});else if(a=='no')netSend({t:'friendNo',name:n});
+  else if(a=='add'){const v=($('frda').value||'').replace(/[^A-Za-z0-9_]/g,'');if(v){netSend({t:'friendAdd',name:v});$('frda').value=''}}
+  else if(a=='send')frdSend()};
+ MB.onkeydown=e=>{if(e.key!='Enter')return;if(e.target.id=='frdi'){e.preventDefault();frdSend()}else if(e.target.id=='frda'){e.preventDefault();const v=(e.target.value||'').replace(/[^A-Za-z0-9_]/g,'');if(v){netSend({t:'friendAdd',name:v});e.target.value=''}}}}
+function frdSend(){const i=$('frdi');if(!i||!FRD.open)return;const t=i.value.trim();if(!t)return;netSend({t:'pm',name:FRD.open,text:t});i.value=''}
+function frdPush(name,m){(FRD.hist[name]=FRD.hist[name]||[]).push(m);if(FRD.hist[name].length>120)FRD.hist[name].shift()}
+const FRDH={
+ friends(m){FRD.list=m.list||[];FRD.reqs=m.reqs||[];frdBadge();frdRender()},
+ fon(m){const f=FRD.list.find(q=>q.name==m.name);if(f){f.on=m.on?1:0;if(m.gone)FRD.list=FRD.list.filter(q=>q!==f)}if(f&&f.ok&&!m.gone)say('<b>'+netName(m.name)+'</b> is '+(m.on?'online.':'offline.'),'#7a2cb8');frdRender()},
+ pm(m){const other=m.mine?m.to:m.from;frdPush(other,{t0:m.t0,mine:m.mine?1:0,text:m.text});
+  if(m.mine)frdSay('<b>To '+netName(other)+':</b> '+esc(m.text));else{frdSay('<b>From <a href="#" class="frr" data-frr="'+esc(other)+'">'+esc(other)+'</a>'+(m.late?' (while you were away)':'')+':</b> '+esc(m.text));
+   if(!(FRD.view=='thread'&&FRD.open==other&&M.style.display=='flex')){FRD.unread[other]=(FRD.unread[other]||0)+1;frdBadge()}
+   const o=[...NETS.others.values()].find(q=>(NETS.info.get(q.id)||{}).name==other);if(o&&!m.late)netBubble(o,'(whispers)')}
+  if(FRD.view=='thread'&&FRD.open==other)frdRender()},
+ pmHist(m){const L=(m.lines||[]).map(q=>({t0:q.t0,mine:q.mine,text:q.text}));FRD.hist[m.name]=L;if(FRD.view=='thread'&&FRD.open==m.name)frdRender()}
+};
+$('frdb').onclick=()=>{if(MB.className=='frd'&&M.style.display=='flex')frdClose();else frdOpen(null)};
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.frr');if(!a)return;e.preventDefault();frdOpen(a.dataset.frr)});
+
 function netName(n){n=String(n).replace(/[^A-Za-z0-9_]/g,'');return '<a href="#" class="pn" data-pn="'+n+'" style="color:inherit">'+n+'</a>'}
 window.NET={chat:t=>{if(NETS.on)netSend({t:'chat',text:t})},tradeOpen:p=>{},tradeAccept:s=>{if(NETS.on&&NETS.inTrade)netSend({t:'tradeAccept',stage:s,ver:T2?T2.ver:0})},tradeDone:()=>{},tradeCancel:()=>{if(NETS.inTrade){NETS.inTrade=0;netSend({t:'tradeCancel'})}},mkPlace:()=>{}};
 let netOfferLast='';function netTradeSync(T){if(!T.p.net||T.stage!=1||!NETS.inTrade)return;const s=JSON.stringify(T.mine);if(s===netOfferLast)return;netOfferLast=s;T.pend=1;netSend({t:'tradeOffer',items:T.mine.items,coins:T.mine.coins})}
 // chat commands; anything else that starts with / goes to the server (moderator commands)
 function netCmd(t){const[c,a,...r]=t.slice(1).split(' '),nm=(a||'').replace(/[^A-Za-z0-9_]/g,'');
- if(c=='help'){say('Commands: /who, /trade name, /ignore name, /unignore name, /report name reason, /logout'+(SRV()?'':' (online play is not switched on yet)'),'#a60');return true}
+ if(c=='help'){say('Commands: /who, /friends, /add name, /accept name, /remove name, /pm name message, /trade name, /ignore name, /unignore name, /report name reason, /logout'+(SRV()?'':' (online play is not switched on yet)'),'#a60');return true}
  if(!NETS.on){say('You are playing offline.','#c00');return true}
- if(c=='who'){netSend({t:'who'});return true}
+ if(c=='friends'||c=='fl'){frdOpen(null);return true}if(c=='add'&&nm){netSend({t:'friendAdd',name:nm});return true}if(c=='accept'&&nm){netSend({t:'friendYes',name:nm});return true}if((c=='decline'||c=='remove'||c=='unfriend')&&nm){netSend({t:'friendNo',name:nm});return true}if((c=='pm'||c=='w'||c=='msg'||c=='tell'||c=='whisper')&&nm){const tx=r.join(' ').trim();if(tx)netSend({t:'pm',name:nm,text:tx});else frdOpen(nm);return true}if(c=='who'){netSend({t:'who'});return true}
  if(c=='trade'&&nm){if(typeof WND!=='undefined'&&WND.some(o=>o.dn&&o.dn.toLowerCase()===nm.toLowerCase())){say('Trade request sent to '+esc(WND.find(o=>o.dn.toLowerCase()===nm.toLowerCase()).dn)+'.','#0a0');return true}netSaveNow();netSend({t:'tradeReq',name:nm});return true}
  if(c=='ignore'&&nm){netIgn.add(nm);LS.set('mc_ign',JSON.stringify([...netIgn]));netSend({t:'ignore',name:nm});say('You will not see '+nm+' any more.','#a60');return true}
  if(c=='unignore'&&nm){netIgn.delete(nm);LS.set('mc_ign',JSON.stringify([...netIgn]));netSend({t:'ignore',name:nm,off:1});say(nm+' is no longer ignored.','#a60');return true}
@@ -1015,9 +1073,9 @@ function netCmd(t){const[c,a,...r]=t.slice(1).split(' '),nm=(a||'').replace(/[^A
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.pn');if(!a)return;e.preventDefault();
  if(a.dataset.ty){netSaveNow();netSend({t:'tradeYes',name:a.dataset.ty});return}
  const n=a.dataset.pn;if(!n||n===NETS.name||!NETS.on)return;let d=$('pnm');if(!d){d=document.createElement('div');d.id='pnm';document.body.appendChild(d)}
- d.innerHTML='<b>'+n+'</b><button data-pa="t">Trade</button><button data-pa="i">'+(netIgn.has(n)?'Unignore':'Ignore')+'</button><button data-pa="r">Report</button><button data-pa="x">Close</button>';
+ const fr_=FRD.list.find(q=>q.name==n&&q.ok);d.innerHTML='<b>'+n+'</b>'+(n==NETS.name?'':'<button data-pa="f">'+(fr_?'Remove friend':'Add friend')+'</button>'+(fr_?'<button data-pa="m">Message</button>':''))+'<button data-pa="t">Trade</button><button data-pa="i">'+(netIgn.has(n)?'Unignore':'Ignore')+'</button><button data-pa="r">Report</button><button data-pa="x">Close</button>';
  d.style.left=Math.min(innerWidth-170,e.clientX)+'px';d.style.top=Math.max(8,e.clientY-120)+'px';d.style.display='block';
- d.onclick=ev=>{const b=ev.target.dataset.pa;if(!b)return;d.style.display='none';if(b=='t')netCmd('/trade '+n);if(b=='i')netCmd((netIgn.has(n)?'/unignore ':'/ignore ')+n);if(b=='r'){netCmd('/report '+n+' reported from chat');}}});
+ d.onclick=ev=>{const b=ev.target.dataset.pa;if(!b)return;d.style.display='none';if(b=='t')netCmd('/trade '+n);if(b=='f')netSend({t:FRD.list.find(q=>q.name==n&&q.ok)?'friendNo':'friendAdd',name:n});if(b=='m')frdOpen(n);if(b=='i')netCmd((netIgn.has(n)?'/unignore ':'/ignore ')+n);if(b=='r'){netCmd('/report '+n+' reported from chat');}}});
 // other players in the world
 function netSelf(x,y,r,mv,cl,wk,sk){if(!NETS.on||!started)return;const lv=(()=>{try{return combatLvl()}catch(e){return 3}})(),cs=(()=>{try{return capeSkin()||''}catch(e){return ''}})(),cc=((st.eq&&st.eq.cape)||'')+(cs&&st.eq&&st.eq.cape?':'+cs:'')+(armKey()?'@'+armKey():''),a=[cl||'',String(wk||'').replace(/^w_/,''),String(sk||'').replace(/^w_/,'')].join('|'),k=[x.toFixed(2),y.toFixed(2),r.toFixed(2),mv,st.ap&&st.ap.g?1:0,cc,lv,a].join(',');
  const t=performance.now();if(k===NETS.lastPos&&t-(NETS.lastPosT||0)<3000||t-(NETS.lastPosT||0)<190)return;NETS.lastPos=k;NETS.lastPosT=t;
@@ -2500,7 +2558,7 @@ if(useSel){const u=useSel;useSel=null;renderPanel();if(u.i===i)return;return say
 $('panel').addEventListener('contextmenu',e=>{e.preventDefault();const s=e.target.closest('[data-k]');if(!s)return;const k=s.dataset.k,i=+s.dataset.i,fn=[],sl=slotOf(k);let h='<div class="h">What now?</div>';const add=(t,f)=>{h+='<div data-i="'+fn.length+'">'+t+' <b style="color:#ff9040">'+IN[k]+'</b></div>';fn.push(f)};if(IACT[k])add(IACT[k][0],()=>IACT[k][1](k,i));
 if(sl)add(sl=='weapon'?'Wield':'Wear',()=>equip(i));if(HEAL[k])add('Eat',()=>useItem(k,i));if(k!='coin'){add('Use',()=>{useSel={k,i};say('Use '+IN[k]+' -> tap something','#1a4fb0');renderPanel()});add('Drop',()=>{st.inv.splice(i,1);say('You drop the '+IN[k].toLowerCase()+'.');ui()})}add('Look',()=>say(EX[k]||''));add('Info',()=>itemCard(k,i));showMenu(e,h,fn)});
 function useItem(k,i){if(k=='fish'&&i>=0)return say('I should try cooking this.');if(HEAL[k]&&i>=0){if(tickN<eatT)return;if(st.hp>=hpMax())return say('You are already at full health.');eatT=tickN+3;atkCd=Math.max(atkCd,1)+3;if(act&&act.k=='gob')act.ref.ate=1;pAnim={k:'eat',t0:performance.now(),d:900};st.inv.splice(i,1);st.hp=Math.min(hpMax(),st.hp+HEAL[k]);say('You eat the '+IN[k].toLowerCase()+'.');ui()}}
-const M=$('modal'),MB=$('mb');new MutationObserver(()=>{if(MB.className&&!MB.querySelector('#mkroot,#trroot,#skxroot'))MB.className=''}).observe(MB,{childList:true});
+const M=$('modal'),MB=$('mb');new MutationObserver(()=>{if(MB.className&&!MB.querySelector('#mkroot,#trroot,#skxroot,#frdroot'))MB.className=''}).observe(MB,{childList:true});
 function party(){const tot=st.chest;st.chest=0;const nb=Math.min(12,Math.max(3,Math.floor(tot/8))),w=Array.from({length:nb},()=>.3+Math.random()),ws=w.reduce((a,b)=>a+b,0),cx=Math.floor(PR.chest[0]),cy=Math.floor(PR.chest[1]),CO=['#ff4d6d','#ffd23f','#4dd2ff','#7dff6b','#c77dff','#ff9a3d'];let left=tot;
 for(let i=0;i<nb;i++){const v=Math.max(0,i==nb-1?left:Math.max(1,Math.floor(tot*w[i]/ws)));left-=v;if(v<=0)continue;let x,y,g=0;do{x=cx+Math.round((Math.random()-.5)*16);y=cy+Math.round((Math.random()-.5)*16);g++}while(g<80&&(!ok(x,y)||tile[y][x]!=2||ob[y][x]||balloons.some(b=>!b.gone&&b.x==x&&b.y==y)));balloons.push({x,y,v,c:CO[i%6],ttl:tickN+55,gone:0})}
 say('DROP PARTY! Balloons are floating around the plaza - pop them!','#e6398f')}

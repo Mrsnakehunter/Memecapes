@@ -98,6 +98,22 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 31 (3:30 am): "the 4 min video re-made with the new armor and weapons at different stages and the cape (the rest is
+  great), then a spot where people can add people in game so they can private message them". FRIENDS + PMs: server/
+  friends.js (tables friends(uid,fid,t,ok) = a row per direction, both rows = friends; pms(t,f,u,text,seen): kept 200 per
+  pair / 30 days, delivered at sign-in with late:1; handlers friends/friendAdd/friendYes/friendNo/pm/pmHist; fon = friend
+  on/offline; only friends can PM; ignore drops PMs + requests silently; FR.onSignIn/onLeave hooked in server.js;
+  test_friends.js 27). Game: tools/patch_friends.py (after patch_weapons): Friends button + unread badge in #crib (the
+  chat filter bar is desktop-only, >=641 px: on phones use the name menu or /friends), PMs filter, frd* modal (list /
+  requests / add box; thread view with history, Trade button, offline note), purple PM lines in chat ("From X:" click =
+  reply), name menu Add friend / Remove friend / Message, commands /friends /add /accept /decline /remove /pm|/w|/msg|
+  /tell. Site FAQ + support answer added. E2E: /tmp/claude-0/frd_e2e.py (site_t/t.html = preview + __H hook incl. FRD,
+  frdOpen, M, MB): needs a quiet machine (a parallel gp4 recording made sign-in time out). VIDEO v2: plan6.py now 127 bars
+  (crest 2, end card 4) with 'sq7:' clips from /tmp/claude-0/ad6/gp7 (plan7.json via ad4/gp4.py on test9.html = test7 +
+  window.__MK, rebuilt from the new preview): sq_sets (all nine sets cycling, 30 frames each; pre-load by switching the
+  body on a virtual setTimeout chain during settle), sq_arm_low/mid/high, sq_parade, sq_cape2, sq_forge (S.pa('smith')).
+  New scenes PLAY · ARMOUR and PLAY · WEAPONS before the cape scene; hook FIGHT/EARN and the montage PLAY use the new clips.
+
 - Oct 31 (2:30 am): "Moonforged level 70 has two capes: design it without the standard cape". My Oct 29 prompt had asked
   for "a short starry midnight-blue cape" on the lv70 concept, so the Meshy body carries a cape AND armCape draws one.
   Rule: armour concepts must have NO cape/cloak (capes are the game's own layer); tabards are fine. Redone in the same

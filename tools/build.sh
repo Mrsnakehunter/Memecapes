@@ -43,6 +43,7 @@ python3 tools/patch_armcape.py
 python3 tools/patch_armorget.py
 python3 tools/patch_armordemo.py
 python3 tools/patch_weapons.py
+python3 tools/patch_friends.py
 python3 tools/patch_mdlv.py
 python3 tools/patch_ticker.py
 sed -i "s/__BUILD__/$(date -u +%Y%m%d%H%M%S)/" play.html

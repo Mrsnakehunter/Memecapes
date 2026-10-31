@@ -223,7 +223,7 @@ function broadcast(obj, except) { for (const o of online.values()) if (o !== exc
 function onOpen(c) { c.id = ++seq; c.send({ t: 'hello', need: 'login' }); }
 function onClose(c) {
   if (c.trade) tradeEnd(c.trade, c.name + ' left.');
-  if (c.uid && online.get(c.uid) === c) { online.delete(c.uid); broadcast({ t: 'leave', id: c.uid }); }
+  if (c.uid && online.get(c.uid) === c) { online.delete(c.uid); broadcast({ t: 'leave', id: c.uid }); if (typeof FR !== 'undefined') FR.onLeave(c); }
 }
 
 function tooMany(ip) {
@@ -245,6 +245,7 @@ function signIn(c, u, tok) {
   const w = CAPES_MINT && Q.wal.get(u.id);  // holder perks: a fresh balance check at every login
   if (w) holderCheck(w).then(() => { c.send(holderInfo(u.id)); c.send(partnerInfo(u.id)); }); else { c.send(holderInfo(u.id)); c.send(partnerInfo(u.id)); }
   c.send({ t: 'partners', list: partnersLive() });
+  if (typeof FR !== 'undefined') FR.onSignIn(c);
 }
 
 const H = {
@@ -812,7 +813,10 @@ const BURNS = require('./burns')({ DATA, now });
 const flagsN = db.prepare('SELECT COUNT(*) n FROM flags WHERE uid=? AND t>?');
 const WD = require('./withdraw')({ db, now, say, loadSave, setSave: (...a) => Q.setSave.run(...a), walOf: (uid) => Q.wal.get(uid), rpc, CAPES_MINT,
   flagCount: (uid) => flagsN.get(uid, now() - 30 * 864e5).n });
-Object.assign(H, WD.H);   // the public burn log: every burn of the coin, read from Solana
+Object.assign(H, WD.H);
+// friends + private messages (server/friends.js)
+const FR = require('./friends')({ db, now, say, online, cleanChat, findOnline, byName: { name: (n) => Q.byName.get(n), id: (i) => Q.byId.get(i) } });
+Object.assign(H, FR.H);   // the public burn log: every burn of the coin, read from Solana
 
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------
 const server = http.createServer(async (req, res) => {
