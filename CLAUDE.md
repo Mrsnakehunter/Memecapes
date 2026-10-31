@@ -98,6 +98,21 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 30 (11 pm): "each one of those armor classes need weapons to match" (+ "two swords" in the parade shot = the knight
+  behind). Nine swords: concepts in his ChatGPT (6 tabs, prompts in localStorage mcSw; outputs/swords/concepts, out of
+  the repo), pushed to the art-staging branch meshy/sw_<name>.png, Meshy image-to-3D Standard + Texture (30 credits each,
+  945 -> 675). NEW Meshy workspace (meshy.ai/workspace, Meshy 7.1): the file input takes a DataTransfer file fetched from
+  raw.githubusercontent (helpers __put/__genP in tools/dev/meshy_helpers.js pattern), but a JS click on Generate only
+  works ONCE per page: after that use a REAL click on Generate (frame coords of its centre) and wait ~12 s after the
+  upload first or the click does nothing. Each generation shows as two cards (textured left, grey right); card click =
+  real click on the centre; Download = toolbar button with svg path M4.933 6.272 (real click), popup Format glb,
+  Download (real click), then Escape to close the popup before the next card. Downloads are slow (50 KB/s each, 7-22 MB
+  full-detail GLBs) and land as <uuid>.tmp: identify by texture colour. Game: tools/patch_weapons.py (after
+  patch_armordemo): items sw01..sw80 (ITM 'blade' icons, WST stats 3/3 .. 100/98, WREQ Attack level like ARMS, GV0
+  values), forge recipes in ARMREC (2 bronze / 3 iron / 3 steel / 3 steel + 3 gold), sw01 in the starter pack, drops
+  with the armour (Ratio Knight sw50, Ratio Lord sw60/70/80), sw80 NOTRADE, WFB maps unbuilt models to w_isword
+  (heldKey + a qHold wrapper), parade knights hold w_sw<NN>. Models models/w_swNN.json via glb2mdl --orient --tris.
+
 - Oct 30 (2:30-6 am, Albert asleep: "keep working on everything, I give you permission for the sites"). X: 11 of the
   12 approved posts scheduled from the pane (see Standing rules); the Sat 1:37 pm towns post is a DRAFT in his X
   composer (text + time set) because the pane cannot attach c20_towns.mp4 (in his Downloads): he adds the video and
