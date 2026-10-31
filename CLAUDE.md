@@ -98,6 +98,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 31 (2:30 am): "Moonforged level 70 has two capes: design it without the standard cape". My Oct 29 prompt had asked
+  for "a short starry midnight-blue cape" on the lv70 concept, so the Meshy body carries a cape AND armCape draws one.
+  Rule: armour concepts must have NO cape/cloak (capes are the game's own layer); tabards are fine. Redone in the same
+  ChatGPT chat ("Create Armour Concept Art", /c/6ae2f062-e8f4...) with "same image, no cape": outputs/armor_concepts/
+  lv70_nocape.png, split front/back -> art-staging meshy/arm70nc_front/back.png, Meshy multi-view (inputs: [0]=front,
+  then Left/Back/Right = [1],[2],[3]; Ultra 2K, 35 credits), then the lv70 rebuild chain. Unbaked lv40 source for
+  armor_clips = `git show cc9a06e~1:models/arm_lv40.json`.
+
 - Oct 30 (11 pm): "each one of those armor classes need weapons to match" (+ "two swords" in the parade shot = the knight
   behind). Nine swords: concepts in his ChatGPT (6 tabs, prompts in localStorage mcSw; outputs/swords/concepts, out of
   the repo), pushed to the art-staging branch meshy/sw_<name>.png, Meshy image-to-3D Standard + Texture (30 credits each,
