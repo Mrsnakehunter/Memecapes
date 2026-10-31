@@ -104,7 +104,13 @@ numbers in here or anywhere in the repo.
   ChatGPT chat ("Create Armour Concept Art", /c/6ae2f062-e8f4...) with "same image, no cape": outputs/armor_concepts/
   lv70_nocape.png, split front/back -> art-staging meshy/arm70nc_front/back.png, Meshy multi-view (inputs: [0]=front,
   then Left/Back/Right = [1],[2],[3]; Ultra 2K, 35 credits), then the lv70 rebuild chain. Unbaked lv40 source for
-  armor_clips = `git show cc9a06e~1:models/arm_lv40.json`.
+  armor_clips = `git show cc9a06e~1:models/arm_lv40.json`. DONE: models/arm_lv70.json + arm_lv70_cape.json rebuilt (Meshy: remesh 20k via the toolbar
+  button svg 'm9.13 8 4.74' + find-ref clicks Custom/Triangle/Confirm; Animate sidebar: Rig -> Humanoid -> Next -> Got it
+  -> Next -> Confirm (markers auto); motions: click a Library card = preview, then its "Add" button (the first click
+  alone adds nothing); download popup: Skeleton template MeshyRig, Rigged Character ON (off by default!), All Added,
+  Single file). The pane's coordinate clicks mis-mapped in the emulated 1400x900 viewport this time (frame flips
+  800x514 <-> 689x443): use find()/ref clicks and JS for everything but the asset cards. Lv70 old model kept at
+  /tmp/claude-0/arm70/arm_lv70_old.json.
 
 - Oct 30 (11 pm): "each one of those armor classes need weapons to match" (+ "two swords" in the parade shot = the knight
   behind). Nine swords: concepts in his ChatGPT (6 tabs, prompts in localStorage mcSw; outputs/swords/concepts, out of
