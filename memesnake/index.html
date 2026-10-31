@@ -902,7 +902,7 @@ function renderStatus() {
 }
 function renderCountdown() {
   const d = Math.ceil((LAUNCH_DATE - new Date()) / 86400000);
-  $('countdown').textContent = d > 1 ? d + ' days' : d === 1 ? '1 day' : 'LIVE';
+  $('countdown').textContent = 'LIVE';
 }
 function renderRoom() {
   const r = ROOM[selected], info = ROOM_INFO[selected];
