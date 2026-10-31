@@ -98,6 +98,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 31 (10 am): "a 45 s ad for new people, 100% the game, eye-catching, show the MemeCape and the armour, every shot a
+  properly rendered character" then "most people stop at 15 s: make it 20 s". /tmp/claude-0/ad9: make9.py (make5 with
+  A=ad9, exec plan9.py), VIDEO=game, Swag Drop from the drop (music_game.json), 13 bars at 160 BPM = 19.5 s: hook MEMES/
+  HAVE/HP./FIGHT., Fight the memes (free, browser), Nine armour sets, Earn the MemeCape + Wear it over your armour, hook
+  EXPLORE/GEAR UP/QUEST/SHOW OFF, end card (no crypto line: note "Real game footage."). Footage ad8/gp5.py plan9*.json
+  on test9.html, 980x720 dpr 1, 15 fps, HUD + name tags hidden (css), 'n9:clip@speed@frame' sources: walk2 (toward the
+  camera: yaw 0.5 looks north, so walk SOUTH), fight (Bonk, zoom 1.35 or the character is small), sets2 (nine sets
+  cycling, NO cape, from the front-left: with the cape on, the cape hides the armour), blade, cape, night, town. Lessons:
+  the first walk clip hid the player behind a stall roof; a fish clip needs a net in the bag (the setup bag had none:
+  the player just stood there); Whale Plate's shoulder fins look like a T-pose from behind. encode9.sh -> outputs/x_ads/
+  memecapes_game_20s_1x1/9x16/16x9.mp4 + thumb (sent; not posted).
+
 - Oct 31 (3:30 am): "the 4 min video re-made with the new armor and weapons at different stages and the cape (the rest is
   great), then a spot where people can add people in game so they can private message them". FRIENDS + PMs: server/
   friends.js (tables friends(uid,fid,t,ok) = a row per direction, both rows = friends; pms(t,f,u,text,seen): kept 200 per
