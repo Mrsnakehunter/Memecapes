@@ -98,6 +98,10 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 31 (4 pm): "take down the countdown". Home hero: the #cd timer + "Launches Monday 2 November" line and its tick
+  script removed from index.html; the MemeSnake page's MEMECAPES LAUNCH stat now reads LIVE (his file: one-line change).
+  The roadmap's dated "2 Nov · Launch" items were left (not a countdown). Pushed to main fa84371.
+
 - Oct 31 (10 am): "a 45 s ad for new people, 100% the game, eye-catching, show the MemeCape and the armour, every shot a
   properly rendered character" then "most people stop at 15 s: make it 20 s". /tmp/claude-0/ad9: make9.py (make5 with
   A=ad9, exec plan9.py), VIDEO=game, Swag Drop from the drop (music_game.json), 13 bars at 160 BPM = 19.5 s: hook MEMES/
