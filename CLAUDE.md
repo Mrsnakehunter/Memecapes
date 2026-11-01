@@ -98,6 +98,20 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 1 (2 pm): "start working on magic... mage melee or range right off the bat" (his picks: all three in the starter
+  pack, spell items, bows + arrows, combat triangle). Branch combat-styles (NOT shipped): tools/patch_styles.py (after
+  patch_mdlv): skills rg/mg in NM (+ combatLvl max(at+str, 1.5 rg, 1.5 mg), CAPEC, skill coins SCC/SCI/SCW, scUnl);
+  bows bw01..bw80 (tools/mkbow.py procedural models, WCFG 'v' grip .5, Ranged level WRQ; RQ was taken = model queue),
+  Paper Staff st01 (tools/mkstaff.py) + bstaff/iscroll/astaff are magic weapons (Magic 10/20/30); quiver + scroll pouch
+  = st.amo counts (a1/a2/a3 arrows, ss/bs/ns scrolls; not bag items, not tradable); SPL nine spells; wSty()/rch()
+  (bow 7, staff 8) replace adj() in step() and tick(); rgAtk() in doAct's gob branch; triangle tri() with mt.fs (examine
+  text says weak/resists); projectiles reuse the monsters' PJ list (k:'rg' thin arrow, 'mg' orb + trail); Cast clip
+  (ACL.cast); Party Shop supplies (SHPA, data-amb); pouchDrop in killMob; starter kit st.kitRM. Icons: NEW sheet
+  icons/items3.* (icon_pack.py + patch_icons.py now use items3; the live game reads items2, never touch it).
+  Lessons: procedural tubes need outward (CCW) winding or iconview shades them as back faces (dark); the game script is
+  not global, so tests need a scratch hook page (scratch/site/test7s.html = test7 + window.__X {equip,setAct,PJ,openTab,
+  modal}); never setAct(null) (tick reads act.ref). Test script /tmp/claude-0/styles/t.py + p*.json.
+
 - Nov 1 (3 am): "when you put on the armour their feet point straight out to the sides" (worst on Paper Hands). Meshy
   built the armour boots turned out; same motions as the plain body, so tools/feet_fix.py matches each boot's heading
   (foot-bone verts -> toe-bone verts, top view) to models/player2.json's in the same motion + moment, turning the foot +

@@ -135,11 +135,12 @@ const SHA=[['a1',50,20],['a2',50,150],['ss',50,25],['bs',25,200]],SHN={a1:'Paper
 function amoIco(k){const c={a1:'#e8dcc0',a2:'#9aa2ac',a3:'#8fd3ff',ss:'#ffd23f',bs:'#ff7a2a',ns:'#8fd3ff'}[k];return k[0]=='a'?'<svg viewBox="0 0 24 24" class="fsI"><path d="M4 20 18 6" stroke="#5a3a1a" stroke-width="2"/><path d="M18 6l-4 .5L17.5 10z" fill="'+c+'" stroke="#2a1604" stroke-width=".6"/><path d="M4 20l1-4 2 2zM6 18l-1-4 2 2" fill="#f4ead2"/></svg>':'<svg viewBox="0 0 24 24" class="fsI"><rect x="5" y="4" width="14" height="16" rx="2" fill="#f1e2b8" stroke="#5a3a1a"/><rect x="4" y="3" width="16" height="3" rx="1.5" fill="#c9a060" stroke="#5a3a1a"/><rect x="4" y="18" width="16" height="3" rx="1.5" fill="#c9a060" stroke="#5a3a1a"/><circle cx="12" cy="12" r="3.4" fill="'+c+'" stroke="#2a1604" stroke-width=".6"/></svg>'}
 function SHPA(){return '<div class="fsH">Arrows and spell scrolls <small>(go straight into your quiver and scroll pouch)</small></div>'+SHA.map(([k,n,p],i)=>'<div class="row"><span>'+amoIco(k)+n+' '+SHN[k]+' <small>(you have '+amoN(k)+')</small></span><button data-amb="'+i+'">'+p+' Meme Coins</button></div>').join('')+'<br>'}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-amb]');if(!b)return;const [k,n,p]=SHA[+b.dataset.amb];if(st.coins<p)return say('You need '+p+' Meme Coins for that.','#c00');burn(p,SHN[k]);amoAdd(k,n);say('You buy '+n+' '+SHN[k]+'.','#0a0');ui();save();modal('shop')},true);
+function styMax(){const s=wSty(),w=bestW();if(s=='rg'){const a=bestArrow();return a?Math.floor(.5+(lvl(st.xp.rg||0)+8+(st.cs==1?3:st.cs==3?1:0))*(BST[w][1]+a[3]+64)/640):0}if(s=='mg'){const p=curSpell();return p?Math.floor(p[3]*(1+MST[w][1]/100)+(st.cs==1?1:0)):0}return maxHitNow()}
 // Gear tab: fighting style, quiver and pouch
 function PCH(){const s=wSty(),l=s=='rg'?lvl(st.xp.rg||0):s=='mg'?lvl(st.xp.mg||0):0,sp=s=='mg'?curSpell():null,ar=s=='rg'?bestArrow():null;
  let t='<div class="fsP"><div class="fsH">Fighting style: <b>'+STYN[s]+'</b>'+(s!='me'?' <small>· reach '+rch()+' tiles</small>':'')+'</div>';
- if(s=='rg')t+='<div class="fsL">'+(ar?'Firing '+ar[1]+' · max hit '+Math.floor(.5+(l+8+(st.cs==1?3:st.cs==3?1:0))*(BST[bestW()][1]+ar[3]+64)/640):'<span style="color:#ff8080">No arrows you can use</span>')+'</div>';
- if(s=='mg')t+='<div class="fsL">'+(sp?'Casting '+sp[0]+' · max hit '+Math.floor(sp[3]*(1+MST[bestW()][1]/100)):'<span style="color:#ff8080">No spell you can pay for</span>')+' · <a href="#" data-sub="magic" class="fsA">spells</a></div>';
+ if(s=='rg')t+='<div class="fsL">'+(ar?'Firing '+ar[1]+' · max hit '+styMax()+' · trains Ranged'+(st.cs==2?' and Defence':''):'<span style="color:#ff8080">No arrows you can use</span>')+'</div>';
+ if(s=='mg')t+='<div class="fsL">'+(sp?'Casting '+sp[0]+' · max hit '+styMax()+' · trains Magic'+(st.cs==2?' and Defence':''):'<span style="color:#ff8080">No spell you can pay for</span>')+' · <a href="#" data-sub="magic" class="fsA">spells</a></div>';
  if(s=='me')t+='<div class="fsL">Wield a bow for Ranged or a staff for Magic.</div>';
  t+='<div class="fsQ">'+ARW.concat(SCR).map(a=>'<span title="'+(SHN[a[0]])+'">'+amoIco(a[0])+'<b>'+amoN(a[0])+'</b></span>').join('')+'</div><div class="fsL" style="opacity:.75">Melee beats Ranged · Ranged beats Magic · Magic beats Melee. Examine a monster to see what it is weak to.</div></div>';return t}
 // Magic tab: the spell book
@@ -185,7 +186,9 @@ rep("home:['Cast'],", "home:['Cast'],cast:['Cast','Punch','Attack'],")
 rep("const PS={\n", "const PS={\ncast:f=>PS.punch(f),\n")
 
 # UI hooks
-rep("function EQH(){return EQH0()+", "function EQH(){return EQH0()+PCH()+")
+rep("Max hit / speed</span><b>'+maxHitNow()+' / '+W0[2]+' ticks</b></div>",
+    "Max hit / speed</span><b>'+(wSty()=='me'?maxHitNow()+' / '+W0[2]:styMax()+' / '+(wSty()=='rg'?(st.cs==1?3:4):5))+' ticks</b></div>")
+rep("<div style=\"font-size:11px;color:#ffd23f;margin:4px 0 3px\">Combat style</div>", "'+PCH()+'<div style=\"font-size:11px;color:#ffd23f;margin:4px 0 3px\">Combat style</div>")
 rep("if(SUB=='magic'){const left=", "if(SUB=='magic'){h+=MGH();const left=")
 rep("h+='<br>Sell for Meme Coins: gathered goods", "h+=SHPA();h+='<br>Sell for Meme Coins: gathered goods")
 rep("['sword',40],['cake',5]", "['sword',40],['bw01',30],['st01',30],['cake',5]")
