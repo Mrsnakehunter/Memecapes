@@ -106,7 +106,11 @@ numbers in here or anywhere in the repo.
   /tmp/claude-0/icons3/cut.py cuts the torso out of each arm_lvNN.json (Idle frame 0, y band round the shoulders) and
   tools/dev/charview/iconview.html renders it (transparent, rim light); refs pushed to art-staging icon_ref/armNN.png.
   The pane's javascript tool returned undefined for every call once the Claude window went behind others (screenshots
-  timed out too): ask Albert to bring the app forward. 9 of 18 icons in preview (ddd68b2), NOT shipped.
+  timed out too, and a fresh tab or closing apps did not fix it). FINAL (b226311, preview, NOT shipped): all 18 icons are
+  RENDERS of the real models: tools/dev/charview/armcut.py (bind pose + per-vertex keep field, clipped per pixel in
+  iconview.html; lv01 sleeves are weighted to the spine and lv40's to the head, so the cut is geometric: XSH override
+  .16 for lv01) + shoot_icon.py (swords: w_swNN rotated 45 deg, width x1.6 so they read at 36 px) + a dark 5 px outline
+  (/tmp/claude-0/icons4/polish.py), then icon_pack.py.
 
 - Nov 1 (12:15 am): "Ship it". SHIPPED build 20261101001511 (main 8a64f48): armour sets + swords + capes over armour +
   armour sources + anim blend + friends/PMs + skill coins. Friends FAQ/support patch applied (support_qa.py +
