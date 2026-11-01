@@ -98,6 +98,23 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 1 (evening): 18 ranger/mage armour sets + "multiple worlds... PvP world or the regular world". Branch combat-styles
+  749afb7 (NOT shipped). Models models/ra_lvNN / ma_lvNN.json: Meshy multi-view -> remesh 20k -> rig -> download
+  (MeshyRig, Rigged ON, All Added; the popup needs a template click to 'load' then another to open: screenshot between;
+  run at most 3 downloads at once: 6 of 18 stalled at 8 MB or 0 bytes when 18 were queued; stage 2-3 files per call or
+  the bridge times out while downloads run) -> glb2rig --rig28 (now reuses the hand for missing Hand_End bones) ->
+  NEW tools/fit_height.py arm_lv40 ... (mage hats made bodies short: shoulders matched to arm_lv40) -> armor_clips from
+  `git show cc9a06e~1:models/arm_lv40.json` -> armor_hands -> carry_bake -> feet_fix (these boots are turned out too;
+  feet_fix now uses the boot's front third when no toe-bone verts). Identify .tmp downloads by a front splat render of
+  the converted model (/tmp/claude-0/rmglb/splat.py): texture colours alone can't tell tiers apart.
+  WORLDS + PVP: server.js c.world (login/register/resume carry world; pl/pi/chat/who/trades per world; /worlds counts),
+  server/pvp.js (World 2 only; safe zones = server/towns.json town circles r34 + Gigachad Town r36; reach at 1.6 / rg 8.5 /
+  mg 9.5; speed 2.2/2.8 s; combat levels within 15; damage capped by saved level; server keeps PvP hp; pvpEat <= 25 per
+  1.5 s; death = back to spawn, NOTHING dropped (v1, Albert to decide item loss); table pvp kills/deaths; test_pvp.js 19).
+  Game tools/patch_pvp.py (after patch_vfx): World 1/2 picker on the start screen (LS mc_world), SAFE/PvP ZONE badge,
+  Fight in the name menu, fight loop (walkTo into rch(), styMax roll, FX for bow/staff), pvpHit sets st.hp from the server.
+  The live server must be redeployed (Render, main) before PvP works online.
+
 - Nov 1 (2 pm): "start working on magic... mage melee or range right off the bat" (his picks: all three in the starter
   pack, spell items, bows + arrows, combat triangle). Branch combat-styles (NOT shipped): tools/patch_styles.py (after
   patch_mdlv): skills rg/mg in NM (+ combatLvl max(at+str, 1.5 rg, 1.5 mg), CAPEC, skill coins SCC/SCI/SCW, scUnl);
