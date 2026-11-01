@@ -52,7 +52,9 @@ if a.drop_fingers:
 if a.rig28:  # the game's exact 28-bone layout (rigkit.NAMES order); fingers and extra bones follow their nearest kept ancestor
     import rigkit
     clean = [n.split(':')[-1] for n in names]
-    keep = [clean.index(n) for n in rigkit.NAMES]
+    # a rig without hand-end bones (Meshy sometimes leaves fingers out) reuses the hand for that slot (same matrices)
+    FALL = {'LeftHand_End': 'LeftHand', 'RightHand_End': 'RightHand', 'head_end': 'Head', 'headfront': 'Head'}
+    keep = [clean.index(n if n in clean else FALL[n]) for n in rigkit.NAMES]
     jpos = {j: k for k, j in enumerate(r.joints)}
     def up28(k):
         while k not in keep:
@@ -60,7 +62,8 @@ if a.rig28:  # the game's exact 28-bone layout (rigkit.NAMES order); fingers and
             while p >= 0 and p not in jpos: p = r.parent[p]
             k = jpos[p]
         return k
-    newi = {k: i for i, k in enumerate(keep)}
+    newi = {}
+    for i, k in enumerate(keep): newi.setdefault(k, i)   # first slot wins (a reused hand stays bone 11 / 16)
     # the dropped bones (fingers, toes) keep the pose they have in the reference motion (Idle, else Walking, else the
     # first), relative to the kept ancestor: baked into the rest mesh so a hand stays relaxed instead of the stiff
     # open bind pose

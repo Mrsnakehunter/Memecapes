@@ -219,6 +219,12 @@ let seq = 0;
 const say = (c, text, color) => c.send({ t: 'info', text, color });
 const pub = c => ({ id: c.uid, name: c.name, g: c.look.g | 0, c: c.look.c || '', lv: c.look.lv | 0, role: c.role || '' });
 function broadcast(obj, except) { for (const o of online.values()) if (o !== except) o.send(obj); }
+// worlds: 1 = the normal world, 2 = the PvP world (players can fight each other outside towns). Same accounts and saves;
+// players only see, chat with and fight people in their own world. Friends and PMs work across worlds.
+const WORLDS = { 1: 'World 1', 2: 'World 2 (PvP)' };
+const inWorld = w => [...online.values()].filter(o => o.world === w);
+const worldCounts = () => { const n = { 1: 0, 2: 0 }; for (const o of online.values()) n[o.world] = (n[o.world] || 0) + 1; return n; };
+function bcastWorld(w, obj, except) { for (const o of online.values()) if (o !== except && o.world === w) o.send(obj); }
 
 function onOpen(c) { c.id = ++seq; c.send({ t: 'hello', need: 'login' }); }
 function onClose(c) {
@@ -231,17 +237,17 @@ function tooMany(ip) {
   return L.length > 12;
 }
 
-function signIn(c, u, tok) {
+function signIn(c, u, tok, world) {
   if (u.banned) { c.send({ t: 'err', text: 'This account is banned.' }); return c.close(); }
   const old = online.get(u.id);
   if (old && old !== c) { old.send({ t: 'kicked', text: 'You logged in somewhere else.' }); online.delete(u.id); old.close(); }
   c.uid = u.id; c.name = u.name; c.role = ADMINS.includes(u.name.toLowerCase()) ? 'admin' : (u.role || '');
-  c.iron = !!u.iron; c.look = { g: 0, c: '', lv: 3 }; c.pos = null; c.ignore = new Set();
+  c.iron = !!u.iron; c.look = { g: 0, c: '', lv: 3 }; c.pos = null; c.ignore = new Set(); c.world = WORLDS[world | 0] ? world | 0 : 1;
   online.set(u.id, c); Q.seen.run(now(), c.ip, u.id);
   let save = null; try { save = u.save ? JSON.parse(u.save) : null; } catch (e) { }
-  c.send({ t: 'welcome', name: u.name, token: tok, save, rev: u.rev, role: c.role, iron: c.iron, online: online.size });
+  c.send({ t: 'welcome', name: u.name, token: tok, save, rev: u.rev, role: c.role, iron: c.iron, online: inWorld(c.world).length, world: c.world, worlds: worldCounts() });
   c.send({ t: 'chatlog', lines: Q.recentChat.all().reverse() });
-  for (const o of online.values()) if (o !== c && o.pos) c.send({ t: 'pi', ...pub(o) });
+  for (const o of online.values()) if (o !== c && o.pos && o.world === c.world) c.send({ t: 'pi', ...pub(o) });
   const w = CAPES_MINT && Q.wal.get(u.id);  // holder perks: a fresh balance check at every login
   if (w) holderCheck(w).then(() => { c.send(holderInfo(u.id)); c.send(partnerInfo(u.id)); }); else { c.send(holderInfo(u.id)); c.send(partnerInfo(u.id)); }
   c.send({ t: 'partners', list: partnersLive() });
@@ -260,7 +266,7 @@ const H = {
     const salt = crypto.randomBytes(16).toString('hex');
     const r = Q.add.run(name, salt, hashPass(pass, salt), now(), now(), m.iron ? 1 : 0, c.ip);
     const u = Q.byId.get(r.lastInsertRowid);
-    signIn(c, u, newSession(u.id));
+    signIn(c, u, newSession(u.id), m.world);
   },
   login(c, m) {
     if (c.uid) return;
@@ -270,7 +276,7 @@ const H = {
     if (G.loginLocked(name)) return c.send({ t: 'err', text: 'Too many wrong passwords for this name. It is locked for 15 minutes.' });
     const u = Q.byName.get(name);
     if (!u || !passOk(String(m.pass || ''), u)) { G.loginFail(name, c.ip); return c.send({ t: 'err', text: 'Wrong name or password.' }); }
-    G.loginOk(name); signIn(c, u, newSession(u.id));
+    G.loginOk(name); signIn(c, u, newSession(u.id), m.world);
   },
   resume(c, m) {
     if (c.uid) return;
@@ -278,7 +284,7 @@ const H = {
     if (!s || now() - s.last > 60 * 864e5) return c.send({ t: 'err', text: 'Please log in again.', relog: 1 });
     const u = Q.byId.get(s.uid); if (!u) return c.send({ t: 'err', text: 'Please log in again.', relog: 1 });
     Q.sesSeen.run(now(), s.token);
-    signIn(c, u, m.token);
+    signIn(c, u, m.token, m.world);
   },
   logout(c, m) { Q.sesDel.run(sha(String(m.token || ''))); c.close(); },
   deleteAccount(c, m) {
@@ -307,7 +313,7 @@ const H = {
     const first = !c.pos;
     c.pos = { x, y, r: +m.r || 0, m: m.m | 0, a: String(m.a || '').slice(0, 48) };
     const look = { g: m.g ? 1 : 0, c: String(m.c || '').slice(0, 48), lv: Math.max(3, Math.min(200, m.lv | 0)) };
-    if (first || look.g !== c.look.g || look.c !== c.look.c || look.lv !== c.look.lv) { c.look = look; broadcast({ t: 'pi', ...pub(c) }, c); }
+    if (first || look.g !== c.look.g || look.c !== c.look.c || look.lv !== c.look.lv) { c.look = look; bcastWorld(c.world, { t: 'pi', ...pub(c) }, c); }
   },
   chat(c, m) {
     if (!c.uid) return;
@@ -319,7 +325,7 @@ const H = {
     const text = cleanChat(raw); if (!text) return;
     c.lastChat = now();
     Q.chat.run(now(), c.uid, c.name, text); if (Math.random() < .01) Q.chatTrim.run();
-    for (const o of online.values()) if (!o.ignore.has(c.uid)) o.send({ t: 'chat', id: c.uid, name: c.name, text, role: c.role });
+    for (const o of online.values()) if (o.world === c.world && !o.ignore.has(c.uid)) o.send({ t: 'chat', id: c.uid, name: c.name, text, role: c.role });
   },
   ignore(c, m) { const o = findOnline(m.name); if (!o) return; if (m.off) c.ignore.delete(o.uid); else c.ignore.add(o.uid); },
   report(c, m) {
@@ -327,13 +333,14 @@ const H = {
     Q.report.run(c.uid, String(m.name || '').slice(0, 12), now(), String(m.why || '').slice(0, 200), JSON.stringify(Q.recentChat.all()));
     say(c, 'Thanks. A moderator will look at it.', '#0a0');
   },
-  who(c) { c.send({ t: 'who', names: [...online.values()].map(o => o.name).sort() }); },
+  who(c) { c.send({ t: 'who', names: inWorld(c.world).map(o => o.name).sort(), world: c.world, worlds: worldCounts() }); },
 
   // ---- trades: the server checks both offers against the saved bags and does the swap itself
   tradeReq(c, m) {
     if (!c.uid) return;
     const o = findOnline(m.name);
     if (!o || o === c) return say(c, 'That player is not online.', '#c00');
+    if (o.world !== c.world) return say(c, o.name + ' is in ' + WORLDS[o.world] + '. You can only trade in the same world.', '#c00');
     if (c.iron || o.iron) return say(c, 'Diamond Hands players cannot trade.', '#c00');
     if (c.trade || o.trade) return say(c, (c.trade ? 'You are' : o.name + ' is') + ' already trading.', '#c00');
     if (o.ignore.has(c.uid)) return say(c, o.name + ' is not taking trades.', '#c00');
@@ -779,12 +786,12 @@ function onMessage(c, msg) {
 
 // ---------- ticks: positions 5 times a second, pings, cleanup, daily backup ----------
 setInterval(() => {
-  const all = [...online.values()].filter(o => o.pos);
+  const all = [...online.values()].filter(o => o.pos), wc = worldCounts();
   for (const c of online.values()) {
     if (!c.pos) continue;
     const p = [];
-    for (const o of all) if (o !== c && Math.abs(o.pos.x - c.pos.x) <= VIEW && Math.abs(o.pos.y - c.pos.y) <= VIEW) p.push([o.uid, Math.round(o.pos.x * 100) / 100, Math.round(o.pos.y * 100) / 100, Math.round(o.pos.r * 100) / 100, o.pos.m, o.pos.a]);
-    c.send({ t: 'pl', p, n: online.size });
+    for (const o of all) if (o !== c && o.world === c.world && Math.abs(o.pos.x - c.pos.x) <= VIEW && Math.abs(o.pos.y - c.pos.y) <= VIEW) p.push([o.uid, Math.round(o.pos.x * 100) / 100, Math.round(o.pos.y * 100) / 100, Math.round(o.pos.r * 100) / 100, o.pos.m, o.pos.a]);
+    c.send({ t: 'pl', p, n: wc[c.world] || 0 });
   }
 }, 200);
 setInterval(() => {
@@ -816,7 +823,9 @@ const WD = require('./withdraw')({ db, now, say, loadSave, setSave: (...a) => Q.
 Object.assign(H, WD.H);
 // friends + private messages (server/friends.js)
 const FR = require('./friends')({ db, now, say, online, cleanChat, findOnline, byName: { name: (n) => Q.byName.get(n), id: (i) => Q.byId.get(i) } });
-Object.assign(H, FR.H);   // the public burn log: every burn of the coin, read from Solana
+Object.assign(H, FR.H);
+const PVP = require('./pvp')({ db, now, say, online, loadSave, bcastWorld });
+Object.assign(H, PVP.H);   // World 2 fights (server-checked)   // the public burn log: every burn of the coin, read from Solana
 
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------
 const server = http.createServer(async (req, res) => {
@@ -832,6 +841,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/plink' || url.pathname === '/plink/msg') { try { if (await plinkHttp(req, res, url, json) !== false) return; } catch (e) { console.error('plink', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname.startsWith('/burnad')) { try { if (await baHttp(req, res, url, json) !== false) return; } catch (e) { console.error('burnad', e); return json({ error: 'Server error.' }, 500); } }
   if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, online: online.size, mode: G.mode() });
+  if (url.pathname === '/worlds') return json({ worlds: Object.entries(WORLDS).map(([id, name]) => ({ id: +id, name, online: worldCounts()[id] || 0, pvp: +id === 2 })) });
   if (url.pathname === '/guard/me') {   // your own address as the server sees it (and what the proxies sent), for checking the setup
     if (req.method === 'OPTIONS') { res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'X-Forwarded-For' }); return res.end(); }
     return json({ ip: req.ip, hops: String(req.headers['x-forwarded-for'] || '').split(',').length, cf: !!req.headers['cf-connecting-ip'] && req.headers['cf-connecting-ip'] === req.ip });

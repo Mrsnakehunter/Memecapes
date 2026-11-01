@@ -24,6 +24,8 @@ def parts(m):
     out = {}
     for s, leg, ft, toe in FEET:
         fi = np.where(dom == ft)[0]; ti = np.where(np.isin(dom, toe))[0]
+        if len(ti) < 20:   # boot skinned to the foot bone only: its front third stands in for the toes
+            z = m['V'][fi, 2]; cut = np.quantile(z, .7); ti = fi[z >= cut]; fi = fi[z < cut]
         ank = np.where(np.isin(dom, (leg, ft)) & (m['V'][:, 1] < .2))[0]
         out[s] = (fi, ti, ank)
     return out
