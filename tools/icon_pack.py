@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Put painted item pictures into the icon sprite (icons/items.webp + icons/items.json).
+"""Put painted item pictures into the icon sprite (icons/items2.webp + icons/items2.json).
 
 usage: python3 tools/icon_pack.py KEY=picture.png [KEY=picture.png ...]
 Each picture (any size, transparent background) is trimmed to its alpha box, centred on a square with a small margin,
@@ -11,7 +11,7 @@ import json, os, sys
 from PIL import Image, ImageFilter
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-J, W = os.path.join(ROOT, 'icons/items.json'), os.path.join(ROOT, 'icons/items.webp')
+J, W = os.path.join(ROOT, 'icons/items2.json'), os.path.join(ROOT, 'icons/items2.webp')
 MARGIN = .05
 
 
