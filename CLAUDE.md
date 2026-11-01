@@ -98,6 +98,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Oct 31 (8 pm): photo of a classic MMO skills grid, "recreate our own unique version, amazing and very interactive".
+  tools/patch_skillpanel.py (after patch_friends): the Skills tab is now a grid of struck skill coins (sc* classes): per
+  skill an enamel colour (SCC) + our own line icon (SCI), gold level tag (glows at 100), a conic progress ring round the
+  rim (--p), the last-trained coin glows (st.last), a level-up spins the coin + burst (SCUP[k] set in addXp, which also
+  re-renders the tab, throttled 400 ms). Tap a coin -> a detail card REPLACES the header (total/combat level medallion):
+  blurb (SCW), XP bar, XP to next level, "Next: X at level N", the unlock list built from the game's own tables (WREQ
+  swords, ARMS armour, ARMREC forge, PRY prayers, CROPS, FURN, + fixed facts: Mining 15 iron / 30 coal, Kindling 10,
+  Fishing 5, Agility 5) and Mastery cape at 100; x or tapping the coin again closes it; delegated click on #pc.
+  Lesson: a CSS entry animation (opacity 0 -> 1) left the card at opacity 0 in headless Chromium: no fade-ins in panel
+  UI. Desktop 3 columns, phone 5. On PREVIEW (main), not shipped; shots outputs/skill_coins.png.
+
 - Oct 31 (4 pm): "take down the countdown". Home hero: the #cd timer + "Launches Monday 2 November" line and its tick
   script removed from index.html; the MemeSnake page's MEMECAPES LAUNCH stat now reads LIVE (his file: one-line change).
   Then "pull them": every roadmap date label is now Now / Launch / Done / Soon after launch / Next / Later, and the hidden
