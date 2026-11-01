@@ -114,6 +114,7 @@ numbers in here or anywhere in the repo.
   MISTAKE (2:30 am): icon_pack.py rewrote icons/items.webp, which the LIVE play.html also reads, and the sheet grew
   672 -> 768 px tall, so live icons were squashed until 1a59356 restored it. Rule: never change a file the live game
   loads; new art goes in a new versioned file (now icons/items2.webp/json, read by patch_icons.py).
+  SHIPPED build 20261101073320 ("make everything live", 2:36 am): live version.json + items2.webp checked in the pane.
 
 - Nov 1 (12:15 am): "Ship it". SHIPPED build 20261101001511 (main 8a64f48): armour sets + swords + capes over armour +
   armour sources + anim blend + friends/PMs + skill coins. Friends FAQ/support patch applied (support_qa.py +
