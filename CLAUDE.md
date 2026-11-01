@@ -111,6 +111,9 @@ numbers in here or anywhere in the repo.
   iconview.html; lv01 sleeves are weighted to the spine and lv40's to the head, so the cut is geometric: XSH override
   .16 for lv01) + shoot_icon.py (swords: w_swNN rotated 45 deg, width x1.6 so they read at 36 px) + a dark 5 px outline
   (/tmp/claude-0/icons4/polish.py), then icon_pack.py.
+  MISTAKE (2:30 am): icon_pack.py rewrote icons/items.webp, which the LIVE play.html also reads, and the sheet grew
+  672 -> 768 px tall, so live icons were squashed until 1a59356 restored it. Rule: never change a file the live game
+  loads; new art goes in a new versioned file (now icons/items2.webp/json, read by patch_icons.py).
 
 - Nov 1 (12:15 am): "Ship it". SHIPPED build 20261101001511 (main 8a64f48): armour sets + swords + capes over armour +
   armour sources + anim blend + friends/PMs + skill coins. Friends FAQ/support patch applied (support_qa.py +
