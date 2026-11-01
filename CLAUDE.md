@@ -98,6 +98,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 1 (1:30 am): "the slot spots for the new items need re developed and reimaged" then "the armor pictures are not all
+  correct". Bag icons are made in his ChatGPT (prompts in localStorage mcIco on chatgpt.com) and packed with
+  tools/icon_pack.py KEY=pic.png (256 px masters in icons/src, cells in icons/items.webp; slot svg now 36 px). LESSON: the
+  concept art is NOT what the Meshy models look like (Paper Hands is a grey-white shirt in game, HODL Iron dark gunmetal,
+  Diamond Hands silver-white with one big gem, Whale Plate navy/teal): the icon reference must be the IN-GAME model.
+  /tmp/claude-0/icons3/cut.py cuts the torso out of each arm_lvNN.json (Idle frame 0, y band round the shoulders) and
+  tools/dev/charview/iconview.html renders it (transparent, rim light); refs pushed to art-staging icon_ref/armNN.png.
+  The pane's javascript tool returned undefined for every call once the Claude window went behind others (screenshots
+  timed out too): ask Albert to bring the app forward. 9 of 18 icons in preview (ddd68b2), NOT shipped.
+
 - Nov 1 (12:15 am): "Ship it". SHIPPED build 20261101001511 (main 8a64f48): armour sets + swords + capes over armour +
   armour sources + anim blend + friends/PMs + skill coins. Friends FAQ/support patch applied (support_qa.py +
   support_page.py rerun), PROGRESS.md Nov 1 section. Live version.json, server /health ok and the live qa.json checked
