@@ -27,7 +27,7 @@ js = ("{const IXS=" + json.dumps(meta['idx']) + ";for(const k in IXS){const i=IX
 anchor = "IC.tin=IC.ore.split('#b8642e').join('#a8b0b8');IN.tin='Tin ore';EX.tin='This needs refining.';SELL.tin=2;"
 rep(anchor, anchor + js)
 # a little bigger in the bag, bank and equipment slots
-rep(".s svg{width:26px;height:26px}", ".s svg{width:31px;height:31px}")
+rep(".s svg{width:26px;height:26px}", ".s svg{width:36px;height:36px}")
 
 open(PATH, 'w', encoding='utf-8').write(h)
 print('item icons patch applied:', len(meta['idx']), 'pictures')
