@@ -2,6 +2,11 @@
 
 _Last updated: November 1, 2026_
 
+## Nov 1, 2026 (later): new bag pictures for the armour and swords
+
+- **All nine armour sets and all nine swords have their own pictures** in the bag, the bank and the gear tab. Each one is drawn from the actual 3D armour or sword, so what you see in the bag is exactly what your character wears.
+- **Item pictures are bigger** in every bag, bank and gear slot, so they are easier to tell apart, on phones too.
+
 ## Nov 1, 2026: armour sets, a sword for every set, capes over armour, friends and private messages, skill coins
 
 - Nine armour sets you wear as a full 3D body: Paper Hands (everyone starts in it), Copper Coin, HODL Iron, Bull Steel,
