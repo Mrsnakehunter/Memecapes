@@ -12,7 +12,7 @@ bows + arrows, a combat triangle).
   Range      bows reach 7 tiles, staffs 8: you stop and shoot, the monster has to come to you.
   Triangle   melee beats ranged, ranged beats magic, magic beats melee: +15% accuracy and max hit against the style
              a monster is weak to, -15% against the one it resists. Every monster's examine text says which.
-  Supplies   Party Shop: Paper / Iron arrows, Spark / Blast scrolls, a spare bow and staff. Monsters drop arrows and
+  Supplies   the Archery and Magic shops in Gigachad Town (tools/patch_classes.py). Monsters drop arrows and
              scrolls (Nova scrolls only from strong monsters and bosses).
   Starter    everyone gets a Paper Bow, a Paper Staff, 150 Paper arrows and 100 Spark scrolls once.
 Quiver and pouch are counts on the save (st.amo), not bag items, so they never fill the bag and can't be traded (v1).
@@ -108,10 +108,10 @@ MT.forEach(m=>{const mg=/Shaman|Cultist|Jester|Ghost|Wizard|Witch/.test(m.n);m.f
 function castAnim(){pAnim={k:'cast',t0:performance.now(),d:900};pAnim.d=aDur('cast',900,2000)}
 function rgAtk(gb,mt,s){const cs=st.cs||0,w=bestW();let acc,mh,col,sp=null,ar=null;
  const hc=A=>{const D=((mt.def||1)+(tickN<(gb.defT||0)?(gb.defB||0):0)+9)*64;return A>D?1-(D+2)/(2*(A+1)):A/(2*(D+1))};
- if(s=='rg'){ar=bestArrow();if(!ar){act=null;say(ARW.some(a=>amoN(a[0])>0)?'You need a higher Ranged level for the arrows in your quiver.':'Your quiver is empty. Buy arrows at the Party Shop.','#c00');return 1}
+ if(s=='rg'){ar=bestArrow();if(!ar){act=null;say(ARW.some(a=>amoN(a[0])>0)?'You need a higher Ranged level for the arrows in your quiver.':'Your quiver is empty. Buy arrows at the Archery shop in Gigachad Town, or make them.','#c00');return 1}
   const B=BST[w],l=lvl(st.xp.rg||0),eA=l+(cs==0?3:cs==3?1:0)+8,eS=l+(cs==1?3:cs==3?1:0)+8;acc=hc(eA*(B[0]+64));mh=Math.floor(.5+eS*(B[1]+ar[3]+64)/640);amoAdd(ar[0],-1);col=ar[4];
   if(amoN(ar[0])==10)say('Only 10 '+ar[1]+' left in your quiver.','#c60')}
- else{sp=curSpell();if(!sp){act=null;const c=st.spl!=null&&SPL[st.spl];say(c&&c[1]<=lvl(st.xp.mg||0)?'Not enough scrolls for '+c[0]+' ('+costTx(c[2])+'). Pick another spell in the Magic tab, or buy scrolls at the Party Shop.':'You have no spell scrolls. Buy Spark scrolls at the Party Shop.','#c00');return 1}
+ else{sp=curSpell();if(!sp){act=null;const c=st.spl!=null&&SPL[st.spl];say(c&&c[1]<=lvl(st.xp.mg||0)?'Not enough scrolls for '+c[0]+' ('+costTx(c[2])+'). Pick another spell in the Magic tab, or buy scrolls at the Magic shop.':'You have no spell scrolls. Buy Spark scrolls at the Magic shop in Gigachad Town.','#c00');return 1}
   const B=MST[w],l=lvl(st.xp.mg||0),eA=l+(cs==0?3:cs==3?1:0)+8;acc=hc(eA*(B[0]+64));mh=Math.floor(sp[3]*(1+B[1]/100)+(cs==1?1:0));for(const k in sp[2])amoAdd(k,-sp[2][k]);col=sp[4]}
  const T=tri(s,mt);acc=Math.min(1,acc*T);mh=Math.max(1,Math.floor(mh*T));lastCbt=tickN;castAnim();
  let d=Math.random()<acc?Math.floor(Math.random()*(mh+1)):0;
@@ -130,11 +130,11 @@ function pouchDrop(mt){const lv=mt.lv||1,got=[],R=(a,b)=>a+Math.floor(Math.rando
   if(lv>=20&&Math.random()<.12)g('a2',R(4,12),'Iron arrows');if(lv>=18&&Math.random()<.1)g('bs',R(2,6),'Blast scrolls');
   if(lv>=40&&Math.random()<.04)g('a3',R(3,8),'Diamond arrows');if(lv>=40&&Math.random()<.035)g('ns',R(1,3),'Nova scrolls')}
  if(got.length)say('Loot: '+got.join(', ')+' (in your quiver and scroll pouch).','#a60')}
-// the Party Shop: supplies sold in bundles
+// supplies sold in bundles (the Archery and Magic shops, tools/patch_classes.py)
 const SHA=[['a1',50,20],['a2',50,150],['ss',50,25],['bs',25,200]],SHN={a1:'Paper arrows',a2:'Iron arrows',a3:'Diamond arrows',ss:'Spark scrolls',bs:'Blast scrolls',ns:'Nova scrolls'};
 function amoIco(k){const c={a1:'#e8dcc0',a2:'#9aa2ac',a3:'#8fd3ff',ss:'#ffd23f',bs:'#ff7a2a',ns:'#8fd3ff'}[k];return k[0]=='a'?'<svg viewBox="0 0 24 24" class="fsI"><path d="M4 20 18 6" stroke="#5a3a1a" stroke-width="2"/><path d="M18 6l-4 .5L17.5 10z" fill="'+c+'" stroke="#2a1604" stroke-width=".6"/><path d="M4 20l1-4 2 2zM6 18l-1-4 2 2" fill="#f4ead2"/></svg>':'<svg viewBox="0 0 24 24" class="fsI"><rect x="5" y="4" width="14" height="16" rx="2" fill="#f1e2b8" stroke="#5a3a1a"/><rect x="4" y="3" width="16" height="3" rx="1.5" fill="#c9a060" stroke="#5a3a1a"/><rect x="4" y="18" width="16" height="3" rx="1.5" fill="#c9a060" stroke="#5a3a1a"/><circle cx="12" cy="12" r="3.4" fill="'+c+'" stroke="#2a1604" stroke-width=".6"/></svg>'}
 function SHPA(){return '<div class="fsH">Arrows and spell scrolls <small>(go straight into your quiver and scroll pouch)</small></div>'+SHA.map(([k,n,p],i)=>'<div class="row"><span>'+amoIco(k)+n+' '+SHN[k]+' <small>(you have '+amoN(k)+')</small></span><button data-amb="'+i+'">'+p+' Meme Coins</button></div>').join('')+'<br>'}
-document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-amb]');if(!b)return;const [k,n,p]=SHA[+b.dataset.amb];if(st.coins<p)return say('You need '+p+' Meme Coins for that.','#c00');burn(p,SHN[k]);amoAdd(k,n);say('You buy '+n+' '+SHN[k]+'.','#0a0');ui();save();modal('shop')},true);
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-amb]');if(!b)return;const [k,n,p]=SHA[+b.dataset.amb];if(st.coins<p)return say('You need '+p+' Meme Coins for that.','#c00');burn(p,SHN[k]);amoAdd(k,n);say('You buy '+n+' '+SHN[k]+'.','#0a0');ui();save();if(window.gsRe)gsRe()},true);
 function styMax(){const s=wSty(),w=bestW();if(s=='rg'){const a=bestArrow();return a?Math.floor(.5+(lvl(st.xp.rg||0)+8+(st.cs==1?3:st.cs==3?1:0))*(BST[w][1]+a[3]+64)/640):0}if(s=='mg'){const p=curSpell();return p?Math.floor(p[3]*(1+MST[w][1]/100)+(st.cs==1?1:0)):0}return maxHitNow()}
 // Gear tab: fighting style, quiver and pouch
 function PCH(){const s=wSty(),l=s=='rg'?lvl(st.xp.rg||0):s=='mg'?lvl(st.xp.mg||0):0,sp=s=='mg'?curSpell():null,ar=s=='rg'?bestArrow():null;
@@ -190,8 +190,6 @@ rep("Max hit / speed</span><b>'+maxHitNow()+' / '+W0[2]+' ticks</b></div>",
     "Max hit / speed</span><b>'+(wSty()=='me'?maxHitNow()+' / '+W0[2]:styMax()+' / '+(wSty()=='rg'?(st.cs==1?3:4):5))+' ticks</b></div>")
 rep("<div style=\"font-size:11px;color:#ffd23f;margin:4px 0 3px\">Combat style</div>", "'+PCH()+'<div style=\"font-size:11px;color:#ffd23f;margin:4px 0 3px\">Combat style</div>")
 rep("if(SUB=='magic'){const left=", "if(SUB=='magic'){h+=MGH();const left=")
-rep("h+='<br>Sell for Meme Coins: gathered goods", "h+=SHPA();h+='<br>Sell for Meme Coins: gathered goods")
-rep("['sword',40],['cake',5]", "['sword',40],['bw01',30],['st01',30],['cake',5]")
 rep("say(msg+'.','#a60');let lost=0;", "say(msg+'.','#a60');pouchDrop(mt);let lost=0;")
 
 # starter pack: a bow, a staff, arrows and scrolls for everyone, once
