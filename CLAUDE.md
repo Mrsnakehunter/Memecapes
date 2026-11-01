@@ -98,6 +98,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 1 (3 am): "when you put on the armour their feet point straight out to the sides" (worst on Paper Hands). Meshy
+  built the armour boots turned out; same motions as the plain body, so tools/feet_fix.py matches each boot's heading
+  (foot-bone verts -> toe-bone verts, top view) to models/player2.json's in the same motion + moment, turning the foot +
+  toe bones about the ankle (skips Death/Kick and steep boots). Run ONCE on unfixed models. Lessons: bind-pose PCA and
+  bone-axis yaw both misread these rigs (lv01's boot rides the toe bone); measure the mesh, compare with the plain
+  body, check with a front view at yaw 0 (tools/dev/charview). Before/after: outputs armour_feet_before_after.png.
+  Also Pit: GrowthSnake jagged on choppy days -> lib/snake.ts growthGeom resamples 48 even x + relax() (branch smooth-snake).
+
 - Nov 1 (1:30 am): "the slot spots for the new items need re developed and reimaged" then "the armor pictures are not all
   correct". Bag icons are made in his ChatGPT (prompts in localStorage mcIco on chatgpt.com) and packed with
   tools/icon_pack.py KEY=pic.png (256 px masters in icons/src, cells in icons/items.webp; slot svg now 36 px). LESSON: the

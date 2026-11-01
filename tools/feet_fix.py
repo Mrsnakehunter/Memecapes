@@ -1,53 +1,72 @@
 #!/usr/bin/env python3
 """Turn the armour sets' splayed feet back to the front.
 
-Albert (Nov 1): "when you put on the armour their feet point straight out to the sides". The motions are the same
-ones the plain body uses (its feet look right); the difference is the meshes: Meshy built every armour set standing
-with its toes turned ~22 degrees out in the bind pose (the plain body: ~0). So for each foot the splay is measured on
-the bind mesh (principal axis of the boot vertices, seen from above) and taken out of EVERY frame of every motion by
-turning the foot + toe bones in their bind space about the bind ankle. Run once per model (it reads the bind mesh, so
-a second run measures ~0 and does nothing).
-usage: python3 tools/feet_fix.py [--dry] [models...]   (default: models/arm_lv??.json)
+Albert (Nov 1): "when you put on the armour their feet point straight out to the sides" (worst on Paper Hands). The
+armour sets play the same motions as the plain body, whose feet look right, but Meshy built their boots turned out,
+so standing they splay 40-115 degrees (the plain body: 10-30). For every frame of every motion, each boot's heading
+(from the foot bone's vertices to the toe bones' vertices, seen from above) is measured on the armour and on the plain
+body (models/player2.json, same motion, same moment), and the foot + toe bones are turned about the vertical through
+the ankle so the armour's boot points where the plain body's does.
+usage: python3 tools/feet_fix.py [--dry] [models...]   (default: models/arm_lv??.json; run on unfixed models)
 """
 import glob, json, sys
 import numpy as np
 sys.path.insert(0, 'tools')
 import rigkit as K
 
-LEGS = {'L': (19, (20, 21, 22)), 'R': (24, (25, 26, 27))}
+REF = 'models/player2.json'
+SKIP = ('Death', 'Kick')
+FEET = (('L', 19, 20, (21, 22)), ('R', 24, 25, (26, 27)))
 
 
-def splay(m, dom, fb):
-    sel = np.isin(dom, fb) & (m['V'][:, 1] < .15)
-    X = m['V'][sel][:, [0, 2]]; X = X - X.mean(0)
-    a = np.linalg.svd(X, full_matrices=False)[2][0]
-    if a[1] < 0: a = -a
-    return float(np.degrees(np.arctan2(a[0], a[1])))     # + = toes turned toward +x (the character's left)
-
-
-def fix(path, dry=False):
-    m = K.load(path); d = m['d']
+def parts(m):
     dom = m['J'][np.arange(len(m['J'])), m['W'].argmax(1)]
-    T = {}
-    for s, (leg, fb) in LEGS.items():
-        ang = splay(m, dom, fb)
-        if abs(ang) < 3: continue
-        w = np.zeros(len(m['V']))
-        for k in range(4): w += np.where(np.isin(m['J'][:, k], (leg, fb[0])), m['W'][:, k], 0) * (m['V'][:, 1] < .2)
-        p = (m['V'] * w[:, None]).sum(0) / w.sum()
-        t = np.radians(-ang); R = np.array([[np.cos(t), 0, np.sin(t)], [0, 1, 0], [-np.sin(t), 0, np.cos(t)]])
-        M = np.eye(4); M[:3, :3] = R; M[:3, 3] = p - R @ p
-        T[s] = (fb, M, round(ang, 1))
-    print(path, 'bind splay (deg):', {s: v[2] for s, v in T.items()})
-    if dry or not T: return
+    out = {}
+    for s, leg, ft, toe in FEET:
+        fi = np.where(dom == ft)[0]; ti = np.where(np.isin(dom, toe))[0]
+        ank = np.where(np.isin(dom, (leg, ft)) & (m['V'][:, 1] < .2))[0]
+        out[s] = (fi, ti, ank)
+    return out
+
+
+def skin_sub(m, S, idx):
+    V = np.c_[m['V'][idx], np.ones(len(idx))]; J = m['J'][idx]; W = m['W'][idx]
+    out = np.zeros((len(idx), 3))
+    for k in range(4): out += W[:, k:k + 1] * np.einsum('nij,nj->ni', S[J[:, k]][:, :3, :], V)
+    return out
+
+
+def heading(m, S, fi, ti):
+    """(heading about the vertical, how flat the boot is: 1 = flat, 0 = pointing straight down/up)"""
+    v = skin_sub(m, S, ti).mean(0) - skin_sub(m, S, fi).mean(0)
+    return np.arctan2(v[0], v[2]), np.hypot(v[0], v[2]) / max(np.linalg.norm(v), 1e-9)
+
+
+def fix(path, ref, rp, dry=False):
+    m = K.load(path); d = m['d']; pp = parts(m); rep = {}
     for c in d['an']:
-        F = K.clip_frames(c)
-        for fb, M, _ in T.values():
-            for b in fb: F[:, b] = F[:, b] @ M
-        c.update(K.pack_clip(c['n'], F, fps=c['fps'], dur=c.get('dur')))
-    open(path, 'w').write(json.dumps(d, separators=(',', ':')))
+        if c['n'] not in ref['clips'] or c['n'] in SKIP: continue
+        F = K.clip_frames(c); RF = ref['clips'][c['n']]; worst = [0, 0]
+        for i in range(len(F)):
+            j = min(len(RF) - 1, round(i * (len(RF) - 1) / max(1, len(F) - 1)))
+            for k, (s, leg, ft, toe) in enumerate(FEET):
+                fi, ti, ank = pp[s]
+                (want, fw), (have, fh) = heading(ref, RF[j], *rp[s][:2]), heading(m, F[i], fi, ti)
+                if min(fw, fh) < .5: continue          # boot pointing down or up: its heading means nothing
+                t = (want - have + np.pi) % (2 * np.pi) - np.pi
+                worst[k] = max(worst[k], round(abs(np.degrees(t))))
+                if dry or abs(t) < np.radians(2): continue
+                R = np.array([[np.cos(t), 0, np.sin(t)], [0, 1, 0], [-np.sin(t), 0, np.cos(t)]])
+                p = skin_sub(m, F[i], ank).mean(0); p[1] = 0
+                T = np.eye(4); T[:3, :3] = R; T[:3, 3] = p - R @ p
+                for b in (ft,) + toe: F[i, b] = T @ F[i, b]
+        rep[c['n']] = worst
+        if not dry: c.update(K.pack_clip(c['n'], F, fps=c['fps'], dur=c.get('dur')))
+    if not dry: open(path, 'w').write(json.dumps(d, separators=(',', ':')))
+    print(path, 'largest turn per foot (deg):', rep)
 
 
 if __name__ == '__main__':
     a = sys.argv[1:]; dry = '--dry' in a; a = [x for x in a if x != '--dry']
-    for p in a or sorted(glob.glob('models/arm_lv??.json')): fix(p, dry)
+    ref = K.load(REF); rp = parts(ref)
+    for p in a or sorted(glob.glob('models/arm_lv??.json')): fix(p, ref, rp, dry)

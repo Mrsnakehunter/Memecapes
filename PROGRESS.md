@@ -2,6 +2,10 @@
 
 _Last updated: November 1, 2026_
 
+## Nov 1, 2026 (night): armour feet fixed
+
+- **Feet point forward in every armour set now.** Standing still (and in a few other moves) the armour sets stood with their toes turned out to the sides, worst on Paper Hands. Every set's feet now line up with the plain body's, in every motion.
+
 ## Nov 1, 2026 (later): new bag pictures for the armour and swords
 
 - **All nine armour sets and all nine swords have their own pictures** in the bag, the bank and the gear tab. Each one is drawn from the actual 3D armour or sword, so what you see in the bag is exactly what your character wears.
