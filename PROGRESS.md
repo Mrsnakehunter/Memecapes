@@ -1,6 +1,25 @@
 # MemeCapes progress
 
-_Last updated: October 29, 2026_
+_Last updated: November 1, 2026_
+
+## Nov 1, 2026: armour sets, a sword for every set, capes over armour, friends and private messages, skill coins
+
+- Nine armour sets you wear as a full 3D body: Paper Hands (everyone starts in it), Copper Coin, HODL Iron, Bull Steel,
+  Gold Rush, Diamond Hands, Whale Plate, Moonforged and Legend of the Meme, needing Defence 1, 10, 20 ... 80. The first
+  four are forged at the anvil from bronze, iron, steel and gold; Diamond Hands drops from the Ratio Knight; the top
+  three drop from the Ratio Lord. The Legend set cannot be traded.
+- A matching sword for every set, from the Paper Cutter to the Legendary Meme Blade, needing the same Attack levels.
+  The first four are forged too; the rest drop with their armour. Each is its own 3D model, held and swung properly.
+- Your cape now goes over your armour, including the MemeCape, and moves with it.
+- Iron ore comes from copper rocks at Mining 15 and coal from tin rocks at Mining 30; the forge smelts iron and steel bars.
+- Friends and private messages: add a player by name (or from their name menu), accept or decline requests, see when
+  friends come online, and message them from anywhere in the world. Messages sent while someone is away wait for their
+  next sign-in. Only friends can message you, and ignoring someone drops their messages and requests. Commands: /add,
+  /accept, /decline, /remove, /friends, /pm (also /w, /msg, /tell).
+- The Skills tab is a wall of struck skill coins: each skill has its own coin, icon and colour, a gold level tag and a
+  ring that fills as you work toward the next level. Tap a coin for exact XP, what the next levels unlock, and the
+  Mastery cape at 100. The coin you trained last glows, and a level-up spins it.
+- Smoother animation: moving between standing, walking, running and swinging now blends instead of snapping.
 
 ## Oct 29, 2026: the new MemeCape, weapons at your side, a loading screen
 
