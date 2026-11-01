@@ -98,6 +98,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 1 (12:15 am): "Ship it". SHIPPED build 20261101001511 (main 8a64f48): armour sets + swords + capes over armour +
+  armour sources + anim blend + friends/PMs + skill coins. Friends FAQ/support patch applied (support_qa.py +
+  support_page.py rerun), PROGRESS.md Nov 1 section. Live version.json, server /health ok and the live qa.json checked
+  from the pane. The old six models/player*.json were KEPT (tools like mkmemecape/capeskins read them as sources);
+  only the game's MDLV map points at the *2 files. Preview = live again. Still unposted: the update post (text in the
+  Oct 31 chat), the 20 s ad and the 4-min tour v2.
+
 - Oct 31 (8 pm): photo of a classic MMO skills grid, "recreate our own unique version, amazing and very interactive".
   tools/patch_skillpanel.py (after patch_friends): the Skills tab is now a grid of struck skill coins (sc* classes): per
   skill an enamel colour (SCC) + our own line icon (SCI), gold level tag (glows at 100), a conic progress ring round the
