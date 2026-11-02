@@ -98,6 +98,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 1 (9 pm): "preview of the mage and ranger firing shots in the courtyard at spawn + the outfits". tools/patch_rmparade.py
+  (after patch_bow, ARMDEMO pages only): 9 rangers (west block, facing east) + 9 mages (east block) in Castle Gigachad's
+  courtyard, practice shots every 6.5-16 s (Shoot/Cast + FX, q=1 = no screen flash). FIX: the FX canvas now matches the game
+  view (CW x CH), before it drew spells over the side panel. Video: /tmp/claude-0/rmv plan.json (volley, cam pitch .85 dist 15)
+  + plan2.json (close-ups: player tp 150,122 cam yaw 1.2 / 166,122 yaw -1.2, pitch .35 dist 5.5; low pitch with yaw +-1.57
+  from mid-courtyard only shows walls). outputs/courtyard_rangers_mages.mp4 + ranger_mage_outfits.jpg (sent). ~4 s a frame.
+
 - Nov 1 (7:20 pm): "bow string towards the body" + "why are they using the bow like a sword?". The bow sat in the RIGHT
   hand through qHold_ like a blade (carry_bake's blade carry laid it flat) and ranged attacks played castAnim. Now
   tools/patch_bow.py (after patch_pvp): qHold sends w_bwNN to qHoldBow = LEFT hand, upright, frame built from the grip
