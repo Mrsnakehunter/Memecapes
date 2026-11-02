@@ -98,6 +98,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 2 (1:30 am): "1v1 PvP of different levels, showing deaths, ~18 s 'PvP worlds coming soon' ad". Scripted duels for
+  footage: /tmp/claude-0/pvpad/duel.js injected into scratch/site/test_pvp.html (= test7s + duelTick after rmParTick;
+  NEVER in the repo): player = fighter A via pAnim (shoot/cast/slash/block/die; 'em:<Clip>' plays any clip), fighter B
+  drawn like the parade (armBody + qHold), .dtg name/level/HP tags, FX + fl splats, Death holds. Start __DUEL.go in the
+  clip's 'pre' with event times +28000 ms (settle 55 x 500 ms) so B's model loads during settle. Clear arena found by
+  querying __S().trees (pvpad/trees.py): (109-112,144-148) and (118,137); trees never go see-through, so check first.
+  Levels within 15 (the real matchmaking rule). Ad: /tmp/claude-0/adpvp makep.py + planp.py (vs_scene plates, VS/K.O.
+  slams, slow-mo + desaturate on the KO, word_cut hooks, pvp_end), KOS=91,78,75 env, encodep.sh -> outputs/x_ads/
+  memecapes_pvp_18s_1x1/9x16/16x9.mp4 (sent; not posted). LESSON again: pkill -f <pattern in my own command> kills my shell.
+
 - Nov 1 (9 pm): "preview of the mage and ranger firing shots in the courtyard at spawn + the outfits". tools/patch_rmparade.py
   (after patch_bow, ARMDEMO pages only): 9 rangers (west block, facing east) + 9 mages (east block) in Castle Gigachad's
   courtyard, practice shots every 6.5-16 s (Shoot/Cast + FX, q=1 = no screen flash). FIX: the FX canvas now matches the game
