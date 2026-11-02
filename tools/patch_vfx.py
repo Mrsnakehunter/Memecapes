@@ -13,6 +13,7 @@ sit on the battlefield and follow the camera. Every spell has its own look:
   Moonfire       pink-white flames round a crescent, burning flare
   Legend Nova    crimson-gold star, huge shockwave, rays and a screen flash
 Every cast starts with a charge-up in the caster's hands; arrows leave a bright streak and a spark on hit.
+Nov 2 (Albert): spell effects drawn at 3/4 size (drawP), arrows at half the earlier size.
 Pure canvas 2D (no new shaders), capped at 700 particles so phones keep up.
 Run after patch_classes.py:  python3 tools/patch_vfx.py
 """
@@ -42,7 +43,7 @@ const FX=(()=>{let cv=null,c=null,last=0;const T=()=>performance.now()*(window._
    p.vy-=p.g*dt;p.vx*=p.dr;p.vy*=p.dr;p.vz*=p.dr;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.rot+=p.vr*dt;
    drawP(p,p.a*(f<.15?f/.15:1-(f-.15)/.85),f)}
   c.globalCompositeOperation='source-over'}
- function drawP(p,a,f){const q=prj(p.x,p.y,p.z);if(!q)return;const r=(p.s||.1)*q[2]*(p.grow?1+f*p.grow:1);p.c=p.c||'#fff';p.k=p.k||'g';
+ function drawP(p,a,f){const q=prj(p.x,p.y,p.z);if(!q)return;const r=(p.s||.1)*q[2]*(p.grow?1+f*p.grow:1)*(p.sc==null?.75:p.sc);p.c=p.c||'#fff';p.k=p.k||'g';
    if(p.k=='g')glow(q[0],q[1],r*2.2,p.c,a);
    else if(p.k=='d'){c.save();c.translate(q[0],q[1]);c.rotate(p.rot);c.globalAlpha=a;c.fillStyle=p.c;c.beginPath();c.moveTo(0,-r);c.lineTo(r*.6,0);c.lineTo(0,r);c.lineTo(-r*.6,0);c.closePath();c.fill();c.globalAlpha=a*.8;c.fillStyle='#fff';c.beginPath();c.moveTo(0,-r*.7);c.lineTo(r*.25,-r*.1);c.lineTo(0,r*.2);c.lineTo(-r*.2,-r*.1);c.fill();c.restore()}
    else if(p.k=='c'){c.globalAlpha=a;c.fillStyle=p.c;c.fillRect(q[0]-r*.25,q[1]-r,r*.5,r*2);c.fillRect(q[0]-r*.06,q[1]-r*1.6,r*.12,r*3.2);c.globalAlpha=1}
@@ -90,7 +91,7 @@ const FX=(()=>{let cv=null,c=null,last=0;const T=()=>performance.now()*(window._
    if(tr=='moonfire')core({x,y:y+.05,z,s:L.s*.8,c:'#fff0fb',k:'moon'})}})}
  // a real arrow: wooden shaft, steel head and fletching, drawn along its own flight arc; it sticks where it lands
  function arw(h,t,a,col,gc){const qh=prj(h[0],h[1],h[2]),qt=prj(t[0],t[1],t[2]);if(!qh||!qt)return;let ux=qh[0]-qt[0],uy=qh[1]-qt[1];const L=Math.hypot(ux,uy)||1;ux/=L;uy/=L;const px=-uy,py=ux,k=qh[2];
-  const w=Math.max(2,k*.045),hl=Math.max(7,k*.17),hw=hl*.42,fl=Math.max(6,k*.15);
+  const w=Math.max(1.2,k*.0225),hl=Math.max(4,k*.085),hw=hl*.42,fl=Math.max(3,k*.075);
   const G=rgba(gc||'#ffd36a');c.lineCap='round';c.globalAlpha=1;c.strokeStyle=G.replace('A',.22*a);c.lineWidth=w*6;c.beginPath();c.moveTo(qt[0],qt[1]);c.lineTo(qh[0],qh[1]);c.stroke();c.strokeStyle=G.replace('A',.45*a);c.lineWidth=w*2.6;c.stroke();glow(qh[0]+ux*hl*.5,qh[1]+uy*hl*.5,hl*1.7,G,.75*a);
   c.globalCompositeOperation='source-over';c.globalAlpha=a;
   c.strokeStyle='rgba(0,0,0,.55)';c.lineWidth=w+1.6;c.beginPath();c.moveTo(qt[0],qt[1]);c.lineTo(qh[0],qh[1]);c.stroke();
@@ -99,12 +100,12 @@ const FX=(()=>{let cv=null,c=null,last=0;const T=()=>performance.now()*(window._
   for(const sg of[1,-1]){c.beginPath();c.moveTo(qt[0]+ux*fl*.9,qt[1]+uy*fl*.9);c.lineTo(qt[0]+px*sg*fl*.45-ux*fl*.15,qt[1]+py*sg*fl*.45-uy*fl*.15);c.lineTo(qt[0]+ux*fl*.25,qt[1]+uy*fl*.25);c.closePath();c.fill();c.stroke()}
   c.fillStyle='#d5dde3';c.strokeStyle='#2a2f35';c.lineWidth=1.2;c.beginPath();c.moveTo(qh[0]+ux*hl,qh[1]+uy*hl);c.lineTo(qh[0]+px*hw,qh[1]+py*hw);c.lineTo(qh[0]-ux*hl*.15,qh[1]-uy*hl*.15);c.lineTo(qh[0]-px*hw,qh[1]-py*hw);c.closePath();c.fill();c.stroke();
   c.globalAlpha=1;c.globalCompositeOperation='lighter'}
- function arrow(x0,z0,x1,z1,col,gy,gc){gc=gc||'#ffd36a';const GC=rgba(gc);init();const y0=hgt(x0,z0)+1.35,y1=hgt(x1,z1)+(gy==null?.95:gy),t0=T(),D=Math.hypot(x1-x0,z1-z0),F=Math.max(280,D*60),ARC=Math.min(1.1,.15+D*.07),AL=1;
+ function arrow(x0,z0,x1,z1,col,gy,gc){gc=gc||'#ffd36a';const GC=rgba(gc);init();const y0=hgt(x0,z0)+1.35,y1=hgt(x1,z1)+(gy==null?.95:gy),t0=T(),D=Math.hypot(x1-x0,z1-z0),F=Math.max(280,D*60),ARC=Math.min(1.1,.15+D*.07),AL=.5;
   const pos=f=>[x0+(x1-x0)*f,y0+(y1-y0)*f+Math.sin(f*Math.PI)*ARC,z0+(z1-z0)*f];
   const tail=(f,h)=>{const b=pos(Math.max(0,f-.02)),e=f<.02?pos(.02):h,d=[e[0]-b[0],e[1]-b[1],e[2]-b[2]],n=Math.hypot(d[0],d[1],d[2])||1;return [h[0]-d[0]/n*AL,h[1]-d[1]/n*AL,h[2]-d[2]/n*AL]};
-  EM.push({t0,dur:F,end:()=>{burst(x1,y1,z1,12,{c:GC,sp:2.4,s:.06,life:380});const h=pos(1),tl=tail(1,h),sh=[h[0]+(h[0]-tl[0])*.3,h[1]+(h[1]-tl[1])*.3,h[2]+(h[2]-tl[2])*.3],st=[tl[0]+(h[0]-tl[0])*.3,tl[1]+(h[1]-tl[1])*.3,tl[2]+(h[2]-tl[2])*.3];
+  EM.push({t0,dur:F,end:()=>{burst(x1,y1,z1,12,{c:GC,sp:2.4,s:.06,life:380,x2:{sc:.5}});const h=pos(1),tl=tail(1,h),sh=[h[0]+(h[0]-tl[0])*.3,h[1]+(h[1]-tl[1])*.3,h[2]+(h[2]-tl[2])*.3],st=[tl[0]+(h[0]-tl[0])*.3,tl[1]+(h[1]-tl[1])*.3,tl[2]+(h[2]-tl[2])*.3];
     EM.push({t0:T(),dur:gy==null?450:1800,tick:f=>arw(sh,st,(f<.6?1:1-(f-.6)/.4)*(.75+.25*Math.sin(f*30)),col,gc)})},
-   tick:(f,now,dt)=>{const h=pos(f),tl=tail(f,h);for(let k=0,n=sp(dt,45);k<n;k++)add({x:tl[0]+(R()-.5)*.08,y:tl[1]+(R()-.5)*.08,z:tl[2]+(R()-.5)*.08,s:.05,life:260,c:GC,a:.6,vy:.2});arw(h,tl,1,col,gc)}})}
+   tick:(f,now,dt)=>{const h=pos(f),tl=tail(f,h);for(let k=0,n=sp(dt,45);k<n;k++)add({x:tl[0]+(R()-.5)*.08,y:tl[1]+(R()-.5)*.08,z:tl[2]+(R()-.5)*.08,s:.05,life:260,c:GC,a:.6,vy:.2,sc:.5});arw(h,tl,1,col,gc)}})}
  return {spell,arrow}})();
 """
 rep("function doAct(){", JS + "function doAct(){")
