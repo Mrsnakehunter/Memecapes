@@ -38,7 +38,7 @@ rep("const ACL={stab:['Stab','Attack'],", "const ACL={shoot:['Shoot','Cast','Att
 # a ranged attack: the bow shot, the arrow leaves on the release (1.2 s in), the hit lands after it
 rep("lastCbt=tickN;castAnim();", "lastCbt=tickN;if(s=='rg')pAnim={k:'shoot',t0:performance.now(),d:1750};else castAnim();")
 rep("else{PJ.push({x0:P.px+.5,z0:P.py+.5,x1:gb.px+.5,z1:gb.py+.5,t0:performance.now(),c:col,k:s});FX.arrow(P.px+.5,P.py+.5,gb.px+.5,gb.py+.5)}",
-    "else setTimeout(()=>{PJ.push({x0:P.px+.5,z0:P.py+.5,x1:gb.px+.5,z1:gb.py+.5,t0:performance.now(),c:col,k:s});FX.arrow(P.px+.5,P.py+.5,gb.px+.5,gb.py+.5)},1200)")
+    "else setTimeout(()=>{FX.arrow(P.px+.5,P.py+.5,gb.px+.5,gb.py+.5)},1200)")
 rep("s=='mg'?(sp&&sp[0]=='Moon Beam'?820:600):390);", "s=='mg'?(sp&&sp[0]=='Moon Beam'?820:600):1600);")
 # PvP shots use the same motion and timing
 rep("else if(s=='rg'){pAnim={k:'stab',t0:now,d:600};FX.arrow(P.px+.5,P.py+.5,o.px+.5,o.py+.5)}",

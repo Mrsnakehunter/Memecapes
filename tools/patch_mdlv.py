@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Versioned player bodies: this build loads models/player2.json (and playerf2, player_cape2, playerf_cape2,
 player_memecape2, playerf_memecape2) instead of the old files.
+Nov 1: bodies 3 + arm_lvNNb = the same models with the bow Shoot clip (the *2 / arm_lvNN files stay as the live game has them).
 
 The model files are shared by the live game (play.html) and the preview (preview.html). A change that alters the
 motions baked into the player bodies (the sword carry, tools/carry_bake.py) would break the live build if it
@@ -20,7 +21,7 @@ def rep(old, new, count=1):
 
 
 rep("function needMdl(k){",
-    "const MDLV={player:'player2',playerf:'playerf2',player_cape:'player_cape2',playerf_cape:'playerf_cape2',player_memecape:'player_memecape2',playerf_memecape:'playerf_memecape2'};"
+    "const MDLV={player:'player3',playerf:'playerf3',player_cape:'player_cape3',playerf_cape:'playerf_cape3',player_memecape:'player_memecape3',playerf_memecape:'playerf_memecape3'};['01','10','20','30','40','50','60','70','80'].forEach(n=>MDLV['arm_lv'+n]='arm_lv'+n+'b');"
     "const mpath=k=>'models/'+(MDLV[k]||k)+'.json';\nfunction needMdl(k){")
 rep("fetch('models/'+k+'.json')", "fetch(mpath(k))")
 rep("fetch('models/'+src+'.json')", "fetch(mpath(src))", 2)   # caped bodies + armour capes
