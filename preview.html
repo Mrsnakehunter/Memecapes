@@ -427,7 +427,7 @@ body.pre #col{display:none!important}
 <div id="ctx"></div><div id="modal"><div id="mb"></div></div>
 <script>
 (()=>{
-const $=i=>document.getElementById(i);const BUILD='20261101233838';
+const $=i=>document.getElementById(i);const BUILD='20261102004550';
 let W=384,H=384;const CX=192,CY=192,W0=384,H0=384;
 let st={coins:0,bank:0,pot:100000000,scape:0,exDay:'',exToday:0,chest:0,last:'wc',pet:0,q:0,qk:0,qp:0,orig:0,cs:0,qs:[0,0,0,0],qc:[0,0,0,0],ap:{g:0,sk:1,hs:0,hc:1,sh:0,pa:1,eye:1},acct:null,xp:{wc:0,mi:0,fi:0,at:0,hp:756,ck:0,sm:0,str:0,def:0},inv:[],hp:12,hp10:1,run:0,en:100,flow:[]};
 try{const o=JSON.parse(localStorage.getItem('ms4')||'null');if(o)st=Object.assign(st,o)}catch(e){}
@@ -1002,7 +1002,17 @@ function carryM(M,ty,cl,t,left){if(left)return M;const G=CARRYG[ty];if(!G)return
  const v=[c[1]*g[2]-c[2]*g[1],c[2]*g[0]-c[0]*g[2],c[0]*g[1]-c[1]*g[0]],s2=v[0]*v[0]+v[1]*v[1]+v[2]*v[2],co=c[0]*g[0]+c[1]*g[1]+c[2]*g[2];if(s2<1e-9)return M;const f=(1-co)/s2;
  const K=[0,-v[2],v[1], v[2],0,-v[0], -v[1],v[0],0],Q=[1,0,0,0,1,0,0,0,1];for(let i=0;i<3;i++)for(let j=0;j<3;j++){let kk=0;for(let q=0;q<3;q++)kk+=K[i*3+q]*K[q*3+j];Q[i*3+j]+=K[i*3+j]+kk*f}
  const N=[0,0,0,0,0,0,0,0,0];for(let i=0;i<3;i++)for(let j=0;j<3;j++){let a=0;for(let q=0;q<3;q++)a+=Q[i*3+q]*M[q*3+j];N[i*3+j]=a}return N}
-function qHold(PM,x,z,yaw,clip,t,wk,left){if(WFB[wk])wk=WFB[wk];return qHold_(PM,x,z,yaw,clip,t,wk,left,...[].slice.call(arguments,8))}
+function qHoldBow(PM,x,z,yaw,clip,t,wk,sc){needMdl(wk);const WM=MDL[wk];if(!WM||!WM.ok)return;
+ const c=PM.clips[clip]||PM.clips[clip=='Running'?'Walking':'Idle'];
+ const tr=k=>{if(c&&c[k]){const nf=c[k].length,ft=((t*c.fps)%nf+nf)%nf,f0=Math.floor(ft),mx=ft-f0,A=c[k][f0],B=c[k][(f0+1)%nf];return A.map((v,i)=>v+(B[i]-v)*mx)}return k=='handL'?PM.idleHandL:PM.idleHand};
+ const L=tr('handL'),R=tr('hand');if(!L)return;const sP=sc||MDLSC.player,TL=[L[3],L[7],L[11]];
+ // string side: toward the drawing hand while shooting, toward the body otherwise
+ let d=clip=='Shoot'&&R?[R[3]-TL[0],0,R[11]-TL[2]]:[-TL[0],0,-TL[2]];let n=Math.hypot(d[0],d[2]);if(n<1e-4){d=[0,0,-1];n=1}
+ const zz=[-d[0]/n,0,-d[2]/n],yy=[0,1,0],xx=[yy[1]*zz[2]-yy[2]*zz[1],yy[2]*zz[0]-yy[0]*zz[2],yy[0]*zz[1]-yy[1]*zz[0]];
+ const M=[];for(let i=0;i<3;i++){M[i*3]=xx[i]*sP;M[i*3+1]=yy[i]*sP;M[i*3+2]=zz[i]*sP}
+ const cf=WCFG[wk]||[1.3,.5],ws=cf[0]/(WHT[wk]||2),gy=cf[1]*cf[0]-.14,T=[TL[0]*sP,TL[1]*sP,TL[2]*sP];
+ MQ.push({m:WM,x,y:YO,z,yaw,s:ws,a:WM.idle,b:WM.idle,mx:0,hr:new Float32Array([M[0],M[3],M[6],M[1],M[4],M[7],M[2],M[5],M[8]]),ht:new Float32Array([T[0]-M[1]*gy,T[1]-M[4]*gy,T[2]-M[7]*gy])})}
+function qHold(PM,x,z,yaw,clip,t,wk,left){if(WFB[wk])wk=WFB[wk];if(/^w_bw\d\d$/.test(wk))return left?undefined:qHoldBow(PM,x,z,yaw,clip,t,wk,arguments[8]);return qHold_(PM,x,z,yaw,clip,t,wk,left,...[].slice.call(arguments,8))}
 function qHold_(PM,x,z,yaw,clip,t,wk,left,sc,dd){needMdl(wk);const WM=MDL[wk];if(!WM||!WM.ok)return;const c=PM.clips[clip]||PM.clips[clip=='Running'?'Walking':null],tr=left?'handL':'hand';let H=left?PM.idleHandL:PM.idleHand;if(c&&c[tr]){const nf=c[tr].length,ft=((t*c.fps)%nf+nf)%nf,f0=Math.floor(ft),mx=ft-f0,A=c[tr][f0],B=c[tr][(f0+1)%nf];H=A.map((v,i)=>v+(B[i]-v)*mx)}if(XFC&&XFC.m===PM&&Math.abs(XFC.x-x)<.05){const H0=xfHand(PM,XFC.fcn,XFC.ft,left);if(H0&&H)H=H0.map((v,i)=>v+(H[i]-v)*XFC.k)}if(!H)return;const cf=WCFG[wk]||[1,.2,'f',25],O=left?SOFF:FOFF(cf[2],dd!=null&&cf[2]=='f'?dd:(cf[3]||0),cf[4]||0),sP=sc||MDLSC.player,R=[H[0],H[1],H[2],H[4],H[5],H[6],H[8],H[9],H[10]],T=[H[3]*sP,H[7]*sP,H[11]*sP];const M=[0,0,0,0,0,0,0,0,0];for(let i=0;i<3;i++)for(let j=0;j<3;j++){let s=0;for(let k=0;k<3;k++)s+=R[i*3+k]*O[k*3+j];M[i*3+j]=s*sP}{const M2=carryM(M,cf[2],clip,t,left);for(let i=0;i<9;i++)M[i]=M2[i]}const ws=cf[0]/(WHT[wk]||2),gy=cf[1]*cf[0];const px=(left?0:PALM[0])*sP,py=(left?0:PALM[1])*sP,ht=[T[0]-M[1]*gy+(R[0]*px+R[1]*py),T[1]-M[4]*gy+(R[3]*px+R[4]*py),T[2]-M[7]*gy+(R[6]*px+R[7]*py)];MQ.push({m:WM,x,y:YO,z,yaw,s:ws,a:WM.idle,b:WM.idle,mx:0,hr:new Float32Array([M[0],M[3],M[6],M[1],M[4],M[7],M[2],M[5],M[8]]),ht:new Float32Array(ht)})}const CAPEM={memecape:'c_memecape',qcape:'c_qcape'},CAPEP={};let CPD=null,CPDL=0;
 function capeShade(c,f){const n=parseInt(c.slice(1),16);let r=n>>16,g=(n>>8)&255,b=n&255;const m=v=>Math.max(0,Math.min(255,Math.round(f<0?v*(1+f):v+(255-v)*f)));return 'rgb('+m(r)+','+m(g)+','+m(b)+')'}
 function mkCape(k,name){if(!CPD){if(!CPDL){CPDL=1;fetch('models/c_plain.json').then(r=>r.json()).then(d=>{CPD=d}).catch(()=>{CPDL=0})}delete CAPEP[name];return}
@@ -1153,7 +1163,7 @@ const pvpSafe=(x,y)=>PVPW.safe.some(t=>(x-t[0])*(x-t[0])+(y-t[1])*(y-t[1])<=t[2]
 NETH.pvpHit=m=>{st.hp=Math.max(0,m.hp);fl(P.x,P.y,m.d,m.d?'#d22':'#39f');if(m.d)pAnim=pAnim||{k:'block',t0:performance.now(),d:400};
  if(performance.now()-PVPW.seen>15000)say(m.name+' is attacking you!','#c00');PVPW.seen=performance.now();
  if(!PVPW.t&&!act&&!path.length){PVPW.t=m.id;PVPW.t0=performance.now()}ui()};
-NETH.pvpAck=m=>{const o=NETS.others.get(m.id);const ms=wSty()=='mg'?600:wSty()=='rg'?390:120;if(o)setTimeout(()=>fl(Math.round(o.px),Math.round(o.py),m.d,m.d?'#d22':'#39f'),ms)};
+NETH.pvpAck=m=>{const o=NETS.others.get(m.id);const ms=wSty()=='mg'?600:wSty()=='rg'?1600:120;if(o)setTimeout(()=>fl(Math.round(o.px),Math.round(o.py),m.d,m.d?'#d22':'#39f'),ms)};
 NETH.pvpNo=m=>{};
 NETH.pvpHp=m=>{st.hp=Math.min(hpMax(),m.hp);ui()};
 NETH.pvpDead=m=>{PVPW.t=0;PVPW.dead=1;st.hp=0;say('You were defeated by '+m.by+'. Nothing was taken.','#c00')};
@@ -1182,7 +1192,7 @@ setInterval(()=>{
  let mx=styMax();if(s=='rg'&&!bestArrow())return PVPW.t=0,say('Your quiver is empty.','#c00');if(s=='mg'&&!curSpell())return PVPW.t=0,say('Pick a spell you have the scrolls for.','#c00');
  const dmg=Math.random()<.7?Math.floor(Math.random()*(mx+1)):0;
  if(s=='mg'){castAnim();const sp=curSpell();FX.spell(SPL.indexOf(sp),P.px+.5,P.py+.5,o.px+.5,o.py+.5)}
- else if(s=='rg'){pAnim={k:'stab',t0:now,d:600};FX.arrow(P.px+.5,P.py+.5,o.px+.5,o.py+.5)}
+ else if(s=='rg'){pAnim={k:'shoot',t0:now,d:1750};setTimeout(()=>FX.arrow(P.px+.5,P.py+.5,o.px+.5,o.py+.5),1200)}
  else pAnim={k:'slash',t0:now,d:600};
  netSend({t:'pvpHit',id:PVPW.t,s:s=='me'?'at':s,d:dmg})},200);
 // other players in the world
@@ -1257,7 +1267,7 @@ function capePaint(d,col){return new Promise((res,rej)=>{const a=new Image(),m=n
    const g=(p[i]+p[i+1]+p[i+2])/570;p[i]=Math.min(255,R*g+12*g);p[i+1]=Math.min(255,G*g+8*g);p[i+2]=Math.min(255,B*g+8*g)}
   x.putImageData(px,0,0);res(c.toDataURL('image/jpeg',.88))};a.onload=go;m.onload=go;a.onerror=m.onerror=rej;a.src=d.tex;m.src=d.cm})}
 // ---- which animation to play: the clip for what the character is doing, if the model has it
-const ACL={stab:['Stab','Attack'],slash:['Attack'],punch:['Punch','Attack'],kick:['Kick','Punch','Attack'],block:['Hit'],die:['Death'],home:['Cast'],cast:['Cast','Punch','Attack'],agi:['Jump'],chop:['Chop'],mine:['Mine'],net:['Fish','Pickup'],cook:['Cook','Pickup'],smith:['Mine'],guard:['Idle']};
+const ACL={shoot:['Shoot','Cast','Attack'],stab:['Stab','Attack'],slash:['Attack'],punch:['Punch','Attack'],kick:['Kick','Punch','Attack'],block:['Hit'],die:['Death'],home:['Cast'],cast:['Cast','Punch','Attack'],agi:['Jump'],chop:['Chop'],mine:['Mine'],net:['Fish','Pickup'],cook:['Cook','Pickup'],smith:['Mine'],guard:['Idle']};
 function pClip(PM,skA,mvg,now){if(!PM||!PM.clips)return null;const has=n=>PM.clips[n]?n:null;
  if(pAnim){const k=pAnim.k,el=(now-pAnim.t0)/1000,em=k.startsWith('em:');const L=em?[k.slice(3)]:(ACL[k]||[]);for(const n of L)if(has(n)){const c=PM.clips[n],dur=(c.nf-1)/c.fps,pd=(pAnim.d||1000)/1000;
   // one-off actions (a swing, a kick, a flinch) are played once, sped up or slowed to fit how long the action lasts; emotes and the long home teleport play at their own speed
@@ -2099,12 +2109,12 @@ function rgAtk(gb,mt,s){const cs=st.cs||0,w=bestW();let acc,mh,col,sp=null,ar=nu
   if(amoN(ar[0])==10)say('Only 10 '+ar[1]+' left in your quiver.','#c60')}
  else{sp=curSpell();if(!sp){act=null;const c=st.spl!=null&&SPL[st.spl];say(c&&c[1]<=lvl(st.xp.mg||0)?'Not enough scrolls for '+c[0]+' ('+costTx(c[2])+'). Pick another spell in the Magic tab, or buy scrolls at the Magic shop.':'You have no spell scrolls. Buy Spark scrolls at the Magic shop in Gigachad Town.','#c00');return 1}
   const B=MST[w],l=lvl(st.xp.mg||0),eA=l+(cs==0?3:cs==3?1:0)+8;acc=hc(eA*(B[0]+gearAcc('mg')+64));mh=Math.floor(sp[3]*(1+(B[1]+gearDmg())/100)+(cs==1?1:0));for(const k in sp[2])amoAdd(k,-sp[2][k]);col=sp[4]}
- const T=tri(s,mt);acc=Math.min(1,acc*T);mh=Math.max(1,Math.floor(mh*T));lastCbt=tickN;castAnim();
+ const T=tri(s,mt);acc=Math.min(1,acc*T);mh=Math.max(1,Math.floor(mh*T));lastCbt=tickN;if(s=='rg')pAnim={k:'shoot',t0:performance.now(),d:1750};else castAnim();
  let d=Math.random()<acc?Math.floor(Math.random()*(mh+1)):0;
  if(d>0&&(mt.sp=='ratio'||mt.sp=='boss')){const ky=s+cs;gb.same=gb.ls===ky?(gb.same||0)+1:0;gb.ls=ky;if(gb.same>=3){d=Math.max(1,Math.floor(d*.25));if(gb.same==3){gb.ratiod=1;bubble(gb,"RATIO'D");say(mt.n+' is resisting your '+STYN[s]+' '+STY[cs]+' style. Switch style or weapon!','#c00')}}}
  d=Math.min(d,gb.hp);gb.hp-=d;
- if(s=='mg')FX.spell(SPL.indexOf(sp),P.px+.5,P.py+.5,gb.px+.5,gb.py+.5);else{PJ.push({x0:P.px+.5,z0:P.py+.5,x1:gb.px+.5,z1:gb.py+.5,t0:performance.now(),c:col,k:s});FX.arrow(P.px+.5,P.py+.5,gb.px+.5,gb.py+.5)}
- setTimeout(()=>{fl(gb.x,gb.y,d,d?'#d22':'#39f');if(d)gb.hitT=performance.now()},s=='mg'?(sp&&sp[0]=='Moon Beam'?820:600):390);
+ if(s=='mg')FX.spell(SPL.indexOf(sp),P.px+.5,P.py+.5,gb.px+.5,gb.py+.5);else setTimeout(()=>{PJ.push({x0:P.px+.5,z0:P.py+.5,x1:gb.px+.5,z1:gb.py+.5,t0:performance.now(),c:col,k:s});FX.arrow(P.px+.5,P.py+.5,gb.px+.5,gb.py+.5)},1200)
+ setTimeout(()=>{fl(gb.x,gb.y,d,d?'#d22':'#39f');if(d)gb.hitT=performance.now()},s=='mg'?(sp&&sp[0]=='Moon Beam'?820:600):1600);
  const sk=s=='rg'?'rg':'mg';if(sp)addXp('mg',cs==2?sp[5]/2:sp[5]);
  if(d){if(cs==2){addXp(sk,2*d);addXp('def',2*d)}else addXp(sk,(s=='rg'?4:2)*d);addXp('hp',1.33*d)}
  if(sp&&sp[0]=='Rug Pull'&&d>0)gb.cd=(gb.cd||0)+2;
@@ -2692,7 +2702,7 @@ function rndTalk(){if(!rvis)return;const r=rvis;if(r.ty=='genie'){if(cap()>0)st.
 // --- Emotes
 const EMO=['Stonks','GG','Ratio','Moon','Panic Sell','Cope','LOL','Wave','Yes','No','Hmm','Shrug','Dance','Griddy','Spin','Headbang','Rage','Come Here','Bored','Mwah','Clap','Sigma'],EMAP={Stonks:'Cheer',GG:'Bow',Ratio:'Raspberry',Moon:'Jump for Joy','Panic Sell':'Panic',Cope:'Cry',LOL:'Laugh',Hmm:'Think',Griddy:'Jig',Rage:'Angry','Come Here':'Beckon',Bored:'Yawn',Mwah:'Blow Kiss',Sigma:'Salute'};
 const EP={Yes:f=>({lean:.12*Math.sin(f*25)}),No:f=>({spin:.35*Math.sin(f*25)}),Bow:f=>({lean:.6*Math.sin(Math.min(1,f*1.2)*Math.PI),r:[.6,0,1.2],l:[.6,0,1.2]}),Angry:f=>({r:[1.4+.3*Math.sin(f*30),-.3,1.6],l:[1.4+.3*Math.sin(f*30+1),.3,1.6]}),Think:f=>({r:[1.1,-.2,2.4],l:[.9,.3,1.6]}),Wave:f=>({r:[2.7,.2,.4+.4*Math.sin(f*30)]}),Shrug:f=>({r:[.6,.6,1.5],l:[.6,-.6,1.5],bob:.03*Math.sin(f*Math.PI)}),Cheer:f=>({r:[2.9,.2,.2],l:[2.9,-.2,.2],bob:.12*Math.abs(Math.sin(f*12))}),Beckon:f=>({r:[1.3,0,.3+1.2*Math.abs(Math.sin(f*15))]}),Laugh:f=>({lean:-.15+.08*Math.sin(f*40),r:[.7,0,1.6],l:[.7,0,1.6]}),'Jump for Joy':f=>({bob:.35*Math.abs(Math.sin(f*9)),r:[2.6,.3,.3],l:[2.6,-.3,.3]}),Yawn:f=>({r:[2.8,-.2,.6],l:[2.8,.2,.6],lean:-.1}),Dance:f=>({spin:.5*Math.sin(f*12),r:[1.6+.8*Math.sin(f*24),0,.6],l:[1.6-.8*Math.sin(f*24),0,.6],bob:.06*Math.abs(Math.sin(f*24))}),Jig:f=>({kick:.6*Math.max(0,Math.sin(f*30)),bob:.08*Math.abs(Math.sin(f*30)),r:[.5,0,1.8],l:[.5,0,1.8]}),Spin:f=>({spin:f*12.566}),Headbang:f=>({lean:.35*Math.abs(Math.sin(f*30))}),Cry:f=>({r:[1.2,-.3,2.3],l:[1.2,.3,2.3],lean:.15}),'Blow Kiss':f=>({r:[1+1.2*Math.min(1,f*2),0,2.2-1.8*Math.max(0,f*2-1)]}),Panic:f=>({r:[2.4+.4*Math.sin(f*40),.4,.6],l:[2.4+.4*Math.sin(f*40+2),-.4,.6],bob:.05*Math.abs(Math.sin(f*40))}),Raspberry:f=>({lean:.15,r:[.6,0,1.6],l:[.6,0,1.6]}),Clap:f=>({r:[1.4,-.35+.25*Math.abs(Math.sin(f*30)),1.2],l:[1.4,.35-.25*Math.abs(Math.sin(f*30)),1.2]}),Salute:f=>({r:[2.2,-.3,2.6]})};
-Object.keys(EP).forEach(k=>PS['em:'+k]=EP[k]);Object.keys(EMAP).forEach(k=>PS['em:'+k]=EP[EMAP[k]]);PS.home=f=>({r:[2.6,-.3,.2],l:[2.6,.3,.2],bob:.03*Math.sin(f*40),spin:f*2});PS.agi=f=>({r:[1.5,1.2,.2],l:[1.5,-1.2,.2],lean:.05});
+Object.keys(EP).forEach(k=>PS['em:'+k]=EP[k]);Object.keys(EMAP).forEach(k=>PS['em:'+k]=EP[EMAP[k]]);PS.home=f=>({r:[2.6,-.3,.2],l:[2.6,.3,.2],bob:.03*Math.sin(f*40),spin:f*2});PS.shoot=f=>PS.cast(f);PS.agi=f=>({r:[1.5,1.2,.2],l:[1.5,-1.2,.2],lean:.05});
 function playEmote(e){if(dieT)return;pAnim={k:'em:'+e,t0:performance.now(),d:3000};{const PX=MDL[(st.ap&&st.ap.g)?'playerf':'player'],cc=PX&&PX.clips&&PX.clips[e];if(cc)pAnim.d=Math.max(1200,cc.nf/cc.fps*1000)}evn('emote');if(clueAt('emote',P.x,P.y)&&st.clue.s[st.clue.i].e==e){say('A strange figure appears: "Very good. Here is your next clue."','#a60');clueStep()}}
 // --- Music (procedural, WebAudio)
 let AC=null,MG=null,PAT=null,musNext=0,musStep=0;const TRK=['Gigachad Anthem',...TN,'Whispering Pines','Rugpull River','The Wildlands'];

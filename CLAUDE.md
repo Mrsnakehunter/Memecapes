@@ -98,6 +98,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 1 (7:20 pm): "bow string towards the body" + "why are they using the bow like a sword?". The bow sat in the RIGHT
+  hand through qHold_ like a blade (carry_bake's blade carry laid it flat) and ranged attacks played castAnim. Now
+  tools/patch_bow.py (after patch_pvp): qHold sends w_bwNN to qHoldBow = LEFT hand, upright, frame built from the grip
+  tracks (string faces the body; in 'Shoot' it faces the drawing right hand), grip 0.14 below centre; rg attacks play
+  pAnim 'shoot' (ACL.shoot), arrow FX at +1.2 s, splat +1.6 s (PvP too). NEW clip 'Shoot' = Meshy Archery Shot 1 +
+  Archery Shot 3 (added on the rs50 rig card, downloaded with All Added) put on every armour/ranger/mage body by
+  tools/add_clips.py (armor_clips method, only ADDS; grip tracks = fist centres) and on the plain player bodies with
+  `add_clips.py --relax` (their wrists twist on the retarget: hands keep their Idle pose relative to the forearm); the
+  22-bone caped bodies (player(f)_cape2) via tools/clip_by_mesh.py (per-bone Kabsch fit to the source mesh, 1.8 cm).
+  LESSON: pose() runs for EVERY body and calls PS[pAnim.k]: a new pAnim key needs a PS entry or the game loop dies.
+  Meshy motion library search: 'archery', 'shoot', 'bow' (Archery Shot 1-3, Draw and Shoot from Back, ...).
+
 - Nov 1 (evening): 18 ranger/mage armour sets + "multiple worlds... PvP world or the regular world". Branch combat-styles
   749afb7 (NOT shipped). Models models/ra_lvNN / ma_lvNN.json: Meshy multi-view -> remesh 20k -> rig -> download
   (MeshyRig, Rigged ON, All Added; the popup needs a template click to 'load' then another to open: screenshot between;
