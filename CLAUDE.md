@@ -98,6 +98,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 2 (9:40 pm): "a sniper bot like other people use to trade other tokens, profits burn our supply" (after I declined a
+  bot that trades against our own launches' buyers). memesnake-bots main 016f26c, folder sniper/ (README_SNIPER.md), OFF by
+  default (SNIPER_MODE off|paper|live; run.py starts it beside the bots). PumpPortal feed (new coins) + per-coin trade
+  subscriptions, 45 s watch window, buys only real demand (8+ wallets, 3+ SOL, few sells, no whale, dev <10% and not
+  selling, mcap <60 SOL, never first 8 s), exits TP half +60% / trail 25% / stop -25% / 5 min / dev sells; daily loss +
+  floor halts; never our coins or Pit (…pit) coins; profit above SNIPER_BANKROLL -> Jupiter buy + BurnChecked + memo
+  "memecapes sniper burn". Live = PumpPortal trade-local (0.5%), signed in-process with SNIPER_KEY (Albert sets it in
+  Railway, never via me). Tests: python -m sniper.test_sniper (24) + .github/workflows/sniper.yml paper run on the real
+  feed. FOUND: PumpPortal only sends trades to an API key funded with 0.02+ SOL -> SNIPER_FEED_KEY (Albert makes it).
+  The bot wallet must be listed with the official wallets on the $CAPES page + watchtower before live.
+
 - Nov 2 (8 pm): "stress test the game for crashing on launch day". Load test (scratchpad load/loadtest.js: throwaway server,
   GUARD_ALLOW + GUARD_WS_PER_IP raised, sign-in limit lifted in the TEST COPY only, bots crowd the spawn, probe measures
   answer time + pl gaps, taskset -c 0 = one core). No crash up to 800, but: pl sends everyone in VIEW 5x/s = N^2 data
