@@ -98,6 +98,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 2 (8 pm): "stress test the game for crashing on launch day". Load test (scratchpad load/loadtest.js: throwaway server,
+  GUARD_ALLOW + GUARD_WS_PER_IP raised, sign-in limit lifted in the TEST COPY only, bots crowd the spawn, probe measures
+  answer time + pl gaps, taskset -c 0 = one core). No crash up to 800, but: pl sends everyone in VIEW 5x/s = N^2 data
+  (500 players: 37 MB/s; Render Hobby workspace = 5 GB/month then $0.15/GB), scrypt sign-ups are the CPU limit, tooMany
+  = 12 sign-ins/address/10 min (carrier NAT). Fix on branch launch-load 904dffc (NOT deployed: Albert "leave it as is",
+  no plan upgrade): NEAR_MAX 60 nearest, async scrypt (c.busy/c.gone guards), tooMany 30. Tests pass. Sniper idea:
+  declined a counter-trading bot (hot wallet + trading against own launchpad buyers); offered "Venom Trap" = the sniper-fee
+  excess buys + burns the coin inside the creator/fee-wallet Claim tx, shown on the coin page. Waiting on his "build".
+
 - Nov 2 (1:30 am): "1v1 PvP of different levels, showing deaths, ~18 s 'PvP worlds coming soon' ad". Scripted duels for
   footage: /tmp/claude-0/pvpad/duel.js injected into scratch/site/test_pvp.html (= test7s + duelTick after rmParTick;
   NEVER in the repo): player = fighter A via pAnim (shoot/cast/slash/block/die; 'em:<Clip>' plays any clip), fighter B
