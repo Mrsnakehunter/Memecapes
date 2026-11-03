@@ -106,6 +106,12 @@ numbers in here or anywhere in the repo.
   dist 23.5, then +35% brightness/colour) packed into items3 (items/items2 md5 unchanged). Two-player PvP e2e:
   /tmp/claude-0/loot/e2e.py (scratch/site_t/pvp.html = preview + window.__H incl. PVPL/pvpFight/tpTo/XA; config there
   has wanderers 0; mc_world=2 in init).
+  RESULT: 7/7 (real fight 36-62 s, loser keeps cape_at only, killer sees own pile, picks up 6 items + 700 coins, pile gone
+  for both). Found + fixed: NETS.me was never set (the server's pi broadcast skips yourself) -> welcome now carries id.
+  Test gotchas: after a teleport the OTHER client still interpolates the player from the old spot at walking speed
+  (still "in a safe zone" for a minute): wait until NETS.others shows the new spot; kill leftover :8000/:18902 servers
+  (ps + kill pid) or the next run's goto times out; wait_until='commit' + wait for __H (two SwiftShader games starve CPU).
+  Party chest -> b_ti_vault looked tiny and was reverted: chest/churn/agility wait for Meshy credits.
 
 - Nov 3 (5 am): "players need to lose all items on pvp fights". combat-styles: server/pvp.js dropAll() on a PvP kill
   empties the loser's bag, worn gear and Meme Coins in the SERVER copy of the save (rev+1, like a trade) into a loot pile
