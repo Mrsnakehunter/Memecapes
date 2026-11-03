@@ -14,7 +14,10 @@ sys.path.insert(0, 'tools')
 import rigkit as K
 
 CARRY = np.array([-.05, -.55, .83])          # blade tip forward, angled down (standing / walking / running)
-RH, RHE = 16, 17                               # RightHand, RightHand_End
+RH, RHE = 16, 17                               # RightHand, RightHand_End (28-bone rig)
+# the 22-bone caped bodies (player(f)_cape) number their bones differently: right hand = 13, no end bone.
+# Using 16 there turned the LEFT FOOT about the sword grip (stretched boot in every walk/run, Nov 3 fix).
+HANDS = {28: (16, 17), 22: (13,)}
 CLIPS = ('Idle', 'Walking', 'Running')
 
 
@@ -49,7 +52,7 @@ def bake(path, carry):
             R = H[i, :3, :3]; p = H[i, :3, 3]
             Q = rot_to(R @ BLADE, carry)
             Rw = np.eye(4); Rw[:3, :3] = Q; Rw[:3, 3] = p - Q @ p
-            for b in (RH, RHE): F[i, b] = Rw @ F[i, b]
+            for b in HANDS[d['nj']]: F[i, b] = Rw @ F[i, b]
             H[i, :3, :3] = Q @ R
         hl = [np.vstack([np.array(h, float).reshape(3, 4), [0, 0, 0, 1]]) for h in c['handL']] if c.get('handL') else None
         c2 = K.pack_clip(c['n'], F, fps=c['fps'], hand=H, handL=hl, dur=c.get('dur'))
