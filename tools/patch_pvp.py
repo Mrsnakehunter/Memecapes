@@ -54,7 +54,7 @@ const PVPL=new Map();
 NETH.pvpPile=m=>{const p=PVPL.get(m.id);if(p){Object.assign(p,m);return}PVPL.set(m.id,m);if(ok(m.x,m.y)&&!ob[m.y][m.x]){const o=put(m.x,m.y,'pvloot');o.pid=m.id;o.nm='Loot of '+m.from;m.o=o}};
 NETH.pvpPileGone=m=>{const p=PVPL.get(m.id);if(!p)return;if(p.o&&ob[p.y][p.x]===p.o)ob[p.y][p.x]=null;PVPL.delete(m.id)};
 NETH.lootGot=m=>{st.inv=m.inv;st.coins=m.coins;NETS.rev=m.rev;LS.set('mc_rev',String(m.rev));say('You pick up the loot.'+(m.left?' Your bag is full: '+m.left+' left on the ground.':''),'#0a0');ui();save()};
-{const w=NETH.welcome;NETH.welcome=function(m){const r=w.apply(this,arguments);for(const id of [...PVPL.keys()])NETH.pvpPileGone({id});if(pvpWorld()==2)setTimeout(()=>netSend({t:'pvpPiles'}),1500);return r}}
+{const w=NETH.welcome;NETH.welcome=function(m){const r=w.apply(this,arguments);if(m.id)NETS.me=m.id;for(const id of [...PVPL.keys()])NETH.pvpPileGone({id});if(pvpWorld()==2)setTimeout(()=>netSend({t:'pvpPiles'}),1500);return r}}
 setTimeout(()=>{LBL.pvloot=['Loot','Loot pile'];EXM.pvloot='Items dropped by a defeated player.';XA.pvloot=o=>netSend({t:'pvpLoot',id:o.pid})},0);
 NETH.pvpFx=m=>{if(m.a===NETS.me||m.b===NETS.me)return;const a=NETS.others.get(m.a),b=NETS.others.get(m.b);if(!b)return;
  if(a&&m.s=='rg')FX.arrow(a.px+.5,a.py+.5,b.px+.5,b.py+.5);else if(a&&m.s=='mg')FX.spell(0,a.px+.5,a.py+.5,b.px+.5,b.py+.5);

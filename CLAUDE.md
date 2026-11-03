@@ -98,6 +98,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 3 (5:30 am, Albert asleep: "those [loot piles] look trash, use Meshy, keep working on future stuff"). MESHY IS OUT
+  OF CREDITS (10 left; a model costs 25-35): buying credits is Albert's purchase, so the chest / butter churn / agility
+  obstacles / Candle Blade (Skin of the Month 2, due Dec 1) wait for his top-up. Done instead (combat-styles): loot piles
+  use the real b_sacks model via qMdl (scale .34) + a spill of 9 coins + a spinning gem (gold = yours, red = not yet);
+  bag icons for ra01-80, ma01-80 (armcut.py torso cuts) and st10-80 (staffs: rot with x/z scaled 2x, yaw -.4, pitch .35,
+  dist 23.5, then +35% brightness/colour) packed into items3 (items/items2 md5 unchanged). Two-player PvP e2e:
+  /tmp/claude-0/loot/e2e.py (scratch/site_t/pvp.html = preview + window.__H incl. PVPL/pvpFight/tpTo/XA; config there
+  has wanderers 0; mc_world=2 in init).
+
 - Nov 3 (5 am): "players need to lose all items on pvp fights". combat-styles: server/pvp.js dropAll() on a PvP kill
   empties the loser's bag, worn gear and Meme Coins in the SERVER copy of the save (rev+1, like a trade) into a loot pile
   at the death tile; untradeables stay (server NOTRADE + st/ra/ma/bw/arm/sw80). Killer-only for PVP_LOOT_OWN (60 s),

@@ -245,7 +245,7 @@ function signIn(c, u, tok, world) {
   c.iron = !!u.iron; c.look = { g: 0, c: '', lv: 3 }; c.pos = null; c.ignore = new Set(); c.world = WORLDS[world | 0] ? world | 0 : 1;
   online.set(u.id, c); Q.seen.run(now(), c.ip, u.id);
   let save = null; try { save = u.save ? JSON.parse(u.save) : null; } catch (e) { }
-  c.send({ t: 'welcome', name: u.name, token: tok, save, rev: u.rev, role: c.role, iron: c.iron, online: inWorld(c.world).length, world: c.world, worlds: worldCounts() });
+  c.send({ t: 'welcome', id: u.id, name: u.name, token: tok, save, rev: u.rev, role: c.role, iron: c.iron, online: inWorld(c.world).length, world: c.world, worlds: worldCounts() });
   c.send({ t: 'chatlog', lines: Q.recentChat.all().reverse() });
   for (const o of online.values()) if (o !== c && o.pos && o.world === c.world) c.send({ t: 'pi', ...pub(o) });
   const w = CAPES_MINT && Q.wal.get(u.id);  // holder perks: a fresh balance check at every login
