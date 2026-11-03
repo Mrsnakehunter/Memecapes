@@ -92,10 +92,12 @@ rep("+'<button data-pa=\"t\">Trade</button>", "+(pvpWorld()==2&&NETS.on?'<button
 rep("if(b=='t')netCmd('/trade '+n);", "if(b=='pv')pvpFight(n);if(b=='t')netCmd('/trade '+n);")
 # food mid-fight: the server keeps PvP hitpoints, tell it about the heal
 rep("st.hp=Math.min(hpMax(),st.hp+HEAL[k]);", "st.hp=Math.min(hpMax(),st.hp+HEAL[k]);if(typeof pvpWorld=='function'&&pvpWorld()==2&&NETS.on)netSend({t:'pvpEat',h:HEAL[k]});")
-# loot piles: a sack, spilled coins and a soft glow (gold while it is yours to take, red for everyone else's)
+# loot piles: the real sack model (b_sacks), a spill of coins, and a small spinning gem above it
+# (gold while it is yours to take, red while it is still someone else's)
 rep("boxR(x,1.3,z,.3,.08,.08,0,'#d0d0d0')}", "boxR(x,1.3,z,.3,.08,.08,0,'#d0d0d0')}"
-    "if(typeof PVPL!='undefined')for(const p of PVPL.values()){if(!vis(p.x,p.y,30))continue;const x=p.x+.5,z=p.y+.5;YO=hgt(x,z);const mine=p.own===NETS.me||p.open,g=.5+.5*Math.sin(performance.now()/260);"
-    "ball(x,.02,z,.62+.08*g,.02,.62+.08*g,0,mine?'#ffd23f':'#ff4a3a',10);ball(x-.12,.28,z,.3,.3,.28,0,'#8a5a2b',8);ball(x-.12,.58,z,.12,.1,.12,0,'#6b4423',6);"
-    "for(let i=0;i<5;i++)ball(x+.2+(i%3)*.12-.1,.06+(i>2?.07:0),z+.15-(i%2)*.22,.09,.035,.09,0,'#ffd23f',7)}")
+    "if(typeof PVPL!='undefined')for(const p of PVPL.values()){if(!vis(p.x,p.y,30))continue;const x=p.x+.5,z=p.y+.5,t=performance.now()/1000;YO=hgt(x,z);const mine=p.own===NETS.me||p.open;"
+    "needMdl('b_sacks');if(MDL.b_sacks&&MDL.b_sacks.ok)qMdl(MDL.b_sacks,x-.08,0,z-.05,p.id*1.7,.34,null,0,0);else ball(x-.12,.28,z,.3,.3,.28,0,'#8a5a2b',8);"
+    "for(let i=0;i<9;i++){const a=i*2.4+p.id,r=.28+.07*(i%3);ball(x+Math.cos(a)*r,.025+(i%4==0?.03:0),z+Math.sin(a)*r,.075,.018,.075,0,i%3?'#ffd23f':'#e8b820',8)}"
+    "const by=1.05+.07*Math.sin(t*2.2);ball(x,by,z,.09,.15,.09,t*1.8,mine?[2.2,1.8,.4]:[2.2,.45,.35],4)}")
 open(PATH, 'w', encoding='utf-8').write(h)
 print('patch_pvp: worlds + PvP added')
