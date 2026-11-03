@@ -98,6 +98,22 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 3 (3-5 am): photos "NPCs in weird awkward places", "not updated structures", "bots have a stretched foot
+  walking". Branch live-fixes (from main = live, worktree /home/claude/mc_fix, NOT shipped yet). FEET: carry_bake.py
+  hard-coded RightHand = bone 16, but the 22-bone caped bodies (player(f)_cape) number bones differently (right hand 13,
+  bone 16 = LEFT FOOT), so the Oct 30 bake swung the left foot round the sword grip on every caped walker (bots + real
+  players). Now HANDS = {28: (16,17), 22: (13,)}; player(f)_cape2.json re-baked from player(f)_cape.json. combat-styles'
+  player(f)_cape3 (Shoot clip added to the broken cape2) must be rebuilt from the fixed cape2 the same way.
+  NPCS: tools/patch_npcspots.py (before CKIT): trees on the 8 tiles round a standing NPC cleared (o.gone), NPCs too
+  close to props (lamps, stalls, forges, fountains, quest objects) moved to the nearest clear tile (moved: Stonks clerk
+  off a forge, Wow Landing Partner off the hay nest), no bushes within 2 tiles (self.NPCNB checked in bushList and the
+  old chunk bushes). PROPS: tools/patch_props.py swaps hand-drawn stand-ins for existing Meshy props in CKIT: flour ->
+  b_sacks, hay nest -> b_haystack, altar -> b_shrine, broker/clerk desk -> b_stall in front, sawmill -> b_stump + b_log,
+  trader -> b_crates. Still hand-drawn: Gigachad Town chest (PR.chest), butter churn, agility obstacles (need Meshy).
+  The red-roof well IS the Meshy b_well. Camera yaw 3.14 in shoot_site LOOKS SOUTH (up the image = south). build.sh now
+  cds to its own repo and takes MKTEST=...; test site for this branch: scratch/site_fix (models -> mc_fix/models,
+  config.js server "" so tests stay offline); tools: /tmp/claude-0/feet (shoot.py, dump.py, q*.js).
+
 - Nov 1 (3 am): "when you put on the armour their feet point straight out to the sides" (worst on Paper Hands). Meshy
   built the armour boots turned out; same motions as the plain body, so tools/feet_fix.py matches each boot's heading
   (foot-bone verts -> toe-bone verts, top view) to models/player2.json's in the same motion + moment, turning the foot +
