@@ -824,7 +824,7 @@ Object.assign(H, WD.H);
 // friends + private messages (server/friends.js)
 const FR = require('./friends')({ db, now, say, online, cleanChat, findOnline, byName: { name: (n) => Q.byName.get(n), id: (i) => Q.byId.get(i) } });
 Object.assign(H, FR.H);
-const PVP = require('./pvp')({ db, now, say, online, loadSave, bcastWorld });
+const PVP = require('./pvp')({ db, now, say, online, loadSave, bcastWorld, setSave: (...a) => Q.setSave.run(...a), notrade: NOTRADE, BAG });
 Object.assign(H, PVP.H);   // World 2 fights (server-checked)   // the public burn log: every burn of the coin, read from Solana
 
 // ---------- HTTP: health check, admin pages, WebSocket upgrade ----------

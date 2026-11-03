@@ -6,7 +6,7 @@ const { spawn } = require('child_process');
 const fs = require('fs'), os = require('os'), path = require('path');
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mc-pvp-'));
 const PORT = 19500 + Math.floor(Math.random() * 400);
-const srv = spawn(process.execPath, [path.join(__dirname, 'server.js')], { env: { ...process.env, PORT, DATA_DIR: dir, ADMIN_KEY: 'k' }, stdio: ['ignore', 'pipe', 'inherit'] });
+const srv = spawn(process.execPath, [path.join(__dirname, 'server.js')], { env: { ...process.env, PORT, DATA_DIR: dir, ADMIN_KEY: 'k', PVP_LOOT_OWN: '4000', PVP_LOOT_END: '60000' }, stdio: ['ignore', 'pipe', 'inherit'] });
 let fails = 0, n = 0;
 const ok = (c, msg) => { n++; console.log((c ? 'PASS ' : 'FAIL ') + msg); if (!c) fails++; };
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -21,7 +21,7 @@ function client(name) {
   return C;
 }
 const XP = l => { const K = 2e7 / (99 * Math.pow(1.095, 99)); return Math.round(K * (l - 1) * Math.pow(1.095, l - 1)) + 1; };
-const save = (C, rev, lv) => { C.send({ t: 'save', rev, st: { v: 1, inv: [], coins: 0, xp: { at: XP(lv), str: XP(lv), def: XP(lv), hp: XP(lv) } } }); return C.next('saved'); };
+const save = (C, rev, lv, more) => { C.send({ t: 'save', rev, st: { v: 1, inv: [], coins: 0, ...(more || {}), xp: { at: XP(lv), str: XP(lv), def: XP(lv), hp: XP(lv) } } }); return C.next('saved'); };
 (async () => {
   await new Promise(r => srv.stdout.on('data', d => { if (String(d).includes('port')) r(); }));
   const a = client('Alice'), b = client('Bobby'), c = client('Carol');
@@ -67,7 +67,8 @@ const save = (C, rev, lv) => { C.send({ t: 'save', rev, st: { v: 1, inv: [], coi
   a.send({ t: 'pos', x: 120, y: 230, r: 0, lv: 40 }); await wait(2600);
   a.send({ t: 'pvpHit', id: 4, s: 'at', d: 1 }); ok((await a.next('info')).text.includes('too far apart'), 'level range protects new players');
 
-  // fight to the end
+  // fight to the end: Bobby carries tradeable things, worn gear, coins and some untradeables
+  const bs = await save(b, wb.rev + 1, 40, { inv: ['sw20', 'fish', 'cape_at', 'pet_cat'], eq: { weapon: 'sw10', body: 'arm80', cape: 'cape_at' }, coins: 500 });
   b.send({ t: 'pos', x: 121, y: 230, r: 0, lv: 40 }); await wait(300);
   let dead = null;
   for (let i = 0; i < 40 && !dead; i++) {
@@ -76,6 +77,19 @@ const save = (C, rev, lv) => { C.send({ t: 'save', rev, st: { v: 1, inv: [], coi
   }
   ok(dead && dead.by === 'Alice', 'Bobby is defeated');
   ok(!!(await a.next('pvpWin')), 'Alice is told she won');
+  ok(dead && JSON.stringify(dead.inv) === '["cape_at","pet_cat"]' && dead.coins === 0, 'loser keeps only untradeables: ' + JSON.stringify(dead && dead.inv));
+  ok(dead && dead.eq && dead.eq.body === 'arm80' && dead.eq.cape === 'cape_at' && !dead.eq.weapon && dead.rev === bs.rev + 1, 'worn gear dropped, untradeable armour kept');
+  b.send({ t: 'pull' }); const rs = await b.next('resync'); ok(rs.save.inv.length === 2 && rs.save.coins === 0, 'the server copy is emptied too');
+  const pile = await a.next('pvpPile'); ok(pile.n === 4 && pile.from === 'Bobby' && !pile.open, 'loot pile appears: ' + pile.n + ' things');
+  ok(await c.none('pvpPile', 50), 'World 1 never sees PvP loot');
+  d.send({ t: 'pos', x: 121, y: 231, r: 0, lv: 3 }); await wait(250);
+  d.send({ t: 'pvpLoot', id: pile.id }); ok((await d.next('info')).text.includes('belongs to Alice'), 'only the killer loots at first');
+  a.send({ t: 'pos', x: 126, y: 230, r: 0, lv: 40 }); await wait(250);
+  a.send({ t: 'pvpLoot', id: pile.id }); ok((await a.next('info')).text.includes('closer'), 'must stand at the pile');
+  a.send({ t: 'pos', x: 121, y: 230, r: 0, lv: 40 }); await wait(250);
+  a.send({ t: 'pvpLoot', id: pile.id }); const lg = await a.next('lootGot');
+  ok(lg.coins === 500 && ['sw20', 'fish', 'sw10'].every(k => lg.inv.includes(k)) && lg.left === 0, 'killer takes everything: ' + JSON.stringify(lg.inv));
+  ok(!!(await d.next('pvpPileGone')), 'an empty pile disappears for everyone');
   a.send({ t: 'pvpTop' }); const top = await a.next('pvpTop'); ok(top.list[0].name === 'Alice' && top.me.kills === 1, 'kills counted');
   console.log(fails ? `${fails} of ${n} FAILED` : `all ${n} passed`);
   srv.kill(); process.exit(fails ? 1 : 0);

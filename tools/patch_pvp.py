@@ -9,7 +9,8 @@ damage capped by saved levels, and it keeps the fighters' hitpoints, so a modifi
   - online chip shows the world; in World 2 a badge says Safe zone / PvP zone (red) as you walk
   - name menu (tap a player's name tag or chat name): Fight (World 2 only)
   - fighting: walks into reach, attacks at the weapon's speed with your style (melee / bow / staff + the spell's effect),
-    hit splats on both sides, food sends the heal to the server, a PvP death sends you to the start with nothing lost
+    hit splats on both sides, food sends the heal to the server, a PvP death drops everything
+    tradeable you carry and wear into a loot pile (server/pvp.js): the killer has it first, then anyone; untradeables stay
 Run after patch_vfx.py:  python3 tools/patch_pvp.py
 """
 import json, os
@@ -46,13 +47,20 @@ NETH.pvpHit=m=>{st.hp=Math.max(0,m.hp);fl(P.x,P.y,m.d,m.d?'#d22':'#39f');if(m.d)
 NETH.pvpAck=m=>{const o=NETS.others.get(m.id);const ms=wSty()=='mg'?600:wSty()=='rg'?390:120;if(o)setTimeout(()=>fl(Math.round(o.px),Math.round(o.py),m.d,m.d?'#d22':'#39f'),ms)};
 NETH.pvpNo=m=>{};
 NETH.pvpHp=m=>{st.hp=Math.min(hpMax(),m.hp);ui()};
-NETH.pvpDead=m=>{PVPW.t=0;PVPW.dead=1;st.hp=0;say('You were defeated by '+m.by+'. Nothing was taken.','#c00')};
-NETH.pvpWin=m=>{PVPW.t=0;say('You defeated '+m.name+'!','#0a0')};
+NETH.pvpDead=m=>{PVPW.t=0;PVPW.dead=1;if(m.inv){st.inv=m.inv;st.eq=m.eq||{};st.coins=m.coins||0;NETS.rev=m.rev;LS.set('mc_rev',String(m.rev))}st.hp=0;say('You were defeated by '+m.by+(m.lost?'. Everything you carried was dropped where you fell.':'.'),'#c00');ui()};
+NETH.pvpWin=m=>{PVPW.t=0;say('You defeated '+m.name+'!'+(m.loot?' Their loot is on the ground: it is yours for one minute.':''),'#0a0')};
+// loot piles from PvP deaths: drawn where they fell, picked up through the server
+const PVPL=new Map();
+NETH.pvpPile=m=>{const p=PVPL.get(m.id);if(p){Object.assign(p,m);return}PVPL.set(m.id,m);if(ok(m.x,m.y)&&!ob[m.y][m.x]){const o=put(m.x,m.y,'pvloot');o.pid=m.id;o.nm='Loot of '+m.from;m.o=o}};
+NETH.pvpPileGone=m=>{const p=PVPL.get(m.id);if(!p)return;if(p.o&&ob[p.y][p.x]===p.o)ob[p.y][p.x]=null;PVPL.delete(m.id)};
+NETH.lootGot=m=>{st.inv=m.inv;st.coins=m.coins;NETS.rev=m.rev;LS.set('mc_rev',String(m.rev));say('You pick up the loot.'+(m.left?' Your bag is full: '+m.left+' left on the ground.':''),'#0a0');ui();save()};
+{const w=NETH.welcome;NETH.welcome=function(m){const r=w.apply(this,arguments);for(const id of [...PVPL.keys()])NETH.pvpPileGone({id});if(pvpWorld()==2)setTimeout(()=>netSend({t:'pvpPiles'}),1500);return r}}
+setTimeout(()=>{LBL.pvloot=['Loot','Loot pile'];EXM.pvloot='Items dropped by a defeated player.';XA.pvloot=o=>netSend({t:'pvpLoot',id:o.pid})},0);
 NETH.pvpFx=m=>{if(m.a===NETS.me||m.b===NETS.me)return;const a=NETS.others.get(m.a),b=NETS.others.get(m.b);if(!b)return;
  if(a&&m.s=='rg')FX.arrow(a.px+.5,a.py+.5,b.px+.5,b.py+.5);else if(a&&m.s=='mg')FX.spell(0,a.px+.5,a.py+.5,b.px+.5,b.py+.5);
  setTimeout(()=>fl(Math.round(b.px),Math.round(b.py),m.d,m.d?'#d22':'#39f'),m.s=='at'?120:500)};
 NETH.pvpTop=m=>{say('PvP: you have '+(m.me?m.me.kills:0)+' wins, '+(m.me?m.me.deaths:0)+' losses. Top: '+(m.list.map(r=>r.name+' '+r.kills).join(', ')||'nobody yet'),'#a60')};
-{const od=onDeath;onDeath=function(z){if(PVPW.dead){PVPW.dead=0;return 'You lost a PvP fight: you keep everything.'}return od.apply(this,arguments)}}
+{const od=onDeath;onDeath=function(z){if(PVPW.dead){PVPW.dead=0;return 'You lost a PvP fight. Only your untradeable items stayed with you.'}return od.apply(this,arguments)}}
 function pvpFight(name){if(pvpWorld()!=2||!NETS.on)return say('Player fights are only in World 2 (PvP). Pick it on the start screen.','#c00');
  let id=0;for(const[i,inf] of NETS.info)if(inf.name==name)id=i;if(!id||!NETS.others.get(id))return say(name+' is not nearby.','#c00');
  if(pvpSafe(P.x,P.y))return say('You are in a safe zone. Leave town to fight players.','#c00');
@@ -84,5 +92,10 @@ rep("+'<button data-pa=\"t\">Trade</button>", "+(pvpWorld()==2&&NETS.on?'<button
 rep("if(b=='t')netCmd('/trade '+n);", "if(b=='pv')pvpFight(n);if(b=='t')netCmd('/trade '+n);")
 # food mid-fight: the server keeps PvP hitpoints, tell it about the heal
 rep("st.hp=Math.min(hpMax(),st.hp+HEAL[k]);", "st.hp=Math.min(hpMax(),st.hp+HEAL[k]);if(typeof pvpWorld=='function'&&pvpWorld()==2&&NETS.on)netSend({t:'pvpEat',h:HEAL[k]});")
+# loot piles: a sack, spilled coins and a soft glow (gold while it is yours to take, red for everyone else's)
+rep("boxR(x,1.3,z,.3,.08,.08,0,'#d0d0d0')}", "boxR(x,1.3,z,.3,.08,.08,0,'#d0d0d0')}"
+    "if(typeof PVPL!='undefined')for(const p of PVPL.values()){if(!vis(p.x,p.y,30))continue;const x=p.x+.5,z=p.y+.5;YO=hgt(x,z);const mine=p.own===NETS.me||p.open,g=.5+.5*Math.sin(performance.now()/260);"
+    "ball(x,.02,z,.62+.08*g,.02,.62+.08*g,0,mine?'#ffd23f':'#ff4a3a',10);ball(x-.12,.28,z,.3,.3,.28,0,'#8a5a2b',8);ball(x-.12,.58,z,.12,.1,.12,0,'#6b4423',6);"
+    "for(let i=0;i<5;i++)ball(x+.2+(i%3)*.12-.1,.06+(i>2?.07:0),z+.15-(i%2)*.22,.09,.035,.09,0,'#ffd23f',7)}")
 open(PATH, 'w', encoding='utf-8').write(h)
 print('patch_pvp: worlds + PvP added')
