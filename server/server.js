@@ -11,6 +11,7 @@ process.removeAllListeners('warning'); // hide the "SQLite is experimental" noti
 const { DatabaseSync } = require('node:sqlite');
 
 const PORT = +process.env.PORT || 8080;
+const NEAR_MAX = +process.env.NEAR_MAX || 60;   // most other players sent to one player per position update
 const DATA = process.env.DATA_DIR || path.join(__dirname, 'data');
 const ADMIN_KEY = process.env.ADMIN_KEY || '';
 const ADMINS = (process.env.ADMIN_NAMES || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
@@ -154,6 +155,9 @@ function nameProblem(n) {
 const hashPass = (p, salt) => crypto.scryptSync(p, salt, 32).toString('hex');
 const sha = s => crypto.createHash('sha256').update(s).digest('hex');
 const passOk = (p, u) => { const a = Buffer.from(hashPass(p, u.salt), 'hex'), b = Buffer.from(String(u.hash || ''), 'hex'); return a.length === b.length && crypto.timingSafeEqual(a, b); };
+// the same hash off the main thread: a crowd signing in at once must not freeze the game for everyone already playing
+const hashPassA = (p, salt) => new Promise((res, rej) => crypto.scrypt(p, salt, 32, (e, k) => e ? rej(e) : res(k.toString('hex'))));
+const passOkA = async (p, u) => { const a = Buffer.from(await hashPassA(p, u.salt), 'hex'), b = Buffer.from(String(u.hash || ''), 'hex'); return a.length === b.length && crypto.timingSafeEqual(a, b); };
 function newSession(uid) { const tok = crypto.randomBytes(32).toString('hex'); Q.sesAdd.run(sha(tok), uid, now(), now()); return tok; }
 
 // ---------- save checks ----------
@@ -222,13 +226,14 @@ function broadcast(obj, except) { for (const o of online.values()) if (o !== exc
 
 function onOpen(c) { c.id = ++seq; c.send({ t: 'hello', need: 'login' }); }
 function onClose(c) {
+  c.gone = true;
   if (c.trade) tradeEnd(c.trade, c.name + ' left.');
   if (c.uid && online.get(c.uid) === c) { online.delete(c.uid); broadcast({ t: 'leave', id: c.uid }); if (typeof FR !== 'undefined') FR.onLeave(c); }
 }
 
 function tooMany(ip) {
   const L = (loginTries.get(ip) || []).filter(t => now() - t < 10 * 60e3); L.push(now()); loginTries.set(ip, L);
-  return L.length > 12;
+  return L.length > 30;   // per address per 10 min; phone carriers put many players behind one address (wrong passwords still lock the name)
 }
 
 function signIn(c, u, tok) {
@@ -249,8 +254,8 @@ function signIn(c, u, tok) {
 }
 
 const H = {
-  register(c, m) {
-    if (c.uid) return;
+  async register(c, m) {
+    if (c.uid || c.busy) return;
     if (!G.allow('register')) return c.send({ t: 'err', text: G.pausedMsg() });
     if (tooMany(c.ip)) return c.send({ t: 'err', text: 'Too many tries. Wait a few minutes.' });
     const name = String(m.name || ''), pass = String(m.pass || '');
@@ -258,18 +263,23 @@ const H = {
     if (pass.length < 8 || pass.length > 100) return c.send({ t: 'err', text: 'Use a password with at least 8 characters.' });
     if (Q.byName.get(name)) return c.send({ t: 'err', text: 'That name is taken.' });
     const salt = crypto.randomBytes(16).toString('hex');
-    const r = Q.add.run(name, salt, hashPass(pass, salt), now(), now(), m.iron ? 1 : 0, c.ip);
+    c.busy = true; let hash; try { hash = await hashPassA(pass, salt); } finally { c.busy = false; }
+    if (c.gone || c.uid) return;
+    if (Q.byName.get(name)) return c.send({ t: 'err', text: 'That name is taken.' });
+    let r; try { r = Q.add.run(name, salt, hash, now(), now(), m.iron ? 1 : 0, c.ip); } catch (e) { return c.send({ t: 'err', text: 'That name is taken.' }); }
     const u = Q.byId.get(r.lastInsertRowid);
     signIn(c, u, newSession(u.id));
   },
-  login(c, m) {
-    if (c.uid) return;
+  async login(c, m) {
+    if (c.uid || c.busy) return;
     if (!G.allow('login')) return c.send({ t: 'err', text: G.pausedMsg() });
     if (tooMany(c.ip)) return c.send({ t: 'err', text: 'Too many tries. Wait a few minutes.' });
     const name = String(m.name || '').slice(0, 40);
     if (G.loginLocked(name)) return c.send({ t: 'err', text: 'Too many wrong passwords for this name. It is locked for 15 minutes.' });
     const u = Q.byName.get(name);
-    if (!u || !passOk(String(m.pass || ''), u)) { G.loginFail(name, c.ip); return c.send({ t: 'err', text: 'Wrong name or password.' }); }
+    c.busy = true; let good; try { good = !!u && await passOkA(String(m.pass || ''), u); } finally { c.busy = false; }
+    if (c.gone || c.uid) return;
+    if (!good) { G.loginFail(name, c.ip); return c.send({ t: 'err', text: 'Wrong name or password.' }); }
     G.loginOk(name); signIn(c, u, newSession(u.id));
   },
   resume(c, m) {
@@ -782,8 +792,11 @@ setInterval(() => {
   const all = [...online.values()].filter(o => o.pos);
   for (const c of online.values()) {
     if (!c.pos) continue;
-    const p = [];
-    for (const o of all) if (o !== c && Math.abs(o.pos.x - c.pos.x) <= VIEW && Math.abs(o.pos.y - c.pos.y) <= VIEW) p.push([o.uid, Math.round(o.pos.x * 100) / 100, Math.round(o.pos.y * 100) / 100, Math.round(o.pos.r * 100) / 100, o.pos.m, o.pos.a]);
+    let near = [];
+    for (const o of all) if (o !== c && Math.abs(o.pos.x - c.pos.x) <= VIEW && Math.abs(o.pos.y - c.pos.y) <= VIEW) near.push(o);
+    // a crowd (launch day at the spawn): send only the closest players, so bandwidth and phones' frame rate stay sane
+    if (near.length > NEAR_MAX) near = near.map(o => [o, (o.pos.x - c.pos.x) ** 2 + (o.pos.y - c.pos.y) ** 2]).sort((a, b) => a[1] - b[1]).slice(0, NEAR_MAX).map(a => a[0]);
+    const p = near.map(o => [o.uid, Math.round(o.pos.x * 100) / 100, Math.round(o.pos.y * 100) / 100, Math.round(o.pos.r * 100) / 100, o.pos.m, o.pos.a]);
     c.send({ t: 'pl', p, n: online.size });
   }
 }, 200);
