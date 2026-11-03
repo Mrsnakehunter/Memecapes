@@ -3,7 +3,7 @@
 set -e
 # BASE = the game before the art and name patches (= play.html at commit e1df6ab)
 BASE=${BASE:-/home/claude/scratch/play_gt.html}
-cd /home/claude/memecapes
+cd "$(dirname "$0")/.."
 [ -f "$BASE" ] || git show e1df6ab:play.html > "$BASE"
 cp "$BASE" play.html
 python3 tools/patch_xp.py >/dev/null
@@ -46,6 +46,8 @@ python3 tools/patch_weapons.py
 python3 tools/patch_friends.py
 python3 tools/patch_skillpanel.py
 python3 tools/patch_mdlv.py
+python3 tools/patch_npcspots.py
+python3 tools/patch_props.py
 python3 tools/patch_ticker.py
 sed -i "s/__BUILD__/$(date -u +%Y%m%d%H%M%S)/" play.html
 python3 - <<'P'
@@ -53,6 +55,6 @@ import re;h=open('play.html').read();s=re.findall(r'<script>([\s\S]*?)</script>'
 P
 node --check /tmp/x.js
 cp play.html preview.html
-/home/claude/scratch/mktest.sh
+${MKTEST:-/home/claude/scratch/mktest.sh}
 git checkout -- play.html
 echo built
