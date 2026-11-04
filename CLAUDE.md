@@ -98,6 +98,21 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 4: "research every top wallet, 1000% better wallet" -> prototype (Design canvas "Snake Wallet redesign"), then
+  "make this live but first clips from before and after for a 45 sec video". Pit branch wallet-v2: tab bar Pit /
+  Slither / Wallet / Hatch / Arena (Capes on desktop side nav + a pinned gold $CAPES card on the Pit home), app/wallet
+  (balance, GrowthSnake card, Add cash / Receive / Send / Cash out, backup card, coins with small+spam tucked away,
+  "Also in your wallet", activity), app/me (profile, follow counts, backup checklist via Privy linkPasskey/exportWallet,
+  close empty token accounts for rent, sign out; the top-bar chip opens it), Slither = feed (/api/slither: trades +
+  holders' comments, Following / Everyone / My coins / People), /api/activity (Helius parsed history if HELIUS_API_KEY,
+  else the trades table; dust from strangers = possible spam), SendSheet contacts (localStorage pit_contacts_v1) +
+  lookalike warning (same first/last 4), ReceiveSheet deposit watcher + exchange guide, AddCash = MoonPay link with
+  SOL or USDC (usdc_sol), CashOut = SOL->USDC or send to your exchange (no card sell: needs a MoonPay sell key).
+  Albert's asks kept: the snake stays, snakepit name stays with "Wallet" centred, Slither and social up front.
+  Video: harness /tmp/claude-0/studio (entry routes /wallet /me, fakes ?coins=1&contacts=1&empty=1&dep=ms; web3.ts stub
+  needs Buffer + equals), /tmp/claude-0/wv rec.py (780x1688, zoom 2, avatar route), vid/make.py (split before/after
+  scenes, 1080x1920) -> outputs/snakepit_wallet_v2_before_after.mp4 (46 s, stream.mp3 from 30.267 s). Not posted.
+
 - Nov 3 (7 pm): "Bot Shield" (sniper defense, sandwich protection, bot score + badge, public bots-blocked stats) + "90% of all
   platform fees to burns". Pit branch bot-shield 755e61a (Vercel preview success, NOT merged) + memecapes branch
   bot-shield-site (worktree /home/claude/mc_shield; site/launch.html/lp/support copy, NOT merged). DBC limits found: pools
