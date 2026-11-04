@@ -551,7 +551,7 @@ q('coins', 'How do I withdraw $CAPES from the game?',
   'At any bank, under Withdraw to your wallet. Link the wallet you want paid (Holder perks box), type how many $CAPES, and the Meme Coins leave your bank at once at the rate shown (100 Meme Coins = 1 $CAPES to start). The payout comes from the public pot wallet after a 30-day wait; until then you can cancel and get your coins back. Up to 100 $CAPES a day, and only while the pot holds enough to cover everything waiting.',
   ['Can I cash out Meme Coins?', 'Why do I have to wait 30 days?', 'How long does a withdrawal take?', 'Where is my withdrawal?'], vp='withdraw $CAPES', np='withdrawals', k='withdraw cash out 30 days wait payout', top=True)
 q('coins', 'What burns $CAPES?',
-  'Today: the Snake Bite (10% of the supply burned inside the launch transaction itself), the fee wallet (half of what MemeCapes earns from the launchpad and a quarter of every snakepit trade fee buy $CAPES and burn it, in transactions its owner signs) and anyone who burns their own, including website ad burns. Planned: cosmetics bought with $CAPES (60% burned), a small tax on player trades, sponsored monsters (half burned). The burn log on the $CAPES page reads every burn straight from Solana, with its transaction.',
+  'Today: the Snake Bite (10% of the supply burned inside the launch transaction itself), the fee wallet (90% of what MemeCapes earns from the launchpad and from every snakepit trade fee buys $CAPES and burns it, in transactions its owner signs) and anyone who burns their own, including website ad burns. Planned: cosmetics bought with $CAPES (60% burned), a small tax on player trades, sponsored monsters (half burned). The burn log on the $CAPES page reads every burn straight from Solana, with its transaction.',
   ['Is $CAPES deflationary?', 'How do burns work?', 'Where can I see the burns?', 'Is there a burn log?', 'Are the burns automatic?'], np='burns', k='burn deflation burn log snake bite')
 q('coins', 'Can I withdraw Meme Coins as real money?',
   'No. Meme Coins are game content with no cash value and cannot be redeemed for money from us. The only bridge is the in-game exchange to $CAPES, after the token launches, within the daily cap.',
@@ -652,8 +652,11 @@ q('launch', 'What does it cost to launch a coin?',
   'The network fees of creating the coin on Solana, paid from your wallet, plus the trading fee you choose for your coin. The Launch page shows every fee before you sign.',
   ['Launch fees'], np='launch fees', k='launch cost fee')
 q('launch', 'What is the sniper fee?',
-  'Buyers in the first seconds after a launch pay a higher fee that fades quickly. It makes sniping with bots expensive and leaves more of the early supply for real people.',
-  [], np='the sniper fee', k='sniper fee bots early')
+  'Buyers in the first seconds after a launch pay a higher fee that fades quickly. It is called the Sniper Shield and it is on for every coin hatched in snakepit, so sniping with bots is expensive and more of the early supply is left for real people. Each coin page shows how much snipers paid.',
+  ['What is the Sniper Shield?'], np='the sniper fee', k='sniper fee shield bots early')
+q('launch', 'Does snakepit protect me from bots?',
+  'Bot Shield has three parts. The Sniper Shield makes bots that buy first pay a high fee that fades to normal. Every trade made in snakepit carries an anti-sandwich marker that the Jito block engine honours, and the price can only move a little against you before the trade is refused. Each coin also gets an automatic bot check score from its first minutes, shown on its page. It lowers the risk; it cannot promise no bot ever trades, and trades made in other apps do not get the marker.',
+  ['What is Bot Shield?', 'Does snakepit stop sandwich attacks?', 'What is the bot check score?'], np='Bot Shield', k='bot shield sandwich mev sniper score badge protection')
 q('launch', 'What does graduation mean?',
   'When a coin fills its bonding curve it graduates to a normal market, and its liquidity is locked for good: nobody, not the creator and not MemeCapes, can pull it.',
   ['Is the liquidity locked?'], np='graduation', k='graduate liquidity locked')
