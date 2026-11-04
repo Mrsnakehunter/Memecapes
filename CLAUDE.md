@@ -111,6 +111,12 @@ numbers in here or anywhere in the repo.
   ShieldStats on Hatch + Capes; VENOM_SPLIT income 10 / burn 90 / pot 0, LAUNCH.burnShare 90 (the game pot no longer
   gets venom). Harness: /tmp/claude-0/studio (build_burn.mjs now stubs @streamflow; fakes.ts + out/index.html shield data),
   tests /tmp/claude-0/shield/t.ts (21). Screens sent. Ship = ff Pit main to bot-shield + merge bot-shield-site.
+  Then (9 pm) Albert: fee split 80% burn / 10% game pot / 10% him (VENOM_SPLIT income 10 burn 80 pot 10, LAUNCH.burnShare
+  80 + potShare 10), and the creator's locked 10% of supply = 4% player pot, 4% marketing, 2% him (site supply table +
+  support answer rewritten; marketing now HOLDS tokens, locked). To make that true on-chain, Hatch got 'Split the lock'
+  (Streamflow only: one stream per named wallet via buildStreamflowVestTx recipient, the rest to the hatcher, one approval
+  each; streamflowLocks now counts every non-cancellable stream the creator SENT). Pit b35fd58 preview ok. Before launch:
+  the player pot + marketing wallet addresses (Albert), on Official wallets + watchtower; a split lock not yet run live.
 
 - Nov 3 (5:30 am, Albert asleep: "those [loot piles] look trash, use Meshy, keep working on future stuff"). MESHY IS OUT
   OF CREDITS (10 left; a model costs 25-35): buying credits is Albert's purchase, so the chest / butter churn / agility
