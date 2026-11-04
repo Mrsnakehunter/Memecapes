@@ -98,6 +98,27 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 4 (3:20 pm): "build our own Meteora, keep Jupiter" (his picks: graduate into Raydium first, our own pool
+  later; upgradable with his key; start now). Pit branch own-launchpad, folder launchpad/ (Anchor 0.31.1 workspace,
+  excluded in the Pit's tsconfig): programs/snakepit_launch/src/curve.rs (pure maths, rustc --test here: v_tok0 =
+  S/(1-a/m), Standard 28 -> 400 SOL mcap sells 79.1% and raises 83.69 SOL, like pump.fun), lib.rs (initialize = upgrade
+  authority only via ProgramData; update_global; create_coin = classic SPL 1B/6dp, mint + freeze authority None,
+  Metaplex metadata immutable; buy/sell exact-in with linear Sniper Shield, creator's launch-slot buy pays the base fee
+  (Snake Bite = create + buy + BurnChecked in one tx); fees in SOL split creator_share / fee wallet, kept in the pool,
+  claim_creator / claim_platform (anyone, only to Global.fee_wallet); check_lamports after every move; complete when
+  curve_left = 0; prepare_migrate (direct lamport moves) + migrate (Raydium CP-Swap initialize by hand-built CPI,
+  raydium.rs, migrator PDA = system account paying rent, LP burned, leftovers to the fee wallet) in ONE tx: direct
+  lamport moves followed by CPIs in one instruction fail "sum of account balances ... do not match").
+  CI .github/workflows/launchpad.yml = the only build bench (no Solana tools here): node 20 (newer Node runs .ts as ESM
+  and breaks named imports), Solana stable installer (2.1's cargo 1.79 can't parse edition2024 crates), Anchor from the
+  GitHub release binary (the npm anchor-cli 0.31.1 ships 0.31.0 and refuses), mainnet programs/accounts dumped to
+  tests/fixtures and loaded at genesis (live clone hung the validator), [test] upgradeable = true, readable output =
+  ONE ::notice with %0A newlines (annotations cap at 10 per step; logs are blocked). RESULT: 10/10 tests incl. Raydium
+  graduation (pool price 0.9% under the curve's last price = rent + Raydium's 0.15 SOL create fee). Raydium ids:
+  CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C, AmmConfig 0 D4FPEruKEHrG5TenZ2mpDGEfu1iUvTiqBxvpU8HLBvC2, fee rx
+  DNXgeM9EiiaAbaWvwjHj9fQQLAX5ZsfHyvmYUNRAdNC8. Next: devnet deploy, Pit Hatch behind a switch, then an audit.
+  MoonPay sell: free partner account; own fee (<= 5%) needs their Enhanced Verification (asked Nov 4).
+
 - Nov 4: "research every top wallet, 1000% better wallet" -> prototype (Design canvas "Snake Wallet redesign"), then
   "make this live but first clips from before and after for a 45 sec video". Pit branch wallet-v2: tab bar Pit /
   Slither / Wallet / Hatch / Arena (Capes on desktop side nav + a pinned gold $CAPES card on the Pit home), app/wallet
