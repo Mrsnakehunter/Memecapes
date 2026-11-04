@@ -98,6 +98,20 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 3 (7 pm): "Bot Shield" (sniper defense, sandwich protection, bot score + badge, public bots-blocked stats) + "90% of all
+  platform fees to burns". Pit branch bot-shield 755e61a (Vercel preview success, NOT merged) + memecapes branch
+  bot-shield-site (worktree /home/claude/mc_shield; site/launch.html/lp/support copy, NOT merged). DBC limits found: pools
+  open at creation (activation_point = now), Meteora's RateLimiter base fee mode is DEPRECATED (refused on new configs), so
+  per-wallet caps / random open / batch auction can't be enforced on-chain (told Albert). Built: Sniper Shield required
+  (LAUNCH.sniperFee.minBps 1500 / minSeconds 30 in normalizePlan + planProblem + form); Jito DONT_FRONT account
+  (jitodontfront111...111, read-only) on every Pit swap via withDontFront (on the first SystemProgram transfer, else the
+  compute-budget price ix: both simulated OK on mainnet via pit /api/rpc); launch check v2 (shield window buys + extra fee
+  paid = solIn x (feeAt(t) - base), fresh wallets sharing a funder / hatcher-funded, botScore 0-100, grade); check runs
+  after checkDelayMs (window + 30 s) and redoes old v1 checks once; TokenSheet badge + Bot Shield card; /api/public/shield;
+  ShieldStats on Hatch + Capes; VENOM_SPLIT income 10 / burn 90 / pot 0, LAUNCH.burnShare 90 (the game pot no longer
+  gets venom). Harness: /tmp/claude-0/studio (build_burn.mjs now stubs @streamflow; fakes.ts + out/index.html shield data),
+  tests /tmp/claude-0/shield/t.ts (21). Screens sent. Ship = ff Pit main to bot-shield + merge bot-shield-site.
+
 - Nov 3 (5:30 am, Albert asleep: "those [loot piles] look trash, use Meshy, keep working on future stuff"). MESHY IS OUT
   OF CREDITS (10 left; a model costs 25-35): buying credits is Albert's purchase, so the chest / butter churn / agility
   obstacles / Candle Blade (Skin of the Month 2, due Dec 1) wait for his top-up. Done instead (combat-styles): loot piles
