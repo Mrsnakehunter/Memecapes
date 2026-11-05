@@ -98,6 +98,16 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 5 (4:40 am, "just bought 3k more" = Meshy credits, 3,010): Candle Blade (Skin of the Month 2, sword skin) made.
+  Meshy's own Image tool (sidebar Image, Nano Banana Pro, 4 images = 36 credits) made the concept; the image went into
+  Model > Image (DataTransfer File into the single file input, wait 12 s, REAL click on Generate; a JS click on a card's
+  "Image to 3D" also starts a generation = a second copy). Ultra 2K + texture = 20 credits. glb2mdl --orient --tris 12000
+  -> models/w_sk_candle.json; HOLD [1.1, .17, 'f', 25, 20]; store picture via skinthumbs.py filtered to one id (the
+  script rewrites every weapon thumb otherwise). The pane's screenshots time out while the window is covered: to SEE an
+  image, draw it to a canvas and return a dataURL padded past the size limit (the result lands in a file; decode it).
+  Meshy's task API needs the page's bearer token: don't read it, use the UI. Shots at Castle courtyard 158,121 catch
+  the armour parade: use Wow Landing 156,184. On combat-styles, not shipped.
+
 - Nov 5 (4:15 am, "ship it"): "home page is empty, only Trending, I went to FOMO". Pit main 782f871 (branch discover):
   lib/discover.ts + /api/discover?list=new|almost|graduated|gainers from GeckoTerminal's free API (dex ids: pump-fun +
   meteora-dbc + raydium-launchlab = curves; pumpswap + meteora-damm-v2 + raydium-cpmm = graduated; include=base_token,dex;
