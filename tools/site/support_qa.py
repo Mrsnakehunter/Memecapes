@@ -340,8 +340,23 @@ q('combat', 'Why can\'t I hit anything?',
   'Low Attack level against a high-defence monster means lots of misses. Train on weaker memes first, use the best sword you can smith or find, and keep your health up with food.',
   ['I keep missing', 'Why do I do so little damage?'], np='missing hits', k='miss damage low hit')
 q('combat', 'Can other players attack me?',
-  'No. There is no player-versus-player fighting in the world. Meme Wars, a team minigame, is planned for a later update.',
-  ['Is there PvP?', 'Can I fight other players?'], np='PvP', k='pvp player versus attack')
+  'Only in World 2, the PvP world. In World 1 nobody can attack you. You pick the world on the start screen. In World 2, towns are safe zones (a badge tells you whether you are in a safe zone or a PvP zone), and you can only fight players whose combat level is within 15 of yours.',
+  ['Is there PvP?', 'Can I fight other players?', 'Is World 2 PvP?'], np='PvP', k='pvp player versus attack world 2 safe zone')
+q('combat', 'What do I lose if I die in PvP?',
+  'Everything you carry: your bag, the gear you are wearing and your carried Meme Coins drop in a loot pile where you fell. Things that can never be traded stay with you (capes, skins, pets and the level-80 sets), and your bank is safe. The winner has the pile to themselves for a minute, then anyone in World 2 can take from it for another minute, then it is gone. Bank what you would hate to lose before you leave town.',
+  ['Do I lose my items in PvP?', 'What happens when I die in World 2?', 'Is my bank safe in PvP?'], np='a PvP death', k='pvp death lose items drop loot pile bank keep')
+q('combat', 'Which world should I pick?',
+  'World 1 if you want to quest, skill and fight monsters in peace. World 2 if you want player fights as well: everything else is the same, but outside towns other players can attack you and take what you carry. You can switch worlds from the start screen.',
+  ['What is the difference between World 1 and World 2?', 'How do I change worlds?'], np='the worlds', k='world 1 world 2 pick switch change pvp')
+q('combat', 'How do Ranged and Magic work?',
+  'Equip a bow to fight from range with arrows, or a staff to cast spells with scrolls. Arrows go in your quiver and scrolls in your scroll pouch, not in your bag. Every new character starts with a Paper Bow, a Paper Staff, arrows and scrolls, so you can try all three styles straight away. Ranged and Magic level up as you use them, and better bows, staffs and spells unlock at higher levels.',
+  ['How do I use a bow?', 'How do I cast spells?', 'Where are my arrows?'], np='Ranged and Magic', k='ranged magic bow staff arrows scrolls spells quiver pouch')
+q('combat', 'Where do I get more arrows and spell scrolls?',
+  'From the Party Shop in Gigachad Town, Fern the Fletcher and Mystic Moe, and some monsters drop them. They go straight into your quiver and scroll pouch.',
+  ['I ran out of arrows', 'Where can I buy scrolls?'], np='arrows and scrolls', k='buy arrows scrolls shop fletcher ammo')
+q('combat', 'What is the combat triangle?',
+  'Melee beats Ranged, Ranged beats Magic, and Magic beats Melee. Hitting a monster with the style it is weak to lands more and harder hits. Examine a monster to see how it fights and what it is weak to.',
+  ['Which style is best?', 'What is a monster weak to?'], np='the combat triangle', k='triangle melee ranged magic weak resist')
 q('combat', 'What is the Bot Captain?',
   'The boss of the Feels Bad, Man quest: he and his Spam Bots attack the castle gate and you hold it. Nothing to do with the computer-controlled characters that walk the world.',
   ['Who attacks the castle gate?'], np='the Bot Captain', k='bot captain spam bots gate quest')
