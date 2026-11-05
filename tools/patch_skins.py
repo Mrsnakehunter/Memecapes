@@ -86,7 +86,7 @@ JS = r"""
 // ---- skins: new looks for weapons and capes (tools/patch_skins.py)
 const SKN=""" + json.dumps(cat) + r""",SKG={sword:'sword',isword:'sword',rsword:'sword',axe:'axe',iaxe:'axe',pick:'pick',ipick:'pick',club:'club',bbat:'club',bstaff:'staff',astaff:'staff',iscroll:'staff'},SKB={sword:'w_sword',axe:'w_axe',pick:'w_pick',club:'w_club',staff:'w_bstaff'},SKGN={sword:'Swords',axe:'Axes',pick:'Pickaxes',club:'Clubs and bats',staff:'Staffs and scrolls',cape:'Capes'};
 const skOwn=id=>(st.skins||[]).includes(id),skById=id=>SKN.find(s=>s.id==id);
-function skinW(k){const g=SKG[k],id=g&&st.wear&&st.wear[g];return id&&skOwn(id)?'w_'+id:null}
+function skinW(k){const g=SKG[k]||(/^sw\d/.test(k)?'sword':/^st\d/.test(k)?'staff':null),id=g&&st.wear&&st.wear[g];return id&&skOwn(id)?'w_'+id:null}
 function capeSkin(){const id=st.wear&&st.wear.cape;return id&&skOwn(id)?id:null}
 const SKHOLD=""" + json.dumps(HOLD) + r""";SKN.forEach(s=>{if(s.g!='cape'&&WCFG[SKB[s.g]])WCFG['w_'+s.id]=SKHOLD[s.id]||WCFG[SKB[s.g]]});
 function skinGive(id){if(!skById(id))return false;(st.skins=st.skins||[]);if(!st.skins.includes(id))st.skins.push(id);(st.wear=st.wear||{})[skById(id).g]=id;save();return true}
