@@ -52,9 +52,9 @@ CREST = ('<svg class="hn-crest" viewBox="0 0 150 150" aria-hidden="true"><defs><
          '<stop offset="0" stop-color="#1f3a2c"/><stop offset="1" stop-color="#0b0c0e"/></radialGradient></defs>'
          '<circle cx="75" cy="75" r="68" fill="url(#hng)" stroke="#d9a520" stroke-width="3"/>'
          '<circle cx="75" cy="75" r="60" fill="none" stroke="#d9a520" stroke-width="1" stroke-dasharray="3 6" opacity=".6"/>'
-         '<path d="M38 46 C 41 56, 52 56, 64 56 L 104 56 L 46 104 L 100 104" fill="none" stroke="#58F0A6" stroke-width="12" '
-         'stroke-linecap="round" stroke-linejoin="round"/><circle cx="104" cy="56" r="4" fill="#0b0c0e"/>'
-         '<path d="M100 104 l12 -5 m-12 5 l12 5" stroke="#e53935" stroke-width="3" stroke-linecap="round"/></svg>')
+         '<g transform="translate(25 25)"><path d="M20 22 C 22 30, 30 30, 40 30 L 72 30 L 26 76 L 68 76" fill="none" stroke="#58F0A6" '
+         'stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="76" cy="76" rx="12" ry="8" fill="#58F0A6"/>'
+         '<circle cx="79" cy="74" r="2" fill="#0B0C0E"/></g></svg>')
 
 STEPS = [
     ('hn-fall', 'The fall', 'Everything, gone',
