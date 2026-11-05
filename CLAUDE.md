@@ -98,6 +98,32 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 5 (2:30-5 pm, "keep working on the messy [Meshy] stuff" then "don't ask me, keep working"). LESSON: never stop to ask
+  him to bring a window up; keep going on other work and retry. MESHY: 17 concepts (Image tool, 2 images each, 18 credits)
+  + 17 image-to-3D models DONE in his Meshy (chest, churn, agility log/net/ledge/pipe + redone gap with no plank, and the
+  10 Skin of the Month weapons from his sheet scratch/xl/CAPES_holder_tiers.xlsx '30 months': names/types/looks there).
+  ~2,035 credits left. NOT downloaded: with the pane hidden/minimised the Download popup never opens (JS click, keyboard,
+  hover, mobile emulation all failed; the asset JSON link is empty, model.meshy is proprietary). Next time the pane is
+  shown: Assets -> card -> toolbar M4.933 download -> GLB, then glb2mdl (weapons --orient --tris 12000 -> models/w_sk_*.json;
+  props -> models/b_chest/b_churn/b_agi_log/net/ledge/gap/pipe.json, BLDK picks them up). The "Try Agent" promo popover
+  blocks the image form until "Stay in Image Workspace" is clicked. Game side ready (combat-styles): patch_skins has all
+  10 weapons (hidden until their model exists) + HOLD; patch_props section 3 swaps chest/churn/agility when the models are
+  in; FOUND + FIXED: server SKIN_IDS lacked sk_candle and the new weapons (December's free skin would have been empty);
+  skins now also apply to sw01-80 / st01-80 (skinW prefix match). Site/support: PvP World 2 + worlds + Ranged/Magic +
+  arrows + triangle answers, FAQ "Can other players attack me?". Smoke test (test7s rebuilt from today's test7): ranged,
+  magic, melee all hit and gain XP, no errors; all 11 server test files pass (test_holder is timing-flaky under load).
+  Ship draft: /tmp/claude-0/ship/PROGRESS_draft.md. Terms don't mention PvP item loss yet (termsVersion bump = Albert).
+  LAUNCHPAD (Pit branch own-launchpad, main merged in, Vercel preview ok): devnet CI job (workflow_dispatch input
+  devnet=true; throwaway keys in the Actions cache lp-devnet-keys-v1, never printed) -> devnet faucet gives GitHub runners
+  0 SOL, so it waits for ~6 devnet SOL to deployer ARY8dGB5hRJLqUUa8o4jtdFJZm4N41T2tMiTnGRXetLt (program
+  CFtN9fLuCpvZWpucchh1mcQHvMqBAbt6Pv68bzdYyVaw); then smoke.ts + pitclient.ts run. Adding [programs.devnet] to Anchor.toml
+  broke the local tests (DeclaredProgramIdMismatch): keep Anchor.toml localnet-only. Pit client (dormant): lib/snakecurve.ts
+  (BigInt port of curve.rs, 215 vectors from /tmp/claude-0/sl/vec.rs match), lib/snakelaunch.ts (hand-built Anchor ixs,
+  pool/global decoders, verifySnakeHatched), lib/snakeswap.ts (getQuote asks our curve first for ...pit mints; buildSwapTx
+  snakePool), lib/snakehatch.ts + useHatch branch (ONE tx: create + launch-slot buy + bite burn), /api/hatch accepts our
+  PDA pools (launchpad 'snakepit'). Switches: NEXT_PUBLIC_SNAKE_LAUNCH_PROGRAM + NEXT_PUBLIC_HATCH_ENGINE=snake.
+  Not done for our pools yet: Claim in MyHatches, coin sheet curve progress, graduation trigger (migrate tx builder).
+
 - Nov 5 (4:40 am, "just bought 3k more" = Meshy credits, 3,010): Candle Blade (Skin of the Month 2, sword skin) made.
   Meshy's own Image tool (sidebar Image, Nano Banana Pro, 4 images = 36 credits) made the concept; the image went into
   Model > Image (DataTransfer File into the single file input, wait 12 s, REAL click on Generate; a JS click on a card's
