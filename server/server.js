@@ -35,6 +35,7 @@ const SWEEP = +process.env.SWEEP_MS || 60e3;
 const BURN_PCT = +process.env.BURN_PCT || 1;
 const BURN_AD_DAYS = process.env.BURN_AD_DAYS != null ? +process.env.BURN_AD_DAYS : 0;
 const SKIN_IDS = ['sk_laser', 'sk_upaxe', 'sk_dpick', 'sk_rocket', 'sk_rug', 'sk_moon',
+  'sk_candle', 'sk_banhammer', 'sk_copium', 'sk_chonkaxe', 'sk_oracle', 'sk_frostfang', 'sk_sweeper', 'sk_gascleaver', 'sk_goldrush', 'sk_bubble', 'sk_wrench',
   'cs_green_candles', 'cs_red_candles', 'cs_laser_eyes', 'cs_diamond_hands', 'cs_moon_night', 'cs_coin_gold',
   'cs_pond_lily', 'cs_wow_plaid', 'cs_stonks_arrow', 'cs_bonk_stripes', 'cs_rug_fringe', 'cs_hodl_frost', 'cs_moon_phases', 'cs_chad_marble', 'cs_laser_grid', 'cs_shades_on', 'cs_whale_waves', 'cs_rocket_trail', 'cs_the_burn', 'cs_copium_crystal', 'cs_wen_lambo', 'cs_jungle_leaves', 'cs_up_only_rainbow', 'cs_comfy_knit', 'cs_royal_ermine'];  // same list as tools/patch_skins.py
 // Skin of the Month: a wallet holding at least SOTM_PCT % of all $CAPES for SOTM_DAYS days gets that month's skin free,

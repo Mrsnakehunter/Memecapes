@@ -33,6 +33,17 @@ SKINS = [
     ('sk_rug', 'The Rug Pull', 'club', 'A mallet made of a rolled-up rug. Tassels included.'),
     ('sk_moon', 'Crescent Staff', 'staff', 'A golden crescent moon cradling a Meme Coin.'),
     ('sk_candle', 'Candle Blade', 'sword', 'A glowing green candle for a blade, wick and all. Up only.'),
+    # Skin of the Month weapons (line-up in Albert's sheet; models from Meshy, Nov 5)
+    ('sk_banhammer', 'Ban Hammer', 'club', 'A heavy stone war hammer stamped with a red X. Case closed.'),
+    ('sk_copium', 'Copium Pick', 'pick', 'A glowing purple crystal pick bound in silver. Breathe it in.'),
+    ('sk_chonkaxe', 'Lumber Chonk Axe', 'axe', "A chunky round-headed axe on a log handle. Lumber Chonk's own."),
+    ('sk_oracle', 'Oracle Staff', 'staff', 'A glass orb with a tiny glowing chart line inside. It knows.'),
+    ('sk_frostfang', 'Frost Fang', 'sword', 'An icy crystal blade with a snowflake guard. Cold hands, strong grip.'),
+    ('sk_sweeper', 'Floor Sweeper', 'club', 'A sturdy broom with golden bristles. Sweeps the floor clean.'),
+    ('sk_gascleaver', 'Gas Fee Cleaver', 'axe', 'A cleaver with an orange flame-pattern blade. It always takes a cut.'),
+    ('sk_goldrush', 'Gold Rush Pick', 'pick', 'A solid gold pickaxe set with gems, red leather grip.'),
+    ('sk_bubble', 'Bubble Wand', 'staff', 'A long gold staff with a shimmering soap bubble at the top. Do not pop it.'),
+    ('sk_wrench', 'Wen Wrench', 'club', 'A giant chrome wrench with red racing stripes. Wen? Now.'),
     ('cs_green_candles', 'Green Candles', 'cape', 'Rising green candles on dark velvet.'),
     ('cs_red_candles', 'Red Candles', 'cape', 'Falling red candles, for the bear market.'),
     ('cs_laser_eyes', 'Laser Eyes', 'cape', 'Two red beams crossing your back.'),
@@ -62,7 +73,11 @@ SKINS = [
 ]
 # how a weapon skin sits in the hand when it differs from the weapon it replaces (see WCFG in patch_held.py):
 # [length, grip height as a fraction of the length, carry, tilt, swing]
-HOLD = {'sk_laser': [1.25, .3, 'f', 25, 20], 'sk_candle': [1.1, .17, 'f', 25, 20], 'sk_upaxe': [1.0, .12, 'a', -40, 12], 'sk_rocket': [.95, .22, 'f', 35, 20],
+HOLD = {'sk_laser': [1.25, .3, 'f', 25, 20], 'sk_candle': [1.1, .17, 'f', 25, 20],
+        'sk_banhammer': [1.0, .12, 'f', 35, 20], 'sk_copium': [.95, .12, 'a', -40, 12], 'sk_chonkaxe': [1.0, .12, 'a', -40, 12],
+        'sk_oracle': [1.7, .4, 'v', 22, 8], 'sk_frostfang': [1.1, .17, 'f', 25, 20], 'sk_sweeper': [1.25, .3, 'f', 35, 20],
+        'sk_gascleaver': [1.0, .12, 'a', -40, 12], 'sk_goldrush': [.95, .12, 'a', -40, 12], 'sk_bubble': [1.7, .4, 'v', 22, 8],
+        'sk_wrench': [.95, .15, 'f', 35, 20], 'sk_upaxe': [1.0, .12, 'a', -40, 12], 'sk_rocket': [.95, .22, 'f', 35, 20],
         'sk_moon': [1.7, .4, 'v', 22, 8], 'sk_rug': [.95, .1, 'f', 35, 20], 'sk_dpick': [.95, .12, 'a', -40, 12]}
 have = lambda sid: os.path.exists(f'models/w_{sid}.json') if sid.startswith('sk_') else os.path.exists(f'models/skins/{sid[3:]}_m.jpg')
 cat = [{'id': s, 'n': n, 'g': g, 'd': d, 'ok': 1 if have(s) else 0} for s, n, g, d in SKINS]
