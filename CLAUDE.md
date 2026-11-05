@@ -98,6 +98,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 5 (4:15 am, "ship it"): "home page is empty, only Trending, I went to FOMO". Pit main 782f871 (branch discover):
+  lib/discover.ts + /api/discover?list=new|almost|graduated|gainers from GeckoTerminal's free API (dex ids: pump-fun +
+  meteora-dbc + raydium-launchlab = curves; pumpswap + meteora-damm-v2 + raydium-cpmm = graduated; include=base_token,dex;
+  ~30 calls/min, so new_pools cached 20 s, the rest 60 s via Next fetch revalidate; per-dex pools only sort by
+  h24_volume_usd_desc / h24_tx_count_desc). pump.fun progress estimated from mcap in SOL (30 SOL / 1.073B virtual,
+  793.1M on the curve); filters: mc >= $1k on New, 45-99.5% on Almost (GT keeps old curve pools after graduating),
+  graduated last 24 h with mc >= $10k + liq >= $3k; gainers fall back to DexScreener trending. Hatched coins = src
+  snakepit, first in every list, newest 3 (3 days) pinned on New. TokenRow: source badge, age, 1h buys/sells, progress
+  bar, hourly change. Graduation numbers given (SOL $96): Standard 400 SOL ~ $39k, Quick 200 ~ $19k, Big 1000 ~ $96k.
+  Same night: Apple sign-in needs an Apple Developer account (his Apple ID was locked/deleted and his number is on
+  someone else's old account; he's buying a prepaid SIM); passkeys are OFF in Privy (asked to turn on, no answer yet).
+
 - Nov 4 (9:40 pm): coworker's Apple sign-in on the Pit did nothing: Apple is OFF in Privy (dashboard Authentication >
   Login methods) but Providers.tsx listed "apple". Pit main 186fc0a drops it (live; checked: modal shows Google, email,
   wallet). Turning Apple on is Albert's account setting; put "apple" back only after it is on and tested.
