@@ -98,6 +98,10 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 4 (9:40 pm): coworker's Apple sign-in on the Pit did nothing: Apple is OFF in Privy (dashboard Authentication >
+  Login methods) but Providers.tsx listed "apple". Pit main 186fc0a drops it (live; checked: modal shows Google, email,
+  wallet). Turning Apple on is Albert's account setting; put "apple" back only after it is on and tested.
+
 - Nov 4 (3:20 pm): "build our own Meteora, keep Jupiter" (his picks: graduate into Raydium first, our own pool
   later; upgradable with his key; start now). Pit branch own-launchpad, folder launchpad/ (Anchor 0.31.1 workspace,
   excluded in the Pit's tsconfig): programs/snakepit_launch/src/curve.rs (pure maths, rustc --test here: v_tok0 =
