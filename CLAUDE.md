@@ -98,6 +98,13 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 5 (evening, "put me in the game", "start working on everything now"): The Snake Hunter NPC (Albert's creator
+  character): tools/patch_hunter.py (after patch_props) puts 'hunter' at the top of the Gigachad Town square (fN(CX,CY-3)),
+  DYNPP model player_memecape3 (crowned MemeCape body) until models/hunter.json exists (auto-picked, MDLSC hunter 1),
+  Talk to = 4 story lines + 'Read my story' -> memecapes.com/#hunter. On combat-styles. Waiting on his full-body photo for
+  a Meshy likeness. Founder page = branch hunter-page (worktree /home/claude/mc_story, tools/site/hunter_page.py; CHANNELS
+  empty until he sends the two YouTube links). Test hook tip: window.__OB=()=>ob in scratch test7s finds objects by k.
+
 - Nov 5 (2:30-5 pm, "keep working on the messy [Meshy] stuff" then "don't ask me, keep working"). LESSON: never stop to ask
   him to bring a window up; keep going on other work and retry. MESHY: 17 concepts (Image tool, 2 images each, 18 credits)
   + 17 image-to-3D models DONE in his Meshy (chest, churn, agility log/net/ledge/pipe + redone gap with no plank, and the

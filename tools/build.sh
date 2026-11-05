@@ -54,6 +54,7 @@ python3 tools/patch_bow.py
 python3 tools/patch_rmparade.py
 python3 tools/patch_npcspots.py
 python3 tools/patch_props.py
+python3 tools/patch_hunter.py
 python3 tools/patch_ticker.py
 sed -i "s/__BUILD__/$(date -u +%Y%m%d%H%M%S)/" play.html
 python3 - <<'P'
