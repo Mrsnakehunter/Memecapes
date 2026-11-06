@@ -98,6 +98,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 6 (3:30 am): PIT IS DOWN: pit.memecapes.com answers 402 'Deployment Paused'. Vercel usage page: paused since Nov 5
+  for Fluid Active CPU (Hobby fair-use limit, 4h 59m used; 666K function invocations, 124 GB-hrs memory), pause ends Dec 5.
+  Fix = Albert upgrades to Pro (his purchase) or the Pit moves; the CPU hogs to cut are the API routes (discover/token/rpc
+  proxy). Also: coin tx counts: free public RPCs (publicnode) keep only ~2 days of signatures; Solscan's token page shows
+  'Total N activities' (Activities tab) and 'Total N transfers' but no raw tx total.
+
 - Nov 5 (evening, "put me in the game", "start working on everything now"): The Snake Hunter NPC (Albert's creator
   character): tools/patch_hunter.py (after patch_props) puts 'hunter' at the top of the Gigachad Town square (fN(CX,CY-3)),
   DYNPP model player_memecape3 (crowned MemeCape body) until models/hunter.json exists (auto-picked, MDLSC hunter 1),
