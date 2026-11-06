@@ -104,6 +104,12 @@ numbers in here or anywhere in the repo.
   Talk to = 4 story lines + 'Read my story' -> memecapes.com/#hunter. On combat-styles. Waiting on his full-body photo for
   a Meshy likeness. Founder page = branch hunter-page (worktree /home/claude/mc_story, tools/site/hunter_page.py; CHANNELS
   empty until he sends the two YouTube links). Test hook tip: window.__OB=()=>ob in scratch test7s finds objects by k.
+  Photos (6:50 pm): he sent 2 photos; NEVER show his employer's name (a sticker in the selfie background): use only the
+  face crop /tmp/claude-0/me/face.jpg. Meshy Image tool takes up to 5 references (DataTransfer into the multiple file
+  input; base64 pasted in JS); Multi-view + A-Pose makes a sheet + front/left/back; a model's Image to 3D Multi-view
+  inputs: Main, Left, Back, Right. Character concept task 01a1ae23 (variant B = images 5/6/7), 3D model generating
+  (Ultra 2K, A-pose); crest portraits task 01a1ae28 (4 picks, /tmp/claude-0/me/portrait_N.jpg). To SEE Meshy images:
+  canvas -> dataURL padded past the size limit, decode with /tmp/claude-0/candle/dec.py. His photos stay out of the repo.
 
 - Nov 5 (2:30-5 pm, "keep working on the messy [Meshy] stuff" then "don't ask me, keep working"). LESSON: never stop to ask
   him to bring a window up; keep going on other work and retry. MESHY: 17 concepts (Image tool, 2 images each, 18 credits)
