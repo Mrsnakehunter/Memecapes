@@ -98,6 +98,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 6 (6:40 am): MoonPay "Signature check failed" SOLVED: this MoonPay account requires a signature on EVERY widget
+  link and binds signed links to the user's IP: allowedIpAddress (lib/clientIp.ts, x-real-ip) must be in the signed query
+  (errors seen via POST api.moonpay.com/v3/verify_widget_signature {url}: Missing signature / Invalid signature /
+  5_PARTNERS_IP_MISSING / 5_PARTNERS_IP_MISMATCH). Widget = buy.moonpay.com/v2/sell. GET pit /api/moonpay/check tells if
+  the Vercel key signs right (IP mismatch there = fine, it calls from Vercel); ?open=1 opens the sell screen IP-bound.
+  Albert tested: works. 15 s clip outputs/x_ads/memecapes_cashout_moonpay_15s.mp4 (/tmp/claude-0/mpad make.py: studio
+  build_mp.mjs of the real components with NEXT_PUBLIC_MOONPAY_KEY pk_live_studio, MoonPay's real sell screen from the
+  pane minus the Test Mode pill, MoonPay wordmark = the SVG their widget ships). Not for posting until MoonPay goes live.
 - Nov 6 (5:45 am): MOONPAY CASH OUT built + live (Pit main 31749e2): lib/moonpaySell.ts (sell-sandbox/sell.moonpay.com
   link: baseCurrencyCode sol, refundWalletAddress, redirectURL <origin>/wallet?mpsell=1), POST /api/moonpay/sign (Privy
   auth, wallet must be the user's, HMAC-SHA256 of the query with MOONPAY_SECRET_KEY, base64), CashOutSheet "To your bank"
