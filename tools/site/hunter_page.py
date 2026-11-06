@@ -78,6 +78,8 @@ STEPS = [
      'A free browser MMO where the memes are the monsters: towns, quests, skills to level 100, trading, friends and the MemeCape to earn.'),
     ('', 'The den', 'snakepit',
      'A trading app with a flat, low fee, Hatch, our launchpad, where anyone can launch a coin with a sniper fee and Snake Bite burns, and MemeSnake, the AI that runs the crews.'),
+    ('', 'The stage', 'Stream and Watch',
+     'Our own streaming platform: go live with a stream pass, keep 100% of your tips and subs, and watch the coins and streams in one place.'),
     ('', 'The armoury', 'Gearing up',
      'Nine armour sets with swords to match, capes worn over armour, and a skin every month.'),
 ]
