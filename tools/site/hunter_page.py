@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""'Built by the Snake Hunter': the founder's story page (#hunter) + a short block on the home page.
+"""'Built by the Snake Hunter': the founder's page (#hunter) + a short block on the home page.
 
-Albert (Nov 5): his lore (lost everything to a project that promised a share of what was being built and never
-delivered; built his own instead, in the open) and his two YouTube channels, so people can see how far he has come.
-The project he lost to is NOT named (on purpose). No dates anywhere (house rule for public copy).
-Channels: fill CHANNELS below (name, url, optional uploads playlist id 'UU...' for an embedded player) and rerun;
-with none filled the channel section stays hidden.
-Idempotent: run from the repo root after editing:  python3 tools/site/hunter_page.py
+Albert (Nov 5): his story (lost everything to a project that promised a share of what was being built and never
+delivered; built his own instead, in the open), everything he has finished so far, and his two YouTube channels.
+Rules: the project he lost to is NOT named; no dates; only things that are LIVE (nothing "coming soon" or "next").
+Layout: hero (struck-through broken promise -> "So I built all of it myself", jump buttons), story with his photo,
+"What I built" (MemeCapes with real counts, snakepit, Stream and Watch, then smaller links), YouTube (only when
+CHANNELS is filled), why it's in the open. Every link opens something that works today.
+His photo stays OUT of the public repo until he says "make it live": HUNTER_FACE=/path/face.webp uses it; without it
+the crest is the snakepit logo in a gold ring.
+Idempotent: run from the repo root after editing:  [HUNTER_FACE=...] python3 tools/site/hunter_page.py
 """
-import base64, json, os, re
+import base64, os, re
 
 P = 'index.html'
 h = open(P, encoding='utf-8').read()
@@ -19,108 +22,181 @@ CHANNELS = [
 
 CSS = """
 /* hunter page (tools/site/hunter_page.py) */
-.hn-hero{position:relative;text-align:center;padding:46px 0 10px}
-.hn-hero h1{margin:14px 0 10px}
-.hn-hero .lead{max-width:700px;margin:0 auto}
-.hn-crest{width:140px;height:140px;margin:0 auto 4px;display:block;position:relative}
-.hn-face img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;border:3px solid #d9a520;box-shadow:0 0 0 5px rgba(217,165,32,.18),0 0 30px rgba(88,240,166,.35)}
-.hn-badge{position:absolute;right:-4px;bottom:-2px;width:46px;height:46px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
-.hn-lore{max-width:720px;margin:8px auto 0;font-size:18px;line-height:1.7}
-.hn-lore p{margin:0 0 16px}
-.hn-lore .hn-last{font-family:Cinzel,Georgia,serif;font-size:22px;color:var(--gold);text-align:center;margin-top:26px}
-.hn-tl{max-width:760px;margin:0 auto;position:relative;padding-left:26px}
-.hn-tl:before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--red),var(--gold),#58F0A6)}
-.hn-st{position:relative;margin:0 0 18px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
-.hn-st:before{content:"";position:absolute;left:-24px;top:18px;width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px var(--bg)}
-.hn-st.hn-fall:before{background:var(--red)}
-.hn-st.hn-next:before{background:#58F0A6}
-.hn-st small{display:block;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-size:11px;margin-bottom:4px}
-.hn-st b{font-size:17px}
-.hn-st p{margin:6px 0 0}
-.hn-yt{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;max-width:960px;margin:0 auto}
+.hn{--hn-red:#c62828;--hn-mint:#58f0a6}
+.hn-hero{padding:48px 0 30px;max-width:1000px}
+.hn-who{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.hn-who .hn-crest{width:72px;height:72px}
+.hn-who b{display:block;font-family:Cinzel,Georgia,serif;font-size:20px;color:var(--gold)}
+.hn-who span{color:var(--mute);font-size:15px}
+.hn-say{font-family:Cinzel,Georgia,serif;font-weight:800;line-height:1.1;margin:0;font-size:clamp(32px,5.6vw,68px);letter-spacing:-.005em}
+.hn-broke{display:block;font-size:.62em;line-height:1.3;color:#cdbb98}
+.hn-broke s{text-decoration:none;opacity:.75;background:linear-gradient(var(--hn-red),var(--hn-red)) no-repeat 0 56%/100% .1em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hn-built{display:block;color:var(--gold);margin-top:.12em}
+.hn-sub{max-width:640px;font-size:19px;line-height:1.6;margin:24px 0 0}
+.hn-jump{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.hn-jump button,.hn-jump a{font:inherit;font-weight:800;font-size:15px;padding:11px 18px;border-radius:999px;cursor:pointer;text-decoration:none;border:1px solid var(--gold2);background:rgba(34,24,14,.7);color:var(--gold)}
+.hn-jump .hn-go{background:linear-gradient(180deg,#ffd877,#e8b23c);color:#2b1d05;border-color:transparent}
+.hn-jump button:hover,.hn-jump a:hover,.hn-acts a:hover{filter:brightness(1.12)}
+.hn a:focus-visible,.hn button:focus-visible{outline:3px solid var(--hn-mint);outline-offset:3px}
+.hn-story{display:grid;grid-template-columns:240px 1fr;gap:44px;align-items:start;max-width:1000px;padding:44px 0}
+.hn-photo{position:sticky;top:100px}
+.hn-photo .hn-crest{width:220px;height:220px}
+.hn-story h2,.hn-wall h2,.hn-why h2{margin:0 0 14px}
+.hn-story p{font-size:18px;line-height:1.75;margin:0 0 18px;max-width:62ch}
+.hn-turn{font-family:Cinzel,Georgia,serif;font-size:22px;color:var(--gold);line-height:1.4;margin-top:26px}
+.hn-wall{padding:44px 0}
+.hn-note{color:var(--mute);margin:-6px 0 26px;font-size:17px}
+.hn-game{display:grid;grid-template-columns:minmax(0,290px) 1fr;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--panel)}
+.hn-pic{background:#0d0905;min-height:320px;position:relative}
+.hn-pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block}
+.hn-body{padding:28px 30px}
+.hn-flat{padding:0}
+.hn h3{font-family:Cinzel,Georgia,serif;font-size:28px;margin:0 0 6px;color:var(--gold)}
+.hn-body p,.hn-stage p,.hn-pit p{margin:0 0 18px;font-size:17px;line-height:1.6;max-width:60ch}
+.hn-count{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 18px;margin:0 0 20px;padding:0;list-style:none}
+.hn-count li{border-left:3px solid var(--gold2);padding:0 0 0 12px;line-height:1.3}
+.hn-count b{display:block;font-family:Cinzel,Georgia,serif;font-size:30px;color:var(--txt)}
+.hn-count span{color:var(--mute);font-size:15px}
+.hn-also{color:var(--mute)}
+.hn-acts{display:flex;flex-wrap:wrap;gap:10px}
+.hn-acts a{font-weight:800;font-size:15px;padding:10px 16px;border-radius:10px;text-decoration:none;border:1px solid var(--gold2);color:var(--gold);background:rgba(20,14,8,.5)}
+.hn-acts a.hn-main{background:linear-gradient(180deg,#ffd877,#e8b23c);color:#2b1d05;border-color:transparent}
+.hn-pair{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;margin-top:18px}
+.hn-pit{border:1px solid rgba(88,240,166,.35);border-radius:22px;background:linear-gradient(160deg,#0f1a14,#0b0f0c 70%);padding:28px 30px}
+.hn-pit h3{color:var(--hn-mint)}
+.hn-mark{width:44px;height:44px;display:block;margin-bottom:8px}
+.hn-feats{list-style:none;margin:0 0 20px;padding:0}
+.hn-feats li{padding:10px 0;border-top:1px solid rgba(88,240,166,.14);font-size:16px;line-height:1.5}
+.hn-feats li:first-child{border-top:0;padding-top:0}
+.hn-feats b{color:#e9fff4}
+.hn-pit .hn-acts a{border-color:rgba(88,240,166,.5);color:var(--hn-mint);background:transparent}
+.hn-pit .hn-acts a.hn-main{background:var(--hn-mint);color:#062014}
+.hn-stage{border:1px solid var(--line);border-radius:22px;background:var(--panel);padding:28px 30px;display:flex;flex-direction:column}
+.hn-live{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:14px;color:#ffd7d7;margin-bottom:12px}
+.hn-live i{width:10px;height:10px;border-radius:50%;background:#ff4545;box-shadow:0 0 0 4px rgba(255,69,69,.2)}
+.hn-stage .hn-acts{margin-top:auto}
+.hn-gold li{border-top-color:var(--line)}
+.hn-gold b{color:var(--txt)}
+.hn-more{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
+.hn-more a{display:block;text-decoration:none;color:var(--txt);border:1px solid var(--line);border-radius:14px;padding:16px;background:rgba(34,24,14,.6)}
+.hn-more a:hover{border-color:var(--gold2)}
+.hn-more b{display:block;font-size:17px;color:var(--gold);margin-bottom:4px}
+.hn-more span{display:block;color:var(--mute);font-size:14.5px;line-height:1.45}
+.hn-skins{display:flex!important;gap:6px;margin-top:10px}
+.hn-skins img{width:40px;height:40px;border-radius:8px;display:block;background:#1a1209}
+.hn-yt{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
 .hn-ch{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel)}
-.hn-ch .hn-vid{position:relative;padding-top:56.25%;background:#000}
-.hn-ch iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.hn-ch .hn-body{padding:14px 16px}
-.hn-ch h3{margin:0 0 4px}
-.hn-links{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:10px}
-.hn-home{display:grid;grid-template-columns:160px 1fr;gap:22px;align-items:center;max-width:860px;margin:0 auto;padding:22px;border:1px solid var(--line);border-radius:18px;background:radial-gradient(120% 90% at 0% 0%,rgba(88,240,166,.10),transparent 60%),var(--panel)}
-.hn-home .hn-crest{width:150px;height:150px;margin:0}
+.hn-vid{position:relative;padding-top:56.25%;background:#000}
+.hn-vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.hn-cb{padding:14px 16px}
+.hn-why{max-width:760px;padding:48px 0 64px}
+.hn-why p{font-size:18px;line-height:1.7;margin:0 0 24px}
+.hn-crest{width:140px;height:140px;margin:0;display:block;position:relative;flex:none}
+.hn-face img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;border:3px solid #d9a520;box-shadow:0 0 0 5px rgba(217,165,32,.16),0 0 28px rgba(88,240,166,.25)}
+.hn-badge{position:absolute;right:-3px;bottom:-2px;width:34%;height:34%;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
+.hn-home{display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:center;max-width:860px;margin:0 auto;padding:22px;border:1px solid var(--line);border-radius:18px;background:var(--panel)}
 .hn-home h2{margin:0 0 8px}
-@media (max-width:640px){.hn-home{grid-template-columns:1fr;text-align:center}.hn-home .hn-crest{margin:0 auto}.hn-lore{font-size:16px}}
+@media (prefers-reduced-motion:no-preference){.hn-broke s{animation:hnCut .8s cubic-bezier(.6,0,.2,1) .6s both}}
+@keyframes hnCut{from{background-size:0% .1em}to{background-size:100% .1em}}
+@media (max-width:900px){.hn-pair{grid-template-columns:1fr}.hn-more{grid-template-columns:repeat(2,minmax(0,1fr))}.hn-count{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:720px){.hn-story{grid-template-columns:1fr;gap:0}.hn-photo{display:none}
+.hn-game{grid-template-columns:1fr}.hn-pic{min-height:0;height:300px}.hn-body,.hn-pit,.hn-stage{padding:22px 18px}.hn-flat{padding:0}
+.hn-sub,.hn-story p{font-size:17px}.hn-home{grid-template-columns:1fr;text-align:center}.hn-home .hn-crest{margin:0 auto}}
+@media (max-width:420px){.hn-more{grid-template-columns:1fr}}
 """
 
-# Albert's photo stays OUT of this public repo until he says "make it live": pass HUNTER_FACE=/path/face.webp to use it;
-# without it the crest is the snakepit logo in a gold ring.
 FACE = os.environ.get('HUNTER_FACE', '')
-LOGO = ('<svg class="hn-badge" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#0B0C0E" stroke="#d9a520" stroke-width="3"/>'
-        '<g transform="translate(5 3) scale(.9)"><path d="M20 22 C 22 30, 30 30, 40 30 L 72 30 L 26 76 L 68 76" fill="none" stroke="#58F0A6" '
-        'stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="76" cy="76" rx="12" ry="8" fill="#58F0A6"/>'
-        '<circle cx="79" cy="74" r="2" fill="#0B0C0E"/></g></svg>')
+LOGO_G = ('<path d="M20 22 C 22 30, 30 30, 40 30 L 72 30 L 26 76 L 68 76" fill="none" stroke="#58F0A6" stroke-width="11" '
+          'stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="76" cy="76" rx="12" ry="8" fill="#58F0A6"/>'
+          '<circle cx="79" cy="74" r="2" fill="#0B0C0E"/>')
+LOGO = ('<svg class="hn-badge" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#0B0C0E" '
+        'stroke="#d9a520" stroke-width="3"/><g transform="translate(5 3) scale(.9)">' + LOGO_G + '</g></svg>')
+MARK = '<svg class="hn-mark" viewBox="0 0 100 100" aria-hidden="true">' + LOGO_G + '</svg>'
 if FACE and os.path.exists(FACE):
     CREST = ('<div class="hn-crest hn-face"><img src="data:image/webp;base64,' + base64.b64encode(open(FACE, 'rb').read()).decode()
-             + '" alt="The Snake Hunter" width="140" height="140">' + LOGO + '</div>')
+             + '" alt="The Snake Hunter">' + LOGO + '</div>')
 else:
-    CREST = ('<svg class="hn-crest" viewBox="0 0 150 150" aria-hidden="true"><defs><radialGradient id="hng" cx=".5" cy=".4" r=".7">'
-             '<stop offset="0" stop-color="#1f3a2c"/><stop offset="1" stop-color="#0b0c0e"/></radialGradient></defs>'
-             '<circle cx="75" cy="75" r="68" fill="url(#hng)" stroke="#d9a520" stroke-width="3"/>'
-             '<circle cx="75" cy="75" r="60" fill="none" stroke="#d9a520" stroke-width="1" stroke-dasharray="3 6" opacity=".6"/>'
-             '<g transform="translate(25 25)"><path d="M20 22 C 22 30, 30 30, 40 30 L 72 30 L 26 76 L 68 76" fill="none" stroke="#58F0A6" '
-             'stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="76" cy="76" rx="12" ry="8" fill="#58F0A6"/>'
-             '<circle cx="79" cy="74" r="2" fill="#0B0C0E"/></g></svg>')
+    CREST = ('<svg class="hn-crest" viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="68" fill="#13201a" '
+             'stroke="#d9a520" stroke-width="3"/><g transform="translate(25 25)">' + LOGO_G + '</g></svg>')
 
-STEPS = [
-    ('hn-fall', 'The fall', 'Everything, gone',
-     'I put everything I had into a project that promised me a piece of what we were building together. It never delivered.'),
-    ('', 'The decision', 'Build it myself',
-     'No more waiting on promises. If nobody would build it, I would, in the open, where anyone can check every step.'),
-    ('', 'The world', 'MemeCapes',
-     'A free browser MMO where the memes are the monsters: towns, quests, skills to level 100, trading, friends and the MemeCape to earn.'),
-    ('', 'The den', 'snakepit',
-     'A trading app with a flat, low fee, Hatch, our launchpad, where anyone can launch a coin with a sniper fee and Snake Bite burns, and MemeSnake, the AI that runs the crews.'),
-    ('', 'The stage', 'Stream and Watch',
-     'Our own streaming platform: go live with a stream pass, keep 100% of your tips and subs, and watch the coins and streams in one place.'),
-    ('', 'The armoury', 'Gearing up',
-     'Nine armour sets with swords to match, capes worn over armour, and a skin every month.'),
-]
+GO = "document.getElementById('{}').scrollIntoView({{behavior:'smooth',block:'start'}})"
+SKINS = ['cs_laser_eyes', 'cs_wen_lambo', 'cs_diamond_hands', 'cs_moon_night', 'sk_rocket']
+PIT = 'https://pit.memecapes.com'
 
 
 def page():
-    st = ''.join(f'<div class="hn-st {c}"><small>{a}</small><b>{b}</b><p class="mute">{t}</p></div>' for c, a, b, t in STEPS)
-    yt = ''
+    yt = ytbtn = ''
     if CHANNELS:
         cards = ''
         for ch in CHANNELS:
-            vid = (f'<div class="hn-vid"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/videoseries?list={ch["uploads"]}" '
-                   f'title="{ch["name"]}" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>') if ch.get('uploads') else ''
-            cards += (f'<div class="hn-ch">{vid}<div class="hn-body"><h3>{ch["name"]}</h3><p class="mute">{ch.get("about", "")}</p>'
-                      f'<a class="btn ghost" href="{ch["url"]}" target="_blank" rel="noopener">Watch on YouTube</a></div></div>')
-        yt = ('<section><div class="sec-title"><h2>Watch the journey</h2></div><p class="lead" style="text-align:center">'
-              'Two channels, from the first steps to now. See for yourself how far it has come.</p>'
-              f'<div class="hn-yt">{cards}</div></section>')
-    return f'''<main class="pg" id="pg-hunter" hidden><a class="pgback" href="#home">&larr; Home</a>
-<section class="hn-hero">{CREST}<span class="pill gold">The founder</span><h1>Built by the Snake Hunter</h1>
-<p class="lead">MemeCapes and snakepit are made by one person who learned the hard way what a broken promise costs.</p></section>
-<section><div class="hn-lore">
+            vid = ('<div class="hn-vid"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/videoseries?list='
+                   + ch['uploads'] + '" title="' + ch['name'] + '" allow="encrypted-media; picture-in-picture" allowfullscreen>'
+                   '</iframe></div>') if ch.get('uploads') else ''
+            cards += ('<div class="hn-ch">' + vid + '<div class="hn-cb"><h3>' + ch['name'] + '</h3><p class="mute">'
+                      + ch.get('about', '') + '</p><div class="hn-acts"><a href="' + ch['url']
+                      + '" target="_blank" rel="noopener">Watch on YouTube</a></div></div></div>')
+        yt = ('<section class="hn-wall" id="hn-yt"><h2>Watch the journey</h2><p class="hn-note">Every step on camera, '
+              'from the first build to today.</p><div class="hn-yt">' + cards + '</div></section>')
+        ytbtn = '<button type="button" onclick="' + GO.format('hn-yt') + '">Watch the journey</button>'
+    skins = ''.join('<img src="models/skins/thumbs/' + k + '.jpg" alt="" width="40" height="40">' for k in SKINS)
+    out = """<main class="pg hn" id="pg-hunter" hidden><a class="pgback" href="#home">&larr; Home</a>
+<section class="hn-hero">
+<div class="hn-who">CREST<div><b>The Snake Hunter</b><span>Founder of MemeCapes and snakepit</span></div></div>
+<h1 class="hn-say"><span class="hn-broke"><s>They promised me a piece of what we were building.</s></span><span class="hn-built">So I built all of it myself.</span></h1>
+<p class="hn-sub">I lost everything I had ever worked for to a project that never delivered. This is what I made after: a game, a trading app, a launchpad and a streaming platform. All of it is live, and all of it is out in the open.</p>
+<div class="hn-jump"><button type="button" class="hn-go" onclick="GO_BUILT">See what I built</button><button type="button" onclick="GO_STORY">Read my story</button>YTBTN<a href="play.html">Play free</a></div>
+</section>
+<section class="hn-story" id="hn-story"><div class="hn-photo">CREST</div><div>
+<h2>How it started</h2>
 <p>I put everything I had into a project that promised me a piece of what we were building together. I believed in it. I gave it my time and my money, and I watched it fall apart. No product. No payout. Everything I had ever worked for, gone.</p>
-<p>Most people walk away after that. I didn't. If nobody was going to build what they promised, I would build it myself, and do it in the open: every official wallet public, every burn on-chain, nothing promised that isn't already live.</p>
-<p>That is how MemeCapes and snakepit were born. A game and a trading den, built by someone who has been on the losing side and refuses to put anyone else there.</p>
-<p class="hn-last">The snake ate my bag once. Now I hunt it.</p>
+<p>Most people walk away after that. I didn't. If nobody was going to build what they promised, I would build it myself, and do it where anyone can check: every official wallet public, every burn on-chain, nothing promised that isn't already working.</p>
+<p>So I started building, one piece at a time, and I haven't stopped.</p>
+<p class="hn-turn">The snake ate my bag once. Now I hunt it.</p>
 </div></section>
-<section><div class="sec-title"><h2>How far it has come</h2></div><div class="hn-tl">{st}</div></section>
-{yt}
-<section><div class="hn-links"><a class="btn gold glow" href="play.html">Play MemeCapes free</a><a class="btn ghost" href="https://pit.memecapes.com/" data-pit="/">Open snakepit</a><a class="btn ghost" href="https://t.me/memecapes" target="_blank" rel="noopener">Telegram</a><a class="btn ghost" href="https://x.com/memecapes" target="_blank" rel="noopener">X</a></div></section>
-</main>'''
+<section class="hn-wall" id="hn-built"><h2>What I built</h2><p class="hn-note">Every link here opens something that works today.</p>
+<article class="hn-game"><div class="hn-pic"><img src="media/loading_cape.webp" alt="A MemeCapes hero wearing the MemeCape" loading="lazy" width="510" height="950"></div>
+<div class="hn-body"><h3>MemeCapes</h3><p>A free 3D MMO in your browser where the memes are the monsters. No download: play on your phone or computer, alone or with friends.</p>
+<ul class="hn-count"><li><b>13</b><span>towns to explore</span></li><li><b>43</b><span>monsters and characters</span></li><li><b>15</b><span>skills to level 100</span></li>
+<li><b>10</b><span>quests</span></li><li><b>9</b><span>armour sets and 9 swords</span></li><li><b>31</b><span>cape and weapon skins</span></li></ul>
+<p class="hn-also">Plus trading between players, friends and private messages, and the MemeCape, the prize at the top of every skill.</p>
+<div class="hn-acts"><a class="hn-main" href="play.html">Play free</a><a href="#bestiary">Meet the monsters</a><a href="#towns">See the towns</a></div></div></article>
+<div class="hn-pair">
+<article class="hn-pit">MARK<h3>snakepit</h3><p>A Solana trading app built for memecoins.</p>
+<ul class="hn-feats"><li><b>Trade any coin</b> for a flat 0.4% fee, with no tiers.</li><li><b>Hatch</b>, our launchpad: launch your own coin with a sniper fee and a Snake Bite burn.</li>
+<li><b>Acid Pit</b>: buy a coin and burn it in the same tap.</li><li><b>Weekly Agent Battle</b> and <b>Beat the Boss</b>: pick an AI trader and climb the board.</li>
+<li><b>Your wallet</b>: make one with your email, then send, receive, or buy SOL with a card.</li></ul>
+<div class="hn-acts"><a class="hn-main" href="PIT/" data-pit="/">Open snakepit</a><a href="PIT/hatch" data-pit="/hatch">Launch a coin</a></div></article>
+<article class="hn-stage"><span class="hn-live"><i></i>Live streaming</span><h3>Stream and Watch</h3>
+<p>Our own streaming platform, built into the launch site.</p>
+<ul class="hn-feats hn-gold"><li><b>Go live</b> with a stream pass, right from your browser.</li><li><b>Keep 100%</b> of your tips and subs.</li><li><b>Chat sits beside the video</b>, and the newest coins and live trades are one tap away.</li></ul>
+<div class="hn-acts"><a class="hn-main" href="launch.html#/stream">Start streaming</a><a href="launch.html#/watch">Watch now</a></div></article>
+</div>
+<div class="hn-more">
+<a href="memesnake/"><b>MemeSnake</b><span>The AI agent that runs the crews. Watch it work live.</span></a>
+<a href="#security"><b>Security</b><span>Guards on the game around the clock and a public check of every official wallet.</span></a>
+<a href="#support"><b>Support</b><span>266 answers you can search, however you ask.</span></a>
+<a href="#capes"><b>Skin of the Month</b><span>A new cape or weapon skin every month.</span><span class="hn-skins">SKINS</span></a>
+</div></section>
+YT
+<section class="hn-why"><h2>Why it's all in the open</h2>
+<p>I know what it costs when someone promises and doesn't deliver. So I only show what already works, every official wallet is listed in public, and every burn can be checked on-chain. If it's on this page, you can use it right now.</p>
+<div class="hn-acts"><a class="hn-main" href="play.html">Play MemeCapes free</a><a href="PIT/" data-pit="/">Open snakepit</a><a href="https://t.me/memecapes" target="_blank" rel="noopener">Join the Telegram</a><a href="https://x.com/memecapes" target="_blank" rel="noopener">Follow on X</a></div>
+</section>
+</main>"""
+    for k, v in [('GO_BUILT', GO.format('hn-built')), ('GO_STORY', GO.format('hn-story')), ('YTBTN', ytbtn), ('YT', yt),
+                 ('MARK', MARK), ('SKINS', skins), ('PIT', PIT), ('CREST', CREST)]:
+        out = out.replace(k, v)
+    return out
 
 
-HOME = (f'<section id="hn-home"><div class="hn-home rev">{CREST}<div><span class="pill gold">The founder</span>'
+HOME = ('<section id="hn-home"><div class="hn-home rev">' + CREST + '<div>'
         '<h2>Built by the Snake Hunter</h2><p class="mute">He lost everything to a project that never delivered. '
-        'So he built his own, in the open, where anyone can check every step.</p>'
+        'So he built his own: a game, a trading app, a launchpad and a streaming platform, all live.</p>'
         '<a class="btn ghost" href="#hunter">Read his story</a></div></div></section>\n')
 
 # strip an earlier run, then add everything again
 h = re.sub(r'\n/\* hunter page \(tools/site/hunter_page.py\) \*/.*?(?=\n/\*|\n</style>)', '', h, count=1, flags=re.S)
-h = re.sub(r'<main class="pg" id="pg-hunter" hidden>.*?</main>', '', h, count=1, flags=re.S)
+h = re.sub(r'<main class="pg[^"]*" id="pg-hunter" hidden>.*?</main>', '', h, count=1, flags=re.S)
 h = re.sub(r'<section id="hn-home">.*?</section>\n', '', h, count=1, flags=re.S)
 h = h.replace('<a href="#hunter">Snake Hunter</a>', '')
 
@@ -129,7 +205,9 @@ i = h.find('</style>')
 h = h[:i] + CSS + h[i:]
 A = '<main class="pg" id="pg-security" hidden>'
 assert h.count(A) == 1
-h = h.replace(A, page() + '\n' + A)
+pg = page()
+assert not re.search(r'\b(GO_|YTBTN|SKINS|CREST)\b', pg)
+h = h.replace(A, pg + '\n' + A)
 B = '<section><div class="final rev"><h2>Bonk is waiting in the forest.</h2>'
 assert h.count(B) == 1
 h = h.replace(B, HOME + B)
@@ -139,6 +217,8 @@ h = h.replace(N, '<a href="#hunter">Snake Hunter</a>' + N)
 T = "security:'Security',support:'Support'}"
 assert h.count(T) == 1 or "hunter:'Snake Hunter'" in h
 h = h.replace(T, "security:'Security',support:'Support',hunter:'Snake Hunter'}")
-assert not re.search(r'\b20[23]\d\b', re.sub(r'data:[^"\')]+', '', page() + HOME)), 'no dates on this page'
+plain = re.sub(r'data:[^"\')]+', '', pg + HOME)
+assert not re.search(r'\b20[23]\d\b', plain), 'no dates on this page'
+assert not re.search(r'(?i)coming soon|in progress|still building|planned', plain), 'only live things on this page'
 open(P, 'w', encoding='utf-8').write(h)
-print('hunter page written;', len(CHANNELS), 'channels')
+print('hunter page written;', len(CHANNELS), 'channels; photo' if FACE else '; logo crest')
