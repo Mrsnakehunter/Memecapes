@@ -174,7 +174,7 @@ def page():
 <div class="hn-more">
 <a href="memesnake/"><b>MemeSnake</b><span>The AI agent that runs the crews. Watch it work live.</span></a>
 <a href="#security"><b>Security</b><span>Guards on the game around the clock and a public check of every official wallet.</span></a>
-<a href="#support"><b>Support</b><span>266 answers you can search, however you ask.</span></a>
+<a href="#support"><b>Support</b><span>Ask anything about the game, snakepit or your account and get an answer right away.</span></a>
 <a href="#capes"><b>Skin of the Month</b><span>A new cape or weapon skin every month.</span><span class="hn-skins">SKINS</span></a>
 </div></section>
 YT
