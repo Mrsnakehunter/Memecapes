@@ -156,7 +156,7 @@ def page():
 <section class="hn-wall" id="hn-built"><h2>What I built</h2><p class="hn-note">Every link here opens something that works today.</p>
 <article class="hn-game"><div class="hn-pic"><img src="media/loading_cape.webp" alt="A MemeCapes hero wearing the MemeCape" loading="lazy" width="510" height="950"></div>
 <div class="hn-body"><h3>MemeCapes</h3><p>A free 3D MMO in your browser where the memes are the monsters. No download: play on your phone or computer, alone or with friends.</p>
-<ul class="hn-count"><li><b>13</b><span>towns to explore</span></li><li><b>43</b><span>monsters and characters</span></li><li><b>15</b><span>skills to level 100</span></li>
+<ul class="hn-count"><li><b>8</b><span>towns and Castle Gigachad</span></li><li><b>30+</b><span>meme monsters</span></li><li><b>15</b><span>skills to level 100</span></li>
 <li><b>10</b><span>quests</span></li><li><b>9</b><span>armour sets and 9 swords</span></li><li><b>31</b><span>cape and weapon skins</span></li></ul>
 <p class="hn-also">Plus trading between players, friends and private messages, and the MemeCape, the prize at the top of every skill.</p>
 <div class="hn-acts"><a class="hn-main" href="play.html">Play free</a><a href="#bestiary">Meet the monsters</a><a href="#towns">See the towns</a></div></div></article>
