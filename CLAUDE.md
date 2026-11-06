@@ -98,6 +98,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 6 (5:45 am): MOONPAY CASH OUT built + live (Pit main 31749e2): lib/moonpaySell.ts (sell-sandbox/sell.moonpay.com
+  link: baseCurrencyCode sol, refundWalletAddress, redirectURL <origin>/wallet?mpsell=1), POST /api/moonpay/sign (Privy
+  auth, wallet must be the user's, HMAC-SHA256 of the query with MOONPAY_SECRET_KEY, base64), CashOutSheet "To your bank"
+  card, wallet page reads MoonPay's return (depositWalletAddress + baseCurrencyAmount) and opens Send prefilled
+  (SendSheet initialAmt + note). Account is in SANDBOX: NEXT_PUBLIC_MOONPAY_KEY = pk_test_ (Vercel, Prod+Preview), button
+  hidden for normal users until the key is pk_live_ (?mptest=1 on /wallet turns it on for one device). MoonPay dashboard:
+  pit.memecapes.com in Developers > Domains (Allowed). Go live = Albert's "Apply to go live" business application, then
+  swap both keys (pk_live_ in Vercel config, sk_live_ secret) + set fees (Go-live status > Fees).
 - Nov 6 (5:30 am): Albert DROPPED Apple sign-in ("stop with the apple, we moved to MoonPay"): never bring up Apple ID /
   Apple Developer again unless he does. MoonPay partner sign-up (dashboard.moonpay.com, site allowed in the pane) is the
   path for the "Cash out to bank" button: he sends the pk_live_ key, the secret key goes only in Vercel.
