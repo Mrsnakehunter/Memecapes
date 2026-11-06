@@ -8,7 +8,7 @@ Channels: fill CHANNELS below (name, url, optional uploads playlist id 'UU...' f
 with none filled the channel section stays hidden.
 Idempotent: run from the repo root after editing:  python3 tools/site/hunter_page.py
 """
-import json, re
+import base64, json, os, re
 
 P = 'index.html'
 h = open(P, encoding='utf-8').read()
@@ -22,7 +22,9 @@ CSS = """
 .hn-hero{position:relative;text-align:center;padding:46px 0 10px}
 .hn-hero h1{margin:14px 0 10px}
 .hn-hero .lead{max-width:700px;margin:0 auto}
-.hn-crest{width:140px;height:140px;margin:0 auto 4px;display:block;filter:drop-shadow(0 0 26px rgba(88,240,166,.35))}
+.hn-crest{width:140px;height:140px;margin:0 auto 4px;display:block;position:relative}
+.hn-face img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;border:3px solid #d9a520;box-shadow:0 0 0 5px rgba(217,165,32,.18),0 0 30px rgba(88,240,166,.35)}
+.hn-badge{position:absolute;right:-4px;bottom:-2px;width:46px;height:46px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
 .hn-lore{max-width:720px;margin:8px auto 0;font-size:18px;line-height:1.7}
 .hn-lore p{margin:0 0 16px}
 .hn-lore .hn-last{font-family:Cinzel,Georgia,serif;font-size:22px;color:var(--gold);text-align:center;margin-top:26px}
@@ -48,13 +50,24 @@ CSS = """
 @media (max-width:640px){.hn-home{grid-template-columns:1fr;text-align:center}.hn-home .hn-crest{margin:0 auto}.hn-lore{font-size:16px}}
 """
 
-CREST = ('<svg class="hn-crest" viewBox="0 0 150 150" aria-hidden="true"><defs><radialGradient id="hng" cx=".5" cy=".4" r=".7">'
-         '<stop offset="0" stop-color="#1f3a2c"/><stop offset="1" stop-color="#0b0c0e"/></radialGradient></defs>'
-         '<circle cx="75" cy="75" r="68" fill="url(#hng)" stroke="#d9a520" stroke-width="3"/>'
-         '<circle cx="75" cy="75" r="60" fill="none" stroke="#d9a520" stroke-width="1" stroke-dasharray="3 6" opacity=".6"/>'
-         '<g transform="translate(25 25)"><path d="M20 22 C 22 30, 30 30, 40 30 L 72 30 L 26 76 L 68 76" fill="none" stroke="#58F0A6" '
-         'stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="76" cy="76" rx="12" ry="8" fill="#58F0A6"/>'
-         '<circle cx="79" cy="74" r="2" fill="#0B0C0E"/></g></svg>')
+# Albert's photo stays OUT of this public repo until he says "make it live": pass HUNTER_FACE=/path/face.webp to use it;
+# without it the crest is the snakepit logo in a gold ring.
+FACE = os.environ.get('HUNTER_FACE', '')
+LOGO = ('<svg class="hn-badge" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#0B0C0E" stroke="#d9a520" stroke-width="3"/>'
+        '<g transform="translate(5 3) scale(.9)"><path d="M20 22 C 22 30, 30 30, 40 30 L 72 30 L 26 76 L 68 76" fill="none" stroke="#58F0A6" '
+        'stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="76" cy="76" rx="12" ry="8" fill="#58F0A6"/>'
+        '<circle cx="79" cy="74" r="2" fill="#0B0C0E"/></g></svg>')
+if FACE and os.path.exists(FACE):
+    CREST = ('<div class="hn-crest hn-face"><img src="data:image/webp;base64,' + base64.b64encode(open(FACE, 'rb').read()).decode()
+             + '" alt="The Snake Hunter" width="140" height="140">' + LOGO + '</div>')
+else:
+    CREST = ('<svg class="hn-crest" viewBox="0 0 150 150" aria-hidden="true"><defs><radialGradient id="hng" cx=".5" cy=".4" r=".7">'
+             '<stop offset="0" stop-color="#1f3a2c"/><stop offset="1" stop-color="#0b0c0e"/></radialGradient></defs>'
+             '<circle cx="75" cy="75" r="68" fill="url(#hng)" stroke="#d9a520" stroke-width="3"/>'
+             '<circle cx="75" cy="75" r="60" fill="none" stroke="#d9a520" stroke-width="1" stroke-dasharray="3 6" opacity=".6"/>'
+             '<g transform="translate(25 25)"><path d="M20 22 C 22 30, 30 30, 40 30 L 72 30 L 26 76 L 68 76" fill="none" stroke="#58F0A6" '
+             'stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="76" cy="76" rx="12" ry="8" fill="#58F0A6"/>'
+             '<circle cx="79" cy="74" r="2" fill="#0B0C0E"/></g></svg>')
 
 STEPS = [
     ('hn-fall', 'The fall', 'Everything, gone',
@@ -64,11 +77,9 @@ STEPS = [
     ('', 'The world', 'MemeCapes',
      'A free browser MMO where the memes are the monsters: towns, quests, skills to level 100, trading, friends and the MemeCape to earn.'),
     ('', 'The den', 'snakepit',
-     'A trading app with a flat, low fee, coin launches with a Sniper Shield and Snake Bite burns, and MemeSnake, the AI that runs the crews.'),
+     'A trading app with a flat, low fee, Hatch, our launchpad, where anyone can launch a coin with a sniper fee and Snake Bite burns, and MemeSnake, the AI that runs the crews.'),
     ('', 'The armoury', 'Gearing up',
      'Nine armour sets with swords to match, capes worn over armour, and a skin every month.'),
-    ('hn-next', 'Next', 'Still building',
-     'Ranged and Magic, a PvP world and our own launchpad. Every part goes live only when it really works.'),
 ]
 
 
