@@ -104,7 +104,7 @@ numbers in here or anywhere in the repo.
   proxy). Also: coin tx counts: free public RPCs (publicnode) keep only ~2 days of signatures; Solscan's token page shows
   'Total N activities' (Activities tab) and 'Total N transfers' but no raw tx total.
   4:05 am: Albert UPGRADED Vercel to Pro ($20/mo, 1 member, 1M CDN requests incl.; >1M moves to the $20 Flat Rate CDN
-  tier next cycle). Pit back up (home 200, /api/rpc + /api/discover answer). Spend alert not set yet (his OK needed).
+  tier next cycle). Pit back up (home 200, /api/rpc + /api/discover answer). Spend alert SET (his yes): Settings > Billing > Spend Management team budget $200 -> $20 on-demand (alerts at 50/75/100% = bill ~$30/$35/$40), Pause production deployments OFF (site stays up).
 
 - Nov 5 (evening, "put me in the game", "start working on everything now"): The Snake Hunter NPC (Albert's creator
   character): tools/patch_hunter.py (after patch_props) puts 'hunter' at the top of the Gigachad Town square (fN(CX,CY-3)),
