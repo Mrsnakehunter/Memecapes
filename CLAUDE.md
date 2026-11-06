@@ -98,6 +98,10 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 6 (5:30 am): Albert DROPPED Apple sign-in ("stop with the apple, we moved to MoonPay"): never bring up Apple ID /
+  Apple Developer again unless he does. MoonPay partner sign-up (dashboard.moonpay.com, site allowed in the pane) is the
+  path for the "Cash out to bank" button: he sends the pk_live_ key, the secret key goes only in Vercel.
+
 - Nov 6: "people joining the telegram aren't proving they're real". MrSnake ALREADY has a join gate (mrsnake_guard.py:
   mute on join, tap the snake among 4 emoji within VERIFY_TIMEOUT_SEC 180 s, 2 wrong taps or timeout = kicked, impostor
   names banned). It never ran because Telegram only sends join updates to a bot that is an ADMIN, and MrSnake was never
