@@ -98,6 +98,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 6: "people joining the telegram aren't proving they're real". MrSnake ALREADY has a join gate (mrsnake_guard.py:
+  mute on join, tap the snake among 4 emoji within VERIFY_TIMEOUT_SEC 180 s, 2 wrong taps or timeout = kicked, impostor
+  names banned). It never ran because Telegram only sends join updates to a bot that is an ADMIN, and MrSnake was never
+  re-added as admin in the new group (Oct 23). Added /gate (memesnake-bots 09e514c): admins type it in the group and it
+  shows whether the gate is on. Albert must add MrSnake as admin (Ban users, Delete messages) himself.
+
 - Nov 6 (3:30 am): PIT IS DOWN: pit.memecapes.com answers 402 'Deployment Paused'. Vercel usage page: paused since Nov 5
   for Fluid Active CPU (Hobby fair-use limit, 4h 59m used; 666K function invocations, 124 GB-hrs memory), pause ends Dec 5.
   Fix = Albert upgrades to Pro (his purchase) or the Pit moves; the CPU hogs to cut are the API routes (discover/token/rpc
