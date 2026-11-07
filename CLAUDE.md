@@ -98,6 +98,12 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 6 (9 pm): Albert brought Apple back himself: "Sign in with Apple" is wanted again but NOT for this weekend: keep it
+  off the sign-up screen (Pit Providers.tsx loginMethods email/google/wallet, checked on main e644a92). 15 s teaser
+  outputs/x_ads/snakepit_sign_in_with_apple_15s.mp4 (/tmp/claude-0/apad make3.py: our own drawn sign-in sheet marked
+  Preview, no Apple logo, "Coming soon", no dates). Same day: snakepitapp_llc_filed_moonpay_15s.mp4 (/tmp/claude-0/mpad2);
+  post only after the Ohio LLC payment ($199 incl. 2-day expedite) is confirmed (the session expired before it showed done).
+
 - Nov 6 (6:40 am): MoonPay "Signature check failed" SOLVED: this MoonPay account requires a signature on EVERY widget
   link and binds signed links to the user's IP: allowedIpAddress (lib/clientIp.ts, x-real-ip) must be in the signed query
   (errors seen via POST api.moonpay.com/v3/verify_widget_signature {url}: Missing signature / Invalid signature /
