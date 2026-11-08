@@ -98,6 +98,11 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 8 (12:45 pm): launch split changed (Albert, option C): 30% creator buy = 20% Snake Bite burned in the launch tx
+  (supply 800M) + 10% First Strike in the Streamflow lock (1/24 a month, 24 months). $CAPES page bar/table/text, roadmap
+  card and support answers now say Public 70% / Creator locked 10% / Burned 20%. Cost estimate ~12 SOL (curve fit to the
+  old 10%/20% quotes); Hatch shows the exact number.
+
 - Nov 7-8 (night, "start working on this so we have an update at the end of this week"): SCANNER UPDATE on Pit branch
   `scanner` (= main + bot-shield merged, which also brings the 80/10/10 fee split + required Sniper Shield; NOT live).
   lib/scan.ts Snake Score for ANY coin (GeckoTerminal /tokens/<m>/info + /pools: holders, top_10, mint/freeze
