@@ -98,6 +98,20 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 7-8 (night, "start working on this so we have an update at the end of this week"): SCANNER UPDATE on Pit branch
+  `scanner` (= main + bot-shield merged, which also brings the 80/10/10 fee split + required Sniper Shield; NOT live).
+  lib/scan.ts Snake Score for ANY coin (GeckoTerminal /tokens/<m>/info + /pools: holders, top_10, mint/freeze
+  authority, honeypot, developer_holding_percentage, socials, reserve, vol, h1 buys/sells, age; + Pit launch check +
+  holder-map clusters) -> 0-100, grade, "Snake says" line; /api/scan/<mint> (cache scan_cache 10 min, ?map=1 holder map
+  30 min, mapError shown), /api/scan?mints= (cached scores for list badges, lib/useScore batches), components/ScanCard
+  (ring, findings, holder map SVG with link-pull layout, Open in Bubblemaps), badge in TokenRow + sheet header.
+  lib/holdermap.ts: getTokenLargestAccounts top 20 -> owners -> wallet vs program -> first funder (oldest of <1000 sigs)
+  -> groups. PUBLIC RPCs 429 it: needs HELIUS_API_KEY in Vercel (not set; Vercel env has no RPC key at all).
+  Private profiles: users.private (supabase/scanner.sql, NOT RUN: Supabase was signed out in the pane), PrivacyCard on
+  /me, /s/<wallet> Holding section (lib/holdings.ts) hidden + stats/trades hidden when private, private traders out of
+  the Slither feed. Slither > People: PeopleSearch + /api/people. Preview has NO Supabase env (Production only), so
+  people/feed are empty there. Holder-map preview: /tmp/claude-0/scanprev/map.html (EXAMPLE DATA).
+
 - Nov 1 (3 am): "when you put on the armour their feet point straight out to the sides" (worst on Paper Hands). Meshy
   built the armour boots turned out; same motions as the plain body, so tools/feet_fix.py matches each boot's heading
   (foot-bone verts -> toe-bone verts, top view) to models/player2.json's in the same motion + moment, turning the foot +
