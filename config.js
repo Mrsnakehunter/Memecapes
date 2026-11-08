@@ -56,8 +56,9 @@ window.MC_CONFIG = {
   // partner = the PUBLIC address of the MemeCapes launchpad fee wallet. Empty = launching is switched off (the page
   // still shows coins). Albert signs everything from that wallet himself; nobody else ever needs its keys.
   launchpad: {
-    partner: "3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg",   // MemeCapes launchpad fee wallet on mainnet (public address, set by Albert Oct 14)
-    partnerDevnet: "3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg",   // the same wallet on Solana's test network (?net=devnet), for testing
+    partner: "7N9TfSooUszxHqUUZg4vNiM3YYu4KRcYbmivbQXeNWtr",   // MemeCapes launchpad fee wallet on mainnet (public address, Albert; new wallet Nov 8)
+    partnerDevnet: "7N9TfSooUszxHqUUZg4vNiM3YYu4KRcYbmivbQXeNWtr",   // the same wallet on Solana's test network (?net=devnet), for testing
+    partnerPast: "3rDgFxM6Yz6fCCvrpkhAL32Bq67qGDu22HpQWVBHuCjg",   // the fee wallet before Nov 8 (coins hatched before then still pay their launch fees there; its burns stay in the log)
     streamPassUsd: 20,           // the streamer pass: a flat monthly fee to stream, paid in SOL at the live price. 0 = streaming is free
     streamPassDays: 30,          // how long one payment lasts
     streamPassWallet: "",        // PUBLIC address the pass is paid to; empty = the launchpad fee wallet above
