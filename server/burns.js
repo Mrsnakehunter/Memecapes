@@ -65,6 +65,7 @@ module.exports = function burns({ DATA, now }) {
   const WALLETS = [];
   const add = (address, label) => { if (isAddr(address) && address !== MINT && !WALLETS.some(w => w.address === address)) WALLETS.push({ address, label }); };
   add(process.env.LP_PARTNER || fromCfg('partner'), 'Fee wallet');
+  add(fromCfg('partner'), 'Fee wallet'); // config.js too, in case Render's LP_PARTNER still holds the past wallet
   add(fromCfg('partnerPast'), 'Fee wallet (before Nov 8)');
   add(process.env.CAPES_CREATOR || fromCfg('capesCreator'), 'Creator wallet');
   for (const w of String(process.env.BURN_WALLETS || '').split(/[\s,]+/)) add(w, 'Official wallet');
