@@ -98,6 +98,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 9 (12 am): SWARM built on Pit branch `multi-buy` (preview builds; NOT live, NOT tested with real SOL):
+  lib/multibuy.ts (up to 30 browser-generated wallets, AES-GCM under a passphrase, export; the user funds the addresses
+  himself; random uneven split; one Strike per wallet with normal venom; Jito bundles of 5 via app/api/jito relay with
+  a 0.0005 SOL tip on the first tx of each bundle, or plain RPC; sell %/all; sweep SOL to the main wallet; refuses a
+  coin the user hatched), app/swarm/page.tsx. Albert also asked that the wallets be funded so they can't be linked (via
+  an exchange hot wallet or separate funders): REFUSED (trail obfuscation); the tool shows the addresses and he funds
+  them himself, nothing more. Also refused: an AI influencer modelled on a real Telegram user's face (original character
+  offered instead). TS 5.7: pass `new Uint8Array(x)` to WebCrypto (Uint8Array<ArrayBufferLike> is not BufferSource).
+  Next: a penny test (3 wallets x 0.02 SOL on a cheap coin) with Albert signed in, then the bundle flag + Team Buy +
+  longer sniper window + bigger graduation target (launch v2 write-up still owed).
+
 - Nov 8 (11 pm, post-mortem): the curve filled in 5 MINUTES (creator 30% + a ~12-wallet bundle at ~2% each) and the
   coin graduated to the open Meteora pool at 7:11 pm, where the sniper fee no longer applies; the bundle dumped 7:11-7:21
   (MC $28k -> $14k), more legs to 8:05; flat ~$3-4k MC after 9 pm, ~$28k total volume. GeckoTerminal only tracks the
