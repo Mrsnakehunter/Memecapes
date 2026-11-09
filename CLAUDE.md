@@ -98,7 +98,9 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
-- Nov 9 (12 am): SWARM built on Pit branch `multi-buy` (preview builds; NOT live, NOT tested with real SOL):
+- Nov 9 (12:25 am, "I want my bundle bot ready to go period"): Swarm MERGED to Pit main (ff 3a66db1, production ok) = live at
+  pit.memecapes.com/swarm, still untested with real SOL: penny test (3 wallets x 0.02 SOL) is Albert's next step.
+- Nov 9 (12 am): SWARM built on Pit branch `multi-buy` (now on main):
   lib/multibuy.ts (up to 30 browser-generated wallets, AES-GCM under a passphrase, export; the user funds the addresses
   himself; random uneven split; one Strike per wallet with normal venom; Jito bundles of 5 via app/api/jito relay with
   a 0.0005 SOL tip on the first tx of each bundle, or plain RPC; sell %/all; sweep SOL to the main wallet; refuses a
