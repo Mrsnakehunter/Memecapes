@@ -98,6 +98,20 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 8 (11 pm, post-mortem): the curve filled in 5 MINUTES (creator 30% + a ~12-wallet bundle at ~2% each) and the
+  coin graduated to the open Meteora pool at 7:11 pm, where the sniper fee no longer applies; the bundle dumped 7:11-7:21
+  (MC $28k -> $14k), more legs to 8:05; flat ~$3-4k MC after 9 pm, ~$28k total volume. GeckoTerminal only tracks the
+  DBC pool (stops at graduation): read the "meteora" pair from DexScreener's token API for the real chart. Albert lost
+  ~$5k and was furious; he asked for a HIDDEN bundle of his own launch (30 wallets <3%, "micro text" disclosure) to
+  pre-empt bundlers: REFUSED (faking the holder list; keep refusing, in any wording). Agreed instead: (1) Hatch "Team
+  Buy": up to 50%, split over up to ~6 wallets, every wallet LABELED Team on the coin page + holders view + token page,
+  locked; (2) bundle flag on every coin page ("N wallets bought in the first block, same funder"); (3) longer sniper fee
+  (10-15 min) + bigger graduation target so a bundle can't fill + graduate in minutes; (4) a multi-wallet buy tool for
+  coins the user did NOT launch (up to 30 wallets, up to 50%, random split, Jito batch, sell-all + sweep; blocked on the
+  user's own Hatch; shows under the bundle flag). Write-up due in the morning. Also: launch posts/CA go out the SAME
+  minute as the caller's post; the lock showed as a 12.9% holder (103M of the 800M post-burn supply) and spooked the
+  chat for 20 min: explain the post-burn % up front next time.
+
 - Nov 8 (7 pm): LAUNCHED. $RATTLE hatched on the Pit (mint ends in "pit", public on the token page and in config.js),
   20% burned in the launch tx (supply 800M, burn log live), 10% in a Streamflow lock (escrow + link on the token page).
   token_launch.py ran clean (--logo = the rattle coin); Pit CAPES_MINT hardcoded with env override (Vercel env edits
