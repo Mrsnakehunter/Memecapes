@@ -98,6 +98,15 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 8 (7 pm): LAUNCHED. $RATTLE hatched on the Pit (mint ends in "pit", public on the token page and in config.js),
+  20% burned in the launch tx (supply 800M, burn log live), 10% in a Streamflow lock (escrow + link on the token page).
+  token_launch.py ran clean (--logo = the rattle coin); Pit CAPES_MINT hardcoded with env override (Vercel env edits
+  are painful). Pre-launch "invalid token" on Hatch = Privy identity-token check (lib/auth.ts): fixed by an empty-commit
+  redeploy (stale JWKS cache after the production switch) + sign out/in. Launch video (61 s, Epic Trailer bed extended by
+  repeating the 4-bar climax; /tmp/claude-0/ad10/make.py, scenes rendered separately + concat) and the launch pack
+  (outputs/launch_pack: logo, headers, post texts) delivered. Still Albert's: Railway bot vars (TICKER/TOKEN_CA/
+  ALERT_CHAT_IDS), DexScreener Enhanced Token Info + 100x boost, X/Telegram posts.
+
 - Nov 8 (12:45 pm): launch split changed (Albert, option C): 30% creator buy = 20% Snake Bite burned in the launch tx
   (supply 800M) + 10% First Strike in the Streamflow lock (1/24 a month, 24 months). $CAPES page bar/table/text, roadmap
   card and support answers now say Public 70% / Creator locked 10% / Burned 20%. Cost estimate ~12 SOL (curve fit to the
