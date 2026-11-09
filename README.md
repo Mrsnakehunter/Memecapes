@@ -33,9 +33,9 @@ has no npm dependencies.
 | Watch (live trades on coins hatched in snakepit) | Live |
 | Streaming: go live from the browser or OBS, streamer pass checked on-chain, tips and subscriptions wallet to wallet (`server/social.js`, `lp/social.js`) | Live (Cloudflare Stream) |
 | Launchpad | Live in snakepit (Hatch); the launch links on this site open it |
-| Burn log: every $CAPES burn read from Solana, with its transaction (`server/burns.js`, `burnlog.js`) | Live from the token's first block (reads the chain once the token address is set) |
-| Withdrawals: Meme Coins out as $CAPES, 30-day wait, paid from the public pot wallet (`server/withdraw.js`, `tools/patch_withdraw.py`) | Live from the token's first block (needs the token address and the pot wallet) |
-| Holder perks, cosmetic only (`server/test_holder.js`) | Live from the token's first block (reads wallets once the token address is set) |
+| Burn log: every $RATTLE burn read from Solana, with its transaction (`server/burns.js`, `burnlog.js`) | Live |
+| Withdrawals: Meme Coins out as $RATTLE, 30-day wait, paid from the public pot wallet (`server/withdraw.js`, `tools/patch_withdraw.py`) | Live |
+| Holder perks, cosmetic only (`server/test_holder.js`) | Live |
 
 The game world has computer-controlled adventurers that look like players, to keep quiet areas alive. They are never
 counted as players anywhere (the online count and `/who` list real players only), and the website says so in its FAQ.
@@ -87,8 +87,9 @@ live yet.
 
 ## The token
 
-The project's token, its official contract address and every official wallet are listed on the token page of
-[memecapes.com](https://memecapes.com). Holder perks are in-game cosmetics only. There is no revenue share and nothing
+The project's token is $RATTLE on Solana. Official contract address: [`6GHUrwvKTio5BtyfGo2KTMdxDx4nxSc7gZW7EdZfkpit`](https://solscan.io/token/6GHUrwvKTio5BtyfGo2KTMdxDx4nxSc7gZW7EdZfkpit), launched by the
+creator wallet [`8FUaDgTh3FvmgZL51WomYdX7CW4T7ZDC74jg7fezrmVV`](https://solscan.io/account/8FUaDgTh3FvmgZL51WomYdX7CW4T7ZDC74jg7fezrmVV). Every official wallet is listed on the token page of
+[memecapes.com](https://memecapes.com), and every burn is in its burn log. Holder perks are in-game cosmetics only. There is no revenue share and nothing
 here promises a return. MemeCapes is not affiliated with or endorsed by the creators of any meme shown in the game.
 
 ## Security
