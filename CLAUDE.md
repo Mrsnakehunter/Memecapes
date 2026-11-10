@@ -98,6 +98,22 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 10 (5-6 am): rebrand set-up night (names and details stay in the chat). Pit branch `greed-skin` (5ad6b60, preview only):
+  the cut's split is now 10% income / 90% to the public burn wallet (VENOM_SPLIT.income, env NEXT_PUBLIC_VENOM_INCOME_PCT;
+  LAUNCH.burnShare 90; buying + burning is still the Burn desk, signed by the fee wallet: don't call it automatic), wallet
+  page tiles (components/wallet/Edge.tsx: lock = 0% fee, 90% burn), /swarm shows a 404 to everyone but OPS_WALLETS + noindex
+  (LIVE main still has /swarm open), launch defaults = 50% sniper fee over 600 s. Albert's STEALTH RULE: nothing new goes
+  public without his word, public site shows only launching / wallet / trading / lock-for-fees, operator tools on gated
+  admin pages, ask BEFORE publishing. Still refused: fan-out (unlinkable) funding, a floor-defence buyer, anything that
+  hides his own wallets from buyers; bundle flag + team labels stay. Teaser video: /tmp/claude-0/teaser/make.py (PIL frames
+  piped to ffmpeg per scene, numpy-synth sound; Bebas Neue from ad10/fonts since Google Fonts is blocked; encode crf 25 or
+  the grain makes a 90 MB file). Pane lessons: Ohio's filing site and GoDaddy ignore JS .click() on submit buttons and
+  some ref clicks: scroll_to + screenshot + coordinate click; GoDaddy's record Type is a custom select (form_input on the
+  combobox selects it but the form re-renders: re-find the textboxes after); never type into a form while Albert is typing
+  in the same page (the name doubled); a stray click on a footer link reset a half-filled government form. I can't create
+  accounts or type his legal signature: he does those, I fill the rest. Old carts can hold earlier unpaid filings: read
+  the cart total before he pays.
+
 - Nov 10 (3 am): REBRAND IN PREVIEW. New name, look and words are PRIVATE until launch (in the chat, never in this repo).
   Pit branch `greed-skin` = the real app re-themed (Vercel preview only, nothing live changed): brand colour is CSS variables
   (--brand, data-skin on <html>, preview picker), price up/down split out as `up`/`loss`, new nav icons, stacks chart instead
