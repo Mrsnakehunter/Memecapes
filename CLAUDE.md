@@ -98,6 +98,18 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 10 (3 am): REBRAND IN PREVIEW. New name, look and words are PRIVATE until launch (in the chat, never in this repo).
+  Pit branch `greed-skin` = the real app re-themed (Vercel preview only, nothing live changed): brand colour is CSS variables
+  (--brand, data-skin on <html>, preview picker), price up/down split out as `up`/`loss`, new nav icons, stacks chart instead
+  of the snake, mask avatars, new app icons, display font, square corners, trade-done screen with WebAudio sounds
+  (components/TradeDone.tsx; /?demo=grab|fence|burn). Wording pass = scratch script over JSX text + prose strings only
+  (never lowercase ids, memos or DB values). Lessons: Albert rejects mock-up pictures ("give me an actual website"): show a
+  working preview URL; he wants few words on pages, no feature lectures; Array.from's map callback has 2 args (build
+  failed); Vercel build logs aren't readable from the pane: diff `tsc --noEmit` errors against main instead.
+  Albert set the next launch for DEC 10 (app first: wallet + launchpad; 90% of fees to buy-and-burn and lock-for-free-fees
+  are the selling points; the 90% split is NOT built yet, don't claim it). No hidden/unlabeled team wallets, no staggered
+  buys to look organic: still refused.
+
 - Nov 9 (12:25 am, "I want my bundle bot ready to go period"): Swarm MERGED to Pit main (ff 3a66db1, production ok) = live at
   pit.memecapes.com/swarm, still untested with real SOL: penny test (3 wallets x 0.02 SOL) is Albert's next step.
 - Nov 9 (12 am): SWARM built on Pit branch `multi-buy` (now on main):
