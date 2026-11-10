@@ -98,6 +98,21 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 10 (2 pm): Albert was angry that I ended a turn with a question while he slept ("keep building" = do the next
+  item, never stop on a question; decisions go in the summary, work continues on what needs none). Built on `greed-skin`:
+  lib/feeburn.ts = the burn share of each cut is swapped into the coin on its launch (DBC) pool and burned from the
+  trader's own token account INSIDE the trade (buildSwapTx -> cutIxs; income share stays a transfer; falls back to the
+  plain transfer when there is no coin, the coin has graduated, the cut is < 20k lamports or the tx is over 1232 bytes).
+  The SDK's swap closes the wrapped-SOL account and only creates it if missing at build time: the leg now always
+  creates it (idempotent), strips the SDK's close, and closes only on sells (leg runs after the trade). SIMULATED OK on
+  mainnet for a launch-pool buy (910 bytes, 112k units) via the preview-only bench /dev/feeburn (any DBC pool from
+  GeckoTerminal dexes/meteora-dbc + a funded payer address, sigVerify off). Jupiter-routed trades are 1272 bytes with
+  the leg: they need an address lookup table of the leg's fixed accounts (NEXT_PUBLIC_FEE_BURN_ALT; ~1089 bytes with
+  it; someone must create the table once on-chain) - not simulated yet; sells not simulated; graduated coins need a
+  DAMM v2 swap leg (not built). First use costs the trader a token account's rent (~0.002 SOL) if they don't hold the
+  coin. Also: /heist /stash /crew /coin rewrites. REFUSED: a paid volume bot for launches (wash trading); offered a
+  labeled burn-boost instead. Teaser rule (his): a teaser shows NO features, only hook + name + coming soon.
+
 - Nov 10 (5-6 am): rebrand set-up night (names and details stay in the chat). Pit branch `greed-skin` (5ad6b60, preview only):
   the cut's split is now 10% income / 90% to the public burn wallet (VENOM_SPLIT.income, env NEXT_PUBLIC_VENOM_INCOME_PCT;
   LAUNCH.burnShare 90; buying + burning is still the Burn desk, signed by the fee wallet: don't call it automatic), wallet
