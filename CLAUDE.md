@@ -98,6 +98,14 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 18 (2:45 am, "ship" + "a video and marketing post", "not the updates about me"): SHIPPED build 20261118074309
+  (main 55deab5 = game-update-nov): live version.json, play.html and server /worlds (World 1 + World 2 PvP) checked in the
+  pane. Snake Hunter switched OFF (config.js hunter turns him on; out of notes and posts). Video
+  outputs/game_update/memecapes_update_ranged_magic_pvp_1x1.mp4 (28 s): /tmp/claude-0/upd/make.py cuts existing real
+  footage (courtyard_rangers_mages.mp4, glowing_arrows.mp4, x_ads/memecapes_pvp_21s_1x1.mp4 3-8.5/9.6-12.2/15-18 s, its
+  "coming soon" end card NOT used) + ranger_mage_armour_all18.jpg pan, PIL text plates overlaid by ffmpeg, Epic Trailer
+  bed /tmp/claude-0/ad10/music.wav from 13.75 s (its climax lands on the armour/PvP part). zoompan needs fps=30 BEFORE it
+  (15 fps sources came out half length).
 - Nov 17 (9 pm, "an update ready for the game for when I get outta work"): branch game-update-nov = combat-styles
   (Ranged + Magic, 18 ranger/mage sets, World 2 PvP with full loot, Snake Hunter NPC, live-fixes, launch-load server fixes,
   Candle Blade wiring) + main merged (index.html/support/CLAUDE.md conflicts; site + qa.json regenerated). NOT shipped.
