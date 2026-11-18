@@ -22,8 +22,8 @@ def rep(old, new, count=1):
 
 HUNTER_MDL = 'hunter' if os.path.exists('models/hunter.json') else 'player_memecape3'
 
-# 1. stand him north of the Gigachad Town fountain, facing the square (ry 0 = facing south)
-rep("xo(...fN(CX-7,CY+6),'saw');", "xo(...fN(CX-7,CY+6),'saw');xo(...fN(CX-4,CY+1),'hunter',{ry:0});")
+# 1. (only when config.js hunter is true) stand him north of the Gigachad Town fountain, facing the square (ry 0 = facing south)
+rep("xo(...fN(CX-7,CY+6),'saw');", "xo(...fN(CX-7,CY+6),'saw');if(window.MC_CONFIG&&MC_CONFIG.hunter)xo(...fN(CX-4,CY+1),'hunter',{ry:0});")
 # 2. drawn like the other people in town (his model, idle motion)
 rep("DYNPP={capes:'richw',", "DYNPP={hunter:'" + HUNTER_MDL + "',capes:'richw',")
 if HUNTER_MDL == 'hunter':

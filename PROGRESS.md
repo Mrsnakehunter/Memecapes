@@ -2,14 +2,13 @@
 
 _Last updated: November 17, 2026_
 
-## Nov 17, 2026: Ranged and Magic, PvP World 2, the Snake Hunter
+## Nov 17, 2026: Ranged and Magic, PvP World 2
 
 - **Two new combat styles: Ranged and Magic.** Nine bows from Paper to Legend, staffs, and nine spells cast from scroll items. Arrows and scrolls go into your quiver and scroll pouch, sold at the Party Shop. Every new player starts with a bow and a Paper Staff next to the sword, so you can pick your style from the first fight.
 - **A combat triangle.** Melee beats Ranged, Ranged beats Magic, Magic beats Melee. Examine a monster to see what it's weak to.
 - **Eighteen new armour sets.** Nine ranger sets and nine mage sets, one for every tier, each with its own look.
 - **Two worlds.** Pick World 1 (no player fights) or World 2 (PvP) on the start screen. In World 2 you can fight other players outside the towns, only within 15 combat levels of you. Towns are safe zones, and a badge shows whether you are in one.
 - **PvP is for keeps.** Lose a fight in World 2 and everything tradeable you carry and wear drops in a loot pile. The winner gets the first minute, then anyone can take it. Items that can't be traded stay with you.
-- **The Snake Hunter.** The creator of MemeCapes now stands in Gigachad Town. Talk to him for his story.
 - **Fixes.** Caped walkers no longer have a stretched foot. NPCs no longer stand inside trees, bushes or props. Several hand-drawn props were swapped for real models (flour sacks, the hay nest, the altar, the broker and clerk desks, the sawmill and the trader's stall).
 - **Weapon skins** now also work on the armour swords and the staffs.
 
