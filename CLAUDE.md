@@ -98,6 +98,104 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 10 (2 pm): Albert was angry that I ended a turn with a question while he slept ("keep building" = do the next
+  item, never stop on a question; decisions go in the summary, work continues on what needs none). Built on `greed-skin`:
+  lib/feeburn.ts = the burn share of each cut is swapped into the coin on its launch (DBC) pool and burned from the
+  trader's own token account INSIDE the trade (buildSwapTx -> cutIxs; income share stays a transfer; falls back to the
+  plain transfer when there is no coin, the coin has graduated, the cut is < 20k lamports or the tx is over 1232 bytes).
+  The SDK's swap closes the wrapped-SOL account and only creates it if missing at build time: the leg now always
+  creates it (idempotent), strips the SDK's close, and closes only on sells (leg runs after the trade). SIMULATED OK on
+  mainnet for a launch-pool buy (910 bytes, 112k units) via the preview-only bench /dev/feeburn (any DBC pool from
+  GeckoTerminal dexes/meteora-dbc + a funded payer address, sigVerify off). Jupiter-routed trades are 1272 bytes with
+  the leg: they need an address lookup table of the leg's fixed accounts (NEXT_PUBLIC_FEE_BURN_ALT; ~1089 bytes with
+  it; someone must create the table once on-chain) - not simulated yet; sells not simulated; graduated coins need a
+  DAMM v2 swap leg (not built). First use costs the trader a token account's rent (~0.002 SOL) if they don't hold the
+  coin. Also: /heist /stash /crew /coin rewrites. REFUSED: a paid volume bot for launches (wash trading); offered a
+  labeled burn-boost instead. Teaser rule (his): a teaser shows NO features, only hook + name + coming soon.
+
+- Nov 10 (5-6 am): rebrand set-up night (names and details stay in the chat). Pit branch `greed-skin` (5ad6b60, preview only):
+  the cut's split is now 10% income / 90% to the public burn wallet (VENOM_SPLIT.income, env NEXT_PUBLIC_VENOM_INCOME_PCT;
+  LAUNCH.burnShare 90; buying + burning is still the Burn desk, signed by the fee wallet: don't call it automatic), wallet
+  page tiles (components/wallet/Edge.tsx: lock = 0% fee, 90% burn), /swarm shows a 404 to everyone but OPS_WALLETS + noindex
+  (LIVE main still has /swarm open), launch defaults = 50% sniper fee over 600 s. Albert's STEALTH RULE: nothing new goes
+  public without his word, public site shows only launching / wallet / trading / lock-for-fees, operator tools on gated
+  admin pages, ask BEFORE publishing. Still refused: fan-out (unlinkable) funding, a floor-defence buyer, anything that
+  hides his own wallets from buyers; bundle flag + team labels stay. Teaser video: /tmp/claude-0/teaser/make.py (PIL frames
+  piped to ffmpeg per scene, numpy-synth sound; Bebas Neue from ad10/fonts since Google Fonts is blocked; encode crf 25 or
+  the grain makes a 90 MB file). Pane lessons: Ohio's filing site and GoDaddy ignore JS .click() on submit buttons and
+  some ref clicks: scroll_to + screenshot + coordinate click; GoDaddy's record Type is a custom select (form_input on the
+  combobox selects it but the form re-renders: re-find the textboxes after); never type into a form while Albert is typing
+  in the same page (the name doubled); a stray click on a footer link reset a half-filled government form. I can't create
+  accounts or type his legal signature: he does those, I fill the rest. Old carts can hold earlier unpaid filings: read
+  the cart total before he pays.
+
+- Nov 10 (3 am): REBRAND IN PREVIEW. New name, look and words are PRIVATE until launch (in the chat, never in this repo).
+  Pit branch `greed-skin` = the real app re-themed (Vercel preview only, nothing live changed): brand colour is CSS variables
+  (--brand, data-skin on <html>, preview picker), price up/down split out as `up`/`loss`, new nav icons, stacks chart instead
+  of the snake, mask avatars, new app icons, display font, square corners, trade-done screen with WebAudio sounds
+  (components/TradeDone.tsx; /?demo=grab|fence|burn). Wording pass = scratch script over JSX text + prose strings only
+  (never lowercase ids, memos or DB values). Lessons: Albert rejects mock-up pictures ("give me an actual website"): show a
+  working preview URL; he wants few words on pages, no feature lectures; Array.from's map callback has 2 args (build
+  failed); Vercel build logs aren't readable from the pane: diff `tsc --noEmit` errors against main instead.
+  Albert set the next launch for DEC 10 (app first: wallet + launchpad; 90% of fees to buy-and-burn and lock-for-free-fees
+  are the selling points; the 90% split is NOT built yet, don't claim it). No hidden/unlabeled team wallets, no staggered
+  buys to look organic: still refused.
+
+- Nov 9 (12:25 am, "I want my bundle bot ready to go period"): Swarm MERGED to Pit main (ff 3a66db1, production ok) = live at
+  pit.memecapes.com/swarm, still untested with real SOL: penny test (3 wallets x 0.02 SOL) is Albert's next step.
+- Nov 9 (12 am): SWARM built on Pit branch `multi-buy` (now on main):
+  lib/multibuy.ts (up to 30 browser-generated wallets, AES-GCM under a passphrase, export; the user funds the addresses
+  himself; random uneven split; one Strike per wallet with normal venom; Jito bundles of 5 via app/api/jito relay with
+  a 0.0005 SOL tip on the first tx of each bundle, or plain RPC; sell %/all; sweep SOL to the main wallet; refuses a
+  coin the user hatched), app/swarm/page.tsx. Albert also asked that the wallets be funded so they can't be linked (via
+  an exchange hot wallet or separate funders): REFUSED (trail obfuscation); the tool shows the addresses and he funds
+  them himself, nothing more. Also refused: an AI influencer modelled on a real Telegram user's face (original character
+  offered instead). TS 5.7: pass `new Uint8Array(x)` to WebCrypto (Uint8Array<ArrayBufferLike> is not BufferSource).
+  Next: a penny test (3 wallets x 0.02 SOL on a cheap coin) with Albert signed in, then the bundle flag + Team Buy +
+  longer sniper window + bigger graduation target (launch v2 write-up still owed).
+
+- Nov 8 (11 pm, post-mortem): the curve filled in 5 MINUTES (creator 30% + a ~12-wallet bundle at ~2% each) and the
+  coin graduated to the open Meteora pool at 7:11 pm, where the sniper fee no longer applies; the bundle dumped 7:11-7:21
+  (MC $28k -> $14k), more legs to 8:05; flat ~$3-4k MC after 9 pm, ~$28k total volume. GeckoTerminal only tracks the
+  DBC pool (stops at graduation): read the "meteora" pair from DexScreener's token API for the real chart. Albert lost
+  ~$5k and was furious; he asked for a HIDDEN bundle of his own launch (30 wallets <3%, "micro text" disclosure) to
+  pre-empt bundlers: REFUSED (faking the holder list; keep refusing, in any wording). Agreed instead: (1) Hatch "Team
+  Buy": up to 50%, split over up to ~6 wallets, every wallet LABELED Team on the coin page + holders view + token page,
+  locked; (2) bundle flag on every coin page ("N wallets bought in the first block, same funder"); (3) longer sniper fee
+  (10-15 min) + bigger graduation target so a bundle can't fill + graduate in minutes; (4) a multi-wallet buy tool for
+  coins the user did NOT launch (up to 30 wallets, up to 50%, random split, Jito batch, sell-all + sweep; blocked on the
+  user's own Hatch; shows under the bundle flag). Write-up due in the morning. Also: launch posts/CA go out the SAME
+  minute as the caller's post; the lock showed as a 12.9% holder (103M of the 800M post-burn supply) and spooked the
+  chat for 20 min: explain the post-burn % up front next time.
+
+- Nov 8 (7 pm): LAUNCHED. $RATTLE hatched on the Pit (mint ends in "pit", public on the token page and in config.js),
+  20% burned in the launch tx (supply 800M, burn log live), 10% in a Streamflow lock (escrow + link on the token page).
+  token_launch.py ran clean (--logo = the rattle coin); Pit CAPES_MINT hardcoded with env override (Vercel env edits
+  are painful). Pre-launch "invalid token" on Hatch = Privy identity-token check (lib/auth.ts): fixed by an empty-commit
+  redeploy (stale JWKS cache after the production switch) + sign out/in. Launch video (61 s, Epic Trailer bed extended by
+  repeating the 4-bar climax; /tmp/claude-0/ad10/make.py, scenes rendered separately + concat) and the launch pack
+  (outputs/launch_pack: logo, headers, post texts) delivered. Still Albert's: Railway bot vars (TICKER/TOKEN_CA/
+  ALERT_CHAT_IDS), DexScreener Enhanced Token Info + 100x boost, X/Telegram posts.
+
+- Nov 8 (12:45 pm): launch split changed (Albert, option C): 30% creator buy = 20% Snake Bite burned in the launch tx
+  (supply 800M) + 10% First Strike in the Streamflow lock (1/24 a month, 24 months). $CAPES page bar/table/text, roadmap
+  card and support answers now say Public 70% / Creator locked 10% / Burned 20%. Cost estimate ~12 SOL (curve fit to the
+  old 10%/20% quotes); Hatch shows the exact number.
+
+- Nov 7-8 (night, "start working on this so we have an update at the end of this week"): SCANNER UPDATE on Pit branch
+  `scanner` (= main + bot-shield merged, which also brings the 80/10/10 fee split + required Sniper Shield; NOT live).
+  lib/scan.ts Snake Score for ANY coin (GeckoTerminal /tokens/<m>/info + /pools: holders, top_10, mint/freeze
+  authority, honeypot, developer_holding_percentage, socials, reserve, vol, h1 buys/sells, age; + Pit launch check +
+  holder-map clusters) -> 0-100, grade, "Snake says" line; /api/scan/<mint> (cache scan_cache 10 min, ?map=1 holder map
+  30 min, mapError shown), /api/scan?mints= (cached scores for list badges, lib/useScore batches), components/ScanCard
+  (ring, findings, holder map SVG with link-pull layout, Open in Bubblemaps), badge in TokenRow + sheet header.
+  lib/holdermap.ts: getTokenLargestAccounts top 20 -> owners -> wallet vs program -> first funder (oldest of <1000 sigs)
+  -> groups. PUBLIC RPCs 429 it: needs HELIUS_API_KEY in Vercel (not set; Vercel env has no RPC key at all).
+  Private profiles: users.private (supabase/scanner.sql, NOT RUN: Supabase was signed out in the pane), PrivacyCard on
+  /me, /s/<wallet> Holding section (lib/holdings.ts) hidden + stats/trades hidden when private, private traders out of
+  the Slither feed. Slither > People: PeopleSearch + /api/people. Preview has NO Supabase env (Production only), so
+  people/feed are empty there. Holder-map preview: /tmp/claude-0/scanprev/map.html (EXAMPLE DATA).
+
 - Nov 6 (9 pm): Albert brought Apple back himself: "Sign in with Apple" is wanted again but NOT for this weekend: keep it
   off the sign-up screen (Pit Providers.tsx loginMethods email/google/wallet, checked on main e644a92). 15 s teaser
   outputs/x_ads/snakepit_sign_in_with_apple_15s.mp4 (/tmp/claude-0/apad make3.py: our own drawn sign-in sheet marked

@@ -2,6 +2,10 @@
 
 _Last updated: November 1, 2026_
 
+## Nov 8, 2026: $RATTLE is live
+
+The MemeCapes x snakepit coin launched on snakepit's Hatch. Contract address 6GHUrwvKTio5BtyfGo2KTMdxDx4nxSc7gZW7EdZfkpit (it ends in "pit"). 20% of the supply was burned inside the launch transaction, and the creator's 10% went straight into a Streamflow lock that opens 1/24 a month for 24 months. The site, game, server and Pit now show $RATTLE everywhere, the token page lists the contract, the creator wallet and the lock, and the burn log reads the chain from the first block.
+
 ## Nov 1, 2026 (night): armour feet fixed
 
 - **Feet point forward in every armour set now.** Standing still (and in a few other moves) the armour sets stood with their toes turned out to the sides, worst on Paper Hands. Every set's feet now line up with the plain body's, in every motion.
