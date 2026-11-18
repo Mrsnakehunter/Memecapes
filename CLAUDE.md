@@ -98,6 +98,19 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 17 (9 pm, "an update ready for the game for when I get outta work"): branch game-update-nov = combat-styles
+  (Ranged + Magic, 18 ranger/mage sets, World 2 PvP with full loot, Snake Hunter NPC, live-fixes, launch-load server fixes,
+  Candle Blade wiring) + main merged (index.html/support/CLAUDE.md conflicts; site + qa.json regenerated). NOT shipped.
+  BUILD BASE IS GONE: build.sh's BASE (old commit e1df6ab) was erased by the Oct 23 history rewrite and /home/claude/scratch
+  is wiped between sessions, so build.sh can't run here. main's play.html == the branch's merge-base build + only the
+  $RATTLE ticker swap (checked byte for byte), so preview.html = the branch's Nov 5 build + patch_ticker's swap + a new
+  build id. Later edits must go into BOTH preview.html and the matching tools/patch_*.py (done for patch_hunter).
+  Rebuild a base before the next big change: save a copy of a known-good base OUTSIDE scratch (or rebuild one).
+  Snake Hunter's "Read my story" button only shows when config.js hunterPage is true (the founder page is on branch
+  hunter-page, not live). server/test_burns.js fails on main too (it expects no mint; the mint is set since launch).
+  Shots: hunter stands at 188,193 (tp 188,197, cam 0/.3/7); parade tp 158,124 cam 3.14/.62/15. Test site rebuilt by hand in
+  /home/claude/scratch/site (symlinks to mc_up, config server "", wanderers 0, test7 hooks added by a python snippet).
+
 - Nov 10 (2 pm): Albert was angry that I ended a turn with a question while he slept ("keep building" = do the next
   item, never stop on a question; decisions go in the summary, work continues on what needs none). Built on `greed-skin`:
   lib/feeburn.ts = the burn share of each cut is swapped into the coin on its launch (DBC) pool and burned from the
