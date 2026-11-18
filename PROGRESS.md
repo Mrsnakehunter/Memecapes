@@ -1,8 +1,8 @@
 # MemeCapes progress
 
-_Last updated: November 17, 2026_
+_Last updated: November 18, 2026_
 
-## Nov 17, 2026: Ranged and Magic, PvP World 2
+## Nov 18, 2026: Ranged and Magic, PvP World 2
 
 - **Two new combat styles: Ranged and Magic.** Nine bows from Paper to Legend, staffs, and nine spells cast from scroll items. Arrows and scrolls go into your quiver and scroll pouch, sold at the Party Shop. Every new player starts with a bow and a Paper Staff next to the sword, so you can pick your style from the first fight.
 - **A combat triangle.** Melee beats Ranged, Ranged beats Magic, Magic beats Melee. Examine a monster to see what it's weak to.
