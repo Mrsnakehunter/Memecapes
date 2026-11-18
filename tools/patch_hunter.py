@@ -36,7 +36,7 @@ rep("saw:'He turns logs into planks.',", "saw:'He turns logs into planks.',hunte
 rep("saw:()=>sawUI(),", "saw:()=>sawUI(),hunter:()=>hunterUI(),")
 JS = r"""function hunterUI(){M.style.display='flex';
  const L=['Name\'s the Snake Hunter. I built this place.','I once put everything I had into a project that promised me a piece of what we were building. It never delivered. I lost it all.','So I built my own. Out in the open, where anyone can check every step.','The snake ate my bag once. Now I hunt it.'];
- MB.innerHTML='<h2>The Snake Hunter</h2>'+L.map(t=>'<p style="font-size:13px;margin:0 0 8px">"'+t+'"</p>').join('')+'<a href="https://memecapes.com/#hunter" target="_blank" rel="noopener"><button>Read my story</button></a> <button id="x">Close</button>';
+ MB.innerHTML='<h2>The Snake Hunter</h2>'+L.map(t=>'<p style="font-size:13px;margin:0 0 8px">"'+t+'"</p>').join('')+(window.MC_CONFIG&&MC_CONFIG.hunterPage?'<a href="https://memecapes.com/#hunter" target="_blank" rel="noopener"><button>Read my story</button></a> ':'')+'<button id="x">Close</button>';
  $('x').onclick=()=>M.style.display='none'}
 """
 rep("function sawUI(){", JS + "function sawUI(){")
