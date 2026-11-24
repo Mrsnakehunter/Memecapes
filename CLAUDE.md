@@ -242,6 +242,16 @@ numbers in here or anywhere in the repo.
   codes, his tax number, accepting terms, Submit), say so in one short line and name the exact thing to type or
   press; he answers one-word facts fast when asked plainly ("no vehicles no employees") but hates being handed a list.
   The approximate-location tool put him in the wrong state: never use it for a form.
+  Then (1:08 pm): he pressed Submit on the payment partner's form; it is in review (they say within 24 hours). The
+  form's website, Terms and Privacy links must open for the reviewer and none did yet (the new address is not pointed,
+  and the live branch only answers it with the coming-soon page). READY, NOT MERGED: Pit branch `soon-legal` (from
+  main, b3a8f64, worktree /home/claude/pit_soon) = public/terms.html + public/privacy.html (static copies of the
+  app's pages in the coming-soon look, made by a scratch script from the TSX), a middleware line that serves /terms
+  and /privacy on the coming-soon hosts before the catch-all rewrite, and Terms | Privacy in the coming-soon footer.
+  Checked at 390 px from the files (16 and 12 sections, no sideways scroll). Going live = fast-forward main to it on
+  his word, then merge main into `greed-skin` (keep the coming-soon host list empty there). If the app's Terms or
+  Privacy text changes, regenerate the two static files so they never disagree. Lesson: before he submits a partner
+  form, open every link on it from a signed-out browser; a link that only works for us fails their review.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
