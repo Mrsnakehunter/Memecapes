@@ -181,6 +181,15 @@ numbers in here or anywhere in the repo.
   addresses still end in "pit" (api/hatch/mint MINT_SUFFIX, 3 characters = 10-20 s live; every extra character is 58x
   slower, so a 5-letter ending needs addresses made ahead of time): his pick. Lesson: when he says "you already have
   it", look in the hosting account and this chat's history before asking (it was a to-do item title in the transcript).
+  Then (2 am): "we need all of this done before time". Found: the Pit's LIVE branch already answers the new address
+  with a coming-soon page (Nov 10: middleware SOON_HOSTS + public/soon.html) that the preview branch had never picked
+  up. Merged main into `greed-skin` and emptied SOON_HOSTS there (e8eefd0): merging that branch to main IS the launch
+  and turns the coming-soon page off; nothing else to remember. So the DNS can be pointed any day, before the merge.
+  GoDaddy: the domain is in his account; EDIT its two existing records (A @ Parked, CNAME www), don't add new ones, and
+  leave the mail MX/TXT. Saving opens "Continue & Verify" (identity check): his step, I cancelled and left the records
+  as they were. Privy and MoonPay dashboards were signed out in the pane: his sign-in first. Lessons: run
+  `git log branch..main` before designing anything for the live branch (the gate I was about to build was already
+  shipped); GoDaddy's DNS list is behind "Manage DNS records" and its rows only read after ~3 s.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
