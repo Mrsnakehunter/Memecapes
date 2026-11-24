@@ -169,6 +169,18 @@ numbers in here or anywhere in the repo.
   the old address until NEXT_PUBLIC_APP_URL is the new one. Checked live: game withdrawals 0 waiting, Battle last week
   owed 0. On-chain memos ("... burn", "... acid", "... battle") still use the old word: new memos need the verifiers
   to accept old + new.
+  Then (1:42 am): "you already have the new domain, change it so when it's launched it says the new name, not pit".
+  The new address is in the Pit repo's private launch file (never here). Pit `greed-skin` 8ccf39b: lib/config.ts APP_URL
+  (NEXT_PUBLIC_SITE_URL overrides) is the one place the app names its own address: link previews, profile share
+  cards, Telegram buttons, launched coins' createdOn. NEXT_PUBLIC_APP_URL is no longer read by the app (it still holds
+  the old address on Vercel and would have leaked it). Share buttons already used location.origin; the middleware
+  allows same-origin POSTs, so a new host needs no code. Found on Vercel: the new domain + www are ALREADY attached to
+  Production, DNS not pointed (Vercel > Domains > View DNS configuration lists the two GoDaddy records). ORDER MATTERS:
+  merge the branch to main first, then point DNS, or the new address shows the old app. Launch-day list (merge, DNS,
+  Privy allowed origins, MoonPay domains, checks) = GREED-LAUNCH.md in the Pit repo. Not changed: launched coins'
+  addresses still end in "pit" (api/hatch/mint MINT_SUFFIX, 3 characters = 10-20 s live; every extra character is 58x
+  slower, so a 5-letter ending needs addresses made ahead of time): his pick. Lesson: when he says "you already have
+  it", look in the hosting account and this chat's history before asking (it was a to-do item title in the transcript).
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
