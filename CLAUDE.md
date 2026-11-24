@@ -98,6 +98,17 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 23 (10 pm): "keep working on" the rebrand app + "make this real, as smooth as this app" (a video of a social app where
+  every profile is a coin: feed, Believe = buy, market cap pill, top board). Pit branch `greed-skin` (preview only):
+  Feed tab (/feed: posts with one picture, likes, report/delete; Believe opens the Strike sheet on the AUTHOR's own
+  launched coin, then swaps in the live price), Top board (/leaders: launched coins by market cap / today %), Composer
+  (pictures shrunk in the browser to webp, stored in the `tokens` bucket under posts/), Sheet now slides in and drags
+  down to close (every sheet in the app). supabase/feed.sql NOT RUN yet (posts, post_likes, post_reports,
+  users.profile_mint). Preview has no Supabase env, so preview shows labelled EXAMPLE posts (made-up people, real coins).
+  Also: fee burn for graduated coins via their DAMM v2 pool (hand-built swap from the cp_amm IDL; simulated OK on
+  mainnet both ways on $RATTLE's pool). Vercel build logs ARE readable in the pane: deployment page, scroll to Build
+  Logs, get_page_text. A Telegram group for the new brand was made (public); giving bots admin rights and tapping a
+  bot's verify button are blocked for me: Albert does those. Lesson: Next.js page files may only export the page.
 - Nov 18 (2:45 am, "ship" + "a video and marketing post", "not the updates about me"): SHIPPED build 20261118074309
   (main 55deab5 = game-update-nov): live version.json, play.html and server /worlds (World 1 + World 2 PvP) checked in the
   pane. Snake Hunter switched OFF (config.js hunter turns him on; out of notes and posts). Video
