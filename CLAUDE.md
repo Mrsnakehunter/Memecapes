@@ -28,6 +28,9 @@ numbers in here or anywhere in the repo.
 - Show screenshots before pushing big game changes live, unless Albert has said ship.
 - IP safety: no RuneScape, OSRS or Jagex names, art or wording anywhere. All names are our own.
 - Token honesty: no hidden wallets, no promised gains; holder perks are in-game only.
+- Past launches stay on the record (same line as Oct 22, restated Nov 24): a rebrand or a new name is fine, but never
+  delete or hide the public record of an earlier launch (token page, burn log, lock, official wallets, old posts,
+  repo history), and no accounts or wallets set up to look unconnected. Anyone who locked tokens for zero fees keeps it.
 - Bots: the game has bots that look like players (Albert's call, Oct 13). The website must keep saying so (FAQ "Are
   there bots in the game?" + the $CAPES page). Never count bots as players in posts, numbers or screenshots.
 - Never push test hooks. `grep -c '__tp=tpTo\|window.__g=' preview.html play.html` must print 0 for both
@@ -155,6 +158,17 @@ numbers in here or anywhere in the repo.
   example banner and example posts reworded; hold-to-pick-an-amount unchanged. Code names stay (BelieveButton,
   onBelieve, .believe CSS). The button is still the brand colour; the coin sheet's Buy is green: his call if they match.
   Lesson: he wants plain trading words on buttons (Buy / Sell / Launch), not coined ones.
+  Then (1:25 am): old names off the preview app. Pit `greed-skin` 518c933 (preview only): the side menu no longer
+  links to the old site or lists the token page ("Coin"; /coin still opens it), Trade has no pinned token card
+  (CapesCard kept, unused), Wallet shows "Locked tokens" only to wallets that hold a lock and has no game row, the
+  Boss's display name is "The Boss" (BOSS_KEY unchanged), new coins' createdOn = NEXT_PUBLIC_APP_URL (it was a fixed
+  old name), swarm export file name. Build lesson: ICON_PATHS is typed by NAV_DESKTOP's icons, so dropping a menu item
+  fails the build unless its icon key stays in the type. STILL NAMING THE OLD COIN because it is the real money flow,
+  not wording: Launch form "...buys $TICKER", FeeBar, StrikeSheet's lock line, LockCard, BurnDesk, the /coin page. They
+  follow CAPES_MINT: change the words and the mint together in one switch, never the words alone. Link previews carry
+  the old address until NEXT_PUBLIC_APP_URL is the new one. Checked live: game withdrawals 0 waiting, Battle last week
+  owed 0. On-chain memos ("... burn", "... acid", "... battle") still use the old word: new memos need the verifiers
+  to accept old + new.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
