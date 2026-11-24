@@ -221,6 +221,27 @@ numbers in here or anywhere in the repo.
   the US, so the preview shows the list with Buy off: checked. NOT run: a real buy/sell of a stock token.
   Lesson: TokenSheet swaps the row's coin for the live details (`d?.token ?? token`), so anything only the row knows
   must be carried over by hand. Money/legal: facts with sources, said plainly that it is a securities lawyer's call.
+  Then (11:33 am - 1:30 pm, Albert at the computer, impatient: "pull everything up and fill out what you can", "sign
+  in and do all the stuff"): the company's tax number (IRS online EIN application) and MoonPay's go-live questionnaire,
+  both in the pane. No personal or company details in this file: they are in the chat and the Pit repo's private
+  launch file. HOW IT WENT: IRS = sa.www4.irs.gov/applyein, 6 steps, cannot be saved, logs out after 15 idle minutes;
+  form_input works on its fields and selects; pressing Back from step 4 WIPES step 4 (refill it); the review page
+  shows the tax number of the person, so every page read used a JS reader that hides number patterns and never reads
+  that field. He typed his own name, number, address; I filled the rest, flagged a likely typo in his first name and
+  a mistyped city (fixed), and he pressed Submit himself. The confirmation letter can only be downloaded from the
+  last screen: tell him BEFORE touching anything else, and open the next site in a new tab. Ohio's business search
+  blocks the pane with a security check: don't fight it. MoonPay: dashboard.moonpay.com > "Start your application" =
+  Business (4 screens) > Products > Requirements > Links > Review; every answer saves by itself; country pickers are
+  a search box + option; two "None of these apply" answers are compliance statements (told him what would make them
+  untrue). I stopped at the two tick boxes (accuracy, accepting their terms for the company) + Submit: his.
+  MoonPay needs working Terms and Privacy links and the app had neither: Pit `greed-skin` fd169c2 adds /terms and
+  /privacy (components/Legal.tsx, plain-words drafts written from what the app really stores; a lawyer should read
+  them), linked from the sign-in sheet, the profile page and the side menu; lib/config.ts COMPANY / SUPPORT_EMAIL /
+  X_URL. Preview deployments are behind the host's login (an unauthenticated fetch is redirected), so a preview
+  address is useless to an outside reviewer. LESSONS: when he says "do it" for something only he can do (sign-in
+  codes, his tax number, accepting terms, Submit), say so in one short line and name the exact thing to type or
+  press; he answers one-word facts fast when asked plainly ("no vehicles no employees") but hates being handed a list.
+  The approximate-location tool put him in the wrong state: never use it for a form.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
