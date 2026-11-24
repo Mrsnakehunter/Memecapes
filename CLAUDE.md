@@ -119,14 +119,14 @@ numbers in here or anywhere in the repo.
   used Privy's hook before). A trade with a connected Phantom has NOT been run with real money yet.
   COIN SHEET (components/TokenSheet.tsx): no tabs. Buy (green) + Info (toggle) under the chart, the four numbers, then
   Comments always visible. Info opens trades, burn, lock, fees, launch check. The star sits in the header.
-  WATCHLIST: lib/watch.ts (localStorage greed_watch_v1, useSyncExternalStore; on this device only, no account sync
+  WATCHLIST: lib/watch.ts (localStorage, useSyncExternalStore; on this device only, no account sync
   yet), components/WatchStar.tsx, /api/watch?mints= (live numbers, up to 60), Trade's first chip "Watchlist" (people
   with stars land on it, set in an effect: a localStorage read in the useState initialiser would mismatch the server
   HTML), components/SwipeRow.tsx (swipe left 76 px for the X, rubber band, taps on an open row close it, pan-y so
   scrolling is untouched; X collapses the row). Starred rows show a small gold star on the picture.
   COIN BUTTON: components/CoinButton.tsx replaced the preview colour picker (SkinPicker deleted; ?skin=ice in the
   address still switches colours). Round button bottom-left on every screen -> sheet with Buy + contract address +
-  Copy. Driven by NEXT_PUBLIC_GREED_MINT (lib/config.ts GREED_MINT): EMPTY today, so it says "Not live yet" and shows
+  Copy. Driven by one env var for the new coin's mint (see lib/config.ts): EMPTY today, so it says "Not live yet" and shows
   no address at all. Never put a placeholder or another coin's address there. The rest of the app (pinned card, lock,
   fee burn) still points at CAPES_MINT; switching those to the new coin is a separate decision.
   More old words removed: STRIKE buttons, grabs/fences, hatcher, "First Grab", GRAB/FENCE chips.
