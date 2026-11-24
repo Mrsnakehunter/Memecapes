@@ -98,6 +98,38 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
+  wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
+  one of a kind, looks like a million dollar app". All on Pit branch `greed-skin` (preview only, d21eb58).
+  PLAIN NAMES: tabs Feed `/` (the old markets home moved to `/trade`), Trade, Launch, Wallet, Profile; desktop adds Top,
+  People, Battle, Coin. Addresses are rewrites in next.config.mjs (/launch -> /hatch, /profile -> /me, /people -> /slither,
+  /top -> /leaders, /coin -> /capes), so page folders keep their old names; components/nav.ts SAME_PAGE/activeTab map
+  them. Words everywhere: Buy / Sell / Burn / Launch / Follow / Believe (scratch words.py pass + hand fixes).
+  PROFILES ARE COINS: components/profile/ProfileView.tsx (banner, avatar, $TICKER, followers, coin card with market cap,
+  Believers = holders, Today, Believe button, posts); /api/profile/card; app/s/[wallet]/layout.tsx holds the view (page
+  returns null) so it paints at once; /me = the same view + account settings.
+  FEEL (what the research said, and what stuck): motion only as the answer to a tap; transform/opacity only; ease-out
+  curves (0.23,1,0.32,1) and drawer (0.32,0.72,0,1); press scale .97; exits faster than enters; no entrance effects on
+  load; sentence-case labels and round buttons instead of tracked ALL-CAPS; ONE signature interaction, the rest quiet.
+  Built: components/Go.tsx = hand-rolled View Transitions (document.startViewTransition + a provider that resolves on
+  pathname change; React's own <ViewTransition> needs a newer React/Next than the app has): tabs slide by direction
+  (html[data-vt]), tab bar and side menu anchored (view-transition-name), the tapped avatar grows into the profile
+  (temporary name vt-hero; skipped when the page already has [data-vt-hero]); 500 ms safety timeout. Signature =
+  components/feed/BelieveButton.tsx: tap opens the buy sheet, press-and-hold dials 0.1 / 0.25 / 0.5 / 1 SOL and release
+  opens the sheet with that amount (Token.presetSol); it never buys by itself. Also Spark (tiny 24 h chart, /api/spark
+  from GeckoTerminal hourly closes, 5-min cache), Roll (numbers roll on change), pull to refresh, Lightbox (picture
+  grows from the post), toasts + phone buzz (lib/feel.ts), sheets that drag down to close.
+  PREVIEW EXAMPLE DATA: lib/feedDemo.ts DEMO_PEOPLE (four made-up people on real coins) feeds /api/feed?demo=1,
+  /api/profile/card?demo=1 and /api/feed/leaders?demo=1 with LIVE coin numbers; the client adds demo=1 only on preview
+  hosts. First version hard-coded market caps (feed said $2.5B, profile said $193M for the same coin): never hard-code a
+  number that another screen reads live. The preview colour picker is a small dot on phones (it covered the + button).
+  Checked in the pane at 390x844 with a JS hook on startViewTransition (direction, finished) and dispatched pointer
+  events for the hold. The pane's screenshots crop/zoom in emulated viewports and catch animations mid-way: trust
+  getComputedStyle/getAnimations over the picture. Not testable from the pane: phone buzz, finger feel.
+  Still Albert's: yes to run supabase/feed.sql, Preview ticked on the two Supabase keys in Vercel (until then the preview
+  shows the labelled examples). Telegram for the new brand: verify + admin rights for the existing bots are his taps.
+  Next: Discover (swipe through profiles, Believe on each), one-tap "make my profile a coin", then video / go live.
+
 - Nov 23 (10 pm): "keep working on" the rebrand app + "make this real, as smooth as this app" (a video of a social app where
   every profile is a coin: feed, Believe = buy, market cap pill, top board). Pit branch `greed-skin` (preview only):
   Feed tab (/feed: posts with one picture, likes, report/delete; Believe opens the Strike sheet on the AUTHOR's own
