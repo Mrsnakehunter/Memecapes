@@ -98,6 +98,39 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
+  create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
+  it even have Strike; just show the comments below, then Buy and Info" (3) "a watchlist like FOMO in Trade, swipe over
+  for an X, a star to add" (4) "the tiny colour/name button: make it permanent, buy the app's token + copy the CA".
+  Pit branch `greed-skin` (preview only, e5103d3).
+  SIGN-IN: lib/signin.ts (openSignIn("pick" | "create" | "connect")) + components/SignInSheet.tsx mounted LAST in the
+  layout (same z as other sheets, so DOM order puts it on top). useWallet().login now opens it, so every old login()
+  call got it for free. Create wallet = Privy useLoginWithOAuth initOAuth({provider:"google"}) (no Privy modal; the
+  embedded wallet is made on return); "Create with email instead" = login({loginMethods:["email"]}); Connect wallet =
+  login({loginMethods:["wallet"]}). Google refuses sign-in inside other apps' browsers (TikTok/Instagram/Facebook
+  webviews): the sheet detects those by user agent and leads with email. Privy appearance: walletList
+  ["detected_solana_wallets","phantom","solflare","backpack"] (the default list was long and alphabetical: 1inch, AB
+  Pay...), theme "#0f0f10", landingHeader. A wallet with NO sign-in at all = Privy guest accounts (useGuestAccounts;
+  a switch in his Privy dashboard; the wallet lives only in that browser, expires in 30 days unless saved, can't be
+  merged into an existing account): NOT built, his call. I did not tap Create wallet (it starts a Google sign-in).
+  FEES + CONNECTED WALLETS: the cut is instructions inside the trade the app builds (lib/jupiter.ts cutIxs), so it is
+  paid whichever wallet signs; nothing is paid on trades made outside the app with that wallet; pool fees on coins
+  launched here are on-chain and paid from any app. signTx now uses a connected wallet's own signTransaction (it only
+  used Privy's hook before). A trade with a connected Phantom has NOT been run with real money yet.
+  COIN SHEET (components/TokenSheet.tsx): no tabs. Buy (green) + Info (toggle) under the chart, the four numbers, then
+  Comments always visible. Info opens trades, burn, lock, fees, launch check. The star sits in the header.
+  WATCHLIST: lib/watch.ts (localStorage greed_watch_v1, useSyncExternalStore; on this device only, no account sync
+  yet), components/WatchStar.tsx, /api/watch?mints= (live numbers, up to 60), Trade's first chip "Watchlist" (people
+  with stars land on it, set in an effect: a localStorage read in the useState initialiser would mismatch the server
+  HTML), components/SwipeRow.tsx (swipe left 76 px for the X, rubber band, taps on an open row close it, pan-y so
+  scrolling is untouched; X collapses the row). Starred rows show a small gold star on the picture.
+  COIN BUTTON: components/CoinButton.tsx replaced the preview colour picker (SkinPicker deleted; ?skin=ice in the
+  address still switches colours). Round button bottom-left on every screen -> sheet with Buy + contract address +
+  Copy. Driven by NEXT_PUBLIC_GREED_MINT (lib/config.ts GREED_MINT): EMPTY today, so it says "Not live yet" and shows
+  no address at all. Never put a placeholder or another coin's address there. The rest of the app (pinned card, lock,
+  fee burn) still points at CAPES_MINT; switching those to the new coin is a separate decision.
+  More old words removed: STRIKE buttons, grabs/fences, hatcher, "First Grab", GRAB/FENCE chips.
+
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
   one of a kind, looks like a million dollar app". All on Pit branch `greed-skin` (preview only, 55f5690).
