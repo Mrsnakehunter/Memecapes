@@ -285,6 +285,27 @@ numbers in here or anywhere in the repo.
   its text, swapping its import lines for stand-ins and importing the result. Lessons: when a partner is "ready",
   check that BOTH directions go through the partner account, and reread the partner's docs before go-live (this
   rule changed in under three weeks).
+  Then (2:52 pm, from work, one fast line): "how can we make the social media page on Xbox better, did we ever make
+  the moon pay and apple pay videos so we can do an ad video for them also, I like how the ad video for the one I
+  showed had companies pages, did you ever research tokenized stocks". "Xbox" = the name of the demo app in the video
+  he sent Nov 23, mangled by his phone: read an odd word against the last thing he showed before guessing. Answered
+  first (SendUserMessage), then built. VIDEOS: three 15 s clips from Nov 6 are in outputs/x_ads (cash out, sign in
+  with Apple, LLC filed), all under the old name; none in the new name, none about Apple Pay itself. STOCKS: he had
+  not seen the morning's answer; gave the short version again. COMPANY PAGES: the demo's are made-up coins under
+  real brands' names ("Nike Coin"): NOT copied (a coin sold under a real company's name misleads buyers; the app's
+  own Terms ban it). The honest version = a page per company backed by a verified stock token. Pit `greed-skin`
+  f4fa5e9..9f21c2d (preview only, behind the same stock switch and country block): lib/company.ts (tickerOf: xStocks
+  drop a trailing x, Ondo a trailing "on", Backpack as is; companies() groups by share; fmtPrice = two decimals;
+  sameStory = prices within 1.5%), app/discover (stocks rail of company cards + people as big cards; in the phone row
+  and the side menu), app/company/[ticker] (logo, price, chart, Buy, a row per issuer, a plain note, comments),
+  components/CompanyLogo.tsx, /trade?list=stocks, a link from a stock token's sheet to its page. FOUND: the pool the
+  token list names for a stock token is often dead (the first chart ended three weeks ago at another price), and a
+  busy pool can price a stock token a few percent away from what a buy costs. Rule now: show the token list's price,
+  and draw a chart only from a pool whose price agrees with it, else no chart. Lessons: a page file may only export
+  the page (the logo component went to its own file before the build could fail); I told him our Top board had no
+  podium when it has had one since Nov 23: read the screen's code before listing what it lacks. Not made yet: the
+  new-name ad. What goes in it waits on two things that are his or a lawyer's: the payment partner's approval (no ad
+  for it before), and whether stock pages may be advertised at all (people in the US cannot buy them here).
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
