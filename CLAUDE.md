@@ -190,6 +190,15 @@ numbers in here or anywhere in the repo.
   as they were. Privy and MoonPay dashboards were signed out in the pane: his sign-in first. Lessons: run
   `git log branch..main` before designing anything for the live branch (the gate I was about to build was already
   shipped); GoDaddy's DNS list is behind "Manage DNS records" and its rows only read after ~3 s.
+  Then (2:40 am): "let's remove battle for now, we'll keep it for a later update". Pit `greed-skin` 60ca7e8 (preview
+  only): lib/config.ts BATTLE_ON (NEXT_PUBLIC_BATTLE=on turns it back on; off by default on this branch) = no Battle
+  menu item (nav.ts NAV_DESKTOP is now a typed readonly array, not an `as const` tuple, so items can be conditional),
+  no Wallet row, app/battle/layout.tsx redirects to home, /api/battle/enter + boost answer 403 "paused" (nobody can pay
+  a ticket into a hidden battle). Left running: board/boss read routes (the old site reads them), the weekly clock,
+  payout. The right rail's AI trader / Top players cards open /boss. Live main is untouched until the launch merge.
+  Same message: "what does it take to have KYC on the site": answered with vendor list prices (Nov 2026) and the
+  who-gets-checked choices; nothing built, his pick of vendor + account (I can't create accounts). Facts only, not
+  legal advice; whether it is REQUIRED turns on control of users' funds, a crypto lawyer's call.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
