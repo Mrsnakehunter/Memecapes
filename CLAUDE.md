@@ -252,6 +252,39 @@ numbers in here or anywhere in the repo.
   his word, then merge main into `greed-skin` (keep the coming-soon host list empty there). If the app's Terms or
   Privacy text changes, regenerate the two static files so they never disagree. Lesson: before he submits a partner
   form, open every link on it from a signed-out browser; a link that only works for us fails their review.
+  Then (1:15 pm, "go live", angry that the links were dead when he submitted; 1:25 pm he left for work: "keep doing
+  your thing, if you need a code I'll send it in chat"). DONE: Pit main fast-forwarded to `soon-legal` (b3a8f64,
+  production ok) and merged back into `greed-skin`; the domain's A record edited in the pane and saved after HE typed
+  the texted code; the new address now shows the coming-soon page, /terms and /privacy open, /api is 404, and the
+  host's Domains page says Valid Configuration for both names. The second record (www) was NOT needed: www already
+  pointed at the bare domain, which now points at the host. He pasted a sign-in code into the chat and offered to
+  keep doing that: never type one in, say so in one line and find the way that needs none (here: close the second
+  check, change nothing). The maker of the two static pages is now in the Pit repo (scripts/legal-static.py on
+  `greed-skin`; it reproduces the live files byte for byte): rerun it after any change to the app's two pages.
+  GODADDY IN THE PANE: the records list is behind the "Manage DNS records" tile; in a narrow pane rows are stacked
+  cards; get a button's spot with getBoundingClientRect x devicePixelRatio (1.25 here) and click by coordinate;
+  fields are #nameDnsFieldInput / #dataDnsFieldInput (click, ctrl+a, type); Save -> "Continue & Verify" -> a 6-digit
+  code texted to his phone, once per saved record; the green Success notice sits on top of the dialog's X (dismiss
+  the notice first); screenshots there lag a step behind, so trust DOM reads.
+  WHILE HE WAS OUT, card buys (Pit `greed-skin` 27ad46b, preview only): the Add cash button opened MoonPay's PUBLIC
+  checkout with no key, so buys would never have counted on the company's own MoonPay account or carried its fee,
+  even after approval; only cash out went through the account. Now lib/useFunding.ts buyUrl + openCash open the
+  checkout through the account the moment the key is pk_live_ (signed by /api/moonpay/sign, which now takes buy and
+  sell links, only the settings the app itself sends, only a way back to the same site, only the user's own wallet),
+  bring the buyer back to /wallet?mpbuy=1 (a toast), and fall back to the public checkout if signing fails. The tab
+  is opened empty inside the tap and pointed at MoonPay after signing (a tab opened after an await is blocked);
+  opener is cleared. lib/moonpaySign.ts = the signing rules: MoonPay's docs now say `allowedIpAddress` on the BUY link
+  is a base64 HMAC of the visitor's address in one exact spelling (IPv4 unwrapped, IPv6 lowercase RFC 5952) and is
+  required to go live; the SELL link still opens with the plain address on this account (rechecked today). So buy =
+  hash, sell = plain, MOONPAY_IP_BUY / MOONPAY_IP_SELL (hash | raw | off) change it without a build, and
+  /api/moonpay/check takes ?kind=buy, ?ip=hash|raw|off, ?open=1. NOT TESTED against MoonPay yet: the secret key is
+  in the host's Production environment only, so a preview cannot sign (his tick on Preview for that key, or his OK
+  to put the MoonPay files on the live branch). Tested here: MoonPay's published signing example matches, 44 checks
+  on the address spelling, 79 on the route with the app's real links and the ones it must refuse. HOW: Node 22 runs
+  a .ts file directly, so an .mjs test can import a lib file that has no path aliases; a route was tested by reading
+  its text, swapping its import lines for stand-ins and importing the result. Lessons: when a partner is "ready",
+  check that BOTH directions go through the partner account, and reread the partner's docs before go-live (this
+  rule changed in under three weeks).
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
