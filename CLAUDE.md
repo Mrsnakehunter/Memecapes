@@ -100,7 +100,7 @@ numbers in here or anywhere in the repo.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
-  one of a kind, looks like a million dollar app". All on Pit branch `greed-skin` (preview only, d21eb58).
+  one of a kind, looks like a million dollar app". All on Pit branch `greed-skin` (preview only, 55f5690).
   PLAIN NAMES: tabs Feed `/` (the old markets home moved to `/trade`), Trade, Launch, Wallet, Profile; desktop adds Top,
   People, Battle, Coin. Addresses are rewrites in next.config.mjs (/launch -> /hatch, /profile -> /me, /people -> /slither,
   /top -> /leaders, /coin -> /capes), so page folders keep their old names; components/nav.ts SAME_PAGE/activeTab map
@@ -123,6 +123,9 @@ numbers in here or anywhere in the repo.
   /api/profile/card?demo=1 and /api/feed/leaders?demo=1 with LIVE coin numbers; the client adds demo=1 only on preview
   hosts. First version hard-coded market caps (feed said $2.5B, profile said $193M for the same coin): never hard-code a
   number that another screen reads live. The preview colour picker is a small dot on phones (it covered the + button).
+  Speed: app/layout.tsx's first inline script asks for /api/feed before the app's code loads (window.__feed0, picked up
+  by useFeedPosts): the request left at 0.3 s instead of 4.4 s in the pane. Top board: a name opens the profile, the
+  numbers open the coin sheet, Believe buys. Someone else's profile keeps the Feed tab lit (NAV_ALIASES '/s/' -> '/').
   Checked in the pane at 390x844 with a JS hook on startViewTransition (direction, finished) and dispatched pointer
   events for the hold. The pane's screenshots crop/zoom in emulated viewports and catch animations mid-way: trust
   getComputedStyle/getAnimations over the picture. Not testable from the pane: phone buzz, finger feel.
