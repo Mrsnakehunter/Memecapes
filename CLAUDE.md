@@ -150,6 +150,11 @@ numbers in here or anywhere in the repo.
   as an <img> can't load outside files, so the mark must be inside the SVG.
   Also: the install banner said the old app name (app/manifest.ts fixed); the coin button is now a tab on the screen
   edge (a round floating button sat on top of list pictures).
+  Then (12:54 am, feed screenshot): "change it from believe to buy". Pit `greed-skin` 7fd83b4 (preview only): the
+  post / profile / Top board button says Buy (profile: Buy $TICKER), stat "Holders" (was Believers), tip toast, the
+  example banner and example posts reworded; hold-to-pick-an-amount unchanged. Code names stay (BelieveButton,
+  onBelieve, .believe CSS). The button is still the brand colour; the coin sheet's Buy is green: his call if they match.
+  Lesson: he wants plain trading words on buttons (Buy / Sell / Launch), not coined ones.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
