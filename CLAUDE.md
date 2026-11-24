@@ -199,6 +199,28 @@ numbers in here or anywhere in the repo.
   Same message: "what does it take to have KYC on the site": answered with vendor list prices (Nov 2026) and the
   who-gets-checked choices; nothing built, his pick of vendor + account (I can't create accounts). Facts only, not
   legal advice; whether it is REQUIRED turns on control of users' funds, a crypto lawyer's call.
+  Then (2:51 am, two lines): "it says feed trade launch wallet profile but when you're in full screen you have more
+  options for users" + "I'd want it for launches". Read as: phones should reach everything the side menu has, and
+  launches should get their own options too. Pit `greed-skin` 77de1c2..356bf58 (preview only): components/SubNav.tsx =
+  a row of pages under a tab (Feed | Top | People on phones only; Launch a coin | Launches on every size), NAV_ALIASES
+  now keep the Feed tab lit on /people; NEW /launches (app/launches + /api/launches: every coin launched here, New /
+  Top / Today / Yours = MyHatches; example rows on preview, labelled) and a Launches item in the side menu. Lessons:
+  usePathname() on the SERVER returns the rewritten folder (/leaders, /slither), in the browser the typed address
+  (/top, /people): anything that lights a menu item must accept both or the first paint is wrong; the buy screen's
+  big button still said GRAB / FENCE after two wording passes (grep the upper-case forms too): now Buy / Sell.
+  Then (5:51 am): "research tokenized stocks and having something on the platform for it AND people being able to do
+  them on there". The write-up with sources is the Pit repo's private STOCKS.md (never copy it here). Built, preview
+  only, OFF on the live site: Trade > Stocks chip. lib/stocks.ts takes the list from Jupiter's token search
+  (lite-api /tokens/v2/search?query=<issuer words>&limit=100; keep rows with isVerified AND tags "stocks" + the
+  issuer's tag; at least $25k in pools; nothing hard-coded: the same search returns dozens of look-alike coins with
+  stock tickers; the /tag endpoint only takes lst/verified; lite-api answers 429 after about four quick calls, so the
+  server caches each search 5 minutes). lib/config.ts STOCKS_ON (NEXT_PUBLIC_STOCKS=on; preview builds always show
+  the chip, VERCEL_ENV === "preview") + STOCKS_BLOCKED (countries, from the issuers' own pages). /api/stocks reads the
+  host's x-vercel-ip-country header; in a blocked country the live site sends no list, only the addresses, and
+  lib/stockGate.ts makes the buy screen and getQuote refuse those tokens (selling is never blocked). The pane is in
+  the US, so the preview shows the list with Buy off: checked. NOT run: a real buy/sell of a stock token.
+  Lesson: TokenSheet swaps the row's coin for the live details (`d?.token ?? token`), so anything only the row knows
+  must be carried over by hand. Money/legal: facts with sources, said plainly that it is a securities lawyer's call.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
