@@ -355,6 +355,12 @@ numbers in here or anywhere in the repo.
   How to check a ticker fast: DexScreener's search API (latest/dex/search?q=) from the Higgsfield sandbox, keep
   pairs whose base symbol matches exactly, group by token address, read liquidity and 24 h volume. It is a snapshot
   (the search returns a limited list), so say "found" not "none exist". Tickers are never unique on Solana.
+  Then (12:31-12:33 am): verification papers. His photo ID is from another state than the company: fine (the ID
+  proves who, a recent bill proves where; names must match letter for letter). "Sole owner" proof for a one-member
+  LLC = a signed operating agreement (Ohio doesn't issue one; offered to draft it, his "write it" pending) + the EIN
+  letter. No paper bill: the partner's pages ask for an original file dated within 90 days (bank statement, utility
+  bill, or tax return on their troubleshooting page) and refuse screenshots, so a PDF downloaded from the bank or
+  utility account is the route; anything else, ask their support in the dashboard first.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
