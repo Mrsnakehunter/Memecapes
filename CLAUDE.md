@@ -400,8 +400,15 @@ numbers in here or anywhere in the repo.
   transactions; the old parsed-history endpoint is 100 credits a call and in maintenance mode); without a key it
   merges what the app recorded (trades, launches, burns). view=coins = per coin in / out / made or lost (average
   cost, app trades). app/history: By day | By coin, filter chips, search, details sheet (components/wallet/
-  TxSheet.tsx), possible spam tucked away, Show older, Save a file (CSV). NOT TESTED with a real Helius key (none
-  set; making the account and pasting the key into the host are his).
+  TxSheet.tsx), possible spam tucked away, Show older, Save a file (CSV).
+  MY MISTAKE (he caught it: "don't we use helius key already"): I told him no Helius key was set. It IS set, in the
+  host's PRODUCTION environment only: the live app's /api/health says helius ok and live history already reads the
+  chain. I had only looked at the preview (/api/health there = missing) and an old note. Worse, the rewrite had
+  dropped the endpoint the live site uses, so a failing new call would have shrunk live history to app-only. Fixed
+  (cf7b49b): new call first, the old parsed-history endpoint as the backup, then the app's records; page tokens tell
+  the readers apart; the answer carries `via`. The new call is still NOT run with a key: it needs Preview ticked on
+  that key (his setting). Lessons: before saying a key or setting is missing, ask the LIVE app (its /api/health, in a
+  pane tab) and not just the preview; when replacing a reader that works in production, keep it as the fallback.
   FOUND: mainnet now has VERSION 1 transactions (8 of 14 in a sample): getTransaction needs
   maxSupportedTransactionVersion 1 or it errors. The app's own checks still pass 0 (its own transactions are v0).
   Lessons: (1) a hidden pane FREEZES CSS animations at their first frame (a pop looked see-through, opacity 0):
@@ -410,6 +417,9 @@ numbers in here or anywhere in the repo.
   a big result lands in a tool-results file. (3) tsc without node_modules: new "key"/"children"/TS7053 lines are
   the same missing-React noise as the baseline; filter them and read what is left. (4) He adds asks mid-build:
   answer in one message at once, fold it into the same build, ship slices, tell him when each one is on the preview.
+  (5) "Show me it" = pictures in the chat at once: finish animations, shoot the pane at 390x844 at full scale, copy
+  the screenshots out of tool-results under plain names and send them (he may be on his phone, and the preview is
+  behind the host's login).
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
