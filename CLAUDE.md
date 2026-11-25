@@ -361,6 +361,55 @@ numbers in here or anywhere in the repo.
   letter. No paper bill: the partner's pages ask for an original file dated within 90 days (bank statement, utility
   bill, or tax return on their troubleshooting page) and refuse screenshots, so a PDF downloaded from the bank or
   utility account is the route; anything else, ask their support in the dashboard first.
+  Then (Nov 25, 12:36 am, then 12:44 am mid-build): "research the newest app tech: does anything light up when the
+  mouse is over it, are pop-ups clean, is there a sound and an animation on a buy, does something pop up for
+  notifications" + "any transaction history spots, everything in one place like the best Sol apps". Answered each
+  in a short message first, then shipped in three slices and told him as each landed. Pit `greed-skin` 98e36be,
+  b653ca6, 9b819db, 1c7c52f (preview only).
+  SOUND: lib/sound.ts = ONE AudioContext for the app, opened/resumed by the first pointerdown/keydown/touchend
+  (armSound, called from TradeDone). The old code made a new context when the trade landed, seconds after the tap
+  that started it: iPhones only allow sound from inside a tap, so a buy was silent there. Sounds buy/sell/burn/
+  notify/tick (the hold-to-pick Buy button ticks up in pitch), one mute choice (the old localStorage key), switches
+  on the account page, in the notifications list and on the trade screen. iPhones have no buzz for web pages.
+  RECEIPT: TradeDone takes got + sig: "You paid / You got / View transaction / Done", a thin bar that drains,
+  a touch on the receipt keeps it open, Esc closes it (capture + stopPropagation so the sheet under it stays).
+  HOVER (real pointers only, `@media (hover: hover) and (pointer: fine)`): the lightening is an INSET BOX-SHADOW
+  (`inset 0 0 0 100vmax rgb(255 255 255 / .07)`) composed with Tailwind's --tw-ring/--tw-shadow variables, so it
+  follows each element's corners, fades, and never fights a background colour; one rule covers every button and
+  every link with a bg- class. Brand buttons glow, `.hov-lift` cards rise, `.hov`/`.hov-row` for the rest.
+  tailwind.config `future.hoverOnlyWhenSupported` = hover styles no longer stick after a tap on phones.
+  components/Tips.tsx = name labels on hover/keyboard focus for icon-only buttons, read from the aria-label each
+  button already has (data-tip="..." sets one, data-tip="" turns it off): nothing to wire per button.
+  POP-UPS: Sheet = Esc closes the top one (a module-level stack), Tab stays inside, focus returns to the opener
+  (never into a text field: that raises the phone keyboard), aria-modal. Toasts: icon by kind, exit animation,
+  tap to dismiss, bad news stays longer.
+  NOTIFICATIONS: /api/notify (signed in) reads follows, likes on your posts, buys of coins you launched and comments
+  on them straight from existing tables (nothing stored per notification); lib/notify.ts store + components/
+  Notifications.tsx (refresh each minute while on screen and on return to the tab; new items drop a card from the
+  top with the sound; a first load with waiting items shows one quiet summary; count on the installed app's icon
+  via setAppBadge and in the tab title) + components/NotifBell.tsx (phone top bar, desktop side menu). Seen/unseen
+  lives on the device. follows has no time column: supabase/notify.sql adds one (NOT RUN, his yes; run after
+  feed.sql, also not run), until then new followers are left out. Preview = labelled examples + a "Send a test
+  notification" button; the examples are dated once per device or they pop on every visit.
+  HISTORY: lib/txparse.ts reads a transaction from one wallet's side by BALANCE CHANGES (pre/post SOL and token
+  balances, wrapped SOL counted as SOL), so a trade reads the same from any app: bought / sold / swapped / sent /
+  received / burned / launched / locked / failed, with fee and the other side; unasked coins and dust = possible
+  spam. scripts/txparse.test.mjs (46 checks: real mainnet transactions in scripts/fixtures + hand-built cases;
+  `node --experimental-strip-types`). /api/activity now pages (before/next) and with a Helius key reads the whole
+  chain through getTransactionsForAddress (full + jsonParsed + tokenAccounts balanceChanged: 10 credits per 100
+  transactions; the old parsed-history endpoint is 100 credits a call and in maintenance mode); without a key it
+  merges what the app recorded (trades, launches, burns). view=coins = per coin in / out / made or lost (average
+  cost, app trades). app/history: By day | By coin, filter chips, search, details sheet (components/wallet/
+  TxSheet.tsx), possible spam tucked away, Show older, Save a file (CSV). NOT TESTED with a real Helius key (none
+  set; making the account and pasting the key into the host are his).
+  FOUND: mainnet now has VERSION 1 transactions (8 of 14 in a sample): getTransaction needs
+  maxSupportedTransactionVersion 1 or it errors. The app's own checks still pass 0 (its own transactions are v0).
+  Lessons: (1) a hidden pane FREEZES CSS animations at their first frame (a pop looked see-through, opacity 0):
+  run `document.getAnimations().forEach(a => a.finish())` before reading or shooting. (2) Real transactions for
+  tests: fetch through the preview's own /api/rpc from the pane, trim to the fields used, return the JSON string;
+  a big result lands in a tool-results file. (3) tsc without node_modules: new "key"/"children"/TS7053 lines are
+  the same missing-React noise as the baseline; filter them and read what is left. (4) He adds asks mid-build:
+  answer in one message at once, fold it into the same build, ship slices, tell him when each one is on the preview.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
