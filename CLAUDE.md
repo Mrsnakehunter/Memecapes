@@ -444,6 +444,17 @@ numbers in here or anywhere in the repo.
   box (recovery codes, a second sign-in method): his, left untouched. The preview still shows labelled examples:
   its feed only goes real when the two database keys are ticked for Preview in the host (the preview would then
   read and write the REAL database): his yes, not given yet.
+  Then (2:49-3:33 am): lock rule for free trading. He wants a dollar amount, not a token count, and only past a
+  market cap (at a $5k cap a small lock is a big slice of supply). He rejected locking or burning any of HIS coins
+  ("I'm not locking and burning money"): never suggest a creator burn/lock again unless he raises it. His launch plan:
+  a fair launch with the 10-minute sniper fee. Pit `greed-skin` c4ffaed (preview only): lib/lock.ts LOCK.usd 200
+  (NEXT_PUBLIC_LOCK_USD) + LOCK.openMc 100k (NEXT_PUBLIC_LOCK_OPEN_MC); /api/lock values each lock at the coin's hourly
+  close in the hour it was made (GeckoTerminal ohlcv before_timestamp, kept per escrow), so a later price drop never
+  switches it off; locks made before the cap reached openMc don't count; 1M+ token locks keep the old rule (standing
+  rule: anyone who locked for zero fees keeps it). /api/lock with no wallet = market + rule; ?all=1 = everyone's locked
+  supply (all Jupiter Lock escrows of the mint, not open yet: tokens, wallets, locks; the creator's Streamflow lock is
+  NOT in it). LockCard = dollars in, tokens out (+2% cushion), share of supply, fees skipped a year, progress bar to
+  the gate. Checked on the preview: the old coin is at a $2k cap, so the card shows the gate.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
