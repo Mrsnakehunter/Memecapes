@@ -455,6 +455,18 @@ numbers in here or anywhere in the repo.
   supply (all Jupiter Lock escrows of the mint, not open yet: tokens, wallets, locks; the creator's Streamflow lock is
   NOT in it). LockCard = dollars in, tokens out (+2% cushion), share of supply, fees skipped a year, progress bar to
   the gate. Checked on the preview: the old coin is at a $2k cap, so the card shows the gate.
+  Then (3:50 am): "all of the old coin taken off the new app, the site ready with the coming-soon page so X has a
+  web page, ready for the gold badge" (X's gold check = Premium Business, from $200/month; needs a company account,
+  an email on the domain, a live website; NOT earned by a tax number or a partner approval). Pit `greed-skin` 3ada68d:
+  every app screen that sold, locked or burned the old coin (coin page, lock card, burn desk, fee bar, buy sheet,
+  trending pin, in-trade fee burn) now follows the new coin's mint env (empty = "not live yet"); the old mint stays
+  in config ONLY for promises: wallets that locked 1M+ of it keep fee-free trading (app/api/lock legacyFree), and the
+  old site's stats route still reads it. The old coin's public record stays on memecapes.com, untouched. LIVE (Pit
+  main 7bad854, his go): the coming-soon page got a 1200x630 link card (public/og-greed.png: mark + name + line, Bebas
+  Neue from ad10/fonts), og/twitter tags (summary_large_image), icons, canonical, and the support@ address; Terms and
+  Privacy show it too (scripts/legal-static.py CONTACT + lib/config.ts SUPPORT_EMAIL default). The domain's mail is an
+  ImprovMX catch-all, so any address on it reaches him. Files with a dot skip the middleware matcher, so new images
+  on the coming-soon host need no routing. The X profile has no website link yet: an account setting, his yes.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
