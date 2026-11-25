@@ -351,6 +351,10 @@ numbers in here or anywhere in the repo.
   registration certificate, who owns and runs it, the owner's photo ID + a bank statement or utility bill from the
   last 90 days), which "can take a little longer", then currencies, fees and live keys. So approval of the form is
   not the same day as going live. Told him which papers to have ready so no day is lost after the email.
+  Then (12:31 am): which of two tickers for the new coin (both names stay in the chat). Gave one pick with reasons.
+  How to check a ticker fast: DexScreener's search API (latest/dex/search?q=) from the Higgsfield sandbox, keep
+  pairs whose base symbol matches exactly, group by token address, read liquidity and 24 h volume. It is a snapshot
+  (the search returns a limited list), so say "found" not "none exist". Tickers are never unique on Solana.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
