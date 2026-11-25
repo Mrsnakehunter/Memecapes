@@ -328,6 +328,22 @@ numbers in here or anywhere in the repo.
   to be posted before they approve. Reading lessons: an odd brand word in his message is his phone mangling a name
   ("Xbox", "green"); never put sympathy about a trade and work status in one message (he read it as work on the
   wrong coin); when a deliverable is this late, send it the minute it exists and explain after.
+  Then (11:57 pm - 12:10 am): "why are they both the same" (I had sent ONE ad in two shapes), "I thought you were
+  making one for moon pay with real logos, one for apple, one for google, one about the llc and ein being official",
+  "I didn't ask for [Reels]". WHAT HE WANTED = one separate SQUARE ad per subject, no vertical copies. Done in
+  15 minutes from the same page: the timeline now takes a variant in the address (#apple, #google, #moonpay, #llc):
+  a list of [scene, start frame, source frame] plus text / style / hidden-element overrides applied before the
+  text-fit pass, so any scene can be reused in any slot (scene code keeps its own frame numbers). Short cuts = hook +
+  two or three two-bar phrases + the end card; their music = the track's opening joined to its last phrase, cut on
+  the phrase start with 6 ms fades (not listened to here: he should play one with sound). Each renders in about a
+  minute. Company ad: says only the company name, its state and type, that it has a federal tax number, and that
+  Terms and Privacy are published; no number, no person's name, no address, and a small-print line that a company
+  registration is not a licence or an endorsement. I could not confirm the state's approval certificate from here
+  (told him which line to change if it is not in yet). REAL LOGOS: not put in. The partner has not approved the
+  account, and the two wallet-pay badges need their owners' sign-off; said so in two lines, names stay as words,
+  the partner kit's files can go in after approval. Lessons: a long sandbox poll (over ~60 s) comes back Bad
+  Gateway while the job keeps running: poll in short calls; when he lists subjects ("apple and moon pay and
+  google"), that is one deliverable EACH, and a second shape of the same video is not something he asked for.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
