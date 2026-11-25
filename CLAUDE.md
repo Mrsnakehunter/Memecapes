@@ -344,6 +344,13 @@ numbers in here or anywhere in the repo.
   the partner kit's files can go in after approval. Lessons: a long sandbox poll (over ~60 s) comes back Bad
   Gateway while the job keeps running: poll in short calls; when he lists subjects ("apple and moon pay and
   google"), that is one deliverable EACH, and a second shape of the same video is not something he asked for.
+  Then (Nov 25, 12:29 am): "can you see if they approved it, how long can it take". Checked the payment partner's
+  dashboard in the pane (its home page needs ~5 s before the text reads): still "In review", "We'll email you once
+  there's a decision". Their help pages: the account review is "usually completed within a couple of business days";
+  approval comes as an email with a Continue onboarding button, then business verification starts (company
+  registration certificate, who owns and runs it, the owner's photo ID + a bank statement or utility bill from the
+  last 90 days), which "can take a little longer", then currencies, fees and live keys. So approval of the form is
+  not the same day as going live. Told him which papers to have ready so no day is lost after the email.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
