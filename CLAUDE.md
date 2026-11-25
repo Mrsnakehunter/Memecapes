@@ -432,6 +432,18 @@ numbers in here or anywhere in the repo.
   itself on that page now counts as known. DATABASE FILES NOT RUN: the database dashboard is signed out in the pane
   and its sign-in goes through his code-host login (a password page): his step; the tab is left on that page.
   Lesson: before answering "say run it and I will", open the dashboard and check it is signed in.
+  Then (2:36 am, "I think everything's logged in"): DATABASE FILES RUN in the pane, in order: supabase/feed.sql
+  (the expected "destructive operations" box = its drop-trigger / drop-policy lines on the brand-new tables; a
+  read-only look first showed posts / post_likes / post_reports did not exist) then supabase/notify.sql. Both
+  Success. Checked with one read-only query: 3 tables with row security on, users.profile_mint,
+  follows.created_at (default now()), 5 indexes, the like-count trigger, 2 read policies = 16 rows. Old follows
+  stay undated on purpose (never shown as new). HOW: the SQL editor's Run and the box's "Run query" both take a JS
+  .click(); the result grid's cells read with textContent (innerText is empty) and only the first ~11 rows are in
+  the page, so count rows from the "N rows" line. After a second run the old "Success" text can still be on
+  screen: always confirm with a read-only query, not the banner. The dashboard shows a "Secure your account"
+  box (recovery codes, a second sign-in method): his, left untouched. The preview still shows labelled examples:
+  its feed only goes real when the two database keys are ticked for Preview in the host (the preview would then
+  read and write the REAL database): his yes, not given yet.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
