@@ -420,6 +420,18 @@ numbers in here or anywhere in the repo.
   (5) "Show me it" = pictures in the chat at once: finish animations, shoot the pane at 390x844 at full scale, copy
   the screenshots out of tool-results under plain names and send them (he may be on his phone, and the preview is
   behind the host's login).
+  Then (1:38 am, "run it do it go go go" + "send me a link so I can play with it"). KEY: Preview ticked on the
+  chain-history key in the host's settings (row's three-dot button, aria-label "Menu" > Edit > Environments list >
+  Preview > Save; click at getBoundingClientRect x 1.25; the Environments list only reads from a screenshot). A
+  SECRET's edit form shows an EMPTY value box and saving it empty KEEPS the value (checked after: the preview's
+  /api/health says ok with the same key length); no emailed code was asked this time. The success toast has a
+  Redeploy button: NOT pressed; an empty commit on the preview branch makes the new preview build.
+  NEW READER VERIFIED with the real key on the preview (4bd21cd): `via: balances`, 25 rows in 0.4 s, page 2 by its
+  token = 25 older rows with no overlap, a trading wallet reads Sold / Sent / Received. Found + fixed (d9a7e71):
+  every incoming transfer of a coin the wallet itself sells was marked possible spam; a coin the wallet moved
+  itself on that page now counts as known. DATABASE FILES NOT RUN: the database dashboard is signed out in the pane
+  and its sign-in goes through his code-host login (a password page): his step; the tab is left on that page.
+  Lesson: before answering "say run it and I will", open the dashboard and check it is signed in.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
