@@ -306,6 +306,28 @@ numbers in here or anywhere in the repo.
   podium when it has had one since Nov 23: read the screen's code before listing what it lacks. Not made yet: the
   new-name ad. What goes in it waits on two things that are his or a lawyer's: the payment partner's approval (no ad
   for it before), and whether stock pages may be advertised at all (people in the US cannot buy them here).
+  Then (6:53 pm, three angry lines: "those videos need to be for [the new name], use credits if you need, a top of
+  the line ad for apple and moon pay and google", "use the right logos", "we already have a character on higgs").
+  DONE (11:50 pm, far too slow: he waited five hours): a 22.6 s payments ad in the new name, 1080 square + 9:16, links
+  sent in chat (files live in his Higgsfield uploads; this workspace cannot download them). RIGHT LOGO = the red mask
+  embedded in the live coming-soon page (pulled from the live page inside the Higgsfield sandbox), not the Nov 9 kit
+  in outputs. CHARACTER = the 3D raccoon from his Nov 20 Higgsfield clips (close-up smirk, vault walk-out, rooftop,
+  thumbs-up on black); his Higgsfield account has no saved character, so one new clip was made from two reference
+  frames of those clips (Seedance 2.5, omni_reference, 16:9 1080p 5 s, no audio, 2 takes = 160 credits; both usable).
+  The Nov 19 cartoon crew and the other coin's clips are NOT this brand: leave them alone.
+  HOW (all in the Higgsfield sandbox, one project folder in its home, kept 24 h): clips to JPEG frames; one HTML page whose setFrame(f)
+  sets every style from the frame number; Playwright (global module: NODE_PATH=/usr/local/lib/node_modules, CommonJS)
+  screenshots piped into ffmpeg, one file per scene, joined with -c copy; 0.2 s a frame on one CPU. Music = the track
+  already made for those clips: 140 BPM, bars every 1.714 s from 0, snare on beat 3, phrases of two bars; every cut
+  sits on a phrase start. Phone screens are hand CSS copies of the real sign-in, Add cash, wallet and Cash out markup
+  with the app's own words and an empty new wallet (no invented balances). 9:16 = the square on a blurred copy of
+  itself + one transparent band image. Upload = media_upload, PUT from the sandbox, media_confirm.
+  Lessons: mix-blend-mode stops working inside an element that has a transform (the black clip showed as a box for
+  nine frames: give that element its own background); loudnorm needs aformat=channel_layouts=stereo first here;
+  partner and wallet names go in as plain words, never drawn logos; the ad names the payment partner, so it is not
+  to be posted before they approve. Reading lessons: an odd brand word in his message is his phone mangling a name
+  ("Xbox", "green"); never put sympathy about a trade and work status in one message (he read it as work on the
+  wrong coin); when a deliverable is this late, send it the minute it exists and explain after.
 
 - Nov 23 (11:30 pm): "whole app like the social page but better and smoother, stop using names like heist: just trade,
   wallet, feed, launch", "clean clicking, smooth pop-ups", then "research how people use Claude for top-of-the-line apps,
