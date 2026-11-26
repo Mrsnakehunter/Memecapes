@@ -158,6 +158,38 @@ numbers in here or anywhere in the repo.
   of the globe's host element. The shell cannot reach the preview, RPCs or market sites: the pane's fetch can.
   Still his: a server that watches launches for everyone (and the proper relay for the launch socket), Grok credits
   or a Claude key for the desk, his pick among the ten.
+  Then (noon - 12:20 pm, no new message, so "keep building" stood): X-RAY, number 7 of the ten (Pit `greed-skin`
+  0f1ba8e..f8b35c5, preview only). On any coin's sheet: a pill beside the symbol and the first card in Info (never
+  for stock tokens): a 0-100 score, one line on why, the findings, and on a tap a map of the 20 biggest holders
+  (bubbles sized by share, linked wallets tied to the wallet that first paid for them). lib/scan.ts (scoreFacts +
+  scanMint: pool facts from DexScreener, holder facts from GeckoTerminal when it answers, the mint's powers and the
+  launch curve from the chain), lib/holdermap.ts, lib/funder.ts (payer), app/api/scan (score redone every 3 minutes,
+  map every 30), components/XrayCard.tsx, scripts/xray.test.mjs (20 checks, run by scripts/radar-test.sh),
+  supabase/xray.sql (an optional memory table, NOT RUN: his yes).
+  FOUND with it: a coin minutes old where 19 of its 20 biggest wallets were filled by ONE wallet (59-74% of the
+  supply) while market sites showed an ordinary coin with 31 holders. The funding was hidden: each wallet was paid
+  by opening a wrapped-SOL account with a seed and closing it into the new wallet, so no transfer to the wallet
+  exists anywhere. Read WHO PAID from balance changes instead (the account whose balance fell most when the
+  wallet's rose, at least half of what it got).
+  Lessons: a holder is a person's wallet only if it is system-owned AND on the ed25519 curve (a pool's vault
+  authority is off the curve: one "holder" of 75-94% was the pool itself); a wallet's OLDEST transactions come in
+  one call (Helius getTransactionsForAddress, sortOrder asc), walking back 1,000 signatures traced 1 wallet of 15;
+  a funder shared by many holders is ignored when it is a hub (1,000+ transactions in 3 days = an exchange); never
+  say "no links found" without saying how many wallets were traced; no holder numbers is never "clean"; a launch
+  curve's own unsold coins are not a holder; a pool sized $0 is unknown, not "thin"; a coin's age is its FIRST
+  market's, not its newest pool's; GeckoTerminal's holder numbers often do not answer, so nothing may depend on
+  them alone. Bubbles: link pull first, then collision-only passes, one shrink factor for all (worst overlap 0).
+  Also: the coin sheet shows the Mayhem note straight from the pool (lib/usePool.ts); 13 routes swept at 390 px for
+  sideways scroll (only the Radar had it); our own chart rechecked (candles, ranges, line, log, price or market cap,
+  crosshair, wheel zoom).
+  PANE: browser_batch stops after ~50 s; the app refuses to be framed, so no iframe sweeps: keep a check script in
+  sessionStorage and eval it after each navigation; the preview alias can serve the previous build for a few seconds
+  after the build says success (add ?v=<sha>).
+  For Orders (number 10): Jupiter's limit-order API (Trigger V2) needs an API key and a signed token, has a $10
+  minimum and pays the integrating app NO fee (V1 gets critical fixes only): it waits for his key.
+  Seen in the preview's console: the sign-in provider refuses the branch preview address (not on its allowed list),
+  so signing in on the preview link is blocked until he adds it. The bots repo used ~400 Actions minutes for its
+  last 100 runs: hourly desk runs would pass a free plan's 2,000 a month.
 
 - Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
   create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
