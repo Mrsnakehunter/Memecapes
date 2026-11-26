@@ -317,6 +317,51 @@ numbers in here or anywhere in the repo.
   market site's "liquidity" for a coin on its launch curve can be the curve's virtual numbers, not money.
   Still his: the chain key as a secret in the bots repo (each maker's whole record, not only the launches the desk
   saw: about 1 in 15 of all), "yes railway" (a run every 10 minutes and every launch seen), "let it trade".
+  Then (5:31-6:35 pm): "listen had you make the key for claude to do the trading make it". Read as: make the
+  Anthropic API key so the desk's Claude seat trades the paper book.
+  THE KEY (not made): the Claude Console was signed out in the pane, and its "Continue with Google" opens a pop-up
+  window, which the pane cannot open (the page says "There was an error logging you in"; the console says "Failed to
+  open popup window"). Email sign-in works there: the emailed link, opened in another browser, shows a code to type
+  into the pane. Sign-in is his and he did not finish it. I left the repo's new-secret form open with only the name
+  typed (ANTHROPIC_API_KEY): a key's value is never read, typed or pasted by me. Checked on Anthropic's own pages
+  before saying any of it: API use is billed apart from a Claude plan (prepaid credits); Max, Ultra and Team plans
+  include monthly API credits, claimed by linking a Console organization (Settings > Billing > API credits); Sonnet
+  5.5 is $2 / $10 and Haiku 5.5 $0.10 / $0.50 a million tokens; the Start tier allows 4,000 requests a minute.
+  THE SEAT THAT NEEDS NO KEY (bots repo main 27bc855, 1f764bd; boss_agent/SEAT.md is the procedure):
+  - Every decide run ends by writing boss_brief.json on the ledger: for each coin on the table, the same text the
+    round table is given (snapshot and indicators, token facts, holders, what is being said, the learner's read,
+    wallets with a record, who made it, earlier calls), plus the book, the lessons and the market. About 3,000
+    characters a coin. `python -m boss_agent.run brief` writes one alone and trades nothing.
+  - The desk's 2-hourly scheduled task is now the seat: a Claude session on his plan (no API credit) reads the
+    brief (warroom/brief.sh), decides as SEAT.md says, and asks for the next decide run with its calls
+    (warroom/refresh.sh <dir> <calls.json> -> the workflow's `calls` input, read from the environment only).
+  - A call is one run's order ({mint, rating, why, lo, hi, brief, room}): used only if the coin is on the table,
+    passes every hard rule, its brief is under 170 minutes old and, to buy, the live price is inside lo..hi (no band:
+    12% either side of the brief's price). A stale read fails safe. Coins the seat spoke on are looked at first; a
+    coin with a usable call is not sent to the API table. boss_calls.json keeps what became of each call (bought,
+    sold, held, no room, view, passed and why); a used call is filed in the AI book under "Claude, scheduled seat"
+    and graded a day later like the rest. The page shows Claude "online, scheduled seat" and lists unused calls.
+  - boss_agent/seat.py (parse, check, Hand), run.brief_of, test_seat.py (7 tests, 96 in all). Also: a lone API
+    provider now waits out a busy moment (4 retries) instead of dropping out for the run.
+  FIRST CALLS (made in this chat as the seat at 6:23 pm, from a 4-minute-old brief): 4 Sell and 1 Underweight (views:
+  the book holds nothing) and 1 Overweight with a dip band that did not fill (the price went up instead). Four of
+  the six coins on the table were runners already down 60-85% from their highs: the table's menu is mostly coins
+  AFTER the move, which is the same reason the plain rule lost paper money. NEXT for the seat: let it ask for coins
+  to be put on the table (the radar's other coins as one compact list in the brief, a `look` list in its answer).
+  The brief is as old as the last run (up to 2 hours): a loop on the server would make the seat near-live.
+  ACTIONS BUDGET (read in the pane, the API cannot): the account is on GitHub Free, which includes $12 of Actions
+  compute a month ($0.006 a Linux minute = 2,000 minutes); $8.86 was used with 5 days to the reset. One desk run is
+  5 to 7 billed minutes; 12 seat runs a day plus GitHub's own schedule is about $0.5-0.6 a day, more than $12 in a
+  31-day month. Ways out: drop the workflow's own schedule and go to a 3-hour cadence (free), Pro ($4, $18
+  included), or the loop on the server. His pick.
+  Lessons: (1) when he asks for a thing only he can make (a key behind his own sign-in), start it AND build the
+  route to his goal that needs none; say so in one message when the second one works. (2) The pane cannot open
+  pop-up windows: a "Continue with Google" button that uses one fails; use the site's email sign-in. (3) A workflow
+  input is the safe way to hand data to a run (no race with the ledger's force-push); inputs left out take their
+  defaults (max defaulted to 2: pass it). (4) A cloud session's command may run 10 minutes: a wait loop must end
+  before that. (5) `date` before judging how long he has waited: I thought 40 minutes had gone by, it was 15.
+  (6) A PyYAML check of a workflow reads the `on:` key as True.
+  Still his: the Console sign-in if he wants the API seat as well; the Actions budget pick; "yes railway".
 
 - Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
   create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
