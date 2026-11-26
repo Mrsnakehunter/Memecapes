@@ -192,7 +192,7 @@ numbers in here or anywhere in the repo.
   last 100 runs: hourly desk runs would pass a free plan's 2,000 a month.
   Then (12:20-12:45 pm): PRACTICE MODE, number 9 (Pit `greed-skin` 5a4cf59..1a2766b, preview only): a practice
   wallet kept on the device (10 practice SOL; start over with 1, 10 or 100), any coin, live prices, signed in or
-  not. lib/practice.ts = the sums only, no imports (scripts/practice.test.mjs, 41 checks, run by
+  not. lib/practice.ts = the sums only, no imports (scripts/practice.test.mjs, 40 checks, run by
   scripts/radar-test.sh); lib/usePractice.ts = the store (localStorage + useSyncExternalStore) and the quotes: a
   practice trade asks for the SAME quote a real one is built from, takes the same cut and a 0.0005 SOL network fee,
   and writes the result down; nothing signs or sends. The wallet is valued as if every coin were sold now (one sell
@@ -220,6 +220,33 @@ numbers in here or anywhere in the repo.
   his screen: in the test tab, patch Storage.prototype so that one key lives in sessionStorage, and after a reload
   dispatch a `storage` event so the store reads it. A build's own address needs a new site approval in the pane
   (don't ask him for it). The Radar opens the launch socket: never open it in a second tab while his is open.
+  Then (12:50-1:45 pm): WHO MADE IT, number 3 of the ten in an on-demand form that needs no always-on server (Pit
+  `greed-skin` 4a5b09f..be5c21f, preview only). On the same tap as the holder map the X-ray reads the coin's maker
+  and its record: lib/makerfacts.ts (no imports: launchesBy, makerFindings, ended, span; 26 more checks in
+  scripts/xray.test.mjs; scripts/fixtures/maker-serial.json = real transactions), lib/maker.ts (server). HOW: the
+  maker is written in the coin's launch-curve account (bytes 49-80; the curve's address is derived from the words
+  "bonding-curve" + the mint under the launch program); its last 300 transactions come in three calls
+  (getTransactionsForAddress, newest first); a launch = a transaction the wallet signed whose log says
+  "Instruction: Create" or "CreateV2"; the coin = the account that signed its own creation (first account of the
+  launchpad's instruction), its curve = the third; each earlier coin's curve says how it ended (open market,
+  nothing left, or SOL still in it); the maker's own balance = getTokenAccountsByOwner with the mint. Findings, all
+  counted in the score: N other coins in the last X and how they ended; took X% at launch and sold all or most;
+  holds X%; paid for N of the biggest wallets, or shares its payer with them (the holder map's funders; an
+  exchange ties nobody); 200+ transactions inside the hour = a program runs the wallet.
+  FOUND on the first coins tried: one wallet with 69 other launches in 17 hours, every pool empty, a new coin every
+  minute or two; another with 8 in 9 hours. A failed launch transaction (err set) is not a launch: my hand count
+  of 11 was really 9. The maker is read BEFORE the map, never beside it (the chain reader allows only so many
+  calls a second); the route may run 45 s. supabase/xray.sql gained maker columns (still NOT RUN).
+  X-ray wording caught on real coins: two wallets holding 5% is not "spread out"; "Only under 0.01 SOL" is not a
+  sentence; a 13-minute-old coin with half a SOL in it read "Looks clean" at 88 (under 1 SOL in a launch pool now
+  costs 15); a map with no wallets on it said "most could not be traced".
+  RADAR, from looking at HIS screen (a screenshot and read-only JS on his tab do not disturb him; never navigate,
+  resize or click it): "Taking off" listed coins that got big 6-22 hours ago and were flat or falling. Now
+  Radar.takingOff() = alive, on its curve, 3x launch, not falling, and under two hours old or rising; rising first;
+  the tile, the list and the globe's filter share it (the globe's frames run on performance.now(): use Date.now()
+  for a coin's age). The line under the tiles set launches watched this visit beside ALL dead coins ("2,778
+  launched, 2,896 dead"): now the dead among those. The picked coin says when its maker keeps launching (the feed
+  names every launch's maker, so that costs nothing).
 
 - Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
   create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
