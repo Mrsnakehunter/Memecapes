@@ -190,6 +190,36 @@ numbers in here or anywhere in the repo.
   Seen in the preview's console: the sign-in provider refuses the branch preview address (not on its allowed list),
   so signing in on the preview link is blocked until he adds it. The bots repo used ~400 Actions minutes for its
   last 100 runs: hourly desk runs would pass a free plan's 2,000 a month.
+  Then (12:20-12:45 pm): PRACTICE MODE, number 9 (Pit `greed-skin` 5a4cf59..1a2766b, preview only): a practice
+  wallet kept on the device (10 practice SOL; start over with 1, 10 or 100), any coin, live prices, signed in or
+  not. lib/practice.ts = the sums only, no imports (scripts/practice.test.mjs, 41 checks, run by
+  scripts/radar-test.sh); lib/usePractice.ts = the store (localStorage + useSyncExternalStore) and the quotes: a
+  practice trade asks for the SAME quote a real one is built from, takes the same cut and a 0.0005 SOL network fee,
+  and writes the result down; nothing signs or sends. The wallet is valued as if every coin were sold now (one sell
+  quote a coin, at most every 45 s, one question every 2.5 s, none while a buy screen is open or the tab is hidden);
+  no way to sell = worth nothing. components/PracticeBar.tsx (a strip across every screen while it is on; on Launch
+  and the lock page it says those are real), components/wallet/PracticeWallet.tsx (the Wallet tab while on), the buy
+  screen (practice is checked BEFORE sign-in, no Burn tab, a dashed "Practice buy / sell" button, the second tap on
+  an unsellable coin stays), a "Practice trade" mark on the stamp, the practice wallet on Trade in place of the
+  example balance. Stock tokens stay blocked where they are blocked. Practice results feed no score and no board.
+  Checked signed out at 390 px: buy, wallet (a round trip's cost shows at once), sell half, and a bot-traded coin
+  shown at a $9k market cap with an empty pool: it reads "0 SOL, can't be sold now" and its sale is refused with
+  the reason. NOT checked: signed in (the preview's sign-in is blocked, see above).
+  HIS REACTION mid-build, with the Radar open in the pane: "mayhem mode is directly stealing pump.fun's mode, what
+  are you doing". He read the other launchpad's feature name on our warning label as us copying their mode. Fixed
+  in minutes (f06517a): that name is off every screen; the label says what happens in our own words ("Bot-traded:
+  the launchpad's own bot is moving this price, not buyers"). It stays only in code comments and the feed's field
+  name. RULE: never put another product's feature or brand name on our screens, however accurate: it reads as
+  copying, or as our own feature. Say what the thing does. Reply = two lines (what it really is, my mistake, the
+  fix), then ship the fix before anything else.
+  Lessons: the app's h1 is big display type with !important, so a pill-shaped h1 cannot hold it (use the h1 as the
+  title); a tile's second line in 11 px plain type fits where 13 px mono is cut; toFixed(3) turned 1.0005 into
+  "1.000" inside "this buy needs ...": use an exact form where the last digit is the point.
+  PANE: he was USING the preview tab (its address kept going back to the Radar between my calls): never drive the
+  tab he is on, work in another tab. Tabs of one address share localStorage, so a test that writes it shows up on
+  his screen: in the test tab, patch Storage.prototype so that one key lives in sessionStorage, and after a reload
+  dispatch a `storage` event so the store reads it. A build's own address needs a new site approval in the pane
+  (don't ask him for it). The Radar opens the launch socket: never open it in a second tab while his is open.
 
 - Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
   create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
