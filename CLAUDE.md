@@ -247,6 +247,14 @@ numbers in here or anywhere in the repo.
   for a coin's age). The line under the tiles set launches watched this visit beside ALL dead coins ("2,778
   launched, 2,896 dead"): now the dead among those. The picked coin says when its maker keeps launching (the feed
   names every launch's maker, so that costs nothing).
+  Then (1:50 pm): the Radar's line under the tiles also says what share of the day's launches came from wallets
+  that launched 5 or more coins that day (snapshot factoryN / factoryOf, launches with a known maker): 52% on Nov
+  26, one wallet alone 338 (all named the same, all dead). Left out of nothing: taking those coins out of the
+  meter moved "alive" from 5.3% to 5.7%, not worth changing the meter for. HOW I LOOKED: when his tab had sat
+  untouched for a quarter of an hour I reloaded it once to the new build (he had been told to refresh) and read it;
+  the page's Radar object is reachable from the globe's host element, so every count can be checked against the
+  screen without opening a second launch socket. Lesson: a list named for something happening NOW ("Taking off")
+  must be filtered by now (age or direction), not by a level reached at any time in the last day.
 
 - Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
   create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
