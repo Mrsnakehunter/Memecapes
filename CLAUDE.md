@@ -101,6 +101,64 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 26 (12:30 am - noon; the chat stalled 2:50-10:20 am): "10 huge updates for the site, I'll decide in the morning",
+  "our own trading chart instead of the library's", "the desk must use Grok AND Claude and hand over; show me what it
+  does, not words: a sphere of wallets, launches and trades that keeps getting smarter", "the page can't be called Boss
+  Desk; a live feed, all 2-3 thousand Sol launches", "the sphere 100 times better, our logo in the middle, 3D, unlike
+  anything", "keep building, trade and learn all night".
+  STALL: nothing ran for seven hours and the link he was waiting for was never sent. An "all night" promise must be a
+  scheduled task or a workflow cron, never this chat; a link goes out the minute a slice is on the preview.
+  RADAR (Pit `greed-skin`, preview only, e021eb5..89c9d94): app/radar + lib/radar/live.ts (the feed store, one per
+  tab), orb.ts (WebGL2 globe, no library), globe.ts (2D fallback), mount.ts, /api/radar/look (DexScreener tokens/v1,
+  30 coins a call, 9 s per-coin memory shared by viewers). Feed = PumpPortal's socket wss://pumpportal.fun/api/data
+  (subscribeNewToken + subscribeMigration), the app's discover lists for what was already out and as the fallback,
+  the last 24 h remembered in localStorage (radar_day_v1). About 2,900 launches in 8 hours, 6-22 a minute. ONE socket
+  per browser: a second one opened for a test got one message in 30 s. Create messages carry `is_mayhem_mode`.
+  UNITS: a coin opens at ~28 SOL of market cap whatever SOL costs (SOL was ~$70, so every dollar threshold was
+  wrong): "taking off" = 3x launch; dead = no trade in 5 minutes on two looks running.
+  NOT A LAUNCH: the feed also carries coins launched against another token and pools opened for old majors: drop on
+  market cap over 250M, a pool older than the "launch", or a symbol the market does not agree with.
+  GLOBE: scene in an RGBA16F target (needs EXT_color_buffer_float/half_float; fallback SRGB8_ALPHA8), 5-level bloom,
+  tone map + dither. The logo in the middle is ray-marched from a distance field built at load from the logo PNG
+  (Felzenszwalb transform), written with gl_FragDepth so it hides what is behind it. Fixed on the way: a black
+  stripe on the side walls (inset the back plate), vertical lines (glow sprites were depth-clipped: draw them with
+  the depth test off), scratchy bevels (sub-pixel edge distances), a washed-out 8-bit path, a white blob at 3,000+
+  coins (dim what is unknown, a window in front of the mark, fewer chains). The smoothness control may only keep a
+  softer picture if it made frames FASTER (a throttled pane or a 30 Hz screen dragged quality to the floor).
+  MOOD METER (0-100 on the Radar): launches a minute, share still trading at 10-45 minutes, share that hit 3x,
+  graduations an hour, share rising; the marks are a first reading of one night, written in live.ts to be tuned.
+  SAFE BUY (lib/safebuy.ts + the buy sheet): quote a 0.02 SOL buy, quote the coins straight back (no route = cannot
+  sell; the gap = what a round trip costs), plus what the mint still allows (freeze, print, transfer fee, take-back,
+  hook). A second tap when no way to sell was found.
+  THE FIND (11 am): the Radar's "taking off" list showed coins at $75k-$113k that the sheet said could not be sold.
+  Read off the chain: ~3 in 10 pump.fun launches are made in MAYHEM MODE (the launchpad's own bot trades the coin for
+  a day; supply 2B). Of 300 fresh curves, 88 were Mayhem and not one held more than 0.04 SOL; 198 were ordinary
+  (virtual SOL = 30 + real SOL, always); 14 were priced in another token. The bot moves a Mayhem coin's price with
+  no SOL going in, so market sites show a market cap that is not money, and the bot's trades keep a dead coin
+  "trading". lib/pumpcurve.ts reads the curve account (owner 6EF8...F6P, 166 bytes: virtual coins @8, virtual SOL
+  @16, real coins @24, real SOL @32, done @48, Mayhem flag @81, quote token @83 (zeros = SOL)); lib/pumpchain.ts reads
+  up to 100 in one getMultipleAccounts with a short memory. Now: a Mayhem coin counts only as far as its real SOL
+  carries an ordinary launch ((30 + real)^2 / 32.19 SOL), is alive only with 0.05+ SOL in its pool, is left out of
+  the meter; a coin that may be one counts under 2x until the chain answers; Safe Buy tells "nobody is in yet" from
+  "the pool cannot pay a seller"; Trade's About-to-graduate reads real progress. The meter's 3x share fell from 6%
+  to 1% and the meter from 50 to ~30. scripts/radar-test.sh (39 checks; compiles lib/ to a temp folder, no browser).
+  Lessons: when two of our own screens disagree, read the chain before rewording either; same-ticker copies exist
+  (seven of one name in 15 minutes): match coins by address, never by symbol; a wrong number on a market site is not
+  a rounding problem until proven so.
+  PAPER DESK (memesnake-bots main, boss_agent/): both AI seats with hand-over (Grok out of credits, no Claude key
+  saved: only the learner and the rule book traded), a radar of 8 GeckoTerminal lists, a wallet book, and a learner
+  graded TWO HOURS on from live prices on every run (hourly cron, decisions every 2 h, daily pass from candles).
+  First numbers: 137 graded snapshots (it trades after 400), 4,409 graded wallet buys, 35% in profit two hours later.
+  Paper only: it never signs or sends anything, and a model never changes its own hard rules. GitHub cron runs start
+  up to 50 minutes late; a cloud scheduled task republishes the desk page every 2 hours.
+  PANE: an emulated phone size taller than the pane is scaled, and screenshots come out cropped: use one that fits
+  (390x740 here). A page wider than the phone (one grid without grid-cols-1 let long names widen it to 441 px) makes
+  every sheet lay out too wide: check document.documentElement.scrollWidth === clientWidth at 390 before shooting.
+  The JS tool gives up at 45 s (keep waits under 38). The page's Radar object is reachable through the React fiber
+  of the globe's host element. The shell cannot reach the preview, RPCs or market sites: the pane's fetch can.
+  Still his: a server that watches launches for everyone (and the proper relay for the launch socket), Grok credits
+  or a Claude key for the desk, his pick among the ten.
+
 - Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
   create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
   it even have Strike; just show the comments below, then Buy and Info" (3) "a watchlist like FOMO in Trade, swipe over
