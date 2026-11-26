@@ -255,6 +255,10 @@ numbers in here or anywhere in the repo.
   the page's Radar object is reachable from the globe's host element, so every count can be checked against the
   screen without opening a second launch socket. Lesson: a list named for something happening NOW ("Taking off")
   must be filtered by now (age or direction), not by a level reached at any time in the last day.
+  Seen in the test tab's console: the coin chart's trade tape kept asking the data site every 4 s while it was
+  being refused. A "too many requests" from that site carries no cross-site header, so the page cannot read it as
+  a status: it lands in `catch`. Back off there too (9bf9fd0). One open coin sheet = about 17 calls a minute of the
+  30 that site allows an address, so two sheets in two tabs is already too many.
 
 - Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
   create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
