@@ -259,6 +259,64 @@ numbers in here or anywhere in the repo.
   being refused. A "too many requests" from that site carries no cross-site header, so the page cannot read it as
   a status: it lands in `catch`. Back off there too (9bf9fd0). One open coin sheet = about 17 calls a minute of the
   30 that site allows an address, so two sheets in two tabs is already too many.
+  Then (4:25-5:25 pm, two lines a few minutes apart): "your trader should have the ability to learn and not trade
+  certain wallets that launch and should keep getting smarter, have we tried paper trading at all" + "analyzing these
+  tokens and new launches should take less time and your understanding should speed up".
+  ANSWERED FIRST, in numbers, from the desk's ledger (branch boss-ledger of the bots repo): a month of paper trading
+  (since Oct 26). The plain rule's book: 60 buys on 33 coins, 18 wins and 43 losses, $1,000 -> $773. The AI seat's
+  book: 0 buys (every graded call was Sell or Underweight, right 64% of the time; out of credits now). The learner:
+  0 trades (399 of its 400 graded snapshots then; at 444 its top picks still rise less often than the average coin,
+  28% against 31%, so it holds). The desk really runs when the cloud scheduled task asks for a run (every 2 hours):
+  GitHub's own schedule fires only a handful of times a day.
+  MAKER MEMORY (bots repo main a013507..5b3509d: boss_agent/makers.py, test_makers.py, boss_makers.json on the
+  ledger; README_BOSS.md has the rules):
+  - A launchpad coin's maker is written in its launch curve; the curve's address is worked out in plain Python
+    (sha256 + an ed25519 on-curve test, no Solana library on the runner; three real coins in the tests).
+  - What a GitHub runner can read with NO key (probed, `python -m boss_agent.makers probe`): getMultipleAccounts on
+    both public chain readers (a hundred curves a call, 0.1 s), getSignaturesForAddress on both,
+    getTokenAccountsByOwner only on mainnet-beta (publicnode answers 403), GeckoTerminal's new_pools (20 a page is
+    under a minute of launches; a pump-fun pool's address IS the curve's, 47 of 47), and the live launch feed's
+    socket (websockets library; about 12 launches a minute, each naming its maker and what the maker put in).
+  - Every run: the curve of every radar coin, two pages of newest pools, and every launch the feed announces while
+    the run works (a thread for the length of the run) are filed under their makers; later runs read how each
+    ended, no sooner than 45 minutes in (nothing left / SOL still in it / open market). The curve has the last word
+    on who the maker is (the feed names the wallet that paid).
+  - The avoid list (book.coin_ok, all three books; a held coin is sold): 3+ launches inside a day (unless half of
+    its followed coins reached an open market), 2+ other coins with a known end and 70%+ of them dead, two stop-outs
+    or one lost pool on that maker's coins (the desk's own experience, run.mark), or a price the launchpad's own bot
+    is moving. Three maker facts go on every snapshot for the learner. The rule is graded too: each snapshot keeps
+    whether the rule refused the coin, so the page and the lessons compare refused coins with allowed ones.
+  - SEEDED once from the Radar's own day on the device (localStorage radar_day_v1 read in MY tab, the same origin
+    as his: 2,398 launches with makers; `python -m boss_agent.makers seed`), pushed to the ledger branch between
+    runs. Nothing was believed about how they ended: the first run read 2,032 curves itself.
+  - FIRST RUNS: 1,290 makers, 2,547 launches on file, 1,854 followed to the end: 88% nothing left, 10% SOL still in,
+    2% open market. From wallets launching by the batch 94% dead, bot-traded launches 95%, a maker seen once 83%.
+    146 makers on the avoid list. The two biggest (255 and 142 launches) make coins priced in ANOTHER token (the
+    curve's quote is not SOL): counted apart as "not priced in SOL", never as "too new". A bot-traded coin on its
+    curve showed a $104k "pool" on the data site: refused by the bot rule.
+  THE FINDING I TOLD HIM STRAIGHT: none of the 33 coins the paper trader bought came from a batch launcher (each
+  maker read through the app's new ?maker=1 from the pane). Those coins die before the desk's own filters (2 hours
+  old, $10k pool) ever see them. The rule is right, but it is not what lost the paper money: buying coins already
+  running was.
+  SPEED, desk: a scan also reads again every coin seen in the last day and a half (DexScreener tokens/v1, 30 a call)
+  and launches still alive: 74 snapshots on the second run against 45, growing with what it has seen.
+  SPEED, app (Pit `greed-skin` 833afea, preview only): /api/scan/<mint>?maker=1 = the maker's record by itself; the
+  sheet asks for the score, then at once for the maker (useScan), so the pill and the card count a batch launcher
+  with no tap: a real coin went 39 -> 9 and the maker read took 0.1-0.5 s. The second read scores the facts the
+  first one fetched (scoreFacts) instead of asking the data sites again; the holder map still waits for the tap.
+  Ready, not switched on: BOSS_LEARNER_PRACTICE=on (branch maker-book b339524) lets the learner paper trade before
+  its picks have proved themselves. Only on his "let it trade".
+  Lessons: (1) a "have we ever" question gets the ledger's numbers first, then the build; (2) check the belief
+  behind an ask against the record (he assumed bad makers cost the trades; they had not) and say it in three lines;
+  (3) the workflow's concurrency group makes a push's test run hold a requested run back about 4.5 minutes; a push
+  that touches only warroom/ starts no workflow; every push to main restarts the bots, so batch them; (4) the
+  artifact tool refuses to publish over data files another session republished until they are read (action read,
+  paths), and refuses the same content once more before letting it through: prove the live page equals the last
+  git version, then publish again; (5) tool calls come back in seconds: read the clock (`date -u`) before calling
+  a run slow; (6) a local Playwright preview has no charset: prepend a meta charset or "…" shows as junk; (7) a
+  market site's "liquidity" for a coin on its launch curve can be the curve's virtual numbers, not money.
+  Still his: the chain key as a secret in the bots repo (each maker's whole record, not only the launches the desk
+  saw: about 1 in 15 of all), "yes railway" (a run every 10 minutes and every launch seen), "let it trade".
 
 - Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
   create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
