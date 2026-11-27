@@ -136,6 +136,58 @@ numbers in here or anywhere in the repo.
   apology, no defence, no lecture.
   Still his: "go live" or "hold"; the sign-in service's dashboard sign-in; then yesterday's list (the bots' host,
   the Actions pick, the bio number and "link it", the demo's Share tap, credit for the Grok seat).
+  Then (12:49 - 1:35 pm): "if we go live I want everything about [this site] that's ever come out off the code, off
+  the site, I don't want the ticker on there at all, nothing about it at all". READ AS: the NEW app's code and what
+  it serves. This site's own record is left alone (his standing rule: an earlier launch's record stays up).
+  Answered in one line at once, first result 30 minutes later, then kept going without asking.
+  DONE (Pit `greed-skin` 77defee, a093871, 2b8a65f; preview only; `demo` merged after each):
+  - Removed: the pages and routes that existed for this site and its game (link pages, the game's two read routes,
+    the launch-page widget, this site's menu inside the app, its browser access to the API), the weekly prize job,
+    the earlier coin in settings / battle board / lock rule, memos accepted under the earlier word, the earlier
+    product's documents. The coin page is /coin only.
+  - EARLIER LAUNCHES on a shared database: a tag, not a date. Every new launch is written with a new tag
+    (lib/hidden.ts LAUNCH_TAG); lists filter on it. Everything else in the launch table is OFF-LIST: never listed,
+    pinned, ranked, found by a text search, in a feed, on a profile or in the public fee numbers, but it still OPENS
+    by address, so a holder sees it in their own balance and can sell. Creators claim fees on an unlisted page
+    (/claims: signed in, own coins only). Three states now: listed, off-list, hidden (does not open at all).
+  - A coin's address no longer carries the earlier three-letter ending (a host setting can give a new one, 1-3
+    letters; a longer one needs addresses made ahead of time: his pick).
+  - Other addresses: on the live build any address that is not the app's own forwards pages to it (no address named
+    in code). /api answers everywhere.
+  - Automatic Telegram posts are off unless a setting switches them on.
+  - Then the plumbing: page folders and server routes moved to plain names (the earlier ones answer "not found"),
+    the data keys the browser receives renamed, device keys, class names, tags, comments.
+  - scripts/names.test.mjs fails the test run if an old name is written anywhere in what gets built. The names are
+    kept IN PIECES in scripts/names.mjs, so the checker (and the plain build, which uses the same list) is clean too.
+  CHECKED from a pane tab on the preview: 43 addresses (every earlier one answers "not found") and all 50 script
+  and style files it serves (4.5 MB): 0 hits for any old name, ticker or short name; control words were found, so
+  the search works. The plain demo build passed its own sweep with the longer list.
+  Lessons:
+  (1) BEFORE DROPPING A PROMISE, READ THE CHAIN. "Whoever locked keeps free trading" covered nobody: the lock program
+  has 0 accounts for that coin (getProgramAccounts through the app's own /api/rpc from a pane tab; the same query on
+  a coin known to have locks returned thousands, so 0 is an answer, not a failure). An empty promise can go; one
+  that someone holds must stay.
+  (2) THINGS THAT WOULD HAVE GONE PUBLIC BY THEMSELVES at go-live: a weekly job announcing prizes in the old ticker
+  and a Telegram poster. Before any go-live, list the scheduled jobs and everything that posts outward. (The host's
+  settings list, names only, showed neither had the settings to run. Read the list: it is 16 lines and virtualised,
+  so scroll and collect.)
+  (3) ONLY STRINGS AND DATA KEYS REACH THE BROWSER: code names are minified away. Count words in the SERVED files to
+  know what matters (the remaining hits were a sign-in library's own function names and a word list).
+  A setting that is NOT set on the host ships its NAME in the bundle (`env.NAME`): unset settings need plain names.
+  (4) The request gate can tell a live build from a preview (VERCEL_ENV): proved on the preview with a response
+  header on /api/health before relying on it for the forward.
+  (5) What the app keeps on the device belongs to the ADDRESS it was made on. Forwarding the earlier address strands
+  it (operator wallets kept in the browser, an unfinished listing): ask before go-live.
+  (6) Preview links carry the host project's name (and the account's): a host setting, his yes. A "plain" demo link
+  is only plain once that is renamed.
+  (7) A rename this wide: git mv, then scripted exact replacements with a count assertion on every one, then compare
+  the compiler's complaints with a baseline taken from HEAD in a worktree (map renamed paths first). No new line =
+  nothing broken that types can see.
+  (8) Words he never chose (temporary feature names from an earlier pass) were still in two error messages, a
+  wallet confirm title and a hover label: grep the upper-case, lower-case and plural forms in strings.
+  Still his: "go live" or "hold"; the sign-in service's dashboard (its window still shows the earlier app's name,
+  and it does not know the new address); "rename it" for the host project; whether any operator wallets were made
+  on the earlier address; yesterday's list.
 
 - Nov 26 (12:30 am - noon; the chat stalled 2:50-10:20 am): "10 huge updates for the site, I'll decide in the morning",
   "our own trading chart instead of the library's", "the desk must use Grok AND Claude and hand over; show me what it
