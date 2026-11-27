@@ -475,7 +475,7 @@ numbers in here or anywhere in the repo.
   virtualised list: only the lines on screen are in the page. Prove a build by its site. (6) Run the compiler on the
   reworded copy and on the original and compare by file and error code: a cheap proof that a mass rewording broke
   nothing (only the four replaced pages differed).
-  Then (9:35-10 pm, no new message): HE SUBMITTED THE GOLD CHECK himself (X's page: payment successful, under review,
+  Then (9:35-9:40 pm, no new message): HE SUBMITTED THE GOLD CHECK himself (X's page: payment successful, under review,
   the paid features work meanwhile, "we may request additional information", "any account that is not approved will
   not be refunded"). The profile still has no website link and the old bio: both wait for his word.
   OLD SITE, READY FOR LAUNCH DAY: branch `moved-front` of this repo (703868c, NOT merged): moved.js + config.js
