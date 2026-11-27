@@ -190,6 +190,69 @@ numbers in here or anywhere in the repo.
   Still his: "go live" or "hold"; the sign-in service's dashboard (its window still shows the earlier app's name,
   and it does not know the new address); "rename it" for the host project; whether any operator wallets were made
   on the earlier address; yesterday's list.
+  Then (1:31 - 5:30 pm; the chat stalled 2:50 - 5:20): "why is there anything in the website pages that says [the
+  old names], everything needs to be [the new one]", "start closing windows we aren't using", "why is [the old app
+  address] working, shouldn't we be taking it all down", "think of 3 new things for the social page, the launchpad
+  and the wallet, and make the launchpad even more creative and beautiful", "this [preview link's] name isn't okay,
+  I want no ties or links to [the old names] inside the coding or anything", "we need [a named bot] in the new
+  Telegram group", then at 5:20 "so keep working on stuff".
+  WHAT HE WAS SEEING: (a) the host's dashboard and every preview link carried the host PROJECT's name and the
+  team's (both old); (b) MY MISS from Nov 25: the live coming-soon page's browser-tab icon was the old app's logo.
+  Files with a dot skip the request gate, so the icons, the manifest, the old link card and an old script were all
+  being served under the new domain straight from the old app's public folder.
+  FIXED LIVE (Pit main 1fb585e; that page has his standing go): the coming-soon pages link their own icons in
+  public/soon/, and the gate's matcher got a host-conditional entry ({ source: "/:path*", has: [{ type: "host",
+  value }] }) so that under the coming-soon domains EVERY request passes the gate and only the page, its two static
+  pages, its card and its icons answer. Checked from a pane tab: the icons are the new ones and everything else of
+  the old app says "not found" there.
+  HOST RENAME (in the pane, on his words above): project renamed, its old picture removed, team name and team
+  address changed. Preview links are now <project>-git-<branch>-<team address>.vercel.app. How: Settings > General;
+  scroll_to the field's ref, click by ref, ctrl+a, type, read the input's value back in JS, click Save only when it
+  is enabled, then load the NEW dashboard path to prove it (the tab's title said it had worked when it had not).
+  Old links stop updating; the pane needs a site approval for the new host (asked once, he said yes); his own tab
+  was still on the old-named link hours later, so I moved it to the new one while the pane was off screen.
+  NO TIES, NO LINKS: the request gate no longer forwards other addresses to the app's own. On the live build any
+  other address gets "not found" for pages, files and /api alike (lib/oneaddress.ts + scripts/address.test.mjs;
+  the matcher's { missing: [{ type: "host" }] } entry lets the gate see files under other addresses, and a
+  response header on the preview proved the gate runs on them). The private launch file no longer names anything
+  old and is under the names check. The Nov 26 "we moved" plan (pinned posts, a pointing front page, a forward) is
+  dropped. What does not change: the earlier coin's public record stays up as it is, nothing is set up to look as
+  if someone else were behind the new app, and "is it the same team" gets a yes. Told him so in one line.
+  DO NOT TAKE AN ADDRESS OFF THE HOST TO "KILL" IT: a freed generated address can be claimed by any account, and a
+  subdomain whose DNS record still points at the host can be picked up by another project: a look-alike under an
+  address the sign-in service still trusts. Order: the sign-in service and the payment partner stop allowing it,
+  its DNS record is deleted, THEN it is disconnected. Until then it stays parked, answering "not found". I had the
+  menu open on Disconnect before thinking of this.
+  FOUND for launch day: the bots repo's default app address and two lines of the old X account's post queue point
+  at the app's earlier address (dead links after go-live). In the private launch file.
+  TELEGRAM BOT: searching a bot's name in Add Members lists a dozen look-alikes. Pick by what cannot be faked: the
+  one already in his own chat list (same picture, same "N users" count; his old chat with it carried his own
+  group's links). Group info > Add users > search > tick > arrow adds it as a plain member (worked). The bot then
+  asks to be made admin: that grant is his tap. Two web articles named two different handles for "the" bot and a
+  third result was an unrelated channel: never take a bot's handle from the web.
+  IDEAS: sent as three short lines per area in the first reply; the list is in the chat and the private launch file.
+  NEW LAUNCH PAGE (Pit `greed-skin` b8f18bd..0274988, preview only): components/launch/Mint.tsx = the coin drawn
+  live (CoinFace: the picture, the name and ticker on two circular text paths, a ridged edge from one dashed
+  circle) on a ring of engraving worked out from the name and ticker (a hash picks wave counts, strands and a
+  turn; phase-shifted sine rings make the braid; a plate number from the same hash). A mouse tips the coin (CSS
+  variables set in pointermove, never React state); the launch closes a ring around it; when the coin exists it
+  drops in with a sound (lib/sound.ts "mint") and a stamp. BuyerView.tsx = "What buyers will see": only lines the
+  coin's page really shows (fixed supply, locked liquidity, sniper fee, burn, the creator's share and lock),
+  filling in as the form changes; a line pops only when it TURNS good after the first render (the previous states
+  are kept in a ref). The form is four numbered parts (a real sequence). On wide screens the coin and the list ride
+  beside the form (sticky). CoinTile.tsx + the Launches page = a wall of struck coins instead of rows.
+  Lessons: (1) a scratch page with the same SVG and CSS, shot by the local Playwright (run node WITHOUT setting
+  NODE_PATH: the default finds it), settles geometry before a build. Text on a path sits on the LEFT of the
+  direction of travel, so a legend along the bottom needs a counter-clockwise arc and a bigger radius. (2) The
+  global `button:active` transform beats a class's own transform unless the class rule is more specific: a centred
+  button jumps on press. (3) The global focus ring comes after Tailwind's utilities in the file, so `outline-none`
+  loses: an input inside a field that shows focus itself needs an inline outline: none. (4) A block sized by
+  aspect-ratio alone grows huge between phone and desktop widths: cap its width. (5) Never claim "no two alike"
+  for something drawn from a 32-bit hash: say what it is drawn from. (6) Emulating 1440x900 in the pane shows the
+  wide layout scaled down: enough to check columns and sticky; reset the size after. (7) When he asks for ideas,
+  they go out in the first reply as short lines, and the build of the one that needs no decision starts in the
+  same turn. (8) Hours stalled again mid-task: the link to the first cut was already out, which is what saved it.
+  Still his: making the bot an admin; the sign-in service's dashboard; "go live" or "hold"; picks among the ideas.
 
 - Nov 26 (12:30 am - noon; the chat stalled 2:50-10:20 am): "10 huge updates for the site, I'll decide in the morning",
   "our own trading chart instead of the library's", "the desk must use Grok AND Claude and hand over; show me what it
