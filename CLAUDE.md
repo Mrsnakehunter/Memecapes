@@ -101,6 +101,42 @@ numbers in here or anywhere in the repo.
 
 ## Task log (newest first): what was asked, what we learned
 
+- Nov 27 (12:27 pm, furious, two screenshots of an email): the payment partner's reviewer had written back: greeting
+  the team by the OLD name, saying the new address "isn't currently active" so they cannot review it, quoting our form
+  ("you mentioned the app is live at [the old pit address] and will move to [the new one] at launch"), and asking
+  which website to review and "which of the two products". Him: "you mentioned memecapes in the moonpay
+  [application] ... I tried to tell you to have everything switched over ... memecapes is dead".
+  MY MISTAKE: on Nov 24 I wrote on that form that the app is live at the old address and moves at launch, and I never
+  renamed the partner account, which was opened under the old name on Nov 6. He had told me hours earlier that day
+  that the old names come off.
+  RULE: the old name goes into NOTHING a partner, a reviewer or a user can read: forms, account names, dashboards,
+  emails, sign-in windows, page headers, on-chain memos. When a form wants a live address and the new one is not
+  live yet, STOP and tell him that is the choice (go live, or wait). Never fill the gap with the old address.
+  WHAT THE REVIEWER IS STUCK ON: the new address shows the coming-soon page. A reviewer needs the real app live
+  there. So it is his call between going live now (the launch merge, Pit `greed-skin` -> main) and telling them
+  to wait for launch day. Asked in one line ("go live" or "hold"), with the reply drafted for either.
+  DONE: partner dashboard > Settings > Account > Account name renamed (the greeting came from it; the legal name
+  under it was already right), saved and read back after a reload. The same request is a ticket in the dashboard's
+  chat window: that window is a same-origin frame, so its whole text reads through the frame's contentDocument
+  (his screenshot cut the message off mid-sentence; the ticket had the rest). The new address was already on the
+  partner's allowed-domains list; the old one is still listed until go-live.
+  FOUND: the sign-in service still NAMES the app after the old app (that name shows in the sign-in window) and its
+  allowed domains do not include the new address, so sign-in would fail there. Its public app settings can be read
+  from any page on the new address (one GET to its API with the app-id header), no dashboard needed to look. Its
+  dashboard is signed out in the pane: his sign-in, then the rename and the two addresses.
+  CODE (Pit `greed-skin` e92ef8f, 3e543f3, preview only): burns and battle payments are stamped with the new word
+  (everything that reads a memo accepts the earlier word too, so old burns keep counting); pages on the two earlier
+  addresses forward to the app's own address once the branch is live (middleware OLD_HOSTS; /api and /pit still
+  answer there for the old site); the page header no longer names the old site. The private launch file has the
+  ticket, the drafted reply and the go-live steps.
+  Lessons: (1) before submitting ANY partner form, read back every free-text answer for the old name, the same way
+  the plain build searches the app. (2) A partner's "active website" means the product itself, live: a coming-soon
+  page with Terms and Privacy is not enough, and that should have been said to him BEFORE he submitted. (3) He was
+  abusive twice in six minutes: one sentence owning the mistake, then the fix and the one decision. No second
+  apology, no defence, no lecture.
+  Still his: "go live" or "hold"; the sign-in service's dashboard sign-in; then yesterday's list (the bots' host,
+  the Actions pick, the bio number and "link it", the demo's Share tap, credit for the Grok seat).
+
 - Nov 26 (12:30 am - noon; the chat stalled 2:50-10:20 am): "10 huge updates for the site, I'll decide in the morning",
   "our own trading chart instead of the library's", "the desk must use Grok AND Claude and hand over; show me what it
   does, not words: a sphere of wallets, launches and trades that keeps getting smarter", "the page can't be called Boss
