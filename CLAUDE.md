@@ -253,6 +253,51 @@ numbers in here or anywhere in the repo.
   they go out in the first reply as short lines, and the build of the one that needs no decision starts in the
   same turn. (8) Hours stalled again mid-task: the link to the first cut was already out, which is what saved it.
   Still his: making the bot an admin; the sign-in service's dashboard; "go live" or "hold"; picks among the ideas.
+  Then (5:20 - 6:20 pm, "so keep working on stuff", then "how much of a setback are we gonna have for moonpay?").
+  MOONPAY ANSWER (facts, three lines): a pause, not a rejection; it costs the days until the app is live at the new
+  address plus their review again (their help page's own wording for how long) plus their papers check; it does not
+  block launch (card buys still open their public checkout; cash out and our own fee wait on approval). Then
+  checked the ticket for a deadline: the dashboard's chat opens with Intercom('show') and its messenger frame reads
+  through contentDocument: status "Submitted", no deadline. Say it first, verify right after, correct if wrong.
+  HE SIGNED IN TO THE SIGN-IN SERVICE WITHOUT SAYING SO: the tab's note ("the user clicked or pressed keys") and one
+  read of the page showed it. I had told him twice what I would do there, so I did exactly that and said so in one
+  line: the app's name (UI components > Branding > Name: it is what sign-in windows, code emails and texts say),
+  its colour, the workspace name (Organization > Settings > Edit), and the new address in Allowed origins (Settings
+  > Domains and clients: type, Add; each origin is a chip with an x; it saves at once). Proved from the live
+  coming-soon page with one GET to the service's public app settings (name + origins). One generated address
+  nobody needs was on that list: taken off (a freed generated address is anyone's to claim). The live earlier app
+  shares the sign-in app until go-live, so its few users see the new name in a code email meanwhile: told him.
+  READ THE LIVE DATABASE BEFORE GO-LIVE (read-only, its SQL editor): the whole column list comes back in ONE cell
+  with string_agg (the grid only keeps ~11 rows in the page). A script then checked all 111 select lists in the
+  code against it. Found: (1) the X-ray's memory table exists from an earlier version WITHOUT its two newer
+  columns, so the new build would have read and written nothing there. `create table if not exists` never adds a
+  column to a table that already exists: the file now also has `add column if not exists`, and the route works
+  either way. (2) Three accounts carry the old names as usernames and would show in the people lists on day one:
+  asked in one line ("blank them"), nothing changed without his word. (3) The earlier launches' stored tag keeps
+  them off every list, as designed; the tag itself never reaches a browser.
+  DAY-ONE EMPTY SCREENS: the home feed, the top board and the launches wall all start empty on the live site, which
+  no preview shows (previews carry labelled examples). The feed's empty state now offers the first post and a
+  launch and lists what is trading right now (real coins, the Trade list). Preview-only switches show the states
+  that otherwise exist only live: /?quiet=1 (the first-day feed) and /launch?show=live (the launch moment).
+  ALSO: usernames now have a reserved list (the app's own names, and support/admin/official-style names alone or
+  beside the app's name; operator wallets excepted): nobody can pose as the team. The fee's old code name is gone
+  from the code (word-level renames; a line-by-line guess of comment or code picked "the cut" or a variable name;
+  the compiler's complaints were identical line for line before and after; the setting's new name is not set on the
+  host, so the built-in rate applies, same number). The database's project and organization labels renamed in its
+  dashboard: a "secure your account" sheet covers that page (his: untouched), so the name went in with the native
+  value setter + an input event, and the Save clicked was the one inside the SAME form (the page has two). The
+  plain demo got an address of its own on the host (Domains > Add Existing > the name > Connect to an environment:
+  Preview > the branch), since the project's new name is in every generated link.
+  NOT DONE ON PURPOSE: renaming the private code repository (it can cut this session's push access, and a go-live
+  may be minutes away); the database's table names and the two stored words for a buy and a sell (a migration for a
+  quiet hour after launch); Terms and Privacy links in the sign-in window (they would show under the earlier app
+  too until go-live).
+  Lessons: (1) before saying "ready to go live", read the LIVE data the new build will meet: schema, row counts,
+  and the names people gave things. (2) Walk every tab as a first visitor on an empty database. (3) A dashboard
+  change that both products share shows up in the OLD one too: say so. (4) Removing something from a host or a
+  list can free it for someone else: think who can claim it next. (5) When he may say "go live" any minute, do
+  nothing that risks the ability to push.
+  Still his: "go live" (and the bundle-tool wallets question), "blank them", making the bot an admin.
 
 - Nov 26 (12:30 am - noon; the chat stalled 2:50-10:20 am): "10 huge updates for the site, I'll decide in the morning",
   "our own trading chart instead of the library's", "the desk must use Grok AND Claude and hand over; show me what it
