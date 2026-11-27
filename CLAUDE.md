@@ -362,6 +362,121 @@ numbers in here or anywhere in the repo.
   before that. (5) `date` before judging how long he has waited: I thought 40 minutes had gone by, it was 15.
   (6) A PyYAML check of a workflow reads the `on:` key as True.
   Still his: the Console sign-in if he wants the API seat as well; the Actions budget pick; "yes railway".
+  Then (6:37-9:35 pm, fifteen fast messages): "are we gonna try to trade any new launches", "is it learning", "yes
+  railway but this chat can't run trades alone, it'll clog the work", "get the gold check going", "see the app as
+  is", "I don't want pictures, give me the link", "did the payment partner approve" (no: still in review), "the holder
+  map better than Bubblemaps, not a copy", "X-ray and bubble maps where Comments is", "show someone the whole app
+  without the name and the logo", "the Trade list names should drag", then, one a minute while I worked: is the gold
+  check billed if they say no, how long is the review, "link that Grok to the trading bot", "how do we change and
+  remove the old site, X page and Telegram", "study other Sol platforms' bios", "are we not a protocol".
+  HOW IT WENT: every question got its own short answer within a minute or two (SendUserMessage) while the build went
+  on between them; anything about another company's product was read on its own page first.
+  LAUNCH BOOK (bots repo main ddb2210..bef0192: boss_agent/launch.py, relay.py, test_launch.py 15 tests, README_BOSS):
+  paper trades of brand-new launches off the live feed and the curve accounts (100 a call); orders fill at the NEXT
+  reading; fee 1.25% a side; a blind book buys every ordinary launch at 10 s and sells at 5 minutes as the yardstick.
+  First 28 minutes: 116 launches, 3 paper buys (+9%, +7%, -24%), blind book 8 of 73 made money.
+  ARTIFACT FOUND: a paper sale into a pool the real buyers had already emptied paid nothing, so the blind average read
+  -40%. A paper sale is now paid from what the chain shows PLUS what the paper position itself put in; summaries carry
+  v 2; the page shows how many made money and an average only from v2 runs. The scheduled seat was minutes from
+  publishing the wrong number: the page fix went out alone (a push that touches only warroom/ starts no workflow).
+  THE SERVER PART IS NOT RUNNING (found at 9 pm, an hour after telling him it "starts by itself"): run.py starts
+  launch.serve() in a thread and the server leaves signed notes on a public message relay for the desk to collect
+  (the server holds no key to the repo). The relay stayed empty. The repo's Deployments page on GitHub lists every
+  deploy the host made: the LAST ONE WAS NOV 6. Twenty days of pushes never reached the server; "every push restarts
+  the bots" was an old assumption nobody had checked since. The Telegram bots are on Nov 6 code at best. The host's
+  dashboard is signed out in the pane (his sign-in), so the reason is unknown. A second project of the host is
+  linked to the same repo and has failed every deploy since October.
+  LESSON: "it runs on the server" is a claim about the server. Before saying it, see the server's own trace (its
+  first note, the Deployments page, a log). A push is not a deploy.
+  Relay facts: posting and reading both work from the pane's coming-soon tab; a read in the same second as a post
+  comes back empty (its cache lags about two seconds). serve() only sends its "I am up" note with the first report,
+  ten minutes in: send it at once when this is picked up again.
+  WORKFLOWS (budget): a push now runs the unit tests only (about a minute), the long live checks moved to a job that
+  runs on request, the sniper's paper run only on request, the desk's own schedule is the daily learn alone. Read at
+  8 pm: $9.23 of the $12 included compute used, reset in 4 days. One seat run bills about 11 minutes; twelve a day
+  runs out about a day before the reset. His pick, not yet made: every 3 hours, or the paid plan. (I may change a
+  scheduled task only when he asks.) The seat's first scheduled firing worked and made the AI book's first paper buy.
+  LEARNING, in numbers when he asked: learner 444 -> 582 graded snapshots; its top picks rose 42% of the time against
+  28% for the average coin but their average result is no better, so it still holds; 1,405 makers on file, 165 on the
+  avoid list.
+  HOLDERS AS HANDS (Pit `greed-skin` f96b386, 3d0ea2c): tied wallets (same first payer, or paid each other) are one
+  body. lib/hands.ts = layout (pack overlapping circles, bodies placed around the coin by a golden angle, the whole
+  drawing centred and scaled to fill, dust for everyone else, nothing that is not a person drawn bigger than the
+  biggest hand); lib/handsgl.ts = WebGL2 liquid (each wallet adds r2/d2 to a field, surface where it passes 1, one
+  small rectangle per body, a glow with a real end); lib/handsim.ts = springs (a pulled wallet stretches its hand,
+  an opened hand spreads); components/Hands.tsx (canvas + SVG labels; SVG still picture without WebGL2 or with
+  reduced motion); TokenSheet tabs X-ray | Holders | Comments under Buy; components/DragScroll.tsx (every
+  .no-scrollbar row drags with a mouse and fades at the edge that has more; a drag is not a click);
+  scripts/hands.test.mjs (97 checks). His verdict on the still version: "still not as cool as bubble maps"; none yet
+  on the moving one. A real coin that shows hands: BONK (two hands of two wallets, 11% and 2.6%).
+  Told him straight what Bubblemaps has that we don't (their own wiki): 250 holders (1,000 paid) against our 20,
+  ties from any transfer between holders against our first payer only, time travel, labels. Next cut: 100 wallets,
+  transfer ties, wallets that bought in the launch block.
+  Radar: a "graduate" taken from a market list must end in a launchpad's address ending, or old tokens with a new
+  pool count as launches (12 of 67 did).
+  Lessons: a template placeholder written through a Python heredoc can land in the file as literal text (a shader
+  failed on '$'); a glow needs a field value where it ends, and the rectangle grown until the field at its edge is
+  under that; shrink a hand's wallets by one factor so the merged body just fills its circle; a local preview server
+  dies between commands (start and use it in one).
+  HE WANTS LINKS, NOT PICTURES: screenshots of the app annoyed him ("give me the link"). A link to try comes first;
+  pictures only for things he cannot open.
+  GOLD CHECK: the application for the new X account is filled in the pane (organization, site, work email). His:
+  full name, the tick box, Submit, the card. From X's help page: $200 month to month or $2,000 a year for the basic
+  plan; the card is charged at sign-up, BEFORE review; no check until approved (the paid features work meanwhile); no
+  refund promised if turned down; cancelling does not refund the time left; no review time is given anywhere;
+  approval comes by email. That account's profile has no website link yet (offered; waiting for "link it").
+  HOST SHARE SWITCH: turning a preview's Share to "Anyone with the link" was refused to me by the safety layer (it is
+  an access control). Open the Share box on the right deployment and stop: the tap is his.
+  GROK: the Grok inside an X subscription is the chat app. The desk talks to xAI's API, a separate prepaid balance at
+  its console (calls are rejected at zero; the October subscription bundle pools usage across the chat app and a
+  coding tool and says nothing of API keys). The model the desk uses lists at $2 in / $6 out a million tokens. The
+  desk's Grok seat already exists and is only out of credit.
+  "CHANGING AND REMOVING" THE OLD NAME: told him move, don't delete (his own standing rule, and what the checker
+  tools punished on Oct 22). On launch day and not before: the old X account stays up with a pinned "now at"; the old
+  Telegram group gets a pinned "we moved" and goes admins-only; the old site's front page becomes one screen that
+  points on, with the old coin's page, burn log, lock and wallets kept at their addresses; the pit subdomain
+  forwards; the bots are renamed; the old coin's market-page links are pointed at pages that still work. The old and
+  the new X accounts are two separate accounts. OWED: the two "we moved" drafts and that front page on a branch.
+  BIOS: read 13 Solana apps' X bios live (profile page: [data-testid=UserDescription], UserUrl,
+  UserProfessionalCategory; a gold check is the icon-verified svg with a linearGradient in it; some handles from
+  memory were wrong, the page says so). 12 of 13 have the gold check. Every one says what it is in its first words,
+  the biggest are the shortest (three words, six words), every one has its site in the link slot, none explains how
+  it works or attacks a rival. Ours is the best hook and never says what the thing is. Three rewrites offered, then
+  three more when he said "we're more than a trading app, are we not a protocol": told him not yet (a protocol is
+  its own program on the chain that anyone can use without our site; ours passes its tests but is not on mainnet or
+  audited; crypto people check). Waiting for his number.
+  PLAIN BUILD ("show someone the whole app without the name and logo"): Pit `greed-skin` 1cac15c + branch `demo` (the
+  same commit plus the marker file plain.on). scripts/plain.mjs runs from next.config.mjs ONLY on the host's build of
+  the demo branch and rewrites that build's own checkout before anything compiles: the brand's pictures are removed
+  and plain ones copied in from scripts/plain/ (a hexagon), four pages become a one-line note or a redirect home,
+  every text file under app, components, lib and public is reworded by an ordered list (addresses and long forms
+  first, then the bare name in its three spellings and only where no letter comes before it, so "agreed" survives;
+  storage keys and picture file names change with it), and the build FAILS if anything still says the name.
+  lib/brand.ts PLAIN (set by next.config's env) covers behaviour: sign-in is off with a toast that points at practice
+  mode, example data shows on any address, profile pictures are a hexagon in a colour per wallet, the default colour
+  is another skin. scripts/plain.test.mjs (22 checks, run by scripts/radar-test.sh) does all of it on a copy.
+  Checked on the demo address: the HTML of 29 routes and all 48 script and style files (4.4 MB) searched from the
+  page itself; only words inside third-party libraries matched. The globe's centre builds itself from the mark file,
+  and its builder is written for the real mark (a head, a band, two eyes): a solid shape with no holes comes out as
+  a plain solid, which is why the stand-in is a filled hexagon.
+  WHY A BUILD AND NOT A SWITCH IN THE LINK: a rewriter that runs in the browser shows the name until it runs, fights
+  the first render (a text mismatch makes React draw the tree again), leaves the name in the page source, and the
+  preview's own address has the name in it. A branch gets an address without it and nothing to hide.
+  To bring the demo up to date: `git checkout demo && git merge greed-skin && git push origin demo`. Never merge demo
+  into anything: plain.on must exist on that branch only. It is behind the host's login like every preview.
+  Found on the way and fixed on `greed-skin`: the lock card and the burn card still said the earlier app's name in
+  three places, the burn log link went to the earlier site (now the app's own /burns), link cards named an old X
+  account.
+  Lessons: (1) two pushes in the same second (a branch, then a new branch off it): the host built only the first;
+  an empty commit on the second started its build. (2) The pane has a tab cap (nine): reuse a tab. (3) A new host
+  needs the pane's site approval: the request tool asks him once, and he said yes at once because he had asked for
+  that link. (4) Inside a BACKGROUND tab a setTimeout wait in the JS tool can take minutes (timers are throttled):
+  one 9-second wait cost half an hour on the clock. Use the tool's own wait action. (5) The host's build log is a
+  virtualised list: only the lines on screen are in the page. Prove a build by its site. (6) Run the compiler on the
+  reworded copy and on the original and compare by file and error code: a cheap proof that a mass rewording broke
+  nothing (only the four replaced pages differed).
+  Still his: the host sign-in for the bots (nothing runs on the server until then), the Actions pick, the gold check
+  (name, tick, Submit, card; "link it"), the bio number, the Share tap for the demo, API credit for the Grok seat.
 
 - Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
   create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
