@@ -140,7 +140,7 @@ numbers in here or anywhere in the repo.
   the site, I don't want the ticker on there at all, nothing about it at all". READ AS: the NEW app's code and what
   it serves. This site's own record is left alone (his standing rule: an earlier launch's record stays up).
   Answered in one line at once, first result 30 minutes later, then kept going without asking.
-  DONE (Pit `greed-skin` 77defee, a093871, 2b8a65f; preview only; `demo` merged after each):
+  DONE (Pit `greed-skin` 77defee, a093871, 2b8a65f, 1473ebc; preview only; `demo` merged after each):
   - Removed: the pages and routes that existed for this site and its game (link pages, the game's two read routes,
     the launch-page widget, this site's menu inside the app, its browser access to the API), the weekly prize job,
     the earlier coin in settings / battle board / lock rule, memos accepted under the earlier word, the earlier
@@ -184,7 +184,9 @@ numbers in here or anywhere in the repo.
   the compiler's complaints with a baseline taken from HEAD in a worktree (map renamed paths first). No new line =
   nothing broken that types can see.
   (8) Words he never chose (temporary feature names from an earlier pass) were still in two error messages, a
-  wallet confirm title and a hover label: grep the upper-case, lower-case and plural forms in strings.
+  wallet confirm title and a hover label: grep the upper-case, lower-case and plural forms in strings. An earlier
+  word-for-word swap had also left one sentence on screen that made no sense: after any mechanical rewording, READ
+  the rendered pages, don't only search them.
   Still his: "go live" or "hold"; the sign-in service's dashboard (its window still shows the earlier app's name,
   and it does not know the new address); "rename it" for the host project; whether any operator wallets were made
   on the earlier address; yesterday's list.
