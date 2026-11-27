@@ -475,8 +475,25 @@ numbers in here or anywhere in the repo.
   virtualised list: only the lines on screen are in the page. Prove a build by its site. (6) Run the compiler on the
   reworded copy and on the original and compare by file and error code: a cheap proof that a mass rewording broke
   nothing (only the four replaced pages differed).
-  Still his: the host sign-in for the bots (nothing runs on the server until then), the Actions pick, the gold check
-  (name, tick, Submit, card; "link it"), the bio number, the Share tap for the demo, API credit for the Grok seat.
+  Then (9:35-10 pm, no new message): HE SUBMITTED THE GOLD CHECK himself (X's page: payment successful, under review,
+  the paid features work meanwhile, "we may request additional information", "any account that is not approved will
+  not be refunded"). The profile still has no website link and the old bio: both wait for his word.
+  OLD SITE, READY FOR LAUNCH DAY: branch `moved-front` of this repo (703868c, NOT merged): moved.js + config.js
+  `moved: { name, url, x, telegram }`. With an https url set, the home page opens with one screen ("MemeCapes is
+  now ...", a button, links to the coin's record and the game); empty = the site is unchanged. Nothing in the branch
+  names the new brand. Rendered locally with a made-up name on desktop and phone (scratch script: a small Node server
+  that serves the repo and fills the four values in config.js on the way out, Playwright, the age gate accepted in
+  localStorage). The site's sticky phone button covers the bottom 100 px: a first-screen panel needs that much
+  bottom padding. The two "we moved" drafts (old X account, old Telegram group) and the day's checklist are in the
+  Pit repo's private launch file.
+  GROK, one more fact: xAI's refusal for the desk's key reads "You have run out of credits or need a Grok
+  subscription" (code personal-team-blocked:spending-limit), so a subscription on the SAME account as the key may
+  switch it on; nothing published says which plans. Each desk run already reports whether Grok let it in: read the
+  next one after his subscription. Some tools reach a subscription's quota by signing in as xAI's own command-line
+  tool and calling a different host: undocumented for other apps, account-gated, not something to build the desk on.
+  The seat's second scheduled firing (9:19 pm): 7 calls, 6 used, the one paper position held; learner at 748 graded
+  snapshots, still not trusted (on coins it had not seen its top picks rose 58% against 47% but lost as much).
+  Still his: the host sign-in for the bots (nothing runs on the server until then), the Actions pick, the gold check's review (and "link it"), the bio number, the Share tap for the demo, API credit for the Grok seat.
 
 - Nov 24 (12:20-12:45 am, four phone screenshots of the preview): (1) "it should say Create wallet / Connect wallet,
   create should make a wallet immediately; if someone connects a wallet do we still get fees?" (2) coin sheet: "should
