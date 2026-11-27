@@ -25,6 +25,10 @@ window.MC_CONFIG = {
   capesSupply0: 1000000000,      // whole tokens the coin started with, before any burn (the burn log counts down from this)
   ticker: "RATTLE",               // the token ticker shown to players as $TICKER (tools/token_launch.py sets it on launch day)
   capesWallet: "",               // PUBLIC address that receives $RATTLE deposits from players
+  // ---- the move: the day MemeCapes goes on under a new name, fill these in and the front page opens with one
+  // screen that says where it went (moved.js). An empty url = nothing changes. https addresses only. The coin's page,
+  // the burn log, the lock and the official wallets stay where they are, and that screen links to them.
+  moved: { name: "", url: "", x: "", telegram: "" },
   pit: "https://pit.memecapes.com",   // "" = the website, game and server show nothing about snakepit (it still runs there)
   solUsdFallback: 150,           // used only if the live SOL price can't be fetched
 
