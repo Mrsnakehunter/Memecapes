@@ -298,6 +298,66 @@ numbers in here or anywhere in the repo.
   list can free it for someone else: think who can claim it next. (5) When he may say "go live" any minute, do
   nothing that risks the ability to push.
   Still his: "go live" (and the bundle-tool wallets question), "blank them", making the bot an admin.
+  Then (6:00 - 7:20 pm, "keep working on stuff"; his verdict on the first link, an hour in: "It looks and sounds
+  good"): REPLAY, the first after-launch idea, on its OWN branch (Pit `after-launch`, cut from `greed-skin`, so the
+  launch build stays still; its preview link is the same host name with the branch in it). /replay/<coin> plays a
+  coin's first hour back in about ten seconds: the line draws itself, the market cap counts along, the peak is marked
+  as it passes, and it ends on what happened in plain words, good or bad. Held back until NEXT_PUBLIC_REPLAY=on
+  (previews show it); the coin sheet's Info row links to it there.
+  - lib/replaymath.ts (no imports: candles from one or more pools into one first hour, the story, the chart's
+    paths, how it is said), lib/replayread.ts (no imports but the sums: reads GeckoTerminal; pools list a page at a
+    time with include=base_token, the oldest pool, one-minute candles with before_timestamp), lib/replay.ts (server:
+    memory, name/picture/supply, the bot question from the launch curve), /api/replay/<coin>, /api/og/replay (the
+    link card), components/replay/Replay.tsx + Film.tsx, lib/replayfilm.ts (the video), scripts/replay.test.mjs
+    (72 checks, run by scripts/radar-test.sh; the reader is checked against made-up data-site answers).
+  - SAVE AS A VIDEO: the same replay drawn on a canvas (9:16, the mark, the coin, the counter, the line, the coin's
+    own engraving turning behind the chart, what happened at the end) and recorded in the browser:
+    canvas.captureStream(30) + MediaRecorder, MP4 (avc1) where the browser has it, WebM where not; a phone gets its
+    share sheet, a computer a download; nothing is uploaded. The local Playwright Chromium records MP4 too, so a
+    scratch page (the two lib files compiled alone, made-up candles) proved frames and a real file before any build.
+  Lessons:
+  (1) THE DATA SITE COUNTS QUESTIONS PER ADDRESS, and a host's functions all leave from shared addresses: the
+  server's reads were refused most of the time (7 of 7 in one run) while a browser has a budget of its own. So the
+  page asks the server first and, when it cannot read the hour, reads the data site itself with the same code. In a
+  browser a refusal carries no cross-site header: it is a thrown TypeError, not a status. An open coin sheet's own
+  chart spends most of that browser's budget: say "try again in a minute", never invent an hour.
+  (2) "No such coin" (404) is an answer, not an error; a coin with more pools than three pages hold has no known
+  oldest pool unless it has a launch curve (asked for by its worked-out address): say "too far back", never guess.
+  (3) Honest charts: a coin that only wobbled must not fill the picture (the scale spans at least half as much
+  again); a coin many times over goes on a ratio scale; an hour still running runs to the present minute (a coin
+  dead for 46 minutes is 46 quiet minutes, not "2 minutes"); a bot-traded coin says so on the page, the card and
+  the film.
+  (4) The display face's multiplication sign is tiny: say multiples the way traders do ("20.5x").
+  (5) LINK CARDS (next/og): a face cut down to the card's own characters comes from the font site's css2 address
+  with &text= (a plain fetch gets a truetype file); passing fonts REPLACES the built-in face, so every character
+  drawn must be in one of them (strip a coin's name to plain Latin); a chart goes in as an SVG picture (data URI);
+  rows align on flex-end with a bottom padding, "baseline" does not hold; the card is cached by the browser, so a
+  redesign looks unchanged until the address changes; the mark is a small coloured copy kept as text in lib/
+  (a plain build leaves it out).
+  (6) THE PAGE'S SECURITY HEADER decides what a made-on-the-device file may do: a video element playing a blob
+  needs media-src blob:; fetch(blob:) is refused by connect-src, so read a recorded video by drawing the video
+  element onto a canvas.
+  (7) In the pane a tab that is not in front draws frames sometimes at full speed and sometimes hardly at all:
+  anything advanced by a clamped time step crawls (one recording took five minutes, the next fourteen seconds).
+  A preview-only switch that shows ONE frame (?still=<seconds>) checks a film's look without waiting. To see a
+  picture the pane will not paint (an image address, a canvas): draw it to a canvas, return the data URL padded
+  past the size limit, decode the tool-results file.
+  (8) A film that records by time must wait when the tab is hidden, not skip: add the time that passed, never more
+  than a twentieth of a second a frame; stop the recorder a moment after the last frame.
+  (9) Send the link when the first cut plays (it did, 35 minutes in), then keep going on the same link.
+  Then (7:07 pm): "we need the [new] account linked to grok plugged in". FOUND, in the pane's own xAI session: the
+  desk's Grok key lives on an xAI login under an old email, linked to the OLD X account, on a small paid plan. The
+  API spends that plan's WEEKLY INCLUDED USAGE first (the usage page shows the share by product and when it
+  resets), then "additional usage" out of a credit balance; with the week spent and no credit every call is
+  refused (the "run out of credits or need a subscription" answer). The desk had spent the week's allowance in
+  about 14 hours. xAI's dashboard is at grok.com/dashboard (usage, billing, API keys, my settings: the linked X
+  account is named there); the account menu has no "add account", only log out, so another login is his sign-in.
+  Asked in three numbered taps (log out and sign in as the new account, create a key and copy it, paste it into
+  the bots repo's secret form, which was left open): a key's value never passes through me. Told him the fact
+  that matters: any plan's weekly allowance can run dry the same way; prepaid credits do not pause (his purchase).
+  Lesson: the desk's own health file already had the answer (when Grok last answered, the exact refusal): read the
+  ledger before opening any dashboard.
+  Still his: the three taps for the Grok key; "go live"; "blank them"; making the bot an admin.
 
 - Nov 26 (12:30 am - noon; the chat stalled 2:50-10:20 am): "10 huge updates for the site, I'll decide in the morning",
   "our own trading chart instead of the library's", "the desk must use Grok AND Claude and hand over; show me what it
