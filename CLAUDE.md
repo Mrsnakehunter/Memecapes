@@ -358,6 +358,47 @@ numbers in here or anywhere in the repo.
   Lesson: the desk's own health file already had the answer (when Grok last answered, the exact refusal): read the
   ledger before opening any dashboard.
   Still his: the three taps for the Grok key; "go live"; "blank them"; making the bot an admin.
+  Then (9:37 - 10:35 pm, three messages, the chat stalled for the first 40 minutes): screenshots of an email from
+  X's Premium support: the gold check for the new account was NOT approved. Their words: the profile "must feature
+  a link to an active website that showcases and/or provides relevant information about your organization's
+  product or service", and "the website should link back to your X account". An appeal form is in the email; the
+  application and the payment are held 5 days, an approved appeal needs no new application, and no appeal or a
+  failed one is cancelled with a full refund. With it: "send me the log in for that x account", then abuse ("I
+  thought we had everything in line and ready to go"), then "what's up with that".
+  MY MISS: the profile's website link had been waiting on his "link it" since Nov 26, and he paid and submitted
+  without it. I knew the rule (Nov 25: "needs a company account, an email on the domain, a live website") and let
+  the application go in. The same lesson as the payment partner's "active website", missed twice in two days.
+  RULE: before he pays for or submits ANY review (a badge, a partner, a store listing), read the reviewer's own
+  criteria, check each one against what a signed-out stranger sees (the profile's fields, the live address, the
+  link back), and say in ONE line what will get it turned down BEFORE he presses Submit. A setting that waits on
+  his word and blocks a review is said as "this will get it rejected", never left on a still-his list.
+  READ IN THE PANE (read-only): the profile had a name and a bio and no website, location or category; the live
+  coming-soon page already linked to the account (a button), so the missing half was the profile. The pane's X
+  session IS the new account (its profile shows Edit profile), so "Sign in with X" on another site in the pane
+  needs no password. x.com/settings/profile opens the edit form directly: inputs named displayName, description,
+  location and url, and [data-testid=Profile_Save_Button]. Nothing was changed: the link waits on his word.
+  ANSWERED in one message that covered all three (the cause in X's words, one sentence owning the miss, that
+  nothing is lost and until when, the two words that fix it: "link it", and "go live" or "hold"), then a second
+  short one with what the pane showed. I do not hold or send any account's password; said so in one line with the
+  way that needs none.
+  DONE without him: the launch build links to the X account on its first screen (Pit `greed-skin` a82ec19,
+  components/SiteLinks.tsx: under the side menu, on the account page and under the first-day feed; hidden in a
+  plain build; the account's name is read off the one link in config). For "hold": a fuller coming-soon page on
+  Pit branch `soon-about` (from main, NOT merged): one sentence on what the app is and who runs it, three facts
+  already published in the Terms, the account's handle in the footer; rendered at 1280 and 390 with the local
+  Playwright. The appeal's wording is in the private launch file. `after-launch` and `demo` merged up to the
+  launch build. Also committed on `after-launch` (917b934, preview only, behind its own switch): pay requests
+  ("Ask for an exact amount" in the Receive sheet makes a /pay/<wallet>?sol=..&note=.. link and a QR; the page
+  pays from the signed-in wallet through the Send sheet or opens a wallet app; a request in a coin the payer does
+  not hold is refused instead of quietly paying in another; lib/payask.ts has no imports and 28 checks).
+  Lessons: (1) a coming-soon page with only a slogan is not "information about the product" to any reviewer: every
+  public page says in one sentence what the thing is and who runs it, from day one. (2) X's help site is refused to
+  the web reader and needs its own site approval in the pane: the email's own wording was enough to act on, so no
+  approval was asked of him while he was angry. (3) Several unanswered messages get ONE answer that covers them
+  all, cause first; verify right after and send what changed as a second short message. (4) The local compiler
+  cannot see that a framework's not-found call never returns: write `return notFound()`.
+  Still his: "link it"; "go live" or "hold"; then the appeal form in X's email (5 days from Nov 27, 8:21 pm);
+  the Grok taps; "blank them"; making the bot an admin.
 
 - Nov 26 (12:30 am - noon; the chat stalled 2:50-10:20 am): "10 huge updates for the site, I'll decide in the morning",
   "our own trading chart instead of the library's", "the desk must use Grok AND Claude and hand over; show me what it
