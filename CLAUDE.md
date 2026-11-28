@@ -399,6 +399,19 @@ numbers in here or anywhere in the repo.
   cannot see that a framework's not-found call never returns: write `return notFound()`.
   Still his: "link it"; "go live" or "hold"; then the appeal form in X's email (5 days from Nov 27, 8:21 pm);
   the Grok taps; "blank them"; making the bot an admin.
+  Then (10:33 - 11:15 pm): "do you need to make the site live and put a link?" (yes, both), then "everything [old
+  names] off, nothing in the codes, and the new ticker can't show either", then "do it" twice (the model was switched
+  mid-chat; 30 minutes went by between the two "do it"s: act on the first one). WENT LIVE: Pit main fast-forwarded to
+  `greed-skin` 89e8973. Before it: the coin's ticker came off every screen and out of the code (the coin button
+  renders nothing until NEXT_PUBLIC_GREED_MINT AND NEXT_PUBLIC_GREED_TICKER are set; wording says "the coin"; the
+  reserved-username rule now reads the reserved names list, since an empty ticker would match every name).
+  CHECKED LIVE from a pane tab: the app answers at the new address, /api/health 200, and 16 routes + all 86 script
+  and style files (8.7 MB, collected from performance entries: a regex on the HTML found none) had 0 hits for any
+  old name or the ticker. The X profile's website field set (x.com/settings/profile, native setter + input event,
+  Save by ref, read back on the profile). The three old usernames blanked in the database (count of users 9 before
+  and after; read back). The deployments API is refused to this session (403): prove a production deploy by the site.
+  Still his: the appeal (wording sent), "bio" (the X bio still says coming soon), "send moonpay", go-live steps 2b/4b
+  (the sign-in service's earlier origins), the coin's mint and ticker on the host at launch.
 
 - Nov 26 (12:30 am - noon; the chat stalled 2:50-10:20 am): "10 huge updates for the site, I'll decide in the morning",
   "our own trading chart instead of the library's", "the desk must use Grok AND Claude and hand over; show me what it
